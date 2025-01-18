@@ -52,38 +52,6 @@ input::-webkit-inner-spin-button {
     font-family: "mc-font";
     src: url("./font/mc-font2.ttf");
 }
-.warn-card {
-    image-rendering: pixelated;
-    background-image: url(./images/rainbow_pixel_gui/system_info.png);
-    background-position: center;
-    background-repeat: no-repeat;
-    background-size: 100% 100%;
-
-    font-family: "mc-font";
-    font-size: 23px;
-    line-height: 70px;
-    color: #fff;
-
-    border-radius: 5px;
-    height: 70px;
-    padding-left: 35px;
-    z-index: 10;
-}
-.info-card {
-    image-rendering: pixelated;
-    background-image: url(./images/vanilla_gui/demo_background.png);
-    background-position: center;
-    background-repeat: no-repeat;
-    background-size: 100% 100%;
-
-    font-family: "mc-font";
-    font-size: 23px;
-    line-height: 70px;
-    color: #fff;
-    border-radius: 5px;
-    padding-left: 35px;
-    color: black;
-}
 
 /* 选择获取白名单的方式页面 */
 .choice-method-page {
