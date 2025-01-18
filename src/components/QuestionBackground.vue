@@ -1,7 +1,7 @@
 <script setup>
 import { ref, useTemplateRef, onMounted, watch } from "vue"
 import BackgroundOre from "./BackgroundOre.vue"
-function generatePatterns(el) {
+function generatePatterns() {
     function generateNonOverlappingPositions(count) {
         const positions = [];
         while (positions.length < count) {
@@ -24,7 +24,7 @@ function generatePatterns(el) {
     const elementSize = 130;
     const maxX = window.innerWidth - elementSize;
     const minY = 260;
-    const maxY = el.value.offsetHeight - elementSize;
+    const maxY = bgHeight.value - elementSize;
     const area = maxX * maxY;
     const k = area * 0.000001; // 3 ~ 10
     const count = k * 8;
@@ -44,16 +44,20 @@ function generatePatterns(el) {
 }
 const examBg = useTemplateRef("examBg")
 const bgStonePatterns = ref([])
+const props = defineProps({
+    flag: Boolean
+})
 
-onMounted(() => {
-    setTimeout(() => {
-        generatePatterns(examBg)
-    }, 800)
+const bgHeight = ref(0)
+watch(bgHeight, (newVal, oldVal) => {
+    if(props.flag) {
+        generatePatterns()
+    }
 })
 </script>
 
 <template>
-    <div class="back-ground" ref="examBg">
+    <div class="back-ground" :ref="(el) => bgHeight = el.offsetHeight">
         <div class="bga grass"></div>
         <div class="bga stone"></div>
         <div class="bga deepslate"></div>

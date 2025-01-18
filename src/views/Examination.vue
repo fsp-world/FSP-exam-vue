@@ -4,18 +4,21 @@ import axios from "axios"
 import QuestionMap from "../components/QuestionMap.vue";
 import QuestionCard from "../components/QuestionCard.vue";
 import QuestionBackground from "../components/QuestionBackground.vue";
-import { testQuestions1 } from "../stores/questionList.js";
+// import { testQuestions1 } from "../stores/questionList.js";
 
-const questions = ref(testQuestions1)
-
-axios.get('http://localhost:5000/default/survey/1')
-.then(res => {
-    questions.value = res.data.questions
-})
+const questions = ref({})
+const flag = ref(false)
+setTimeout(() => {
+    axios.get('http://localhost:5000/default/survey/1')
+        .then(res => {
+            flag.value = true
+            questions.value = res.data.questions
+        })
+}, 2000)
 </script>
 
 <template>
-    <QuestionBackground>
+    <QuestionBackground :flag="flag">
         <div class="center">
             <div class="exam-title">
                 <p class="title">像素仙缘入服测试卷</p>
@@ -23,8 +26,7 @@ axios.get('http://localhost:5000/default/survey/1')
                 <p class="time">{{ remainingTime }}</p>
             </div>
             <ul class="question-list">
-                <li class="question"
-                    v-for="(question, questionIndex) in questions" :key="questionIndex"
+                <li class="question" v-for="(question, questionIndex) in questions" :key="questionIndex"
                     :id="'question' + (questionIndex + 1)">
                     <QuestionCard :question="question" :index="questionIndex"></QuestionCard>
                 </li>
