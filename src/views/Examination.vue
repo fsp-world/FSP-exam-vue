@@ -8,13 +8,11 @@ import QuestionBackground from "../components/QuestionBackground.vue";
 
 const questions = ref({})
 const flag = ref(false)
-setTimeout(() => {
-    axios.get('http://localhost:5000/default/survey/1')
-        .then(res => {
-            flag.value = true
-            questions.value = res.data.questions
-        })
-}, 2000)
+axios.get('http://localhost:5000/default/survey/1')
+    .then(res => {
+        flag.value = true
+        questions.value = res.data.questions
+    })
 </script>
 
 <template>

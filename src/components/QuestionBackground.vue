@@ -42,7 +42,6 @@ function generatePatterns() {
     }
     console.log(maxX, maxY);
 }
-const examBg = useTemplateRef("examBg")
 const bgStonePatterns = ref([])
 const props = defineProps({
     flag: Boolean
