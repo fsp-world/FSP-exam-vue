@@ -1,5 +1,5 @@
 <script setup>
-import { examList1 } from "../stores/examList.js";
+import { examList1 } from "@/stores/examList.js";
 const examList = ref(examList1);
 </script>
 

@@ -1,10 +1,10 @@
 <script setup>
 import { ref } from 'vue'
 import axios from "axios"
-import QuestionMap from "../components/QuestionMap.vue";
-import QuestionCard from "../components/QuestionCard.vue";
-import QuestionBackground from "../components/QuestionBackground.vue";
-// import { testQuestions1 } from "../stores/questionList.js";
+import QuestionMap from "@/components/QuestionMap.vue";
+import QuestionCard from "@/components/QuestionCard.vue";
+import QuestionBackground from "@/components/QuestionBackground.vue";
+// import { testQuestions1 } from "@/stores/questionList.js";
 
 const questions = ref({})
 const flag = ref(false)

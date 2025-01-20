@@ -1,8 +1,8 @@
 <script setup>
 import { RouterLink } from 'vue-router'
-import GuaranteeResult from "../components/GuaranteeResult.vue"
-import ExamList from "../components/ExamList.vue"
-import ShowScore from "../components/ShowScore.vue"
+import GuaranteeResult from "@/components/GuaranteeResult.vue"
+import ExamList from "@/components/ExamList.vue"
+import ShowScore from "@/components/ShowScore.vue"
 const warnCard = ref({
     type: "",
     display: false,

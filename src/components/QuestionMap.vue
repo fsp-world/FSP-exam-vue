@@ -35,34 +35,40 @@ const { questions } = defineProps({
     image-rendering: pixelated;
     padding: 20px;
     z-index: 99;
-    ul {
-        width: 100%;
-        height: 100%;
-        display: flex;
-        flex-direction: row;
-        flex-wrap: wrap;
-        gap: 5px;
 
-        li {
-            width: 36px;
-            height: 36px;
+}
 
-            a {
-                font-size: 25px;
-                width: 36px;
-                height: 36px;
-                text-align: center;
-                line-height: 36px;
-                color: #000;
-                -webkit-user-drag: none;
-                user-select: none;
-            }
+ul {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 5px;
 
-            a:hover {
-                background-color: rgba(0, 0, 0, 0.2);
-            }
-        }
-    }
+
+}
+
+li {
+    width: 36px;
+    height: 36px;
+
+
+}
+
+a {
+    font-size: 25px;
+    width: 36px;
+    height: 36px;
+    text-align: center;
+    line-height: 36px;
+    color: #000;
+    -webkit-user-drag: none;
+    user-select: none;
+}
+
+a:hover {
+    background-color: rgba(0, 0, 0, 0.2);
 }
 
 @media screen and (max-width: 1350px) {
