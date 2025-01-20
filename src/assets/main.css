@@ -18,10 +18,12 @@ textarea {
     cursor: default;
     font-family: "mc-font";
 }
+
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
     -webkit-appearance: none !important;
 }
+
 /* input[type="number"] {
     -moz-appearance: textfield;
 } */
@@ -30,16 +32,19 @@ input::-webkit-inner-spin-button {
 .y-scroll::-webkit-scrollbar {
     width: 10px;
 }
+
 .y-scroll::-webkit-scrollbar-thumb {
     /* border-radius: 10px; */
     -webkit-box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
     background: rgba(0, 0, 0, 0.2);
 }
+
 .y-scroll::-webkit-scrollbar-track {
     -webkit-box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
     /* border-radius: 5px; */
     background: rgba(0, 0, 0, 0.1);
 }
+
 .y-scroll::-webkit-scrollbar-corner {
     border-radius: 5px;
 }
@@ -66,10 +71,11 @@ input::-webkit-inner-spin-button {
 .choice-method-page .logo {
     display: block;
     margin: 0 auto;
-    margin-top: 200px;
+    margin-top: 6%;
     user-select: none;
     -webkit-user-drag: none;
 }
+
 .choice-method-page .menu {
     width: 700px;
     display: flex;
@@ -79,15 +85,28 @@ input::-webkit-inner-spin-button {
     flex-wrap: wrap;
     padding: 50px;
 }
+
 .choice-method-page .sub-menu {
     display: flex;
     justify-content: center;
     gap: 10px;
     width: 100%;
 }
+
 .choice-method-page .sub-menu button {
     width: 50%;
 }
+
+.minecraft-button a {
+    color: #fff;
+}
+.minecraft-button a:active {
+    color: #fff;
+}
+.minecraft-button a:target {
+    color: #fff;
+}
+
 .minecraft-button {
     font-family: "mc-font";
     color: #fff;
@@ -98,18 +117,22 @@ input::-webkit-inner-spin-button {
     background-size: 100% 100%;
     image-rendering: pixelated;
 }
+
 .minecraft-button:hover {
     background-image: url(./images/rainbow_pixel_gui/button_highlighted.png);
     image-rendering: pixelated;
 }
+
 .choice-method-page .choice-button {
     font-size: 30px;
     width: 100%;
     height: 70px;
 }
+
 .choice-method-page .choice-button a {
     color: #fff;
 }
+
 /* 熟人担保页面 */
 .bg {
     width: 100%;
@@ -124,6 +147,7 @@ input::-webkit-inner-spin-button {
     -ms-filter: blur(15px);
     filter: blur(7px);
 }
+
 .content {
     font-family: "mc-font";
     color: #fff;
@@ -132,17 +156,20 @@ input::-webkit-inner-spin-button {
     width: 100%;
     height: 100vh;
 }
-.content > .title {
+
+.content>.title {
     width: 100%;
     flex: 1;
     background-color: rgba(0, 0, 0, 0.3);
     font-size: 40px;
     display: flex;
 }
+
 .content .title p {
     margin: auto;
     user-select: none;
 }
+
 .content .main {
     flex: 7;
     background-color: rgba(0, 0, 0, 0.6);
@@ -154,15 +181,18 @@ input::-webkit-inner-spin-button {
     align-items: center;
     position: relative;
 }
+
 .guarantee .main .form {
     width: 100%;
 }
+
 .guarantee .main .text {
     font-size: 27px;
     line-height: 50px;
     text-align: center;
     user-select: none;
 }
+
 .prepare-exam-page .main .sub-title {
     text-align: center;
     user-select: none;
@@ -183,6 +213,7 @@ input::-webkit-inner-spin-button {
     color: #fff;
     margin: 10px auto;
 }
+
 /* 这俩一样的 */
 .minecraft-input {
     width: 800px;
@@ -219,6 +250,7 @@ input::-webkit-inner-spin-button {
     padding-left: 0;
     text-align: center;
 }
+
 .guarantee-info-card {
     width: 600px;
     height: 120px;
@@ -228,6 +260,7 @@ input::-webkit-inner-spin-button {
     transform: translate(-50%, 0);
     padding-left: 0;
     text-align: center;
+
     .player-name {
         position: absolute;
         left: 80px;
@@ -235,6 +268,7 @@ input::-webkit-inner-spin-button {
 
         font-size: 30px;
     }
+
     .player-pic {
         position: absolute;
         left: 15px;
@@ -242,11 +276,13 @@ input::-webkit-inner-spin-button {
         width: 50px;
         image-rendering: pixelated;
     }
+
     .player-uuid {
         position: absolute;
         left: 20px;
         bottom: 3px;
     }
+
     .button {
         position: absolute;
         top: 10px;
@@ -255,6 +291,7 @@ input::-webkit-inner-spin-button {
         height: 50px;
         font-size: 20px;
     }
+
     .player-uuid {
         position: absolute;
         left: 20px;
@@ -270,6 +307,7 @@ input::-webkit-inner-spin-button {
     justify-content: center;
     align-items: center;
 }
+
 .content .end .button {
     width: 400px;
     font-size: 30px;
@@ -282,12 +320,14 @@ input::-webkit-inner-spin-button {
     padding: 10px;
     margin: 0 10px 10px 10px;
 }
+
 .examineeInfo p {
     text-align: center;
     line-height: 40px;
     font-size: 20px;
     user-select: none;
 }
+
 .examineeInfo .option-list {
     display: flex;
     gap: 10px;
@@ -303,14 +343,17 @@ input::-webkit-inner-spin-button {
     background-image: url(../assets/images/rainbow_pixel_gui/button_disabled.png);
     image-rendering: pixelated;
 }
+
 .examineeInfo .option-list .option:hover {
     background-image: url(../assets/images/rainbow_pixel_gui/button_highlighted.png);
     image-rendering: pixelated;
 }
+
 .examineeInfo .option-list .selected {
     background-image: url(../assets/images/rainbow_pixel_gui/button.png);
     image-rendering: pixelated;
 }
+
 /* 
 @media screen and (max-width: 1200px) {
     .map {
@@ -376,7 +419,7 @@ input::-webkit-inner-spin-button {
             }
         }
     } */
-/* 
+    /* 
     .left {
         flex: 1;
         
@@ -385,15 +428,18 @@ input::-webkit-inner-spin-button {
     /* .right {
         flex: 1;
     } */
-    
+
 }
 
 @keyframes reveal {
     from {
-        clip-path: inset(0 100% 0 0); /* 从左侧开始裁切，背景图片完全隐藏 */
+        clip-path: inset(0 100% 0 0);
+        /* 从左侧开始裁切，背景图片完全隐藏 */
     }
+
     to {
-        clip-path: inset(0 var(--showScore) 0 0); /* 完全显示背景图片 */
+        clip-path: inset(0 var(--showScore) 0 0);
+        /* 完全显示背景图片 */
     }
 }
 
@@ -409,6 +455,7 @@ input::-webkit-inner-spin-button {
     width: 100%;
     display: flex;
     gap: 10px;
+
     .button {
         width: 50%;
         height: 70px;
@@ -421,16 +468,20 @@ input::-webkit-inner-spin-button {
         font-size: 30px;
         padding: 10px;
     }
+
     .tips {
         font-size: 26px;
         text-align: center;
+
         .server-url-list {
             padding: 10px;
+
             li {
                 font-size: 25px;
                 user-select: all;
                 /* text-align: left; */
             }
+
             li:first-child {
                 font-size: 30px;
                 user-select: none;
@@ -441,11 +492,13 @@ input::-webkit-inner-spin-button {
 
 .view-result .exam-list {
     width: 100%;
+
     .title {
         font-size: 30px;
         padding: 5px;
         text-align: center;
     }
+
     .tips {
         font-size: 20px;
         padding: 5px;
@@ -453,6 +506,7 @@ input::-webkit-inner-spin-button {
         text-align: center;
         color: grey;
     }
+
     .list {
         width: 80%;
         max-width: 1000px;
@@ -460,38 +514,47 @@ input::-webkit-inner-spin-button {
         max-height: 600px;
         overflow-y: auto;
     }
+
     .list li {
         font-size: 30px;
         padding: 15px;
         display: flex;
         justify-content: space-between;
+
         p {
             font-size: 25px;
             color: grey;
         }
+
         p:first-child {
             font-size: 30px;
             color: #ffffff;
         }
+
         button {
             width: 200px;
             font-size: 28px;
             display: none;
         }
     }
+
     .list li:hover {
         background-color: rgba(0, 0, 0, 0.5);
+
         button {
             display: block;
         }
     }
 }
+
 .view-result .show-score {
     width: 80%;
+
     .score {
         position: relative;
         top: -100px;
-        > p {
+
+        >p {
             text-align: center;
             font-size: 40px;
             color: yellow;
@@ -502,6 +565,7 @@ input::-webkit-inner-spin-button {
             bottom: 10px;
             z-index: 2;
         }
+
         .pass {
             width: 150px;
             height: 150px;
@@ -515,6 +579,7 @@ input::-webkit-inner-spin-button {
             bottom: -40px;
             animation: fadeIn 1s ease-in-out forwards;
         }
+
         .no-pass {
             width: 150px;
             height: 150px;
@@ -528,6 +593,7 @@ input::-webkit-inner-spin-button {
             bottom: -40px;
             animation: fadeIn 1s ease-in-out forwards;
         }
+
         .score-line {
             margin: 0 auto;
             border-radius: 5px;
@@ -535,6 +601,7 @@ input::-webkit-inner-spin-button {
             width: 100%;
             height: 15px;
             position: relative;
+
             .end,
             .front {
                 position: absolute;
@@ -551,6 +618,7 @@ input::-webkit-inner-spin-button {
                 background-position: center;
                 image-rendering: pixelated;
             }
+
             .front {
                 background: url(../assets/images/vanilla_gui/experience_bar_progress.png);
                 background-repeat: no-repeat;
@@ -561,6 +629,7 @@ input::-webkit-inner-spin-button {
                 animation: reveal 2s ease-in-out forwards;
             }
         }
+
         .text {
             animation: fadeIn 1s ease-in-out forwards;
             animation-delay: 2.5s;
@@ -573,13 +642,16 @@ input::-webkit-inner-spin-button {
             left: 50%;
             opacity: 0;
             transform: translate(-50%, 0);
+
             .server-url-list {
                 padding: 10px;
+
                 li {
                     font-size: 25px;
                     user-select: all;
                     /* text-align: left; */
                 }
+
                 li:first-child {
                     font-size: 30px;
                     user-select: none;
@@ -588,10 +660,12 @@ input::-webkit-inner-spin-button {
         }
     }
 }
+
 @keyframes fadeIn {
     0% {
         opacity: 0;
     }
+
     100% {
         opacity: 1;
     }
