@@ -44,21 +44,38 @@ const checkData = (event) => {
     }
 }
 
+function openErroDialog(desc) {
+    dialogData.value.type = 'warn-card'
+    dialogData.value.display = true
+    dialogData.value.stats = 2
+    dialogData.value.desc = desc
+    setTimeout(() => {
+        dialogData.value.display = false
+    }, 3000)
+}
+
+function openLoadDialog() {
+    dialogData.value.type = 'info-card'
+    dialogData.value.display = true
+    dialogData.value.stats = 0
+}
+
+function openInfoDialog() {
+    dialogData.value.type = 'info-card'
+    dialogData.value.display = true
+    dialogData.value.stats = 1
+}
+
 function send() {
+    openLoadDialog()
     sendRequest({
         guaranteeQQ: '' + guaranteeRequest.value.guaranteeQQ,
         playerQQ: '' + guaranteeRequest.value.playerQQ,
         playerName: guaranteeRequest.value.playerName,
         playerUUID: info.value.uuid
     }).then((res) => {
-        dialogData.value.display = true
-        dialogData.value.stats = 5
-        dialogData.value.desc = res.data.desc
         isin.value = false
-        setTimeout(() => {
-            dialogData.value.display = false
-        }, 2000)
-        return
+        openErroDialog(res.data.desc)
     }).catch((err) => {
         console.log(err.data);
     })
@@ -68,8 +85,7 @@ function show() {
     if (guaranteeRequest.value.guaranteeQQ && guaranteeRequest.value.playerQQ) {
         if (check.value) {
             isin.value = true
-            dialogData.value.display = true
-            dialogData.value.stats = 0
+            openLoadDialog()
             new Promise((resolve, reject) => {
                 getProfilePic(guaranteeRequest.value.playerName).then((result) => {
                     if (result.msg == 'ok') {
@@ -77,36 +93,22 @@ function show() {
                             info.value.imgUrl = url
                         })
                         info.value.uuid = result.uuid
-                        resolve(1)
+                        resolve()
                     } else {
-                        reject(2)
+                        reject()
                     }
                 })
-            }).then((res) => {
-                dialogData.value.type = 'info-card'
-                dialogData.value.stats = res
-            }).catch((res) => {
+            }).then(() => {
+                openInfoDialog()
+            }).catch(() => {
                 isin.value = false
-                dialogData.value.type = 'warn-card'
-                dialogData.value.stats = res
-                setTimeout(() => {
-                    dialogData.value.display = false
-                }, 4000)
+                openErroDialog('查询错误!!!')
             })
         } else {
-            dialogData.value.display = true
-            dialogData.value.stats = 3
-            setTimeout(() => {
-                dialogData.value.display = false
-            }, 2000)
-            return
+            openErroDialog('昵称不合法！')
         }
     } else {
-        dialogData.value.display = true
-        dialogData.value.stats = 4
-        setTimeout(() => {
-            dialogData.value.display = false
-        }, 2000)
+        openErroDialog('qq号为空')
     }
 }
 
@@ -126,15 +128,6 @@ function show() {
             <p class="bottom player-uuid">uuid: {{ info.uuid }}</p>
         </div>
         <div style="line-height: 120px; font-size: 40px;" v-show="dialogData.stats === 2">
-            <p>查询错误!!!</p>
-        </div>
-        <div style="line-height: 120px; font-size: 40px;" v-show="dialogData.stats === 3">
-            <p>昵称不合法！</p>
-        </div>
-        <div style="line-height: 120px; font-size: 40px;" v-show="dialogData.stats === 4">
-            <p>qq号为空</p>
-        </div>
-        <div style="line-height: 120px; font-size: 40px;" v-show="dialogData.stats === 5">
             <p>{{ dialogData.desc }}</p>
         </div>
     </InfoDialog>
