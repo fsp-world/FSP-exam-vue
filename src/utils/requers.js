@@ -1,5 +1,9 @@
 import axios from 'axios'
 
+export const getBearerToken = () => {
+    return 'Bearer ' + localStorage.getItem('fsp_token');
+}
+
 
 const baseURL = 'http://localhost:5000'
 
@@ -10,5 +14,12 @@ const request = axios.create({
     }
 })
 
+// 请求拦截器
+request.interceptors.request.use(config => {
+
+    config.headers['Authorization'] = getBearerToken();
+
+    return config;
+})
 
 export default request
