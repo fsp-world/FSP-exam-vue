@@ -25,7 +25,7 @@ const { show, dialogType, dialogStyle } = defineProps({
     background-repeat: no-repeat;
     background-size: 100% 100%;
     border-radius: 5px;
-    z-index: 10;
+    z-index: 100;
     left: 50%;
     transform: translate(-50%, 0);
     text-align: center;

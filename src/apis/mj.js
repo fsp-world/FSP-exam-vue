@@ -40,14 +40,16 @@ export async function getProfilePic(PlayerName) {
         canvas.height = 8;
         ctx.drawImage(img, 8, 8, 8, 8, 0, 0, 8, 8);
 
-        const imgUrl = new Promise((resolve) => {
-            canvas.toBlob((blob) => {
-                const url = URL.createObjectURL(blob);
-                resolve(url);
-            }, "image/png");
-        });
+        // const imgUrl = new Promise((resolve) => {
+        //     canvas.toBlob((blob) => {
+        //         const url = URL.createObjectURL(blob);
+        //         resolve(url);
+        //     }, "image/png");
+        // });
 
-        return { msg: "ok", uuid: skinBase64.uuid, imgUrl };
+        const imgData = canvas.toDataURL('image/png')
+
+        return { msg: "ok", uuid: skinBase64.uuid, imgUrl: imgData };
     } catch (error) {
         console.error("图像解码失败:", error);
     }

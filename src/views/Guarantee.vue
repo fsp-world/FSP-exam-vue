@@ -89,9 +89,10 @@ function show() {
             new Promise((resolve, reject) => {
                 getProfilePic(guaranteeRequest.value.playerName).then((result) => {
                     if (result.msg == 'ok') {
-                        result.imgUrl.then((url) => {
-                            info.value.imgUrl = url
-                        })
+                        info.value.imgUrl = result.imgUrl
+                        // result.imgUrl.then((url) => {
+                        //     info.value.imgUrl = url
+                        // })
                         info.value.uuid = result.uuid
                         resolve()
                     } else {

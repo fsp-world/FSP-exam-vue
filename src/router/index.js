@@ -1,11 +1,11 @@
-import { createRouter, createWebHashHistory } from 'vue-router'
+import { createRouter, createWebHistory } from 'vue-router'
 import Main from '@/views/Main.vue'
 import Guarantee from '@/views/Guarantee.vue'
 import PrepareForTheExam from '@/views/PrepareForTheExam.vue'
 import Examination from '@/views/Examination.vue'
 
 const router = createRouter({
-  history: createWebHashHistory(import.meta.env.BASE_URL),
+  history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
       path: '/',
@@ -26,6 +26,11 @@ const router = createRouter({
       path: '/examination',
       name: 'Examination',
       component: Examination
+    },
+    {
+      path: '/auth',
+      name: 'Auth',
+      component: () => import('@/views/Auth.vue')
     }
   ],
 })

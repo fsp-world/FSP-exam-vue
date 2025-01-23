@@ -1,7 +1,8 @@
 import axios from 'axios'
 
 export const getBearerToken = () => {
-    return 'Bearer ' + localStorage.getItem('fsp_token');
+    const token = localStorage.getItem('fsp_token');
+    return token ? 'Bearer ' + token : null;
 }
 
 
@@ -16,9 +17,10 @@ const request = axios.create({
 
 // 请求拦截器
 request.interceptors.request.use(config => {
-
-    config.headers['Authorization'] = getBearerToken();
-
+    const token = getBearerToken();
+    if (token) {
+        config.headers['Authorization'] = token;
+    }
     return config;
 })
 
