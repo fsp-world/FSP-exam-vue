@@ -25,10 +25,10 @@ const sendLogin = () => {
             if (res.data.code === 0) {
                 clearTimeout(timeout)
                 localStorage.setItem('fsp_token', res.data.token)
-                openDialog('登录成功! 即将跳转到主页', () => {
-                    router.push('/')
+                openDialog('登录成功! 即将跳转到主页')
+                delayClose(3000, () => {
+                    router.push({ 'name': 'Main' })
                 })
-                delayClose(3000)
             } else if (res.data.code === 1) {
                 clearTimeout(timeout)
                 openDialog(res.data.desc)
@@ -50,10 +50,11 @@ const sendRegister = () => {
             if (res.data.code === 0) {
                 clearTimeout(timeout)
                 localStorage.setItem('fsp_token', res.data.token)
-                openDialog('注册成功! 即将跳转到主页', () => {
-                    router.push('/')
+                openDialog('注册成功! 即将跳转到主页')
+                delayClose(3000, () => {
+                    router.push({ 'name': 'Main' })
                 })
-            } else if (res.data.code === 1) {
+            } else {
                 clearTimeout(timeout)
                 openDialog(res.data.desc)
                 delayClose(3000)
