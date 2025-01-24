@@ -1,34 +1,21 @@
 <script setup>
-import { onMounted, ref } from 'vue';
+import { onMounted, ref } from 'vue'
 import { RouterLink } from 'vue-router'
-import { checkLogin } from '@/apis/auth';
+import { useUserStore } from '@/stores/user'
+import { storeToRefs } from 'pinia'
 
-const userData = ref({
-    login: false,
-    username: '未登录',
-    avatar: '',
-    loadStatus: 0
-})
+const store = useUserStore()
+
+const { isLogin, username, isAdmin, avatar } = storeToRefs(store)
+
 
 onMounted(() => {
-    checkLogin().then((res) => {
-        switch (res.data.code) {
-            case 0:
-                userData.value.login = true
-                userData.value.avatar = res.data['avatar']
-                userData.value.username = res.data['username']
-                userData.value.loadStatus = 1
-                break
-            default:
-                userData.value.avatar = res.data['avatar']
-                userData.value.loadStatus = 0
-                console.log(userData.value);
-                break
-        }
-    }).catch((err) => {
-        console.log(err.data)
-    })
+    store.checkLogin()
 })
+
+const logout = () => {
+    store.logout()
+}
 </script>
 
 <template>
@@ -49,7 +36,15 @@ onMounted(() => {
                     查询结果
                 </button>
                 <button class="minecraft-button choice-button avatar">
-                    <RouterLink :disabled="userData.login" to="/auth"><img class="avatar-img" :src="userData.avatar" alt="" width="100%"><span class="avatat-hover">{{ userData.username }}</span></RouterLink>
+                    <RouterLink v-show="!isLogin" to="/auth">
+                        <img class="avatar-img" :src="avatar" alt="" width="100%">
+                        <span class="avatat-hover">未登录!</span>
+                    </RouterLink>
+                    <div v-show="isLogin">
+                        <img class="avatar-img" :src="avatar" alt="" width="100%">
+                        <span class="avatat-hover">{{ username }}</span>
+                        <button class="avatat-hover out" @click="logout">退出登录</button>
+                    </div>
                 </button>
             </div>
         </div>
@@ -75,7 +70,7 @@ onMounted(() => {
 
 .avatar-img {}
 
-.avatar:hover > a > .avatat-hover {
+.avatar:hover .avatat-hover {
     display: inline-block;
 }
 
@@ -88,5 +83,9 @@ onMounted(() => {
     background: #cccccc8a;
     position: absolute;
     transform: translate(-50%, -100%);
+}
+.avatat-hover.right {
+    top: 100%;
+    transform: translateY(100%);
 }
 </style>

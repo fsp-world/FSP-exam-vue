@@ -3,8 +3,11 @@ import { ref } from 'vue';
 import InfoDialog from '@/components/InfoDialog.vue'
 import { login, register } from '@/apis/auth'
 import { useRouter } from 'vue-router'
+import { useUserStore } from '@/stores/user'
 
 const router = useRouter()
+
+const store = useUserStore()
 
 const currentTab = ref('login'); // 默认显示登录页面
 const loginForm = ref({
@@ -20,11 +23,12 @@ const registerForm = ref({
 const sendLogin = () => {
     openDialog('登陆中')
     let timeout = delayClose(3000)
-    login({ 'username': loginForm.value.username, 'password': loginForm.value.password })
+
+    // login({ 'username': loginForm.value.username, 'password': loginForm.value.password })
+    store.login({ 'username': loginForm.value.username, 'password': loginForm.value.password })
         .then((res) => {
             if (res.data.code === 0) {
                 clearTimeout(timeout)
-                localStorage.setItem('fsp_token', res.data.token)
                 openDialog('登录成功! 即将跳转到主页')
                 delayClose(3000, () => {
                     router.push({ 'name': 'Main' })
