@@ -1,5 +1,5 @@
 # FSP-exam-Vue
-[后端地址](https://gitee.com/tangsu99/fsp-exam-flask)
+[后端地址](https://github.com/tangsu99/fsp-exam-flask)
 
 ## Recommended IDE Setup
 

@@ -43,7 +43,7 @@ const logout = () => {
                     <div v-show="isLogin">
                         <img class="avatar-img" :src="avatar" alt="" width="100%">
                         <span class="avatat-hover">{{ username }}</span>
-                        <button class="avatat-hover out" @click="logout">退出登录</button>
+                        <a class="logout" @click="logout">退出登录</a>
                     </div>
                 </button>
             </div>
@@ -70,7 +70,8 @@ const logout = () => {
 
 .avatar-img {}
 
-.avatar:hover .avatat-hover {
+.avatar:hover .avatat-hover,
+.avatar:hover .logout {
     display: inline-block;
 }
 
@@ -84,8 +85,20 @@ const logout = () => {
     position: absolute;
     transform: translate(-50%, -100%);
 }
-.avatat-hover.right {
-    top: 100%;
-    transform: translateY(100%);
+
+.logout {
+    display: none;
+    word-break: normal;
+    white-space: nowrap;
+    position: absolute;
+    padding: 10px 14px;
+    bottom: 0;
+    transform: translate(-50%, 100%);
+    background: #cccccc8a;
+    font-size: 20px;
+}
+
+.logout:hover {
+    color: aqua;
 }
 </style>

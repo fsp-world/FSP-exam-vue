@@ -16,6 +16,7 @@ const loginForm = ref({
 });
 const registerForm = ref({
     username: '',
+    userQQ: '',
     password: '',
     repassword: ''
 })
@@ -49,7 +50,7 @@ const sendLogin = () => {
 const sendRegister = () => {
     openDialog('提交中')
     let timeout = delayClose(3000)
-    register({ 'username': registerForm.value.username, 'password': registerForm.value.password, 'repassword': registerForm.value.repassword })
+    register({ 'username': registerForm.value.username, 'userQQ': registerForm.value.userQQ, 'password': registerForm.value.password, 'repassword': registerForm.value.repassword })
         .then((res) => {
             if (res.data.code === 0) {
                 clearTimeout(timeout)
@@ -120,6 +121,7 @@ function delayClose(delay, callback) {
             <div v-else key="register" class="form">
                 <h2>注册</h2>
                 <input type="text" placeholder="用户名" v-model="registerForm.username" />
+                <input type="text" placeholder="QQ" v-model="registerForm.userQQ" />
                 <input type="password" placeholder="密码" v-model="registerForm.password" />
                 <input type="password" placeholder="确认密码" v-model="registerForm.repassword" />
                 <button @click="sendRegister">注册</button>
