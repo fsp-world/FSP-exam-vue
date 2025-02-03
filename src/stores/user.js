@@ -69,7 +69,7 @@ export const useUserStore = defineStore('user', {
                     this.username = res.data.username
                     this.isAdmin = res.data.isAdmin
                     this.avatar = res.data.avatar
-                }else {
+                } else {
                     this.isLogin = false
                     this.avatar = res.data.avatar
                 }
@@ -78,5 +78,14 @@ export const useUserStore = defineStore('user', {
                 return { code: 1, desc: '错误' }
             }
         }
+    },
+    persist: {
+        enabled: true,
+        strategies: [
+            {
+                key: 'user',
+                storage: localStorage, // 或者 sessionStorage
+            },
+        ],
     },
 })

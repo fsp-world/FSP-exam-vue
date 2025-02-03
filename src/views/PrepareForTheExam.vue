@@ -156,7 +156,7 @@ watch(page, (newVal) => {
                         <ul class="option-list">
                             <li class="minecraft-button option"
                                 :class="{ 'selected': examineeInfo.playerType == item.id, 'option-red-color': warnCard.display }"
-                                v-for="item in playerTypeList" @click="choicePlayerType(item.id)">
+                                v-for="(item, index) in playerTypeList" v-bind:key="index" @click="choicePlayerType(item.id)">
                                 {{ item.option }}
                             </li>
                         </ul>

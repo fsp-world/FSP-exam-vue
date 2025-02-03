@@ -2,10 +2,12 @@
 import { ref } from 'vue';
 import InfoDialog from '@/components/InfoDialog.vue'
 import { login, register } from '@/apis/auth'
-import { useRouter } from 'vue-router'
+import { useRouter, useRoute } from 'vue-router'
 import { useUserStore } from '@/stores/user'
+import { RouterLink } from 'vue-router'
 
 const router = useRouter()
+const route = useRoute()
 
 const store = useUserStore()
 
@@ -30,9 +32,16 @@ const sendLogin = () => {
         .then((res) => {
             if (res.data.code === 0) {
                 clearTimeout(timeout)
-                openDialog('登录成功! 即将跳转到主页')
+                openDialog('登录成功! 即将跳转...')
                 delayClose(3000, () => {
-                    router.push({ 'name': 'Main' })
+                    // 获取目标页面路径
+                    const redirect = route.query.redirect;
+                    // 如果存在目标页面路径，则跳转到该页面；否则跳转到首页
+                    if (redirect) {
+                        router.push(redirect);
+                    } else {
+                        router.push({ 'name': 'Main' })
+                    }
                 })
             } else if (res.data.code === 1) {
                 clearTimeout(timeout)
@@ -127,6 +136,7 @@ function delayClose(delay, callback) {
                 <button @click="sendRegister">注册</button>
             </div>
         </Transition>
+        <RouterLink to="/">返回主页</RouterLink>
     </div>
 </template>
 

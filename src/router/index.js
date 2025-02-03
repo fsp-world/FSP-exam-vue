@@ -33,6 +33,12 @@ const router = createRouter({
             meta: { requiresAuth: true }
         },
         {
+            path: '/space',
+            name: 'Space',
+            component: () => import('@/views/Space.vue'),
+            meta: { requiresAuth: true }
+        },
+        {
             path: '/auth',
             name: 'Auth',
             component: () => import('@/views/Auth.vue')
@@ -42,14 +48,21 @@ const router = createRouter({
 
 // 路由守卫：检查用户是否登录
 router.beforeEach((to, from, next) => {
-    console.log(to, from);
+    const store = useUserStore()
+    store.checkLogin()
+    // 如果用户已登录且尝试访问登录页面，则重定向到个人空间
+    if (to.name === 'Auth' && store.isLogin) {
+        next({ name: 'Space' }); // 跳转到个人空间
+    }
     // 检查目标路由是否需要登录
-    if (to.matched.some((record) => record.meta.requiresAuth)) {
-        // 检查用户是否已登录（假设登录状态存储在 localStorage 中）
-        const store = useUserStore()
+    else if (to.matched.some((record) => record.meta.requiresAuth)) {
+        // 检查用户是否已登录
         if (!store.isLogin) {
             // 如果未登录，重定向到登录页面
-            next({ name: 'Auth' });
+            next({
+                name: 'Auth',
+                query: { redirect: to.fullPath },
+            });
         } else {
             // 如果已登录，继续导航
             next();

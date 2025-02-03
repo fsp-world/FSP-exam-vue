@@ -1,5 +1,4 @@
 <script setup>
-import { onMounted, ref } from 'vue'
 import { RouterLink } from 'vue-router'
 import { useUserStore } from '@/stores/user'
 import { storeToRefs } from 'pinia'
@@ -8,10 +7,6 @@ const store = useUserStore()
 
 const { isLogin, username, isAdmin, avatar } = storeToRefs(store)
 
-
-onMounted(() => {
-    store.checkLogin()
-})
 
 const logout = () => {
     store.logout()
@@ -40,11 +35,11 @@ const logout = () => {
                         <img class="avatar-img" :src="avatar" alt="" width="100%">
                         <span class="avatat-hover">未登录!</span>
                     </RouterLink>
-                    <div v-show="isLogin">
+                    <RouterLink v-show="isLogin" to="/space">
                         <img class="avatar-img" :src="avatar" alt="" width="100%">
                         <span class="avatat-hover">{{ username }}</span>
-                        <a class="logout" @click="logout">退出登录</a>
-                    </div>
+                    </RouterLink>
+                    <a v-show="isLogin" class="logout" @click="logout">退出登录</a>
                 </button>
             </div>
         </div>
