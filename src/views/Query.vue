@@ -1,14 +1,8 @@
 <script setup>
-import { ref } from 'vue'
 import { RouterLink } from 'vue-router'
-import { guaranteeQuery } from '@/apis/guarantee'
-import { useRouter, useRoute } from 'vue-router'
+import { useRouter } from 'vue-router'
 
 const router = useRouter()
-
-guaranteeQuery().then((res) => {
-    console.log(res.data);
-})
 
 </script>
 
@@ -22,8 +16,6 @@ guaranteeQuery().then((res) => {
             <div class="main">
                 <router-view />
                 <div class="get-info">
-                    <!-- <input class="minecraft-input" type="text" placeholder="您的游戏昵称"
-                        :class="{ 'input-red-color': warnCard.display }" /> -->
                     <div style="width: 800px;">
                         <button type="button" class="minecraft-button button"
                             @click="router.push({ 'name': 'QueryGuarantee' })">
@@ -35,13 +27,6 @@ guaranteeQuery().then((res) => {
                         </button>
                     </div>
                 </div>
-                <!-- <GuaranteeResult v-if="resultPage === 'guaranteeResult'"></GuaranteeResult>
-                <ExamList v-if="resultPage === 'examList'">
-                    <button type="button" class="minecraft-button button" @click="resultPage = 'showScore'">
-                        成绩查询
-                    </button>
-                </ExamList>
-                <ShowScore v-if="resultPage === 'showScore'"></ShowScore> -->
             </div>
             <div class="end">
                 <button type="button" class="minecraft-button button">
@@ -57,10 +42,11 @@ guaranteeQuery().then((res) => {
     background-color: rgba(0, 0, 0, 0.6);
     border-top: 3px solid #000;
     border-bottom: 3px solid #000;
+    flex: 1;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
     align-items: center;
     position: relative;
     min-height: 760px;

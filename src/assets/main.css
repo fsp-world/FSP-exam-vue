@@ -153,13 +153,15 @@ input[type="number"] {
     color: #fff;
     display: flex;
     flex-direction: column;
+    justify-content: space-between;
     width: 100%;
     height: 100vh;
 }
 
 .content>.title {
     width: 100%;
-    flex: 1;
+    min-height: 75px;
+    max-height: 75px;
     background-color: rgba(0, 0, 0, 0.3);
     font-size: 40px;
     display: flex;
@@ -299,12 +301,13 @@ input[type="number"] {
 }
 
 .content .end {
-    flex: 1;
     background-color: rgba(0, 0, 0, 0.3);
     display: flex;
     gap: 30px;
     justify-content: center;
     align-items: center;
+    max-height: 75px;
+    min-height: 75px;
 }
 
 .content .end .button {

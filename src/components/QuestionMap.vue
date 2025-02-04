@@ -45,15 +45,11 @@ ul {
     flex-direction: row;
     flex-wrap: wrap;
     gap: 5px;
-
-
 }
 
 li {
     width: 36px;
     height: 36px;
-
-
 }
 
 a {

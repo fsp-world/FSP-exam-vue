@@ -34,10 +34,12 @@ const { show, dialogType, dialogStyle } = defineProps({
 .dialog-show {
     bottom: 150px;
     opacity: 1;
+    visibility: visible;
 }
 .dialog-close {
     bottom: 120px;
     opacity: 0;
+    visibility: hidden;
 }
 
 .warn-card {
