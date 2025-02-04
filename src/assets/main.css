@@ -171,7 +171,6 @@ input[type="number"] {
 }
 
 .content .main {
-    flex: 7;
     background-color: rgba(0, 0, 0, 0.6);
     border-top: 3px solid #000;
     border-bottom: 3px solid #000;
@@ -447,7 +446,6 @@ input[type="number"] {
 .view-result .main {
     justify-content: space-around;
     flex-direction: column;
-    gap: 80px;
     user-select: none;
 }
 
@@ -486,63 +484,6 @@ input[type="number"] {
                 font-size: 30px;
                 user-select: none;
             }
-        }
-    }
-}
-
-.view-result .exam-list {
-    width: 100%;
-
-    .title {
-        font-size: 30px;
-        padding: 5px;
-        text-align: center;
-    }
-
-    .tips {
-        font-size: 20px;
-        padding: 5px;
-        padding-bottom: 20px;
-        text-align: center;
-        color: grey;
-    }
-
-    .list {
-        width: 80%;
-        max-width: 1000px;
-        margin: 0 auto;
-        max-height: 600px;
-        overflow-y: auto;
-    }
-
-    .list li {
-        font-size: 30px;
-        padding: 15px;
-        display: flex;
-        justify-content: space-between;
-
-        p {
-            font-size: 25px;
-            color: grey;
-        }
-
-        p:first-child {
-            font-size: 30px;
-            color: #ffffff;
-        }
-
-        button {
-            width: 200px;
-            font-size: 28px;
-            display: none;
-        }
-    }
-
-    .list li:hover {
-        background-color: rgba(0, 0, 0, 0.5);
-
-        button {
-            display: block;
         }
     }
 }

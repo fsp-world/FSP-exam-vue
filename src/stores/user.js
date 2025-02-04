@@ -15,16 +15,6 @@ export const useUserStore = defineStore('user', {
             avatar: ''
         }
     },
-    getters: {
-        getUser: () => {
-            return {
-                isLogin: this.isLogin,
-                username: this.username,
-                isAdmin: this.isAdmin,
-                avatar: this.avatar,
-            }
-        },
-    },
     actions: {
         async login(data) {
             try {

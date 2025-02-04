@@ -1,4 +1,5 @@
 <script setup>
+import { ref } from 'vue'
 const guaranteeResult = ref({
     state: true,
     text: "您的担保请求已被同意，系统已自动将您添加至白名单",
@@ -21,4 +22,8 @@ const guaranteeResult = ref({
     </div>
 </template>
 
-<style scoped></style>
+<style scoped>
+.guarantee-result {
+    margin-top: 166px;
+}
+</style>

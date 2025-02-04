@@ -33,6 +33,24 @@ const router = createRouter({
             meta: { requiresAuth: true }
         },
         {
+            path: '/query',
+            name: 'Query',
+            component: () => import('@/views/Query.vue'),
+            meta: { requiresAuth: true },
+            children: [
+                {
+                    path: 'examination',
+                    name: 'QueryExamination',
+                    component: () => import('@/components/ExamList.vue'),
+                },
+                {
+                    path: 'guarantee',
+                    name: 'QueryGuarantee',
+                    component: () => import('@/components/GuaranteeResult.vue'),
+                },
+            ]
+        },
+        {
             path: '/space',
             name: 'Space',
             component: () => import('@/views/Space.vue'),
