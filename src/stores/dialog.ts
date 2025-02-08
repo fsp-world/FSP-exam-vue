@@ -10,8 +10,7 @@ export const useDialogStore = defineStore('dialog', {
     actions: {
         openDialog(data: IdialogData): number {
             (this.dialogs as Array<IdialogData>).push(data)
-            console.log(this.dialogs);
-            if (this.dialogs.length > 2) {
+            if (this.dialogs.length > 3) {
                 (this.dialogs as Array<IdialogData>).splice(0, 1)
             }
             return 0

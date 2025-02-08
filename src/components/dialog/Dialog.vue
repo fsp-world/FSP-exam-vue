@@ -10,9 +10,7 @@ const { dialogs } = storeToRefs(dialogStore)
 
 <template>
     <div class="dialog-container">
-        <Transition v-for="(item, index) of dialogs" :key="index" type="transition" name="fade" mode="out-in" appear>
-            <DialogCard :card="item"></DialogCard>
-        </Transition>
+        <DialogCard v-for="(item, index) of dialogs" :key="index" :card="item"></DialogCard>
     </div>
 </template>
 
@@ -20,18 +18,8 @@ const { dialogs } = storeToRefs(dialogStore)
 .dialog-container {
     width: 400px;
     position: fixed;
-    bottom: 20px;
-    left: 20px;
+    top: 20px;
+    right: 20px;
     z-index: 1000;
-}
-
-.fade-enter-active,
-.fade-leave-active {
-    transition: opacity 0.5s ease;
-}
-
-.fade-enter-from,
-.fade-leave-to {
-    opacity: 0;
 }
 </style>

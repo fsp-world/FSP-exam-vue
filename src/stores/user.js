@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { login as loginReq, logout as logoutReq, checkLogin as checkLoginReq } from '@/apis/auth'
+import { login as loginReq, logout as logoutReq, checkLogin as checkLoginReq, register as registerReq } from '@/apis/auth'
 
 // 你可以任意命名 `defineStore()` 的返回值，但最好使用 store 的名字，同时以 `use` 开头且以 `Store` 结尾。
 // (比如 `useUserStore`，`useCartStore`，`useProductStore`)
@@ -30,6 +30,21 @@ export const useUserStore = defineStore('user', {
             } catch (error) {
                 console.error(error);
                 return { code: 1, desc: '登录错误' }
+            }
+        },
+        async register(data) {
+            try {
+                let res = await registerReq(data)
+                if (res.data.code === 0) {
+                    this.isLogin = true
+                    this.username = res.data.username
+                    this.isAdmin = res.data.isAdmin
+                    this.avatar = res.data.avatar
+                    localStorage.setItem('fsp_token', res.data.token)
+                }
+                return res
+            } catch (error) {
+                return { code: 1, desc: '错误' }
             }
         },
         async logout() {

@@ -1,12 +1,30 @@
 <script setup>
+import '../../assets/form.css'
 import { ref, watch } from 'vue'
-import InfoDialog from '@/components/InfoDialog.vue'
 import { login, register } from '@/apis/auth'
 import { useRouter, useRoute } from 'vue-router'
 import { useUserStore } from '@/stores/user'
 import { RouterLink } from 'vue-router'
 import { checkPassword } from '@/utils/passwordUtil'
-import '../../assets/form.css'
+import { useDialogStore } from '@/stores/dialog'
+
+const router = useRouter()
+const route = useRoute()
+const user = useUserStore()
+
+const dialogStore = useDialogStore()
+let conunt = 1
+const openDialog = (message) => {
+    const data = {
+        title: 'register' + conunt,
+        type: 'info-card',
+        message: message,
+        age: 3000,
+        flag: true
+    }
+    dialogStore.openDialog(data)
+    conunt++
+}
 
 const registerForm = ref({
     username: '',
@@ -16,39 +34,36 @@ const registerForm = ref({
 })
 
 const sendRegister = () => {
-    openDialog('提交中')
-    let timeout = delayClose(3000)
     if (registerForm.value.password === registerForm.value.repassword) {
         if (!checkPassword(registerForm.value.password)) {
-            clearTimeout(timeout)
             openDialog('密码必须包含至少一个大写字母、一个小写字母、一个数字和一个特殊字符，且长度至少为8个字符');
-            timeout = delayClose(3000)
             return
         }
-        register({ 'username': registerForm.value.username, 'userQQ': registerForm.value.userQQ, 'password': registerForm.value.password, 'repassword': registerForm.value.repassword })
+        user.register({ 'username': registerForm.value.username, 'userQQ': registerForm.value.userQQ, 'password': registerForm.value.password, 'repassword': registerForm.value.repassword })
             .then((res) => {
                 if (res.data.code === 0) {
-                    clearTimeout(timeout)
-                    localStorage.setItem('fsp_token', res.data.token)
-                    openDialog('注册成功! 即将跳转到主页')
-                    delayClose(3000, () => {
-                        router.push({ 'name': 'Main' })
+                    openDialog('注册成功! 即将跳转...')
+                    setTimeout(() => {
+                        setTimeout(() => {
+                            // 获取目标页面路径
+                            const redirect = route.query.redirect;
+                            // 如果存在目标页面路径，则跳转到该页面；否则跳转到首页
+                            if (redirect) {
+                                router.push(redirect);
+                            } else {
+                                router.push({ 'name': 'Main' })
+                            }
+                        }, 2000)
                     })
                 } else {
-                    clearTimeout(timeout)
                     openDialog(res.data.desc)
-                    delayClose(3000)
                 }
             })
             .catch((err) => {
-                clearTimeout(timeout)
-                openDialog('注册错误!')
-                delayClose(3000)
+                openDialog('出现错误!')
             })
     } else {
-        clearTimeout(timeout)
         openDialog('密码不一致');
-        timeout = delayClose(3000)
     }
 }
 

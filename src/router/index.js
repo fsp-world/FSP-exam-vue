@@ -3,6 +3,7 @@ import Main from '@/views/Main.vue'
 import Guarantee from '@/views/Guarantee.vue'
 import PrepareForTheExam from '@/views/PrepareForTheExam.vue'
 import Examination from '@/views/Examination.vue'
+import { useUserStore } from '@/stores/user'
 
 
 const router = createRouter({
@@ -79,14 +80,15 @@ const router = createRouter({
 
 // 路由守卫：检查用户是否登录
 router.beforeEach((to, from, next) => {
+    const user = useUserStore()
     // 如果用户已登录且尝试访问登录页面，则重定向到个人空间
-    if (to.name === 'Auth' && store.isLogin) {
+    if (to.name === 'Auth' && user.isLogin) {
         next({ name: 'Space' }); // 跳转到个人空间
     }
     // 检查目标路由是否需要登录
     else if (to.matched.some((record) => record.meta.requiresAuth)) {
         // 检查用户是否已登录
-        if (!store.isLogin) {
+        if (!user.isLogin) {
             // 如果未登录，重定向到登录页面
             next({
                 name: 'Auth',
