@@ -1,11 +1,13 @@
-
 <script setup>
-import { ref, watch } from 'vue';
+import { ref, watch } from 'vue'
 import InfoDialog from '@/components/InfoDialog.vue'
 import { login, register } from '@/apis/auth'
 import { useRouter, useRoute } from 'vue-router'
 import { useUserStore } from '@/stores/user'
 import { RouterLink } from 'vue-router'
+import { checkPassword } from '@/utils/passwordUtil'
+import '../../assets/form.css'
+
 const loginForm = ref({
     username: '',
     password: ''
@@ -50,7 +52,7 @@ const sendLogin = () => {
 </script>
 
 <template>
-    <div v-if="currentTab === 'login'" key="login" class="form">
+    <div class="form">
         <h2>登录</h2>
         <input type="text" placeholder="用户名" v-model="loginForm.username" />
         <input type="password" placeholder="密码" v-model="loginForm.password" />
@@ -61,38 +63,4 @@ const sendLogin = () => {
     </div>
 </template>
 
-<style scoped>
-.form {
-    margin-top: 20px;
-}
-
-.form input {
-    display: block;
-    width: 100%;
-    margin-bottom: 20px;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    box-sizing: border-box;
-}
-
-.form button {
-    width: 100%;
-    padding: 10px;
-    background-color: #007bff;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-}
-
-.form p {
-    font-size: 12px;
-    color: #666;
-    margin-bottom: 20px;
-}
-
-.form p.error {
-    color: #ff5252;
-}
-</style>
+<style scoped></style>

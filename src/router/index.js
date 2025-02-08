@@ -59,7 +59,20 @@ const router = createRouter({
         {
             path: '/auth',
             name: 'Auth',
-            component: () => import('@/views/Auth.vue')
+            redirect: {name: 'Login'},
+            component: () => import('@/views/Auth.vue'),
+            children: [
+                {
+                    path: 'login',
+                    name: 'Login',
+                    component: () => import('@/components/form/LoginForm.vue'),
+                },
+                {
+                    path: 'register',
+                    name: 'Register',
+                    component: () => import('@/components/form/RegisterForm.vue'),
+                },
+            ]
         }
     ],
 })

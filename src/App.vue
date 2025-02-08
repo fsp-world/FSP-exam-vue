@@ -26,7 +26,6 @@ const openDialog = () => {
     <button @click="openDialog">open</button>
     <!-- <RouterLink to="/">Home</RouterLink>
     <RouterLink to="/about">About</RouterLink>
-
     -->
     <RouterView />
 </template>
