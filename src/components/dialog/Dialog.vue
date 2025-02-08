@@ -18,10 +18,11 @@ const { dialogs } = storeToRefs(dialogStore)
 
 <style scoped>
 .dialog-container {
+    width: 400px;
     position: fixed;
-    top: 20px;
+    bottom: 20px;
     left: 20px;
-    z-index: 10000;
+    z-index: 1000;
 }
 
 .fade-enter-active,

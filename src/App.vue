@@ -1,7 +1,9 @@
 <script setup>
 import { RouterView } from 'vue-router'
-import Dialog from "@/components/dialog/Dialog.vue";
-import { useDialogStore } from '@/stores/dialog';
+import Dialog from "@/components/dialog/Dialog.vue"
+import { useDialogStore } from '@/stores/dialog'
+import { onMounted } from 'vue'
+import { useUserStore } from '@/stores/user'
 
 const dialogStore = useDialogStore()
 
@@ -19,11 +21,15 @@ const openDialog = () => {
     conunt++
 }
 
+onMounted(() => {
+    const store = useUserStore()
+    store.checkLogin()
+})
+
 </script>
 
 <template>
     <Dialog></Dialog>
-    <button @click="openDialog">open</button>
     <!-- <RouterLink to="/">Home</RouterLink>
     <RouterLink to="/about">About</RouterLink>
     -->

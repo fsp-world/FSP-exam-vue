@@ -18,8 +18,8 @@ const { card } = defineProps({
 
 <style scoped>
 .card {
-    width: 600px;
-    height: 120px;
+    width: 100%;
+    height: 80px;
     margin: 16px;
     image-rendering: pixelated;
     font-size: 23px;

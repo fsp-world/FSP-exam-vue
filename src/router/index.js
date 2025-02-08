@@ -3,7 +3,6 @@ import Main from '@/views/Main.vue'
 import Guarantee from '@/views/Guarantee.vue'
 import PrepareForTheExam from '@/views/PrepareForTheExam.vue'
 import Examination from '@/views/Examination.vue'
-import { useUserStore } from '@/stores/user'
 
 
 const router = createRouter({
@@ -35,6 +34,7 @@ const router = createRouter({
         {
             path: '/query',
             name: 'Query',
+            redirect: {name: 'QueryExamination'},
             component: () => import('@/views/Query.vue'),
             meta: { requiresAuth: true },
             children: [
@@ -79,8 +79,6 @@ const router = createRouter({
 
 // 路由守卫：检查用户是否登录
 router.beforeEach((to, from, next) => {
-    const store = useUserStore()
-    store.checkLogin()
     // 如果用户已登录且尝试访问登录页面，则重定向到个人空间
     if (to.name === 'Auth' && store.isLogin) {
         next({ name: 'Space' }); // 跳转到个人空间

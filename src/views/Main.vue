@@ -1,9 +1,10 @@
 <script setup>
 import { RouterLink } from 'vue-router'
 import { useUserStore } from '@/stores/user'
+import { storeToRefs } from 'pinia'
 
 const store = useUserStore()
-
+const { isLogin, username, isAdmin, avatar } = storeToRefs(store)
 const logout = () => {
     store.logout()
 }
