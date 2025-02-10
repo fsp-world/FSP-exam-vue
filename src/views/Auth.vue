@@ -1,32 +1,9 @@
 <script setup>
-import { ref, watch } from 'vue'
-import InfoDialog from '@/components/InfoDialog.vue'
-import { login, register } from '@/apis/auth'
-import { useRouter, useRoute } from 'vue-router'
-import { useUserStore } from '@/stores/user'
-import { useDialogStore } from '@/stores/dialog'
+import { useRoute } from 'vue-router'
 import { RouterView } from 'vue-router'
 import { RouterLink } from 'vue-router'
 
-const router = useRouter()
 const route = useRoute()
-
-const store = useUserStore()
-const dialog = useDialogStore()
-
-
-
-// const currentTab = ref('login'); // 默认显示登录页面
-
-const registerForm = ref({
-    username: '',
-    userQQ: '',
-    password: '',
-    repassword: ''
-})
-
-
-
 </script>
 
 <template>

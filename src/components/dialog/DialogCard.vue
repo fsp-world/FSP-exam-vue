@@ -8,7 +8,7 @@ const { card } = defineProps({
     card: {
         type: Object as PropType<IdialogData>,
         required: true,
-    },
+    }
 })
 
 const myclass = ref('')
@@ -31,7 +31,8 @@ onUnmounted(() => {
 
 const close = () => {
     setTimeout(() => {
-        dialogStore.closeDialog(card.title)
+        card.flag = false
+        dialogStore.closeDialog()
     }, 300)
 }
 

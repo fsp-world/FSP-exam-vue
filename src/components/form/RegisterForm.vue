@@ -1,10 +1,8 @@
 <script setup>
 import '../../assets/form.css'
-import { ref, watch } from 'vue'
-import { login, register } from '@/apis/auth'
+import { ref} from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { useUserStore } from '@/stores/user'
-import { RouterLink } from 'vue-router'
 import { checkPassword } from '@/utils/passwordUtil'
 import { useDialogStore } from '@/stores/dialog'
 
@@ -13,17 +11,15 @@ const route = useRoute()
 const user = useUserStore()
 
 const dialogStore = useDialogStore()
-let conunt = 1
 const openDialog = (message) => {
     const data = {
-        title: 'register' + conunt,
+        title: 'register' + Date(),
         type: 'info-card',
         message: message,
         age: 3000,
         flag: true
     }
     dialogStore.openDialog(data)
-    conunt++
 }
 
 const registerForm = ref({

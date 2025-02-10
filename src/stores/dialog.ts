@@ -4,7 +4,8 @@ import { IdialogData } from '@/utils/dialogType';
 export const useDialogStore = defineStore('dialog', {
     state: () => {
         return {
-            dialogs: [] as Array<IdialogData>
+            dialogs: [] as Array<IdialogData>,
+            lock: false as boolean
         }
     },
     actions: {
@@ -15,9 +16,22 @@ export const useDialogStore = defineStore('dialog', {
             }
             return 0
         },
-        closeDialog(title: string) {
-            let index = (this.dialogs as Array<IdialogData>).findIndex((item: IdialogData) => item.title === title);
-            (this.dialogs as Array<IdialogData>).splice(index, 1)
+        closeDialog() {
+            let li: IdialogData[] = []
+            let tsMap = (arr: IdialogData[], callback: Function) => {
+                arr.forEach((item) => {
+                    if (!callback(item)) {
+                        li.push
+                    }
+                })
+            }
+            tsMap(this.dialogs, (item: IdialogData) => {
+                if (item.flag) {
+                    return item
+                }
+                return null
+            })
+            this.dialogs = li
         }
     }
 })

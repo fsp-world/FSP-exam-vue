@@ -2,11 +2,23 @@
 import { RouterLink } from 'vue-router'
 import { useUserStore } from '@/stores/user'
 import { storeToRefs } from 'pinia'
+import { useDialogStore } from '@/stores/dialog'
 
 const store = useUserStore()
 const { isLogin, username, isAdmin, avatar } = storeToRefs(store)
+
+const dialogStore = useDialogStore()
+
 const logout = () => {
-    store.logout()
+    store.logout().then(res => {
+        dialogStore.openDialog({
+            title: 'logout' + Date(),
+            type: 'info-card',
+            message: '成功退出登录',
+            age: 3000,
+            flag: true
+        })
+    })
 }
 </script>
 

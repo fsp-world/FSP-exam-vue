@@ -10,7 +10,7 @@ const { dialogs } = storeToRefs(dialogStore)
 
 <template>
     <div class="dialog-container">
-        <DialogCard v-for="(item, index) of dialogs" :key="index" :card="item"></DialogCard>
+        <DialogCard v-for="(item, index) of dialogs" v-show="item.flag" :key="index" :card="item"></DialogCard>
     </div>
 </template>
 
