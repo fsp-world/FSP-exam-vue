@@ -13,9 +13,6 @@ onMounted(() => {
 
 <template>
     <Dialog></Dialog>
-    <!-- <RouterLink to="/">Home</RouterLink>
-    <RouterLink to="/about">About</RouterLink>
-    -->
     <RouterView />
 </template>
 

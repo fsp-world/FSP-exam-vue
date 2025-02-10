@@ -22,7 +22,7 @@ const route = useRoute()
     </div>
 </template>
 
-<style>
+<style scoped>
 a:visited {
     color: inherit;
 }
