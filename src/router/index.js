@@ -141,6 +141,8 @@ router.beforeEach((to, from, next) => {
                 // 如果是，继续
                 next();
             }
+        }else {
+            next();
         }
     } else {
         // 如果目标路由不需要登录，直接继续导航
