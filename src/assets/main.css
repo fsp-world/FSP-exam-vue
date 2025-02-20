@@ -118,32 +118,6 @@ input[type="number"] {
     width: 50%;
 }
 
-.minecraft-button a {
-    color: #fff;
-}
-.minecraft-button a:active {
-    color: #fff;
-}
-.minecraft-button a:target {
-    color: #fff;
-}
-
-.minecraft-button {
-    font-family: "mc-font";
-    color: #fff;
-    border-radius: 5px;
-    background-image: url(./images/rainbow_pixel_gui/button.png);
-    background-repeat: no-repeat;
-    background-position: center;
-    background-size: 100% 100%;
-    image-rendering: pixelated;
-}
-
-.minecraft-button:hover {
-    background-image: url(./images/rainbow_pixel_gui/button_highlighted.png);
-    image-rendering: pixelated;
-}
-
 .choice-method-page .choice-button {
     font-size: 30px;
     width: 100%;

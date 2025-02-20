@@ -14,10 +14,17 @@ const survey = ref({
 const formData = ref({
     survey: sid,
     title: '',
-    score: 0,
-    type: '',
+    score: 1,
+    type: 1,
     options: []
 })
+
+const types = ref([
+    {value: 1, name: '单选'},
+    {value: 2, name: '多选'},
+    {value: 3, name: '填空'},
+    {value: 4, name: '简答'}
+])
 
 onMounted(() => {
     getSurvey(sid)
@@ -42,7 +49,16 @@ const addQuest = () => {
         <p>{{ survey.description }}</p>
         <hr>
         <form>
-            <p><label for="oname">问题</label><textarea id="oname" type="text" v-model="formData.title"></textarea></p>
+            <p><label for="oname">问题</label><textarea id="oname" v-model.trim="formData.title"></textarea></p>
+            <p><label for="oname">分值</label><input id="score" type="number" v-model="formData.score"/></p>
+            <p>
+                <select v-model="formData.type">
+                    <option v-for="i in types" :key="i.value" :value="i.value">{{ i.name }}</option>
+                </select>
+            </p>
+            <div>
+
+            </div>
         </form>
         <hr>
         <ul class="question-list">

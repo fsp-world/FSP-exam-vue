@@ -1,5 +1,6 @@
 <script setup>
 import { RouterLink } from 'vue-router'
+import MCButton from '@/components/MCButton.vue'
 import { useUserStore } from '@/stores/user'
 import { storeToRefs } from 'pinia'
 import { useDialogStore } from '@/stores/dialog'
@@ -26,21 +27,19 @@ const logout = () => {
     <div class="choice-method-page">
         <img class="logo" src="../assets/images/logo.png" />
         <div class="menu">
-            <button class="minecraft-button choice-button">
-                <RouterLink to="/guarantee">熟人担保</RouterLink>
-            </button>
-            <button class="minecraft-button choice-button">
-                <RouterLink to="/prepareForTheExam">参加考试</RouterLink>
-            </button>
+            <McRouterLink to="/guarantee" class="choice-button">
+                熟人担保
+            </McRouterLink>
+            <McRouterLink to="/prepareForTheExam" class="choice-button">
+                参加考试
+            </McRouterLink>
             <div class="sub-menu">
-                <button class="minecraft-button choice-button">
+                <McRouterLink class="minecraft-button choice-button">
                     <a href="http://www.fsp.ink">返回主页</a>
-                </button>
-                <button class="minecraft-button choice-button">
-                    <RouterLink to="/query">
-                        查询结果
-                    </RouterLink>
-                </button>
+                </McRouterLink>
+                <McRouterLink to="/query" class="choice-button">
+                    查询结果
+                </McRouterLink>
                 <button class="minecraft-button choice-button avatar">
                     <RouterLink v-show="!isLogin" to="/auth">
                         <img class="avatar-img" :src="avatar" alt="" width="100%">
@@ -74,7 +73,9 @@ const logout = () => {
     transform: translate(100%, 0);
 }
 
-.avatar-img {}
+.avatar-img {
+    image-rendering: pixelated;
+}
 
 .avatar:hover .avatat-hover,
 .avatar:hover .logout {
