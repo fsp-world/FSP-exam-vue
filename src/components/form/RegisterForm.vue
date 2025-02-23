@@ -96,6 +96,7 @@ const sendRegister = () => {
     >
       两次输入的密码不一致。
     </p>
+    <RouterLink to="/auth/login" class="toReg">已有账号？</RouterLink>
     <MCButton @click="sendRegister">注册</MCButton>
   </div>
 </template>

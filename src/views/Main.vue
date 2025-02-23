@@ -1,6 +1,5 @@
 <script setup>
 import { RouterLink } from 'vue-router'
-import MCButton from '@/components/MCButton.vue'
 import { useUserStore } from '@/stores/user'
 import { storeToRefs } from 'pinia'
 import { useDialogStore } from '@/stores/dialog'
