@@ -94,8 +94,4 @@ const sendRegister = () => {
   </div>
 </template>
 
-<style scoped>
-.toReg {
-  padding: 10px 0;
-}
-</style>
+<style scoped></style>
