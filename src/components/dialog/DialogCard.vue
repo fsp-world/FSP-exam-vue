@@ -59,6 +59,7 @@ const close = () => {
     position: relative;
     opacity: 0;
     left: 400px;
+    padding: 12px 16px;
 }
 
 .card.done {
