@@ -11,16 +11,12 @@ const { card } = defineProps({
     }
 })
 
-const myclass = ref('')
-
 let timeout: NodeJS.Timeout
 
 onMounted(() => {
     setTimeout(() => {
-        myclass.value = 'done'
     }, 300)
     timeout = setTimeout(() => {
-        myclass.value = 'trans'
         close()
     }, card.age)
 })
@@ -39,14 +35,14 @@ const close = () => {
 </script>
 
 <template>
-    <div class="card" :class="[card.type, myclass]">
+    <div class="card" :class="[card.type]">
         {{ card.message }}
     </div>
 </template>
 
 <style scoped>
 .card {
-    width: 100%;
+    width: 400px;
     height: 80px;
     margin: 16px;
     image-rendering: pixelated;
@@ -55,21 +51,7 @@ const close = () => {
     background-repeat: no-repeat;
     background-size: 100% 100%;
     border-radius: 5px;
-    transition: all .3s ease-in-out;
-    position: relative;
-    opacity: 0;
-    left: 400px;
     padding: 12px 16px;
-}
-
-.card.done {
-    left: 0;
-    opacity: 1;
-}
-
-.card.trans {
-    left: 400px;
-    opacity: 0;
 }
 
 .warn-card {

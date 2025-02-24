@@ -9,17 +9,36 @@ const { dialogs } = storeToRefs(dialogStore)
 </script>
 
 <template>
-    <div class="dialog-container">
-        <DialogCard v-for="(item, index) of dialogs" v-show="item.flag" :key="index" :card="item"></DialogCard>
-    </div>
+    <!-- <div class="dialog-container">
+        <template v-for="(item, index) of dialogs" :key="index">
+            <Transition name="fade" mode="out-in">
+                <DialogCard :card="item"></DialogCard>
+            </Transition>
+        </template>
+    </div> -->
+    <TransitionGroup  class="dialog-container" name="list" tag="ul">
+        <li v-for="item in dialogs" :key="item">
+            <DialogCard :card="item"></DialogCard>
+        </li>
+    </TransitionGroup>
 </template>
 
 <style scoped>
 .dialog-container {
-    width: 400px;
     position: fixed;
     top: 20px;
     right: 20px;
     z-index: 1000;
+}
+
+.list-enter-active,
+.list-leave-active {
+    transition: all 0.5s ease-in-out;
+}
+
+.list-enter-from,
+.list-leave-to {
+    opacity: 0;
+    transform: translateX(100px);
 }
 </style>
