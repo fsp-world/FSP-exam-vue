@@ -79,21 +79,14 @@ const sendRegister = () => {
     <input type="text" placeholder="用户名" v-model="registerForm.username" />
     <input type="text" placeholder="QQ号" v-model="registerForm.userQQ" />
     <input type="password" placeholder="密码" v-model="registerForm.password" />
-    <input
-      type="password"
-      placeholder="确认密码"
-      v-model="registerForm.repassword"
-    />
+    <input type="password" placeholder="确认密码" v-model="registerForm.repassword" />
     <p>
       密码必须包含至少一个大写字母、一个小写字母、一个数字和一个特殊字符，且长度至少为8个字符。
     </p>
-    <p
-      v-if="
-        registerForm.repassword &&
-        registerForm.password !== registerForm.repassword
-      "
-      style="color: red; font-size: 12px"
-    >
+    <p v-if="
+      registerForm.repassword &&
+      registerForm.password !== registerForm.repassword
+    " style="color: red; font-size: 12px">
       两次输入的密码不一致。
     </p>
     <RouterLink to="/auth/login" class="toReg">已有账号？</RouterLink>
@@ -101,5 +94,8 @@ const sendRegister = () => {
   </div>
 </template>
 
-<style scoped></style>
-
+<style scoped>
+.toReg {
+  padding: 10px 0;
+}
+</style>
