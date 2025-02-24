@@ -1,8 +1,4 @@
 import { createRouter, createWebHistory } from "vue-router";
-import Main from "@/views/Main.vue";
-import Guarantee from "@/views/Guarantee.vue";
-import PrepareForTheExam from "@/views/PrepareForTheExam.vue";
-import Examination from "@/views/Examination.vue";
 import { useUserStore } from "@/stores/user";
 
 const router = createRouter({
@@ -11,24 +7,24 @@ const router = createRouter({
         {
             path: "/",
             name: "Main",
-            component: Main,
+            component: () => import('@/views/Main.vue'),
         },
         {
             path: "/guarantee",
             name: "Guarantee",
-            component: Guarantee,
+            component: () => import('@/views/Guarantee.vue'),
             meta: { requiresAuth: true },
         },
         {
             path: "/prepareForTheExam",
             name: "PrepareForTheExam",
-            component: PrepareForTheExam,
+            component: () => import('@/views/PrepareForTheExam.vue'),
             meta: { requiresAuth: true },
         },
         {
             path: "/examination",
             name: "Examination",
-            component: Examination,
+            component: () => import('@/views/Examination.vue'),
             meta: { requiresAuth: true },
         },
         {
