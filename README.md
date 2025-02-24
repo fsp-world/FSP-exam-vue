@@ -6,6 +6,11 @@
 
 [VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
 
+## Recommended Plugin
+
+1. editorconfig
+2. prettier
+
 ## Customize configuration
 
 See [Vite Configuration Reference](https://vite.dev/config/).
