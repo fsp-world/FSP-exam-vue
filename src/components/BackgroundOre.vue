@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from "vue";
+import { ref } from 'vue';
 const { type, x, y } = defineProps({
   type: String,
   x: Number,

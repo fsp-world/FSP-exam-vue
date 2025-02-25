@@ -1,19 +1,19 @@
 <template>
-    <McButton @click="router.push(to)">
-        <slot></slot>
-    </McButton>
+  <McButton @click="router.push(to)">
+    <slot></slot>
+  </McButton>
 </template>
 
 <script setup>
 import McButton from './McButton.vue';
-import { useRouter } from 'vue-router'
+import { useRouter } from 'vue-router';
 
-const router = useRouter()
+const router = useRouter();
 
 const { to } = defineProps({
-    to: {
-        type: String,
-        required: true
-    }
-})
+  to: {
+    type: String,
+    required: true,
+  },
+});
 </script>

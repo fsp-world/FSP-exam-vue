@@ -1,11 +1,11 @@
 <script setup>
-import "../../assets/form.css";
-import { ref } from "vue";
-import { useRouter, useRoute } from "vue-router";
-import { useUserStore } from "@/stores/user";
-import { checkPassword } from "@/utils/passwordUtil";
-import { useDialogStore } from "@/stores/dialog";
-import MCButton from "@/components/MCButton.vue";
+import '../../assets/form.css';
+import { ref } from 'vue';
+import { useRouter, useRoute } from 'vue-router';
+import { useUserStore } from '@/stores/user';
+import { checkPassword } from '@/utils/passwordUtil';
+import { useDialogStore } from '@/stores/dialog';
+import MCButton from '@/components/MCButton.vue';
 
 const router = useRouter();
 const route = useRoute();
@@ -14,8 +14,8 @@ const user = useUserStore();
 const dialogStore = useDialogStore();
 const openDialog = (message) => {
   const data = {
-    title: "register" + Date(),
-    type: "info-card",
+    title: 'register' + Date(),
+    type: 'info-card',
     message: message,
     age: 3000,
     flag: true,
@@ -24,18 +24,16 @@ const openDialog = (message) => {
 };
 
 const registerForm = ref({
-  username: "",
-  userQQ: "",
-  password: "",
-  repassword: "",
+  username: '',
+  userQQ: '',
+  password: '',
+  repassword: '',
 });
 
 const sendRegister = () => {
   if (registerForm.value.password === registerForm.value.repassword) {
     if (!checkPassword(registerForm.value.password)) {
-      openDialog(
-        "密码必须包含至少一个大写字母、一个小写字母、一个数字和一个特殊字符，且长度至少为8个字符",
-      );
+      openDialog('密码必须包含至少一个大写字母、一个小写字母、一个数字和一个特殊字符，且长度至少为8个字符');
       return;
     }
     user
@@ -47,7 +45,7 @@ const sendRegister = () => {
       })
       .then((res) => {
         if (res.data.code === 0) {
-          openDialog("注册成功! 即将跳转...");
+          openDialog('注册成功! 即将跳转...');
           setTimeout(() => {
             setTimeout(() => {
               // 获取目标页面路径
@@ -56,7 +54,7 @@ const sendRegister = () => {
               if (redirect) {
                 router.push(redirect);
               } else {
-                router.push({ name: "Main" });
+                router.push({ name: 'Main' });
               }
             }, 2000);
           });
@@ -65,10 +63,10 @@ const sendRegister = () => {
         }
       })
       .catch((err) => {
-        openDialog("出现错误!");
+        openDialog('出现错误!');
       });
   } else {
-    openDialog("密码不一致");
+    openDialog('密码不一致');
   }
 };
 </script>
@@ -80,13 +78,11 @@ const sendRegister = () => {
     <input type="text" placeholder="QQ号" v-model="registerForm.userQQ" />
     <input type="password" placeholder="密码" v-model="registerForm.password" />
     <input type="password" placeholder="确认密码" v-model="registerForm.repassword" />
-    <p>
-      密码必须包含至少一个大写字母、一个小写字母、一个数字和一个特殊字符，且长度至少为8个字符。
-    </p>
-    <p v-if="
-      registerForm.repassword &&
-      registerForm.password !== registerForm.repassword
-    " style="color: red; font-size: 12px">
+    <p>密码必须包含至少一个大写字母、一个小写字母、一个数字和一个特殊字符，且长度至少为8个字符。</p>
+    <p
+      v-if="registerForm.repassword && registerForm.password !== registerForm.repassword"
+      style="color: red; font-size: 12px"
+    >
       两次输入的密码不一致。
     </p>
     <RouterLink to="/auth/login" class="toReg">已有账号？</RouterLink>

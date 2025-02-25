@@ -1,4 +1,3 @@
-import request from "@/utils/requers"
+import request from '@/utils/requers';
 
-
-export const getUserInfo = () => request.get('/user/getInfo')
+export const getUserInfo = () => request.get('/user/getInfo');

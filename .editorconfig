@@ -13,8 +13,8 @@ curly_bracket_next_line = false     # 大括号不另起一行
 spaces_around_operators = true      # 运算符两遍都有空格
 indent_brace_style = 1tbs           # 条件语句格式是 1tbs
 
-[*.{html,less,css,js,ts,json}]      # 对所有 html, less, css, json 文件生效
-quote_type = double                 # 字符串使用的引号类型，可选 single 或 double
+[*.{html,less,css,js,ts,json,vue}]      # 对所有 html, less, css, json 文件生效
+quote_type = single                 # 字符串使用的引号类型，可选 single 或 double
 max_line_length = 120               # 一行最多几个字
 
 [package.json]                      # 对 package.json 生效

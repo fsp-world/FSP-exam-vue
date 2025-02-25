@@ -1,34 +1,21 @@
 {
-    "compilerOptions": {
-        "target": "ES6", // 编译目标版本
-        "module": "ES6", // 模块系统
-        "moduleResolution": "Node", // 模块解析方式
-        "strict": true, // 启用严格类型检查
-        "jsx": "preserve", // 保留 JSX 语法
-        "sourceMap": true, // 生成 sourceMap
-        "esModuleInterop": true, // 支持 CommonJS 模块的默认导入
-        "skipLibCheck": true, // 跳过库文件的类型检查
-        "forceConsistentCasingInFileNames": true, // 强制文件名大小写一致
-        "resolveJsonModule": true, // 支持导入 JSON 模块
-        "baseUrl": ".", // 基础路径
-        "paths": {
-            "@/*": [
-                "src/*"
-            ] // 路径别名
-        },
-        "lib": [
-            "DOM",
-            "DOM.Iterable",
-            "ESNext"
-        ] // 包含的库文件
+  "compilerOptions": {
+    "target": "ES6", // 编译目标版本
+    "module": "ES6", // 模块系统
+    "moduleResolution": "Node", // 模块解析方式
+    "strict": true, // 启用严格类型检查
+    "jsx": "preserve", // 保留 JSX 语法
+    "sourceMap": true, // 生成 sourceMap
+    "esModuleInterop": true, // 支持 CommonJS 模块的默认导入
+    "skipLibCheck": true, // 跳过库文件的类型检查
+    "forceConsistentCasingInFileNames": true, // 强制文件名大小写一致
+    "resolveJsonModule": true, // 支持导入 JSON 模块
+    "baseUrl": ".", // 基础路径
+    "paths": {
+      "@/*": ["src/*"] // 路径别名
     },
-    "include": [
-        "src/**/*.ts",
-        "src/**/*.d.ts",
-        "src/**/*.tsx",
-        "src/**/*.vue"
-    ], // 包含的文件
-    "exclude": [
-        "node_modules"
-    ] // 排除的文件
+    "lib": ["DOM", "DOM.Iterable", "ESNext"] // 包含的库文件
+  },
+  "include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.tsx", "src/**/*.vue"], // 包含的文件
+  "exclude": ["node_modules"] // 排除的文件
 }

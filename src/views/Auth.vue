@@ -1,7 +1,7 @@
 <script setup>
 // import { useRoute } from "vue-router";
-import { RouterView } from "vue-router";
-import { RouterLink } from "vue-router";
+import { RouterView } from 'vue-router';
+import { RouterLink } from 'vue-router';
 
 // const route = useRoute();
 </script>
@@ -97,4 +97,3 @@ a:visited {
   opacity: 0;
 }
 </style>
-
