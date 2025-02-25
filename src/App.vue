@@ -12,7 +12,9 @@ onMounted(() => {
 </script>
 
 <template>
-    <Dialog></Dialog>
+    <Teleport to="body">
+        <Dialog></Dialog>
+    </Teleport>
     <RouterView />
 </template>
 
