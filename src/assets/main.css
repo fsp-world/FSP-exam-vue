@@ -1,9 +1,12 @@
-html {
-  background-image: url(../assets/images/bg.png);
-  background-size: cover;
-  background-repeat: no-repeat;
-  background-position: center;
+:root {
+  --button-font-size: 30px;
 }
+
+@font-face {
+  font-family: 'mc-font';
+  src: url('./font/mc-font2.ttf');
+}
+
 .container {
   width: 1200px;
   margin-left: auto;
@@ -46,6 +49,7 @@ input::-webkit-inner-spin-button {
 }
 
 input[type='number'] {
+  appearance: textfield;
   -moz-appearance: textfield;
 }
 
@@ -68,15 +72,6 @@ input[type='number'] {
 
 .y-scroll::-webkit-scrollbar-corner {
   border-radius: 5px;
-}
-
-:root {
-  --button-font-size: 30px;
-}
-
-@font-face {
-  font-family: 'mc-font';
-  src: url('./font/mc-font2.ttf');
 }
 
 /* 选择获取白名单的方式页面 */

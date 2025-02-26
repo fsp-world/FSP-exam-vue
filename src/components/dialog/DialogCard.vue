@@ -40,8 +40,8 @@ const close = () => {
 
 <style scoped>
 .card {
-  width: 400px;
-  height: 80px;
+  max-width: 400px;
+  min-height: 80px;
   margin: 16px;
   image-rendering: pixelated;
   font-size: 23px;

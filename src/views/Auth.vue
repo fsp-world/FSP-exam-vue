@@ -7,18 +7,11 @@ import { RouterLink } from 'vue-router';
 </script>
 
 <template>
-  <div class="login-container">
-    <!-- <div class="tabs"> -->
-    <!--   <span :class="{ active: route.name === 'Login' }"> -->
-    <!--     <RouterLink to="/auth/login">登录</RouterLink> -->
-    <!--   </span> -->
-    <!--   <span :class="{ active: route.name === 'Register' }"> -->
-    <!--     <RouterLink to="/auth/register">注册</RouterLink> -->
-    <!--   </span> -->
-    <!-- </div> -->
-    <RouterView class="form" />
-    <!-- <Transition name="fade" mode="out-in"></Transition> -->
-    <RouterLink to="/" class="back">返回主页</RouterLink>
+  <div class="box">
+    <div class="login-container">
+      <RouterView class="form" />
+      <RouterLink to="/" class="back">返回主页</RouterLink>
+    </div>
   </div>
 </template>
 
@@ -27,16 +20,28 @@ a:visited {
   color: inherit;
 }
 
+.box {
+  background-image: url(../assets/images/bg.png);
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  height: 100vh;
+  width: 100vw;
+  position: fixed;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 .login-container {
   --wid: 400px;
-  width: var(--wid);
+  max-width: var(--wid);
   height: calc(var(--wid) * 1.22);
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  margin: 8% auto 0;
+  margin: 10px;
   padding: 3px 50px;
-  /* border: 1px solid #ccc; */
   border-radius: 0 0 8px 8px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   position: relative;
@@ -47,39 +52,6 @@ a:visited {
   background-size: 100%;
   image-rendering: pixelated;
 }
-
-/* .tabs { */
-/*   display: flex; */
-/*   justify-content: center; */
-/*   align-items: center; */
-/*   width: 400px; */
-/*   height: 60px; */
-/*   position: absolute; */
-/*   top: 0px; */
-/*   left: -1px; */
-/*   transform: translate(0, -100%); */
-/*   z-index: 2; */
-/*   background: white; */
-/* } */
-/**/
-/* .tabs span { */
-/*   background: rgb(240, 240, 240); */
-/*   cursor: pointer; */
-/*   color: #333; */
-/*   font-size: 20px; */
-/*   width: 50%; */
-/*   line-height: 60px; */
-/*   text-align: center; */
-/*   border: 1px solid transparent; */
-/*   border-bottom: 1px solid #ccc; */
-/*   border-radius: 4px 4px 0 0; */
-/* } */
-/**/
-/* .tabs span.active { */
-/*   background: white; */
-/*   border: 1px solid #ccc; */
-/*   border-bottom: 1px solid white; */
-/* } */
 
 .back {
   text-align: center;
