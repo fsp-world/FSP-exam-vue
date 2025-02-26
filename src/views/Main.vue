@@ -23,15 +23,13 @@ const logout = () => {
 </script>
 
 <template>
-  <div class="choice-method-page">
+  <div class="exam-index">
     <img class="logo" src="../assets/images/logo.png" />
     <div class="menu">
       <McRouterLink to="/guarantee" class="choice-button"> 熟人担保 </McRouterLink>
       <McRouterLink to="/prepareForTheExam" class="choice-button"> 参加考试 </McRouterLink>
       <div class="sub-menu">
-        <McRouterLink class="minecraft-button choice-button">
-          <a href="http://www.fsp.ink">返回主页</a>
-        </McRouterLink>
+        <McRouterLink to="https://www.fsp.ink" class="minecraft-button choice-button"> 返回主页</McRouterLink>
         <McRouterLink to="/query" class="choice-button"> 查询结果 </McRouterLink>
         <button class="minecraft-button choice-button avatar">
           <RouterLink v-show="!isLogin" to="/auth">
@@ -39,7 +37,7 @@ const logout = () => {
             <span class="avatat-hover">未登录!</span>
           </RouterLink>
           <RouterLink v-show="isLogin" to="/space">
-            <img class="avatar-img" :src="avatar" alt="" width="100%" />
+            <img title="点我进入个人中心" class="avatar-img" :src="avatar" alt="" width="100%" />
             <span class="avatat-hover">{{ username }}</span>
           </RouterLink>
           <a v-show="isLogin" class="logout" @click="logout">退出登录</a>
@@ -50,6 +48,56 @@ const logout = () => {
 </template>
 
 <style scoped>
+/* 选择获取白名单的方式页面 */
+.exam-index {
+  width: 100%;
+  height: 100vh;
+  position: absolute;
+  background-image: url('/src/assets/images/bg.png');
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  z-index: -1;
+}
+
+.exam-index .logo {
+  display: block;
+  margin: 0 auto;
+  margin-top: 6%;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+.exam-index .menu {
+  width: 700px;
+  display: flex;
+  margin: 0 auto;
+  gap: 10px;
+  justify-content: center;
+  flex-wrap: wrap;
+  padding: 50px;
+}
+
+.exam-index .sub-menu {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+}
+
+.exam-index .sub-menu button {
+  width: 50%;
+}
+
+.exam-index .choice-button {
+  font-size: 30px;
+  width: 100%;
+  height: 70px;
+}
+
+.exam-index .choice-button a {
+  color: #fff;
+}
 .sub-menu {
   position: relative;
 }

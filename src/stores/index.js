@@ -37,7 +37,6 @@ const playerTypeList = ref([
   { id: 'survival', option: '生存玩家' },
   { id: 'redstone', option: '红石玩家' },
   { id: 'construction', option: '建筑玩家' },
-  { id: 'pvp', option: 'PVP玩家' },
 ]);
 
 function checkDataNotNull(data) {

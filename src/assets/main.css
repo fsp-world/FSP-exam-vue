@@ -74,57 +74,8 @@ input[type='number'] {
   border-radius: 5px;
 }
 
-/* 选择获取白名单的方式页面 */
-.choice-method-page {
-  width: 100%;
-  height: 100vh;
-  position: absolute;
-  background-image: url('./images/bg.png');
-  background-position: center;
-  z-index: -1;
-}
-
-.choice-method-page .logo {
-  display: block;
-  margin: 0 auto;
-  margin-top: 6%;
-  user-select: none;
-  -webkit-user-drag: none;
-}
-
-.choice-method-page .menu {
-  width: 700px;
-  display: flex;
-  margin: 0 auto;
-  gap: 10px;
-  justify-content: center;
-  flex-wrap: wrap;
-  padding: 50px;
-}
-
-.choice-method-page .sub-menu {
-  display: flex;
-  justify-content: center;
-  gap: 10px;
-  width: 100%;
-}
-
-.choice-method-page .sub-menu button {
-  width: 50%;
-}
-
-.choice-method-page .choice-button {
-  font-size: 30px;
-  width: 100%;
-  height: 70px;
-}
-
-.choice-method-page .choice-button a {
-  color: #fff;
-}
-
-/* 熟人担保页面 */
-.bg {
+/* 半透明背景样式 */
+.translucent-bg {
   width: 100%;
   height: 100vh;
   position: absolute;
@@ -138,7 +89,7 @@ input[type='number'] {
   filter: blur(7px);
 }
 
-.content {
+.translucent-content {
   font-family: 'mc-font';
   color: #fff;
   display: flex;
@@ -148,7 +99,7 @@ input[type='number'] {
   height: 100vh;
 }
 
-.content > .title {
+.translucent-content > .title {
   width: 100%;
   min-height: 75px;
   max-height: 75px;
@@ -157,12 +108,12 @@ input[type='number'] {
   display: flex;
 }
 
-.content .title p {
+.translucent-content .title p {
   margin: auto;
   user-select: none;
 }
 
-.content .main {
+.translucent-content .main {
   background-color: rgba(0, 0, 0, 0.6);
   border-top: 3px solid #000;
   border-bottom: 3px solid #000;
@@ -190,7 +141,7 @@ input[type='number'] {
   user-select: none;
 }
 
-.content .main input {
+.translucent-content .main input {
   width: 800px;
   height: 70px;
   background-image: url(../assets/images/rainbow_pixel_gui/button_disabled.png);
@@ -291,7 +242,7 @@ input[type='number'] {
   }
 }
 
-.content .end {
+.translucent-content .end {
   background-color: rgba(0, 0, 0, 0.3);
   display: flex;
   gap: 30px;
@@ -299,52 +250,13 @@ input[type='number'] {
   align-items: center;
   max-height: 75px;
   min-height: 75px;
+  padding: 10px;
 }
 
-.content .end .button {
+.translucent-content .end .button {
   width: 400px;
   font-size: 30px;
   height: 70px;
-}
-
-/* 考生信息页面 */
-
-.examineeInfo {
-  padding: 10px;
-  margin: 0 10px 10px 10px;
-}
-
-.examineeInfo p {
-  text-align: center;
-  line-height: 40px;
-  font-size: 20px;
-  user-select: none;
-}
-
-.examineeInfo .option-list {
-  display: flex;
-  gap: 10px;
-  user-select: none;
-}
-
-.examineeInfo .option-list .option {
-  height: 70px;
-  width: 50%;
-  font-size: 25px;
-  line-height: 70px;
-  text-align: center;
-  background-image: url(../assets/images/rainbow_pixel_gui/button_disabled.png);
-  image-rendering: pixelated;
-}
-
-.examineeInfo .option-list .option:hover {
-  background-image: url(../assets/images/rainbow_pixel_gui/button_highlighted.png);
-  image-rendering: pixelated;
-}
-
-.examineeInfo .option-list .selected {
-  background-image: url(../assets/images/rainbow_pixel_gui/button.png);
-  image-rendering: pixelated;
 }
 
 /*

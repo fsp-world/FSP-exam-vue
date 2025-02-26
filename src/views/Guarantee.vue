@@ -1,9 +1,10 @@
 <script setup>
 import { ref } from 'vue';
-import { RouterLink } from 'vue-router';
 import InfoDialog from '@/components/InfoDialog.vue';
 import { getProfilePic } from '@/apis/mj.js';
 import { sendRequest } from '@/apis/guarantee.js';
+import MCButton from '@/components/MCButton.vue';
+import McRouterLink from '@/components/McRouterLink.vue';
 const dialogData = ref({
   display: false,
   stats: 0,
@@ -133,8 +134,8 @@ function show() {
     </div>
   </InfoDialog>
   <div class="guarantee">
-    <div class="bg"></div>
-    <div class="content">
+    <div class="translucent-bg"></div>
+    <div class="translucent-content">
       <div class="title">
         <p>熟人担保</p>
       </div>
@@ -166,10 +167,8 @@ function show() {
         </div>
       </div>
       <div class="end">
-        <button type="button" class="minecraft-button button">
-          <RouterLink to="/">返回</RouterLink>
-        </button>
-        <button type="button" :disabled="isin" class="minecraft-button button" @click="show()">提交</button>
+        <McRouterLink to="/" class="button">返回</McRouterLink>
+        <MCButton type="button" :disabled="isin" class="button" @click="show()">提交</MCButton>
       </div>
     </div>
   </div>

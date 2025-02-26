@@ -7,8 +7,8 @@ const router = useRouter();
 
 <template>
   <div class="view-result">
-    <div class="bg"></div>
-    <div class="content">
+    <div class="translucent-bg"></div>
+    <div class="translucent-content">
       <div class="title">
         <p>查询结果</p>
       </div>

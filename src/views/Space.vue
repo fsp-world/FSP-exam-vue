@@ -24,8 +24,8 @@ const getStatus = computed(() => {
 
 <template>
   <div class="view-result">
-    <div class="bg"></div>
-    <div class="content">
+    <div class="translucent-bg"></div>
+    <div class="translucent-content">
       <div class="title">
         <p>个人空间</p>
       </div>

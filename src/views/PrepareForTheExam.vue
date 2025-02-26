@@ -1,6 +1,7 @@
 <script setup>
 import { ref, watch } from 'vue';
-import { RouterLink } from 'vue-router';
+import MCButton from '@/components/MCButton.vue';
+import McRouterLink from '@/components/McRouterLink.vue';
 
 const page = ref('choiceGetWhiteListMethod');
 
@@ -34,7 +35,6 @@ const playerTypeList = ref([
   { id: 'survival', option: '生存玩家' },
   { id: 'redstone', option: '红石玩家' },
   { id: 'construction', option: '建筑玩家' },
-  { id: 'pvp', option: 'PVP玩家' },
 ]);
 function showBox(box, showSecond, data) {
   box.value.type = data.type;
@@ -130,8 +130,8 @@ watch(page, (newVal) => {
 
 <template>
   <div class="prepare-exam-page">
-    <div class="bg"></div>
-    <div class="content">
+    <div class="translucent-bg"></div>
+    <div class="translucent-content">
       <div class="title">
         <p>参加考试</p>
       </div>
@@ -158,7 +158,7 @@ watch(page, (newVal) => {
             <p>我们会根据您的选择生成定制的试题</p>
             <ul class="option-list">
               <li
-                class="minecraft-button option"
+                class="option"
                 :class="{ selected: examineeInfo.playerType == item.id, 'option-red-color': warnCard.display }"
                 v-for="(item, index) in playerTypeList"
                 v-bind:key="index"
@@ -171,13 +171,54 @@ watch(page, (newVal) => {
         </div>
       </div>
       <div class="end">
-        <button type="button" class="minecraft-button button" @click="page = 'choiceGetWhiteListMethod'">
-          <RouterLink to="/">返回</RouterLink>
-        </button>
-        <button type="button" class="minecraft-button button" @click="startExam">
-          <RouterLink to="/examination">开始</RouterLink>
-        </button>
+        <McRouterLink to="/" class="button">返回</McRouterLink>
+        <MCButton type="button" class="button" @click="startExam"> 开始</MCButton>
       </div>
     </div>
   </div>
 </template>
+<style scoped>
+.examineeInfo {
+  padding: 10px;
+  margin: 0 10px 10px 10px;
+}
+
+.examineeInfo p {
+  text-align: center;
+  line-height: 40px;
+  font-size: 20px;
+  user-select: none;
+}
+
+.examineeInfo .option-list {
+  display: flex;
+  gap: 10px;
+  user-select: none;
+}
+
+.examineeInfo .option-list .option {
+  height: 70px;
+  width: 50%;
+  font-size: 25px;
+  line-height: 70px;
+  text-align: center;
+  font-family: 'mc-font';
+  color: #fff;
+  border-radius: 5px;
+  background-image: url(../assets/images/rainbow_pixel_gui/button.png);
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 100% 100%;
+  image-rendering: pixelated;
+}
+
+.examineeInfo .option-list .option:hover {
+  background-image: url(../assets/images/rainbow_pixel_gui/button_highlighted.png);
+  image-rendering: pixelated;
+}
+
+.examineeInfo .option-list .selected {
+  background-image: url(../assets/images/rainbow_pixel_gui/button.png);
+  image-rendering: pixelated;
+}
+</style>
