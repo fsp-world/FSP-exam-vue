@@ -4,7 +4,8 @@ import InfoDialog from '@/components/InfoDialog.vue';
 import { getProfilePic } from '@/apis/mj.js';
 import { sendRequest } from '@/apis/guarantee.js';
 import MCButton from '@/components/MCButton.vue';
-import McRouterLink from '@/components/McRouterLink.vue';
+import MCRouterLink from '@/components/MCRouterLink.vue';
+
 const dialogData = ref({
   display: false,
   stats: 0,
@@ -167,7 +168,7 @@ function show() {
         </div>
       </div>
       <div class="end">
-        <McRouterLink to="/" class="button">返回</McRouterLink>
+        <MCRouterLink to="/" class="button">返回</MCRouterLink>
         <MCButton type="button" :disabled="isin" class="button" @click="show()">提交</MCButton>
       </div>
     </div>
@@ -175,6 +176,17 @@ function show() {
 </template>
 
 <style scoped>
+.guarantee .main .form {
+  width: 100%;
+}
+
+.guarantee .main .text {
+  font-size: 27px;
+  line-height: 50px;
+  text-align: center;
+  user-select: none;
+}
+
 .top {
   height: 60px;
   width: 100%;

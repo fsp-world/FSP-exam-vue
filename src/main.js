@@ -1,13 +1,13 @@
-import './assets/main.css';
+import "./assets/main.css";
 
-import { createApp } from 'vue';
-import { createPinia } from 'pinia';
-import piniaPluginPersistedstate from 'pinia-plugin-persistedstate';
+import { createApp } from "vue";
+import { createPinia } from "pinia";
+import piniaPluginPersistedstate from "pinia-plugin-persistedstate";
 
-import App from './App.vue';
-import router from './router';
+import App from "./App.vue";
+import router from "./router";
 
-import McRouterLink from '@/components/McRouterLink.vue';
+import MCRouterLink from "@/components/MCRouterLink.vue";
 
 const app = createApp(App);
 
@@ -17,6 +17,6 @@ pinia.use(piniaPluginPersistedstate);
 app.use(pinia);
 app.use(router);
 
-app.component('McRouterLink', McRouterLink);
+app.component("MCRouterLink", MCRouterLink);
 
-app.mount('#app');
+app.mount("#app");

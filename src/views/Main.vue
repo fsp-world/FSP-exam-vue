@@ -26,11 +26,11 @@ const logout = () => {
   <div class="exam-index">
     <img class="logo" src="../assets/images/logo.png" />
     <div class="menu">
-      <McRouterLink to="/guarantee" class="choice-button"> 熟人担保 </McRouterLink>
-      <McRouterLink to="/prepareForTheExam" class="choice-button"> 参加考试 </McRouterLink>
+      <MCRouterLink to="/guarantee" class="choice-button"> 熟人担保 </MCRouterLink>
+      <MCRouterLink to="/prepareForTheExam" class="choice-button"> 参加考试 </MCRouterLink>
       <div class="sub-menu">
-        <McRouterLink to="https://www.fsp.ink" class="minecraft-button choice-button"> 返回主页</McRouterLink>
-        <McRouterLink to="/query" class="choice-button"> 查询结果 </McRouterLink>
+        <MCRouterLink to="https://www.fsp.ink" class="minecraft-button choice-button"> 返回主页</MCRouterLink>
+        <MCRouterLink to="/space" class="choice-button"> 个人中心 </MCRouterLink>
         <button class="minecraft-button choice-button avatar">
           <RouterLink v-show="!isLogin" to="/auth">
             <img class="avatar-img" :src="avatar" alt="" width="100%" />
@@ -69,15 +69,33 @@ const logout = () => {
 }
 
 .exam-index .menu {
-  width: 700px;
+  max-width: 700px;
   display: flex;
   margin: 0 auto;
   gap: 10px;
   justify-content: center;
   flex-wrap: wrap;
-  padding: 50px;
+  padding: 30px;
 }
 
+@media screen and (max-width: 800px) {
+  .exam-index {
+    display: flex;
+    flex-direction: column;
+    /* padding-top: 30%; */
+    justify-content: space-between;
+  }
+  .exam-index .menu {
+    padding-bottom: 30%;
+  }
+  .exam-index .logo {
+    padding-top: 30%;
+    width: 100vw;
+  }
+  .exam-index .avatar {
+    display: none;
+  }
+}
 .exam-index .sub-menu {
   display: flex;
   justify-content: center;

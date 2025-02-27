@@ -1,7 +1,7 @@
 <script setup>
 import { ref, watch } from 'vue';
 import MCButton from '@/components/MCButton.vue';
-import McRouterLink from '@/components/McRouterLink.vue';
+import MCRouterLink from '@/components/MCRouterLink.vue';
 
 const page = ref('choiceGetWhiteListMethod');
 
@@ -108,6 +108,7 @@ const examineePlayer = {
   name: '',
 };
 function startExam() {
+  console.log('111');
   if (!checkRefDataNotNull(examineeInfo)) {
     showBox(warnCard, 2, {
       type: 'warn',
@@ -159,7 +160,10 @@ watch(page, (newVal) => {
             <ul class="option-list">
               <li
                 class="option"
-                :class="{ selected: examineeInfo.playerType == item.id, 'option-red-color': warnCard.display }"
+                :class="{
+                  selected: examineeInfo.playerType == item.id,
+                  'option-red-color': warnCard.display,
+                }"
                 v-for="(item, index) in playerTypeList"
                 v-bind:key="index"
                 @click="choicePlayerType(item.id)"
@@ -171,13 +175,17 @@ watch(page, (newVal) => {
         </div>
       </div>
       <div class="end">
-        <McRouterLink to="/" class="button">返回</McRouterLink>
-        <MCButton type="button" class="button" @click="startExam"> 开始</MCButton>
+        <MCRouterLink to="/" class="button">返回</MCRouterLink>
+        <MCButton class="button" @click="startExam"> 开始</MCButton>
       </div>
     </div>
   </div>
 </template>
 <style scoped>
+.prepare-exam-page .main .sub-title {
+  text-align: center;
+  user-select: none;
+}
 .examineeInfo {
   padding: 10px;
   margin: 0 10px 10px 10px;

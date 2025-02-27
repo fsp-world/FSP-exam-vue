@@ -1,12 +1,12 @@
 <template>
-  <McButton @click="handleClick">
+  <MCButton @click="handleClick">
     <slot></slot>
-  </McButton>
+  </MCButton>
 </template>
 
 <script setup>
-import McButton from './McButton.vue';
-import { useRouter } from 'vue-router';
+import MCButton from "./MCButton.vue";
+import { useRouter } from "vue-router";
 
 const router = useRouter();
 
@@ -18,8 +18,8 @@ const props = defineProps({
 });
 
 const handleClick = () => {
-  if (props.to.startsWith('http://') || props.to.startsWith('https://')) {
-    window.open(props.to, '_blank'); // Open the URL in a new tab
+  if (props.to.startsWith("http://") || props.to.startsWith("https://")) {
+    window.open(props.to, "_blank"); // Open the URL in a new tab
   } else {
     router.push(props.to); // Navigate using vue-router
   }

@@ -1,7 +1,7 @@
 <script setup>
-import { RouterLink } from 'vue-router';
 import { getUserInfo } from '@/apis/user.js';
 import { ref, computed } from 'vue';
+import MCRouterLink from '@/components/MCRouterLink.vue';
 
 const user = ref({
   id: 0,
@@ -42,11 +42,13 @@ const getStatus = computed(() => {
             <p>账号状态: {{ getStatus }}</p>
           </div>
         </div>
+        <div class="menu">
+          <MCRouterLink class="button" to="/Query/Guarantee"> 担保查询 </MCRouterLink>
+          <MCRouterLink class="button" to="/Query/Examination"> 考试查询 </MCRouterLink>
+        </div>
       </div>
       <div class="end">
-        <button type="button" class="minecraft-button button">
-          <RouterLink to="/">返回</RouterLink>
-        </button>
+        <MCRouterLink to="/" class="button">返回</MCRouterLink>
       </div>
     </div>
   </div>
@@ -59,50 +61,63 @@ const getStatus = computed(() => {
   padding: 20px;
 }
 
+.main {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
 .user-info {
+  width: calc(100% - 40px);
+  max-width: 440px;
+  height: 120px;
   display: flex;
   align-items: center;
-  margin: 20px 0;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   padding: 20px;
   border-radius: 8px;
+  background-color: rgba(0, 0, 0, 0.3);
+  .avatar {
+    margin-right: 20px;
+    border-radius: 50%;
+    overflow: hidden;
+    image-rendering: pixelated;
+  }
+
+  .avatar img {
+    width: 100px;
+    height: auto;
+  }
+  .user-details h2 {
+    margin-top: 0;
+  }
+
+  .form-group {
+    margin-bottom: 15px;
+  }
 }
 
-.avatar {
-  margin-right: 20px;
-  border-radius: 50%;
-  overflow: hidden;
-  image-rendering: pixelated;
-}
+.menu {
+  width: 100%;
+  max-width: 480px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 
-.avatar img {
-  width: 100px;
-  height: auto;
-}
+  .button {
+    width: 100%;
+    height: 50px;
+    background-color: #4fc08d;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 20px;
+  }
 
-.user-details h2 {
-  margin-top: 0;
-}
-
-.form-group {
-  margin-bottom: 15px;
-}
-
-form {
-  max-width: 600px;
-  margin: 0 auto;
-}
-
-button {
-  background-color: #4fc08d;
-  color: white;
-  padding: 10px 20px;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-button:hover {
-  background-color: #42b883;
+  .button:hover {
+    background-color: #42b883;
+  }
 }
 </style>
