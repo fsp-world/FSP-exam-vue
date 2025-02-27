@@ -218,7 +218,7 @@ watch(page, (newVal) => {
 }
 
 .examineeInfo .option-list .selected {
-  background-image: url(../assets/images/rainbow_pixel_gui/button.png);
+  background-image: url(../assets/images/rainbow_pixel_gui/button_highlighted.png);
   image-rendering: pixelated;
 }
 </style>
