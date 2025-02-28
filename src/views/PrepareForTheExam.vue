@@ -1,9 +1,8 @@
 <script setup>
 import { ref, watch } from 'vue';
 import MCButton from '@/components/MCButton.vue';
-import MCRouterLink from '@/components/MCRouterLink.vue';
-
-const page = ref('choiceGetWhiteListMethod');
+import McRouterLink from '@/components/McRouterLink.vue';
+import { getProfilePic } from '@/apis/mj';
 
 const infoCard = ref({
   type: '',
@@ -73,14 +72,17 @@ function checkPlayerName(playerName) {
   });
   getProfilePic(playerName).then((result) => {
     if (result.msg === 'ok') {
-      result.imgUrl.then((imageUrl) => {
-        confirmRequest['playerUUID'] = result.uuid;
-        showBox(infoCard, 1000, {
-          //我不知道为什么这里的1000没用，只有tag1的1000有用
-          type: 'playerCheck',
-          uuid: confirmRequest['playerUUID'],
-          profilePicSrc: imageUrl,
-        });
+      // result.imgUrl.then((imageUrl) => {
+
+      // });
+      confirmRequest['playerUUID'] = result.uuid;
+      console.log(result.uuid);
+
+      showBox(infoCard, 1000, {
+        //我不知道为什么这里的1000没用，只有tag1的1000有用
+        type: 'playerCheck',
+        uuid: confirmRequest['playerUUID'],
+        profilePicSrc: result.imgUrl,
       });
     } else {
       infoCard.value.display = false;
@@ -96,11 +98,11 @@ function choicePlayerType(playerType) {
 }
 
 function checkRefDataNotNull(data) {
-  for (const [key, value] of Object.entries(data.value)) {
-    if (value === '' || value === undefined) {
-      return false;
-    }
-  }
+  // for (const [key, value] of Object.entries(data.value)) {
+  //   if (value === '' || value === undefined) {
+  //     return false;
+  //   }
+  // }
   return true;
 }
 
@@ -119,14 +121,6 @@ function startExam() {
     checkPlayerName(examineePlayer.name);
   }
 }
-
-const resultPage = ref('getInfo');
-
-watch(page, (newVal) => {
-  if (newVal === 'viewResult') {
-    resultPage.value = 'getInfo';
-  }
-});
 </script>
 
 <template>
@@ -143,12 +137,12 @@ watch(page, (newVal) => {
             <p>请务必填写真实信息，否则系统可能无法正确添加白名单</p>
           </div>
           <form class="examineeInfo">
-            <input
+            <!-- <input
               type="number"
               v-model="examineeInfo.qqNumber"
               placeholder="您的QQ号"
               :class="{ 'input-red-color': warnCard.display }"
-            />
+            /> -->
 
             <input
               type="text"
