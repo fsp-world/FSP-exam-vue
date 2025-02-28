@@ -4,14 +4,14 @@ import { ref } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 import { useUserStore } from '@/stores/user';
 import { checkPassword } from '@/utils/passwordUtil';
-import { useDialogStore } from '@/stores/alert';
+import { useAlertStore } from '@/stores/alert';
 import MCButton from '@/components/MCButton.vue';
 
 const router = useRouter();
 const route = useRoute();
 const user = useUserStore();
 
-const dialogStore = useDialogStore();
+const alertStore = useAlertStore();
 const openDialog = (message) => {
   const data = {
     title: 'login' + Date(),
@@ -20,7 +20,7 @@ const openDialog = (message) => {
     age: 3000,
     flag: true,
   };
-  dialogStore.openDialog(data);
+  alertStore.openAlert(data);
 };
 
 const loginForm = ref({

@@ -1,10 +1,10 @@
 <script setup>
-import { useDialogStore } from '@/stores/alert';
-import DialogCard from './AlertCard.vue';
+import { useAlertStore } from '@/stores/alert';
+import AlertCard from './AlertCard.vue';
 import { storeToRefs } from 'pinia';
 
-const dialogStore = useDialogStore();
-const { dialogs } = storeToRefs(dialogStore);
+const alertStore = useAlertStore();
+const { dialogs } = storeToRefs(alertStore);
 </script>
 
 <template>
@@ -15,15 +15,15 @@ const { dialogs } = storeToRefs(dialogStore);
             </Transition>
         </template>
     </div> -->
-  <TransitionGroup class="dialog-container" name="list" tag="ul">
+  <TransitionGroup class="alert-container" name="list" tag="ul">
     <li v-for="item in dialogs" :key="item">
-      <DialogCard :card="item"></DialogCard>
+      <AlertCard :card="item"></AlertCard>
     </li>
   </TransitionGroup>
 </template>
 
 <style scoped>
-.dialog-container {
+.alert-container {
   position: fixed;
   top: 20px;
   right: 20px;

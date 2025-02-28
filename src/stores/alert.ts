@@ -5,7 +5,6 @@ export const useAlertStore = defineStore('alert', {
   state: () => {
     return {
       dialogs: [] as Array<IalertData>,
-      lock: false as boolean,
     };
   },
   actions: {

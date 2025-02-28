@@ -2,7 +2,7 @@
 import { ref } from 'vue';
 import MCButton from '@/components/MCButton.vue';
 import MCRouterLink from '@/components/MCRouterLink.vue';
-import InfoConfirmDialog from '@/components/InfoConfirmDialog.vue'
+import InfoConfirmDialog from '@/components/InfoConfirmDialog.vue';
 import { getProfilePic } from '@/apis/mj';
 import { useAlertStore } from '@/stores/alert';
 
@@ -18,94 +18,75 @@ const openAlert = (message) => {
   alertStore.openAlert(data);
 };
 
+const examineeInfo = ref({
+  // qqNumber: '',
+  playerName: '',
+  playerUUID: 'none',
+  playerType: '',
+  imgUrl: 'none',
+});
 
-const infoCard = ref({
+const warnCard = ref({
   type: '',
   display: false,
   text: '',
   opacity: 1,
   imgUrl: '',
 });
-const confirmRequest = {
-  guaranteeQQ: '',
-  playerQQ: '',
-  playerName: '',
-  playerUUID: 'none',
-};
 
-const examineeInfo = ref({
-  // qqNumber: '',
-  playerName: '',
-  playerUUID: 'none',
-  playerType: '',
-});
+const flag = ref(false);
+
 const playerTypeList = ref([
   { id: 'survival', option: '生存玩家' },
   { id: 'redstone', option: '红石玩家' },
   { id: 'construction', option: '建筑玩家' },
 ]);
 
-function checkPlayerName(playerName) {
-  showBox(infoCard, 1000, {
-    // tag1
-    type: 'loading',
-    text: '确认游戏名称中...',
-  });
-  getProfilePic(playerName).then((result) => {
+const checkPlayerName = () => {
+  openAlert('确认游戏名称中...');
+  getProfilePic(examineeInfo.value.playerName).then((result) => {
     if (result.msg === 'ok') {
-      // result.imgUrl.then((imageUrl) => {
-
-      // });
-      confirmRequest['playerUUID'] = result.uuid;
-      console.log(result.uuid);
-
-      showBox(infoCard, 1000, {
-        //我不知道为什么这里的1000没用，只有tag1的1000有用
-        type: 'playerCheck',
-        uuid: confirmRequest['playerUUID'],
-        profilePicSrc: result.imgUrl,
-      });
+      examineeInfo.value.playerUUID = result.uuid;
+      examineeInfo.value.imgUrl = result.imgUrl;
+      flag.value = true;
     } else {
-      infoCard.value.display = false;
-      showBox(warnCard, 2, {
-        type: 'warn',
-        text: result.msg,
-      });
+      openAlert(result.msg);
     }
   });
-}
-function choicePlayerType(playerType) {
-  examineeInfo.value.playerType = playerType;
-}
-
-function checkRefDataNotNull(data) {
-  // for (const [key, value] of Object.entries(data.value)) {
-  //   if (value === '' || value === undefined) {
-  //     return false;
-  //   }
-  // }
-  return true;
-}
-
-const examineePlayer = {
-  name: '',
 };
-function startExam() {
-  console.log('111');
-  if (!checkRefDataNotNull(examineeInfo)) {
-    showBox(warnCard, 2, {
-      type: 'warn',
-      text: '请填写个人信息',
-    });
-  } else {
-    examineePlayer.name = examineeInfo.value.playerName;
-    checkPlayerName(examineePlayer.name);
+
+const choicePlayerType = (playerType) => {
+  examineeInfo.value.playerType = playerType;
+};
+
+const checkRefDataNotNull = (data) => {
+  for (const [key, value] of Object.entries(data.value)) {
+    console.log(value);
+    if (value === '' || value === undefined) {
+      return false;
+    }
   }
-}
+  return true;
+};
+
+const startExam = () => {
+  if (!checkRefDataNotNull(examineeInfo)) {
+    openAlert('请填写个人信息');
+  } else {
+    checkPlayerName(examineeInfo.value.playerName);
+  }
+};
+
+const handelConfirm = () => {
+  // 确认之后。。。
+  // 比如发送请求
+  console.log(examineeInfo.value);
+  flag.value = false
+};
 </script>
 
 <template>
-  <InfoConfirmDialog :show="true" :info="{}" @confirm=""></InfoConfirmDialog>
+  <InfoConfirmDialog :show="flag" :info="examineeInfo" @confirm="handelConfirm"></InfoConfirmDialog>
   <div class="prepare-exam-page">
     <div class="translucent-bg"></div>
     <div class="translucent-content">

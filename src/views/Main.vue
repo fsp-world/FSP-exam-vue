@@ -2,16 +2,16 @@
 import { RouterLink } from 'vue-router';
 import { useUserStore } from '@/stores/user';
 import { storeToRefs } from 'pinia';
-import { useDialogStore } from '@/stores/alert';
+import { useAlertStore } from '@/stores/alert';
 
 const store = useUserStore();
 const { isLogin, username, isAdmin, avatar } = storeToRefs(store);
 
-const dialogStore = useDialogStore();
+const alertStore = useAlertStore();
 
 const logout = () => {
   store.logout().then((res) => {
-    dialogStore.openDialog({
+    alertStore.openAlert({
       title: 'logout' + Date(),
       type: 'info-card',
       message: '成功退出登录',
