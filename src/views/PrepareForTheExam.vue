@@ -2,16 +2,24 @@
 import { ref } from 'vue';
 import MCButton from '@/components/MCButton.vue';
 import MCRouterLink from '@/components/MCRouterLink.vue';
+import InfoConfirmDialog from '@/components/InfoConfirmDialog.vue'
 import { getProfilePic } from '@/apis/mj';
+import { useAlertStore } from '@/stores/alert';
+
+const alertStore = useAlertStore();
+const openAlert = (message) => {
+  const data = {
+    title: 'conf' + Date(),
+    type: 'info-card',
+    message: message,
+    age: 3000,
+    flag: true,
+  };
+  alertStore.openAlert(data);
+};
+
 
 const infoCard = ref({
-  type: '',
-  display: false,
-  text: '',
-  opacity: 1,
-  imgUrl: '',
-});
-const warnCard = ref({
   type: '',
   display: false,
   text: '',
@@ -26,8 +34,9 @@ const confirmRequest = {
 };
 
 const examineeInfo = ref({
-  qqNumber: '',
+  // qqNumber: '',
   playerName: '',
+  playerUUID: 'none',
   playerType: '',
 });
 const playerTypeList = ref([
@@ -35,34 +44,6 @@ const playerTypeList = ref([
   { id: 'redstone', option: '红石玩家' },
   { id: 'construction', option: '建筑玩家' },
 ]);
-function showBox(box, showSecond, data) {
-  box.value.type = data.type;
-  if (data.type === 'loading' || data.type === 'msg') {
-    box.value.text = data.text;
-    box.value.opacity = 1;
-    box.value.display = true;
-  } else if (data.type === 'warn') {
-    box.value.text = data.text;
-    box.value.opacity = 1;
-    box.value.display = true;
-  } else if (data.type === 'playerCheck') {
-    box.value.text = data.uuid;
-    box.value.imgUrl = data.profilePicSrc;
-    box.value.opacity = 1;
-    box.value.display = true;
-  }
-
-  setTimeout(() => {
-    const fadeOutInterval = setInterval(() => {
-      if (box.value.opacity > 0) {
-        box.value.opacity -= 0.1;
-      } else {
-        clearInterval(fadeOutInterval);
-        box.value.display = false;
-      }
-    }, 100); // 消失动画时长
-  }, showSecond * 1000);
-}
 
 function checkPlayerName(playerName) {
   showBox(infoCard, 1000, {
@@ -124,6 +105,7 @@ function startExam() {
 </script>
 
 <template>
+  <InfoConfirmDialog :show="true" :info="{}" @confirm=""></InfoConfirmDialog>
   <div class="prepare-exam-page">
     <div class="translucent-bg"></div>
     <div class="translucent-content">

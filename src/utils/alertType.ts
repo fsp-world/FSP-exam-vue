@@ -1,4 +1,4 @@
-export interface IdialogData {
+export interface IalertData {
   type: CardType;
   title: string;
   message: string;

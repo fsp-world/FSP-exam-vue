@@ -1,6 +1,6 @@
 <script setup>
 import { RouterView } from 'vue-router';
-import Dialog from '@/components/dialog/Dialog.vue';
+import Alert from '@/components/alert/Alert.vue';
 import { onMounted } from 'vue';
 import { useUserStore } from '@/stores/user';
 
@@ -12,7 +12,7 @@ onMounted(() => {
 
 <template>
   <Teleport to="body">
-    <Dialog></Dialog>
+    <Alert></Alert>
   </Teleport>
   <RouterView />
 </template>

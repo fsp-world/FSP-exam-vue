@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import { onMounted, onUnmounted, PropType, ref } from 'vue';
-import { IdialogData } from '@/utils/dialogType';
-import { useDialogStore } from '@/stores/dialog';
+import { IalertData } from '@/utils/alertType';
+import { useAlertStore } from '@/stores/alert';
 
-const dialogStore = useDialogStore();
+const dialogStore = useAlertStore();
 const { card } = defineProps({
   card: {
-    type: Object as PropType<IdialogData>,
+    type: Object as PropType<IalertData>,
     required: true,
   },
 });
@@ -27,7 +27,7 @@ onUnmounted(() => {
 const close = () => {
   setTimeout(() => {
     card.flag = false;
-    dialogStore.closeDialog();
+    dialogStore.closeAlert();
   }, 300);
 };
 </script>

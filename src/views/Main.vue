@@ -2,7 +2,7 @@
 import { RouterLink } from 'vue-router';
 import { useUserStore } from '@/stores/user';
 import { storeToRefs } from 'pinia';
-import { useDialogStore } from '@/stores/dialog';
+import { useDialogStore } from '@/stores/alert';
 
 const store = useUserStore();
 const { isLogin, username, isAdmin, avatar } = storeToRefs(store);

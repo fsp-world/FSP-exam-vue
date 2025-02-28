@@ -1,6 +1,6 @@
 <script setup>
-import { useDialogStore } from '@/stores/dialog';
-import DialogCard from './DialogCard.vue';
+import { useDialogStore } from '@/stores/alert';
+import DialogCard from './AlertCard.vue';
 import { storeToRefs } from 'pinia';
 
 const dialogStore = useDialogStore();
