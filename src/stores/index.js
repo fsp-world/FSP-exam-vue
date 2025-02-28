@@ -1,139 +1,12 @@
 const page = ref('choiceGetWhiteListMethod');
 
-const infoCard = ref({
-  type: '',
-  display: false,
-  text: '',
-  opacity: 1,
-  imgUrl: '',
-});
-const warnCard = ref({
-  type: '',
-  display: false,
-  text: '',
-  opacity: 1,
-  imgUrl: '',
-});
-const guaranteeRequest = ref({
-  guaranteeQQ: '',
-  playerQQ: '',
-  playerName: '',
-});
-const confirmRequest = {
-  guaranteeQQ: '',
-  playerQQ: '',
-  playerName: '',
-  playerUUID: 'none',
-};
-
-const examineeInfo = ref({
-  qqNumber: '',
-  playerName: '',
-  playerType: '',
-});
-
 const testQuestions = ref(testQuestions1);
-const playerTypeList = ref([
-  { id: 'survival', option: '生存玩家' },
-  { id: 'redstone', option: '红石玩家' },
-  { id: 'construction', option: '建筑玩家' },
-]);
-
-function checkDataNotNull(data) {
-  for (let i in data) {
-    if (data[i] == '') return false;
-  }
-  return true;
-}
-function checkRefDataNotNull(data) {
-  for (const [key, value] of Object.entries(data.value)) {
-    if (value === '' || value === undefined) {
-      return false;
-    }
-  }
-  return true;
-}
-function showBox(box, showSecond, data) {
-  box.value.type = data.type;
-  if (data.type === 'loading' || data.type === 'msg') {
-    box.value.text = data.text;
-    box.value.opacity = 1;
-    box.value.display = true;
-  } else if (data.type === 'warn') {
-    box.value.text = data.text;
-    box.value.opacity = 1;
-    box.value.display = true;
-  } else if (data.type === 'playerCheck') {
-    box.value.text = data.uuid;
-    box.value.imgUrl = data.profilePicSrc;
-    box.value.opacity = 1;
-    box.value.display = true;
-  }
-
-  setTimeout(() => {
-    const fadeOutInterval = setInterval(() => {
-      if (box.value.opacity > 0) {
-        box.value.opacity -= 0.1;
-      } else {
-        clearInterval(fadeOutInterval);
-        box.value.display = false;
-      }
-    }, 100); // 消失动画时长
-  }, showSecond * 1000);
-}
-
-function checkPlayerName(playerName) {
-  showBox(infoCard, 1000, {
-    // tag1
-    type: 'loading',
-    text: '确认游戏名称中...',
-  });
-  getProfilePic(playerName).then((result) => {
-    if (result.msg === 'ok') {
-      result.imgUrl.then((imageUrl) => {
-        confirmRequest['playerUUID'] = result.uuid;
-        showBox(infoCard, 1000, {
-          //我不知道为什么这里的1000没用，只有tag1的1000有用
-          type: 'playerCheck',
-          uuid: confirmRequest['playerUUID'],
-          profilePicSrc: imageUrl,
-        });
-      });
-    } else {
-      infoCard.value.display = false;
-      showBox(warnCard, 2, {
-        type: 'warn',
-        text: result.msg,
-      });
-    }
-  });
-}
-
-function oderGuaranteeRequest() {
-  confirmRequest['guaranteeQQ'] = guaranteeRequest.value['guaranteeQQ'];
-  confirmRequest['playerQQ'] = guaranteeRequest.value['playerQQ'];
-  confirmRequest['playerName'] = guaranteeRequest.value['playerName'];
-
-  if (!checkDataNotNull(confirmRequest)) {
-    showBox(warnCard, 2, {
-      type: 'warn',
-      text: '请填写全部信息',
-    });
-  } else {
-    checkPlayerName(confirmRequest['playerName']);
-  }
-}
-
-function choicePlayerType(playerType) {
-  examineeInfo.value.playerType = playerType;
-}
 
 const bgStonePatterns = ref({
   height: undefined,
   list: [],
 });
 const examBg = useTemplateRef('examBg');
-const remainingTime = ref('');
 watch(examBg, (newExamBg) => {
   console.log(examBg);
   console.log(examBg.value);
@@ -170,17 +43,6 @@ function initExam() {
 const examineePlayer = {
   name: '',
 };
-function startExam() {
-  if (!checkRefDataNotNull(examineeInfo)) {
-    showBox(warnCard, 2, {
-      type: 'warn',
-      text: '请填写个人信息',
-    });
-  } else {
-    examineePlayer.name = examineeInfo.value.playerName;
-    checkPlayerName(examineePlayer.name);
-  }
-}
 function userIsConfirm() {
   if (page.value === 'guarantee') {
     text = showBox(infoCard, 5, {

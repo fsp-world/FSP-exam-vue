@@ -1,16 +1,36 @@
 <script setup>
 import { ref } from 'vue';
 import axios from 'axios';
+import MCButton from '@/components/MCButton.vue';
 import QuestionMap from '@/components/QuestionMap.vue';
 import QuestionCard from '@/components/QuestionCard.vue';
 import QuestionBackground from '@/components/QuestionBackground.vue';
-// import { testQuestions1 } from "@/stores/questionList.js";
+import { useAlertStore } from '@/stores/alert';
+import { testQuestions1 } from '@/stores/questionList.js';
+
+const alertStore = useAlertStore();
+const openAlert = (message) => {
+  const data = {
+    title: 'conf' + Date(),
+    type: 'info-card',
+    message: message,
+    age: 3000,
+    flag: true,
+  };
+  alertStore.openAlert(data);
+};
 
 const questions = ref({});
+const remainingTime = ref('');
 const flag = ref(false);
 axios.get('http://localhost:5000/default/survey/1').then((res) => {
   flag.value = true;
-  questions.value = res.data.questions;
+
+  if (res.data['code'] === 1) {
+    openAlert(res.data['desc']);
+  } else {
+    questions.value = res.data.questions;
+  }
 });
 </script>
 
@@ -33,7 +53,7 @@ axios.get('http://localhost:5000/default/survey/1').then((res) => {
         </li>
       </ul>
       <div class="submit">
-        <button class="minecraft-button" type="button" @click="submitTestPaper()">交卷</button>
+        <MCButton class="minecraft-button" @click="submitTestPaper()">交卷</MCButton>
       </div>
       <br />
       <br />
@@ -43,14 +63,6 @@ axios.get('http://localhost:5000/default/survey/1').then((res) => {
 </template>
 
 <style scoped>
-.examination-page {
-  /* position: relative;
-    z-index: 99; */
-  font-family: 'mc-font';
-  width: 100%;
-  --block-size: 130px;
-}
-
 .center {
   margin-left: auto;
   margin-right: auto;
@@ -103,6 +115,4 @@ axios.get('http://localhost:5000/default/survey/1').then((res) => {
   width: 100%;
   position: relative;
 }
-
-/* .exam-title  */
 </style>

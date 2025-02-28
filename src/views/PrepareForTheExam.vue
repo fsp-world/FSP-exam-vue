@@ -5,6 +5,8 @@ import MCRouterLink from '@/components/MCRouterLink.vue';
 import InfoConfirmDialog from '@/components/InfoConfirmDialog.vue';
 import { getProfilePic } from '@/apis/mj';
 import { useAlertStore } from '@/stores/alert';
+import { useRouter } from 'vue-router';
+const router = useRouter();
 
 const alertStore = useAlertStore();
 const openAlert = (message) => {
@@ -19,19 +21,10 @@ const openAlert = (message) => {
 };
 
 const examineeInfo = ref({
-  // qqNumber: '',
   playerName: '',
   playerUUID: 'none',
   playerType: '',
   imgUrl: 'none',
-});
-
-const warnCard = ref({
-  type: '',
-  display: false,
-  text: '',
-  opacity: 1,
-  imgUrl: '',
 });
 
 const flag = ref(false);
@@ -80,7 +73,8 @@ const handelConfirm = () => {
   // 确认之后。。。
   // 比如发送请求...
   // 开始考试...
-  flag.value = false
+  flag.value = false;
+  router.push({ name: 'Examination' });
 };
 </script>
 
@@ -95,30 +89,16 @@ const handelConfirm = () => {
       <div class="main">
         <div>
           <div class="sub-title">
-            <h1>在开始答题之前，我们需要知晓一些您的个人信息</h1>
-            <p>请务必填写真实信息，否则系统可能无法正确添加白名单</p>
+            <h1>在开始答题之前，我们需要知晓一些您的个人偏好</h1>
           </div>
           <form class="examineeInfo">
-            <!-- <input
-              type="number"
-              v-model="examineeInfo.qqNumber"
-              placeholder="您的QQ号"
-              :class="{ 'input-red-color': warnCard.display }"
-            /> -->
-
-            <input
-              type="text"
-              v-model="examineeInfo.playerName"
-              placeholder="您的游戏昵称"
-              :class="{ 'input-red-color': warnCard.display }"
-            />
+            <input type="text" v-model="examineeInfo.playerName" placeholder="您的游戏昵称" />
             <p>我们会根据您的选择生成定制的试题</p>
             <ul class="option-list">
               <li
                 class="option"
                 :class="{
                   selected: examineeInfo.playerType == item.id,
-                  'option-red-color': warnCard.display,
                 }"
                 v-for="(item, index) in playerTypeList"
                 v-bind:key="index"

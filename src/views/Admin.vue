@@ -28,6 +28,22 @@
 </template>
 
 <style scoped>
+.container {
+  width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
+  display: flex;
+  flex-direction: column;
+  background: rgba(255, 255, 255, 0.493);
+  height: 100vh;
+}
+
+@media (max-width: 1200px) {
+  .container {
+    width: 800px;
+  }
+}
+
 ul {
   list-style: none;
   padding: 0;

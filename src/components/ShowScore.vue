@@ -147,6 +147,19 @@ const showExamResult = ref({
     }
   }
 }
+
+@keyframes reveal {
+  from {
+    clip-path: inset(0 100% 0 0);
+    /* 从左侧开始裁切，背景图片完全隐藏 */
+  }
+
+  to {
+    clip-path: inset(0 var(--showScore) 0 0);
+    /* 完全显示背景图片 */
+  }
+}
+
 @keyframes fadeIn {
   0% {
     opacity: 0;

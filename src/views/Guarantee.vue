@@ -20,13 +20,6 @@ const info = ref({
 });
 
 const isin = ref(false);
-const warnCard = ref({
-  type: '',
-  display: false,
-  text: '',
-  opacity: 1,
-  imgUrl: '',
-});
 const guaranteeRequest = ref({
   guaranteeQQ: '',
   playerQQ: '',
@@ -141,27 +134,14 @@ function show() {
       <div class="main">
         <div class="form">
           <p class="text">该玩家在网站上同意您的请求后您将获得白名单</p>
-          <input
-            :disabled="isin"
-            type="number"
-            placeholder="对方的QQ号"
-            v-model="guaranteeRequest.guaranteeQQ"
-            :class="{ 'input-red-color': warnCard.display }"
-          />
-          <input
-            :disabled="isin"
-            type="number"
-            placeholder="您的QQ号"
-            v-model="guaranteeRequest.playerQQ"
-            :class="{ 'input-red-color': warnCard.display }"
-          />
+          <input :disabled="isin" type="number" placeholder="对方的QQ号" v-model="guaranteeRequest.guaranteeQQ" />
+          <input :disabled="isin" type="number" placeholder="您的QQ号" v-model="guaranteeRequest.playerQQ" />
           <input
             @input="(event) => checkData(event)"
             :disabled="isin"
             type="text"
             placeholder="您的游戏昵称"
             v-model="guaranteeRequest.playerName"
-            :class="{ 'input-red-color': check }"
           />
         </div>
       </div>
