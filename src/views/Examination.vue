@@ -7,11 +7,12 @@ import QuestionCard from '@/components/QuestionCard.vue';
 import QuestionBackground from '@/components/QuestionBackground.vue';
 import { useAlertStore } from '@/stores/alert';
 import { testQuestions1 } from '@/stores/questionList.js';
+import { getSurvey } from '@/apis/default.js'
 
 const alertStore = useAlertStore();
 const openAlert = (message) => {
   const data = {
-    title: 'conf' + Date(),
+    title: 'exam' + Date(),
     type: 'info-card',
     message: message,
     age: 3000,
@@ -23,7 +24,8 @@ const openAlert = (message) => {
 const questions = ref({});
 const remainingTime = ref('');
 const flag = ref(false);
-axios.get('http://localhost:5000/default/survey/1').then((res) => {
+
+getSurvey(1).then((res) => {
   flag.value = true;
 
   if (res.data['code'] === 1) {
