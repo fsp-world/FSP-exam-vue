@@ -61,7 +61,6 @@ const choicePlayerType = (playerType) => {
 
 const checkRefDataNotNull = (data) => {
   for (const [key, value] of Object.entries(data.value)) {
-    console.log(value);
     if (value === '' || value === undefined) {
       return false;
     }
@@ -79,8 +78,8 @@ const startExam = () => {
 
 const handelConfirm = () => {
   // 确认之后。。。
-  // 比如发送请求
-  console.log(examineeInfo.value);
+  // 比如发送请求...
+  // 开始考试...
   flag.value = false
 };
 </script>
