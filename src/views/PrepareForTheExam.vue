@@ -1,7 +1,7 @@
 <script setup>
-import { ref, watch } from 'vue';
+import { ref } from 'vue';
 import MCButton from '@/components/MCButton.vue';
-import McRouterLink from '@/components/McRouterLink.vue';
+import MCRouterLink from '@/components/MCRouterLink.vue';
 import { getProfilePic } from '@/apis/mj';
 
 const infoCard = ref({
