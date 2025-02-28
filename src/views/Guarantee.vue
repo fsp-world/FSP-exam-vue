@@ -124,7 +124,7 @@ function show() {
       <div class="top">
         <img class="player-pic" :src="info.imgUrl" />
         <p class="player-name">Name: {{ guaranteeRequest.playerName }}</p>
-        <button class="minecraft-button button confirm-btn" type="button" @click="send()">确认无误</button>
+        <MCButton class="minecraft-button button confirm-btn" type="button" @click="send()">确认无误</MCButton>
       </div>
       <p class="bottom player-uuid">uuid: {{ info.uuid }}</p>
     </div>

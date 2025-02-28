@@ -7,7 +7,7 @@ const { show, dialogType, dialogStyle } = defineProps({
 </script>
 
 <template>
-  <div class="dialog" :class="(dialogType, { 'dialog-show': show, 'dialog-close': !show })" :style="dialogStyle">
+  <div class="dialog" :class="[dialogType, { 'dialog-show': show, 'dialog-close': !show }]" :style="dialogStyle">
     <slot></slot>
   </div>
 </template>
