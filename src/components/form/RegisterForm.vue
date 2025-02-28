@@ -4,15 +4,15 @@ import { ref } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 import { useUserStore } from '@/stores/user';
 import { checkPassword } from '@/utils/passwordUtil';
-import { useDialogStore } from '@/stores/alert';
+import { useAlertStore } from '@/stores/alert';
 import MCButton from '@/components/MCButton.vue';
 
 const router = useRouter();
 const route = useRoute();
 const user = useUserStore();
 
-const dialogStore = useDialogStore();
-const openDialog = (message) => {
+const alertStore = useAlertStore();
+const openAlert = (message) => {
   const data = {
     title: 'register' + Date(),
     type: 'info-card',
@@ -20,7 +20,7 @@ const openDialog = (message) => {
     age: 3000,
     flag: true,
   };
-  dialogStore.openDialog(data);
+  alertStore.openAlert(data);
 };
 
 const registerForm = ref({
@@ -33,7 +33,7 @@ const registerForm = ref({
 const sendRegister = () => {
   if (registerForm.value.password === registerForm.value.repassword) {
     if (!checkPassword(registerForm.value.password)) {
-      openDialog('密码必须包含至少一个大写字母、一个小写字母、一个数字和一个特殊字符，且长度至少为8个字符');
+      openAlert('密码必须包含至少一个大写字母、一个小写字母、一个数字和一个特殊字符，且长度至少为8个字符');
       return;
     }
     user
@@ -45,7 +45,7 @@ const sendRegister = () => {
       })
       .then((res) => {
         if (res.data.code === 0) {
-          openDialog('注册成功! 即将跳转...');
+          openAlert('注册成功! 即将跳转...');
           setTimeout(() => {
             setTimeout(() => {
               // 获取目标页面路径
@@ -59,14 +59,14 @@ const sendRegister = () => {
             }, 2000);
           });
         } else {
-          openDialog(res.data.desc);
+          openAlert(res.data.desc);
         }
       })
       .catch((err) => {
-        openDialog('出现错误!');
+        openAlert('出现错误!');
       });
   } else {
-    openDialog('密码不一致');
+    openAlert('密码不一致');
   }
 };
 </script>
