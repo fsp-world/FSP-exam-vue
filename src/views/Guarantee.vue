@@ -106,13 +106,13 @@ function show() {
         .catch((error) => {
           isin.value = false;
           openErroDialog('查询错误!!!');
-          console.error(error)
+          console.error(error);
         });
     } else {
       openErroDialog('昵称不合法！');
     }
   } else {
-    openErroDialog('qq号为空');
+    openErroDialog('QQ号为空');
   }
 }
 </script>

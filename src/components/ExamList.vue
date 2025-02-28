@@ -2,6 +2,7 @@
 import { ref } from 'vue';
 import { examList1 } from '@/stores/examList.js';
 const examList = ref(examList1);
+import MCRouterLink from './MCRouterLink.vue';
 </script>
 
 <template>
@@ -14,6 +15,7 @@ const examList = ref(examList1);
           <p>{{ exam.type }}试卷（{{ exam.status }}）</p>
           <p>{{ exam.time }}</p>
         </div>
+        <MCRouterLink v-if="exam.status === '请查收'" class="button" to="">查看成绩</MCRouterLink>
         <slot></slot>
       </li>
     </ul>
@@ -21,7 +23,7 @@ const examList = ref(examList1);
 </template>
 
 <style scoped>
-.view-result .exam-list {
+.exam-list {
   width: 100%;
 }
 

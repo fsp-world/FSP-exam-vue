@@ -31,7 +31,7 @@ export const examList1 = [
   },
   {
     id: 4,
-    type: 'PVP',
+    type: '生存',
     time: '2025/1/4',
     status: '请查收',
     showScore: 0,
