@@ -89,26 +89,24 @@ function show() {
     if (check.value) {
       isin.value = true;
       openLoadDialog();
-      new Promise((resolve, reject) => {
-        getProfilePic(guaranteeRequest.value.playerName).then((result) => {
+      getProfilePic(guaranteeRequest.value.playerName)
+        .then((result) => {
           if (result.msg == 'ok') {
             info.value.imgUrl = result.imgUrl;
             // result.imgUrl.then((url) => {
             //     info.value.imgUrl = url
             // })
             info.value.uuid = result.uuid;
-            resolve();
+            openInfoDialog();
           } else {
-            reject();
+            isin.value = false;
+            openErroDialog('查询错误!!!');
           }
-        });
-      })
-        .then(() => {
-          openInfoDialog();
         })
-        .catch(() => {
+        .catch((error) => {
           isin.value = false;
           openErroDialog('查询错误!!!');
+          console.error(error)
         });
     } else {
       openErroDialog('昵称不合法！');
