@@ -37,6 +37,11 @@ getUserWhitelist().then((res) => {
 const getStatus = computed(() => {
   return user.value.status == 0 ? '未激活' : user.value.status == 1 ? '正常' : '封禁';
 });
+
+const dateToLocal = computed(() => {
+    const date = new Date(user.value.addtime);
+    return `${date.getFullYear()}年 ${date.getMonth() + 1} 月 ${date.getDate()} 日 ${date.getHours()}时`;
+})
 </script>
 
 <template>
@@ -55,7 +60,7 @@ const getStatus = computed(() => {
             <h2>{{ user.username }}</h2>
             <p>用户QQ: {{ user.user_qq }}</p>
             <p>角色: {{ user.role }}</p>
-            <p>注册日期: {{ user.addtime }}</p>
+            <p>注册日期: {{ dateToLocal }}</p>
             <p>账号状态: {{ getStatus }}</p>
           </div>
         </div>
