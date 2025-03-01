@@ -1,9 +1,22 @@
 <script setup>
 import { getProfilePic } from '@/apis/mj.js';
-import { getUserInfo, getUserWhitelist } from '@/apis/user.js';
+import { getUserInfo, getUserWhitelist, setUserAvatar } from '@/apis/user.js';
 import { ref, computed } from 'vue';
+import { useAlertStore } from '@/stores/alert';
 import MCRouterLink from '@/components/MCRouterLink.vue';
 import MCButton from '@/components/MCButton.vue';
+
+const alertStore = useAlertStore();
+const openAlert = (message) => {
+  const data = {
+    title: 'conf' + Date(),
+    type: 'info-card',
+    message: message,
+    age: 3000,
+    flag: true,
+  };
+  alertStore.openAlert(data);
+};
 
 const user = ref({
   id: 0,
@@ -12,6 +25,7 @@ const user = ref({
   role: '',
   addtime: '',
   avatar: '',
+  avatar_uuid: '',
   status: 0,
 });
 
@@ -19,6 +33,12 @@ const userWhiteList = ref([]);
 
 getUserInfo().then((res) => {
   user.value = res.data.data;
+  getProfilePic(user.value.avatar).then((avatar) => {
+    if (avatar.msg === 'ok') {
+      user.value.avatar_uuid = user.value.avatar;
+      user.value.avatar = avatar.imgUrl;
+    }
+  });
 });
 
 getUserWhitelist().then((res) => {
@@ -34,14 +54,24 @@ getUserWhitelist().then((res) => {
   }
 });
 
+const editAvatar = (uuid) => {
+  setUserAvatar(uuid).then((res) => {
+    if (res.data.code === 0) {
+      openAlert('头像修改成功');
+    } else {
+      openAlert('头像修改失败！');
+    }
+  });
+};
+
 const getStatus = computed(() => {
   return user.value.status == 0 ? '未激活' : user.value.status == 1 ? '正常' : '封禁';
 });
 
 const dateToLocal = computed(() => {
-    const date = new Date(user.value.addtime);
-    return `${date.getFullYear()}年 ${date.getMonth() + 1} 月 ${date.getDate()} 日 ${date.getHours()}时`;
-})
+  const date = new Date(user.value.addtime);
+  return `${date.getFullYear()}年 ${date.getMonth() + 1} 月 ${date.getDate()} 日 ${date.getHours()}时`;
+});
 </script>
 
 <template>
@@ -70,7 +100,9 @@ const dateToLocal = computed(() => {
             <li class="player" v-for="(item, index) in userWhiteList" v-bind:key="index">
               <img class="avatar" :src="item.avatarUrl" alt="User Avatar" />
               <p class="name">{{ item.name }}</p>
-              <MCButton class="button">设置为头像</MCButton>
+              <MCButton class="button" v-if="item.uuid !== user.avatar_uuid" @click="editAvatar(item.uuid)"
+                >设置为头像</MCButton
+              >
             </li>
           </ul>
         </div>

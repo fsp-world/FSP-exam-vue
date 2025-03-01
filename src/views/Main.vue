@@ -1,4 +1,7 @@
 <script setup>
+import { getProfilePic } from '@/apis/mj.js';
+import { getUserInfo } from '@/apis/user.js';
+import { ref } from 'vue';
 import { RouterLink } from 'vue-router';
 import { useUserStore } from '@/stores/user';
 import { storeToRefs } from 'pinia';
@@ -8,6 +11,25 @@ const store = useUserStore();
 const { isLogin, username, isAdmin, avatar } = storeToRefs(store);
 
 const alertStore = useAlertStore();
+
+const user = ref({
+  id: 0,
+  username: '',
+  user_qq: '',
+  role: '',
+  addtime: '',
+  avatar: '',
+  status: 0,
+});
+
+getUserInfo().then((res) => {
+  user.value = res.data.data;
+  getProfilePic(user.value.avatar).then((avatar1) => {
+    if (avatar1.msg === 'ok') {
+      user.value.avatar = avatar1.imgUrl;
+    }
+  });
+});
 
 const logout = () => {
   store.logout().then((res) => {
@@ -33,11 +55,11 @@ const logout = () => {
         <MCRouterLink to="/space" class="choice-button"> 个人中心 </MCRouterLink>
         <button class="minecraft-button choice-button avatar">
           <RouterLink v-show="!isLogin" to="/auth">
-            <img class="avatar-img" :src="avatar" alt="" width="100%" />
+            <img class="avatar-img" :src="user.avatar" alt="头像" width="100%" />
             <span class="avatat-hover">未登录!</span>
           </RouterLink>
           <RouterLink v-show="isLogin" to="/space">
-            <img title="点我进入个人中心" class="avatar-img" :src="avatar" alt="" width="100%" />
+            <img title="点我进入个人中心" class="avatar-img" :src="user.avatar" alt="头像" width="100%" />
             <span class="avatat-hover">{{ username }}</span>
           </RouterLink>
           <a v-show="isLogin" class="logout" @click="logout">退出登录</a>
@@ -48,7 +70,6 @@ const logout = () => {
 </template>
 
 <style scoped>
-/* 选择获取白名单的方式页面 */
 .exam-index {
   width: 100%;
   height: 100vh;
@@ -130,10 +151,15 @@ const logout = () => {
   height: 70px;
   box-sizing: border-box;
   transform: translate(100%, 0);
+  border-radius: 5px;
 }
 
 .avatar-img {
   image-rendering: pixelated;
+  border-radius: 5px;
+  border: 3px solid #000;
+  height: 66px;
+  width: 66px;
 }
 
 .avatar:hover .avatat-hover,
