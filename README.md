@@ -32,3 +32,10 @@ npm run dev
 ```sh
 npm run build
 ```
+
+### 引用
+
+- 主页logo来自：<https://github.com/EaseCation/cube-3d-text>
+- 使用的贴图：
+  - minecraft 原版材质包
+  - 彩虹像素材质包

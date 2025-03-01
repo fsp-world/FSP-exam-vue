@@ -70,9 +70,6 @@ const startExam = () => {
 };
 
 const handelConfirm = () => {
-  // 确认之后。。。
-  // 比如发送请求...
-  // 开始考试...
   flag.value = false;
   router.push({ name: 'Examination' });
 };

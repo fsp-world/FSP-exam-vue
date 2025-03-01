@@ -1,7 +1,9 @@
 <script setup>
-import { getUserInfo } from '@/apis/user.js';
+import { getProfilePic } from '@/apis/mj.js';
+import { getUserInfo, getUserWhitelist } from '@/apis/user.js';
 import { ref, computed } from 'vue';
 import MCRouterLink from '@/components/MCRouterLink.vue';
+import MCButton from '@/components/MCButton.vue';
 
 const user = ref({
   id: 0,
@@ -13,8 +15,23 @@ const user = ref({
   status: 0,
 });
 
+const userWhiteList = ref([]);
+
 getUserInfo().then((res) => {
   user.value = res.data.data;
+});
+
+getUserWhitelist().then((res) => {
+  if (res.data.code === 0) {
+    userWhiteList.value = res.data.list;
+    for (let player of userWhiteList.value) {
+      getProfilePic(player.name).then((avatar) => {
+        if (avatar.msg === 'ok') {
+          player.avatarUrl = avatar.imgUrl;
+        }
+      });
+    }
+  }
 });
 
 const getStatus = computed(() => {
@@ -41,6 +58,16 @@ const getStatus = computed(() => {
             <p>注册日期: {{ user.addtime }}</p>
             <p>账号状态: {{ getStatus }}</p>
           </div>
+        </div>
+        <div class="white-list">
+          <p class="title">授权的游戏账户</p>
+          <ul>
+            <li class="player" v-for="(item, index) in userWhiteList" v-bind:key="index">
+              <img class="avatar" :src="item.avatarUrl" alt="User Avatar" />
+              <p class="name">{{ item.name }}</p>
+              <MCButton class="button">设置为头像</MCButton>
+            </li>
+          </ul>
         </div>
         <div class="menu">
           <MCRouterLink class="button" to="/Query/Guarantee"> 担保查询 </MCRouterLink>
@@ -79,7 +106,7 @@ const getStatus = computed(() => {
   background-color: rgba(0, 0, 0, 0.3);
   .avatar {
     margin-right: 20px;
-    border-radius: 50%;
+    border-radius: 10px;
     overflow: hidden;
     image-rendering: pixelated;
   }
@@ -94,6 +121,44 @@ const getStatus = computed(() => {
 
   .form-group {
     margin-bottom: 15px;
+  }
+}
+
+.white-list {
+  width: calc(100% - 40px);
+  max-width: 440px;
+  min-height: 70px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  border-radius: 8px;
+  background-color: rgba(0, 0, 0, 0.3);
+  .title {
+    text-align: center;
+    font-size: 20px;
+    padding-bottom: 10px;
+  }
+  .player {
+    display: flex;
+    justify-content: space-between;
+    --hei: 50px;
+    padding: 5px 0;
+    .avatar {
+      image-rendering: pixelated;
+      border-radius: 5px;
+      height: var(--hei);
+      border: 3px solid #000;
+    }
+    .name {
+      width: 100%;
+      font-size: 20px;
+      line-height: var(--hei);
+      padding: 0 10px;
+      text-align: left;
+    }
+    .button {
+      width: 200px;
+      font-size: 16px;
+    }
   }
 }
 
