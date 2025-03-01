@@ -1,12 +1,19 @@
 <script setup>
 import { getProfilePic } from '@/apis/mj.js';
-import { getUserInfo, getUserWhitelist, setUserAvatar } from '@/apis/user.js';
-import { ref, computed } from 'vue';
+import { getUserWhitelist } from '@/apis/user.js';
+import { ref, watch } from 'vue';
 import { useAlertStore } from '@/stores/alert';
+import { useUserStore } from '@/stores/user';
 import MCRouterLink from '@/components/MCRouterLink.vue';
 import MCButton from '@/components/MCButton.vue';
+import { storeToRefs } from 'pinia';
 
 const alertStore = useAlertStore();
+const userStore = useUserStore()
+const { avatar, username, userQQ, role, avatarUUID, getStatus, dateToLocal } = storeToRefs(userStore)
+
+userStore.syncUserInfo()
+
 const openAlert = (message) => {
   const data = {
     title: 'conf' + Date(),
@@ -18,28 +25,7 @@ const openAlert = (message) => {
   alertStore.openAlert(data);
 };
 
-const user = ref({
-  id: 0,
-  username: '',
-  user_qq: '',
-  role: '',
-  addtime: '',
-  avatar: '',
-  avatar_uuid: '',
-  status: 0,
-});
-
 const userWhiteList = ref([]);
-
-getUserInfo().then((res) => {
-  user.value = res.data.data;
-  getProfilePic(user.value.avatar).then((avatar) => {
-    if (avatar.msg === 'ok') {
-      user.value.avatar_uuid = user.value.avatar;
-      user.value.avatar = avatar.imgUrl;
-    }
-  });
-});
 
 getUserWhitelist().then((res) => {
   if (res.data.code === 0) {
@@ -55,7 +41,7 @@ getUserWhitelist().then((res) => {
 });
 
 const editAvatar = (uuid) => {
-  setUserAvatar(uuid).then((res) => {
+  userStore.setAvatar(uuid).then((res) => {
     if (res.data.code === 0) {
       openAlert('头像修改成功');
     } else {
@@ -64,14 +50,6 @@ const editAvatar = (uuid) => {
   });
 };
 
-const getStatus = computed(() => {
-  return user.value.status == 0 ? '未激活' : user.value.status == 1 ? '正常' : '封禁';
-});
-
-const dateToLocal = computed(() => {
-  const date = new Date(user.value.addtime);
-  return `${date.getFullYear()}年 ${date.getMonth() + 1} 月 ${date.getDate()} 日 ${date.getHours()}时`;
-});
 </script>
 
 <template>
@@ -84,12 +62,12 @@ const dateToLocal = computed(() => {
       <div class="main">
         <div class="user-info">
           <div class="avatar">
-            <img :src="user.avatar" alt="User Avatar" />
+            <img :src="avatar" alt="User Avatar" />
           </div>
           <div class="user-details">
-            <h2>{{ user.username }}</h2>
-            <p>用户QQ: {{ user.user_qq }}</p>
-            <p>角色: {{ user.role }}</p>
+            <h2>{{ username }}</h2>
+            <p>用户QQ: {{ userQQ }}</p>
+            <p>角色: {{ role }}</p>
             <p>注册日期: {{ dateToLocal }}</p>
             <p>账号状态: {{ getStatus }}</p>
           </div>
@@ -100,7 +78,7 @@ const dateToLocal = computed(() => {
             <li class="player" v-for="(item, index) in userWhiteList" v-bind:key="index">
               <img class="avatar" :src="item.avatarUrl" alt="User Avatar" />
               <p class="name">{{ item.name }}</p>
-              <MCButton class="button" v-if="item.uuid !== user.avatar_uuid" @click="editAvatar(item.uuid)"
+              <MCButton class="button" v-if="item.uuid !== avatarUUID" @click="editAvatar(item.uuid)"
                 >设置为头像</MCButton
               >
             </li>
