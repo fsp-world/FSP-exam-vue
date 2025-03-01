@@ -24,9 +24,9 @@ const user = ref({
 
 getUserInfo().then((res) => {
   user.value = res.data.data;
-  getProfilePic(user.value.avatar).then((avatar1) => {
-    if (avatar1.msg === 'ok') {
-      user.value.avatar = avatar1.imgUrl;
+  getProfilePic(user.value.avatar).then((res) => {
+    if (res.msg === 'ok') {
+      user.value.avatar = res.imgUrl;
     }
   });
 });
