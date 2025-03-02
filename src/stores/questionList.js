@@ -3,38 +3,6 @@
 
 export const testQuestions1 = [
   {
-    id: 1,
-    type: 'singleChoice',
-    title: '附魔金苹果可以合成吗',
-    options: ['可以', '不可以'],
-    score: 5,
-    answer: 'B',
-  },
-  {
-    id: 2,
-    type: 'singleChoice',
-    title: '末地烛可以合成吗',
-    options: ['可以', '不可以'],
-    score: 5,
-    answer: 'A',
-  },
-  {
-    id: 3,
-    type: 'singleChoice',
-    title: '伪和平可以防止幻翼生成吗',
-    options: ['可以', '不可以'],
-    score: 5,
-    answer: 'B',
-  },
-  {
-    id: 4,
-    type: 'singleChoice',
-    title: '红石粉是否可通过交易获得',
-    options: ['可以', '不可以'],
-    score: 5,
-    answer: 'B',
-  },
-  {
     id: 5,
     type: 'singleChoice',
     title: '紫水晶母岩是否可以用精准魔咒的镐子采集',
@@ -53,8 +21,14 @@ export const testQuestions1 = [
   {
     id: 7,
     type: 'singleChoice',
-    title: '在地狱坐标为(100,128,-200)的地方开一扇地狱门，进入后最有可能传送到的主世界坐标是什么',
-    options: ['(100,64,-200)', '(-100,-128,200)', '(800,128,-800)', '(800,64,-1600)'],
+    title:
+      '在地狱坐标为(100,128,-200)的地方开一扇地狱门，进入后最有可能传送到的主世界坐标是什么',
+    options: [
+      '(100,64,-200)',
+      '(-100,-128,200)',
+      '(800,128,-800)',
+      '(800,64,-1600)',
+    ],
     score: 5,
     answer: 'D',
   },
@@ -66,19 +40,6 @@ export const testQuestions1 = [
     score: 5,
     answer: 'D',
   },
-  // {
-  //     id: 8,
-  //     type: "singleChoice",
-  //     title: "经验修补与下列哪种附魔互斥",
-  //     options: [
-  //         {"忠诚", id =1}
-  //         {"忠诚", id =2}
-  //         {"忠诚", id =3}
-  //         {"忠诚", id =4}
-  //     ],
-  //     score: 5,
-  //     answer: "23",
-  // },
   {
     id: 9,
     type: 'singleChoice',
@@ -99,7 +60,12 @@ export const testQuestions1 = [
     id: 11,
     type: 'singleChoice',
     title: '下列红石常识中，有一个正确选项，请选出来',
-    options: ['树叶可以传递信号', '1秒=10gt', '掉刻不影响现实效率也不影响理论效率', '漏斗的效率是7000/h'],
+    options: [
+      '树叶可以传递信号',
+      '1秒=10gt',
+      '掉刻不影响现实效率也不影响理论效率',
+      '漏斗的效率是7000/h',
+    ],
     score: 5,
     answer: 'A',
   },
@@ -137,7 +103,12 @@ export const testQuestions1 = [
     type: 'singleChoice',
     score: 5,
     title: '下列哪种组合适合建造现代风格的房屋',
-    options: ['砂岩、橡木和玻璃', '白色混凝土、玻璃和石英块', '灵魂土', '石砖、地狱砖和红石灯'],
+    options: [
+      '砂岩、橡木和玻璃',
+      '白色混凝土、玻璃和石英块',
+      '灵魂土',
+      '石砖、地狱砖和红石灯',
+    ],
     answer: 'B',
   },
   {
@@ -156,7 +127,8 @@ export const testQuestions1 = [
   {
     id: 17,
     type: 'multipleChoice',
-    title: '很多机器依赖特定的游戏版本，请选出正确的选项（原版条件下，截止到1.19以前）',
+    title:
+      '很多机器依赖特定的游戏版本，请选出正确的选项（原版条件下，截止到1.19以前）',
     options: [
       '末地石农场在1.16.5以后失效',
       '烧包机存在于在1.18及以后',
@@ -232,7 +204,8 @@ export const testQuestions1 = [
     id: 25,
     type: 'subjective',
     score: 10,
-    title: '比较器在减法模式有容器检测的情况下 用侦测器瞬息中继器的直出时序是几gt并解释原因',
+    title:
+      '比较器在减法模式有容器检测的情况下 用侦测器瞬息中继器的直出时序是几gt并解释原因',
     answer:
       '答案：2gt,这里比较器被侦测器瞬息减法模式可以减去2gt的响应时间(比较器特性)，所以只有中继器有延迟，中继器一档有2gt延迟',
   },

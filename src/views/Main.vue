@@ -1,7 +1,4 @@
 <script setup>
-// import { getProfilePic } from '@/apis/mj.js';
-// import { getUserInfo } from '@/apis/user.js';
-// import { ref } from 'vue';
 import { RouterLink } from 'vue-router';
 import { useUserStore } from '@/stores/user';
 import { storeToRefs } from 'pinia';
@@ -11,25 +8,6 @@ const store = useUserStore();
 const { isLogin, username, avatar } = storeToRefs(store);
 
 const alertStore = useAlertStore();
-
-// const user = ref({
-//   id: 0,
-//   username: '',
-//   user_qq: '',
-//   role: '',
-//   addtime: '',
-//   avatar: '',
-//   status: 0,
-// });
-
-// getUserInfo().then((res) => {
-//   user.value = res.data.data;
-//   getProfilePic(user.value.avatar).then((res) => {
-//     if (res.msg === 'ok') {
-//       user.value.avatar = res.imgUrl;
-//     }
-//   });
-// });
 
 const logout = () => {
   store.logout().then((res) => {
@@ -48,15 +26,34 @@ const logout = () => {
   <div class="exam-index">
     <img class="logo" src="../assets/images/logo.png" />
     <div class="menu">
-      <MCRouterLink to="/guarantee" class="choice-button"> 熟人担保 </MCRouterLink>
-      <MCRouterLink to="/prepareForTheExam" class="choice-button"> 参加考试 </MCRouterLink>
+      <MCRouterLink to="/guarantee" class="choice-button">
+        熟人担保
+      </MCRouterLink>
+      <MCRouterLink to="/prepareForTheExam" class="choice-button">
+        参加考试
+      </MCRouterLink>
       <div class="sub-menu">
-        <MCRouterLink to="https://www.fsp.ink" class="minecraft-button choice-button"> 返回主页</MCRouterLink>
-        <MCRouterLink to="/space" class="choice-button"> 个人中心 </MCRouterLink>
+        <MCRouterLink
+          to="https://www.fsp.ink"
+          class="minecraft-button choice-button"
+        >
+          返回主页</MCRouterLink
+        >
+        <MCRouterLink to="/space" class="choice-button">
+          个人中心
+        </MCRouterLink>
         <button class="minecraft-button choice-button avatar">
           <RouterLink :to="!isLogin ? '/auth' : '/space'">
-            <img :title="!isLogin ? '' : '点我进入个人中心'" class="avatar-img" :src="avatar" alt="头像" width="100%" />
-            <span class="avatat-hover">{{ !isLogin ? '未登录' : username }}</span>
+            <img
+              :title="!isLogin ? '' : '点我进入个人中心'"
+              class="avatar-img"
+              :src="avatar"
+              alt="头像"
+              width="100%"
+            />
+            <span class="avatat-hover">{{
+              !isLogin ? '未登录' : username
+            }}</span>
           </RouterLink>
           <a v-show="isLogin" class="logout" @click="logout">退出登录</a>
         </button>
