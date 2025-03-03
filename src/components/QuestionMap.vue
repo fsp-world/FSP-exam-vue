@@ -8,7 +8,9 @@ const { questions } = defineProps({
   <div class="map">
     <ul>
       <li v-for="(question, questionIndex) in questions" :key="questionIndex">
-        <a :href="'#' + 'question' + (questionIndex + 1)">{{ questionIndex + 1 }}</a>
+        <a :href="'#' + 'question' + (questionIndex + 1)">{{
+          questionIndex + 1
+        }}</a>
       </li>
     </ul>
   </div>
@@ -43,6 +45,7 @@ ul {
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
+  align-content: flex-start;
   gap: 5px;
 }
 
