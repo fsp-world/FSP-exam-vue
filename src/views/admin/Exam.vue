@@ -51,9 +51,10 @@ const createSurvey = () => {
         >
           编辑问卷
         </button>
-        创建时间: <span>{{ i.createTime }}</span> 问卷状态: <span>{{ i.status }}</span>
+        创建时间: <span>{{ i.createTime }}</span> 问卷状态:
+        <span>{{ i.status }}</span>
       </h4>
-      <p class="desc">{{ i.description }}</p>
+      <p class="desc">问卷描述：{{ i.description }}</p>
     </div>
     <p v-if="!surveysData.list.length">暂无数据</p>
   </div>
