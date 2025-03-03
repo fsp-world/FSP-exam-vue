@@ -5,10 +5,8 @@ export const getBearerToken = () => {
   return token ? 'Bearer ' + token : null;
 };
 
-const baseURL = 'http://localhost:5000';
-
 const request = axios.create({
-  baseURL: baseURL,
+  baseURL: import.meta.env.VITE_API_URL,
   headers: {
     'Content-Type': 'application/json',
   },
