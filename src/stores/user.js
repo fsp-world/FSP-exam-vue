@@ -102,6 +102,9 @@ export const useUserStore = defineStore('user', {
           let { imgUrl } = await getProfilePic(this.avatarUUID);
           this.avatar = imgUrl;
         } else {
+          this.avatarUUID = res.data.avatar;
+          let { imgUrl } = await getProfilePic(this.avatarUUID);
+          this.avatar = imgUrl;
           this.isLogin = false;
         }
         return res;
