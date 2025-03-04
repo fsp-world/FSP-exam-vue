@@ -1,6 +1,7 @@
 <script setup>
 import { getSurvey, addQuestion } from '@/apis/admin';
 import QuestionCard from '@/components/QuestionCard.vue';
+import AddQuestion from '@/views/admin/AddQuestion.vue';
 import { onMounted, ref } from 'vue';
 import { useAlertStore } from '@/stores/alert';
 const alertStore = useAlertStore();
@@ -25,34 +26,34 @@ const survey = ref({
   questions: [],
 });
 
-const defaultFormData = {
-  survey: sid,
-  title: '',
-  type: 1,
-  score: 5,
-  options: [{ text: '' }],
-  single_answer: undefined,
-  multiple_answer: [],
-  text_answer: '',
-  img_url: [],
-};
+// const defaultFormData = {
+//   survey: sid,
+//   title: '',
+//   type: 1,
+//   score: 5,
+//   options: [{ text: '' }],
+//   single_answer: undefined,
+//   multiple_answer: [],
+//   text_answer: '',
+//   img_url: [],
+// };
 
-const formData = ref({ ...defaultFormData });
+// const formData = ref({ ...defaultFormData });
 
-const types = ref([
-  { value: 1, name: '单选' },
-  { value: 2, name: '多选' },
-  { value: 3, name: '填空' },
-  { value: 4, name: '简答' },
-]);
+// const types = ref([
+//   { value: 1, name: '单选' },
+//   { value: 2, name: '多选' },
+//   { value: 3, name: '填空' },
+//   { value: 4, name: '简答' },
+// ]);
 
-const delOption = (index) => {
-  formData.value.options.splice(index, 1);
-  formData.value.multiple_answer = formData.value.multiple_answer.filter((item) => item.index !== index);
-};
-const newOption = () => {
-  formData.value.options.push({ ...defaultFormData.options[0] });
-};
+// const delOption = (index) => {
+//   formData.value.options.splice(index, 1);
+//   formData.value.multiple_answer = formData.value.multiple_answer.filter((item) => item.index !== index);
+// };
+// const newOption = () => {
+//   formData.value.options.push({ ...defaultFormData.options[0] });
+// };
 
 onMounted(() => {
   getSurvey(sid).then((res) => {
@@ -64,62 +65,62 @@ onMounted(() => {
   });
 });
 
-const checkData = (data) => {
-  if (!data.title) {
-    return false;
-  }
+// const checkData = (data) => {
+//   if (!data.title) {
+//     return false;
+//   }
 
-  switch (data.type) {
-    case 1: // 单选题
-      if (data.single_answer === undefined) {
-        return false;
-      }
-      data.answer = [];
-      data.answer.push(data.single_answer);
-      break;
-    case 2: // 多选题
-      if (!Array.isArray(data.multiple_answer) || data.multiple_answer.length === 0) {
-        return false;
-      }
-      data.answer = data.multiple_answer;
-      break;
-    case 3: // 简答题
-      if (!data.text_answer) {
-        return false;
-      }
-      data.options = [];
-      data.answer = [];
-      data.answer.push(data.text_answer);
-    case 4: // 论述题
-      if (!data.text_answer) {
-        return false;
-      }
-      data.options = [];
-      data.answer = [];
-      data.answer.push(data.text_answer);
+//   switch (data.type) {
+//     case 1: // 单选题
+//       if (data.single_answer === undefined) {
+//         return false;
+//       }
+//       data.answer = [];
+//       data.answer.push(data.single_answer);
+//       break;
+//     case 2: // 多选题
+//       if (!Array.isArray(data.multiple_answer) || data.multiple_answer.length === 0) {
+//         return false;
+//       }
+//       data.answer = data.multiple_answer;
+//       break;
+//     case 3: // 简答题
+//       if (!data.text_answer) {
+//         return false;
+//       }
+//       data.options = [];
+//       data.answer = [];
+//       data.answer.push(data.text_answer);
+//     case 4: // 论述题
+//       if (!data.text_answer) {
+//         return false;
+//       }
+//       data.options = [];
+//       data.answer = [];
+//       data.answer.push(data.text_answer);
 
-      break;
-    default:
-      return false; // 如果类型未知，返回 false
-  }
+//       break;
+//     default:
+//       return false; // 如果类型未知，返回 false
+//   }
 
-  return true;
-};
+//   return true;
+// };
 
-const addQuest = () => {
-  // future：图片的添加按钮
-  const newQuest = formData.value;
-  if (!checkData(newQuest)) {
-    openAlert('请将题目填写完整');
-  } else {
-    addQuestion(newQuest).then((res) => {
-      openAlert(res.data['desc']);
-      if (res.data['code'] === 0) {
-        formData.value = { ...defaultFormData };
-      }
-    });
-  }
-};
+// const addQuest = () => {
+//   // future：图片的添加按钮
+//   const newQuest = formData.value;
+//   if (!checkData(newQuest)) {
+//     openAlert('请将题目填写完整');
+//   } else {
+//     addQuestion(newQuest).then((res) => {
+//       openAlert(res.data['desc']);
+//       if (res.data['code'] === 0) {
+//         formData.value = { ...defaultFormData };
+//       }
+//     });
+//   }
+// };
 </script>
 
 <template>
@@ -134,7 +135,8 @@ const addQuest = () => {
       <hr />
       <details>
         <summary>点击添加题目</summary>
-        <form class="new-question">
+        <AddQuestion :sid="sid"></AddQuestion>
+        <!-- <form class="new-question">
           <div class="title"></div>
           <div class="content">
             <div class="meta">
@@ -210,7 +212,7 @@ const addQuest = () => {
           <div class="end">
             <button type="button" class="submit-question" @click="addQuest">上传题目</button>
           </div>
-        </form>
+        </form> -->
       </details>
       <hr />
     </div>
@@ -273,7 +275,7 @@ const addQuest = () => {
   }
 }
 
-.edit-exam .new-question {
+/* .edit-exam .new-question {
   --normal-font-size: 17px;
   --title-font-size: 25px;
   user-select: none;
@@ -408,7 +410,7 @@ const addQuest = () => {
       height: 50px;
     }
   }
-}
+} */
 
 .edit-exam .view-survey {
   flex-grow: 1;
