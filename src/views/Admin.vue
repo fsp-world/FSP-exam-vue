@@ -1,33 +1,43 @@
 <script setup></script>
 
 <template>
-  <div class="container">
-    <div class="top-nav">
-      <ul>
-        <li>
-          <RouterLink to="/" class="router-link">返回首页</RouterLink>
-        </li>
-        <li>
-          <RouterLink to="/admin/user" class="router-link">用户管理</RouterLink>
-        </li>
-        <li>
-          <RouterLink to="/admin/whitelist" class="router-link">白名单管理</RouterLink>
-        </li>
-        <li>
-          <RouterLink to="/admin/exam" class="router-link">问卷管理</RouterLink>
-        </li>
-        <li>
-          <RouterLink to="/admin/guara" class="router-link">担保管理</RouterLink>
-        </li>
-      </ul>
-    </div>
-    <div class="main">
-      <RouterView />
+  <div class="bg">
+    <div class="container">
+      <div class="top-nav">
+        <ul>
+          <li>
+            <RouterLink to="/" class="router-link">返回首页</RouterLink>
+          </li>
+          <li>
+            <RouterLink to="/admin/user" class="router-link">用户管理</RouterLink>
+          </li>
+          <li>
+            <RouterLink to="/admin/whitelist" class="router-link">白名单管理</RouterLink>
+          </li>
+          <li>
+            <RouterLink to="/admin/exam" class="router-link">问卷管理</RouterLink>
+          </li>
+          <li>
+            <RouterLink to="/admin/guara" class="router-link">担保管理</RouterLink>
+          </li>
+        </ul>
+      </div>
+      <div class="main">
+        <RouterView />
+      </div>
     </div>
   </div>
 </template>
 
 <style scoped>
+.bg {
+  background-image: url(../assets/images/bg.png);
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  height: 100vh;
+  width: 100vw;
+}
 .container {
   width: 1200px;
   margin-left: auto;

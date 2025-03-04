@@ -48,9 +48,7 @@ const types = ref([
 
 const delOption = (index) => {
   formData.value.options.splice(index, 1);
-  formData.value.multiple_answer = formData.value.multiple_answer.filter(
-    (item) => item.index !== index
-  );
+  formData.value.multiple_answer = formData.value.multiple_answer.filter((item) => item.index !== index);
 };
 const newOption = () => {
   formData.value.options.push({ ...defaultFormData.options[0] });
@@ -63,7 +61,6 @@ onMounted(() => {
     for (let i in survey.value.questions) {
       survey.value.sumScore += survey.value.questions[i].score;
     }
-    console.log(survey.value);
   });
 });
 
@@ -81,10 +78,7 @@ const checkData = (data) => {
       data.answer.push(data.single_answer);
       break;
     case 2: // 多选题
-      if (
-        !Array.isArray(data.multiple_answer) ||
-        data.multiple_answer.length === 0
-      ) {
+      if (!Array.isArray(data.multiple_answer) || data.multiple_answer.length === 0) {
         return false;
       }
       data.answer = data.multiple_answer;
@@ -130,119 +124,96 @@ const addQuest = () => {
 
 <template>
   <div class="edit-exam">
-    <div class="survey-info">
-      <div class="close" @click="$emit('close', 0)"><span>&times;</span></div>
-      <h1 class="title">{{ survey.name }}</h1>
-      <p class="desc">试卷描述：{{ survey.description }}</p>
-      <p class="time">创建时间：{{ survey.create_time }}</p>
+    <div>
+      <div class="survey-info">
+        <div class="close" @click="$emit('close', 0)"><span>&times;</span></div>
+        <h1 class="title">{{ survey.name }}</h1>
+        <p class="desc">试卷描述：{{ survey.description }}</p>
+        <p class="time">创建时间：{{ survey.create_time }}</p>
+      </div>
+      <hr />
+      <details>
+        <summary>点击添加题目</summary>
+        <form class="new-question">
+          <div class="title"></div>
+          <div class="content">
+            <div class="meta">
+              <label>题目类型：</label>
+              <select class="type" v-model="formData.type">
+                <option v-for="i in types" :key="i.value" :value="i.value">
+                  {{ i.name }}
+                </option>
+              </select>
+              <div class="score">
+                <label for="oname">分值：</label><input id="score" type="number" v-model="formData.score" />
+              </div>
+            </div>
+            <div class="data">
+              <div>
+                <label for="oname">问题：</label
+                ><textarea
+                  class="question"
+                  id="oname"
+                  placeholder="请在此输入题目（不要输入题号和题目类型！）"
+                  v-model.trim="formData.title"
+                ></textarea>
+              </div>
+              <div class="choice" v-if="formData.type === 1 || formData.type === 2">
+                <p>选项列表：</p>
+                <ul>
+                  <li class="option">
+                    <label class="num">编号</label><label class="text">选项（前端会自动打乱选项顺序）</label
+                    ><label class="correct">正确答案</label>
+                    <label class="delete"></label>
+                  </li>
+                  <li class="option" v-for="(option, index) in formData.options" :key="index">
+                    <label class="num">选项{{ index + 1 }}</label>
+                    <div class="text">
+                      <textarea v-model="option.text" placeholder="不要写例如ABCD这样的编号！"></textarea>
+                    </div>
+                    <div class="correct">
+                      <input
+                        v-if="formData.type === 1"
+                        type="radio"
+                        name="radio-correct"
+                        :id="`option-${index}`"
+                        :value="index"
+                        v-model="formData.single_answer"
+                      />
+                      <input
+                        v-if="formData.type === 2"
+                        type="checkbox"
+                        name="checkbox-correct"
+                        :id="`option-${index}`"
+                        :value="index"
+                        v-model="formData.multiple_answer"
+                        :key="`checkbox-${index}-${Date.now()}`"
+                      />
+                    </div>
+                    <div class="delete">
+                      <button type="button" @click="delOption(index)">删除选项</button>
+                    </div>
+                  </li>
+                </ul>
+                <button type="button" class="new-option" @click="newOption">新建选项</button>
+              </div>
+              <div class="fill" v-if="formData.type === 3">
+                <label>正确答案：</label>
+                <input type="text" placeholder="正确答案" v-model="formData.text_answer" />
+              </div>
+              <div class="subjective" v-if="formData.type === 4">
+                <label>参考答案：</label>
+                <textarea placeholder="参考答案（解析）" v-model="formData.text_answer"></textarea>
+              </div>
+            </div>
+          </div>
+          <div class="end">
+            <button type="button" class="submit-question" @click="addQuest">上传题目</button>
+          </div>
+        </form>
+      </details>
+      <hr />
     </div>
-    <hr />
-    <details>
-      <summary>点击添加题目</summary>
-      <form class="new-question">
-        <div class="title"></div>
-        <div class="content">
-          <div class="meta">
-            <label>题目类型：</label>
-            <select class="type" v-model="formData.type">
-              <option v-for="i in types" :key="i.value" :value="i.value">
-                {{ i.name }}
-              </option>
-            </select>
-            <div class="score">
-              <label for="oname">分值：</label
-              ><input id="score" type="number" v-model="formData.score" />
-            </div>
-          </div>
-          <div class="data">
-            <div>
-              <label for="oname">问题：</label
-              ><textarea
-                class="question"
-                id="oname"
-                placeholder="请在此输入题目（不要输入题号和题目类型！）"
-                v-model.trim="formData.title"
-              ></textarea>
-            </div>
-            <div
-              class="choice"
-              v-if="formData.type === 1 || formData.type === 2"
-            >
-              <p>选项列表：</p>
-              <ul>
-                <li class="option">
-                  <label class="num">编号</label
-                  ><label class="text">选项（前端会自动打乱选项顺序）</label
-                  ><label class="correct">正确答案</label>
-                  <label class="delete"></label>
-                </li>
-                <li
-                  class="option"
-                  v-for="(option, index) in formData.options"
-                  :key="index"
-                >
-                  <label class="num">选项{{ index + 1 }}</label>
-                  <div class="text">
-                    <textarea
-                      v-model="option.text"
-                      placeholder="不要写例如ABCD这样的编号！"
-                    ></textarea>
-                  </div>
-                  <div class="correct">
-                    <input
-                      v-if="formData.type === 1"
-                      type="radio"
-                      name="radio-correct"
-                      :id="`option-${index}`"
-                      :value="index"
-                      v-model="formData.single_answer"
-                    />
-                    <input
-                      v-if="formData.type === 2"
-                      type="checkbox"
-                      name="checkbox-correct"
-                      :id="`option-${index}`"
-                      :value="index"
-                      v-model="formData.multiple_answer"
-                      :key="`checkbox-${index}-${Date.now()}`"
-                    />
-                  </div>
-                  <div class="delete">
-                    <button type="button" @click="delOption(index)">
-                      删除选项
-                    </button>
-                  </div>
-                </li>
-              </ul>
-              <button type="button" class="new-option" @click="newOption">
-                新建选项
-              </button>
-            </div>
-            <div class="fill" v-if="formData.type === 3">
-              <label>正确答案：</label>
-              <input
-                type="text"
-                placeholder="正确答案"
-                v-model="formData.text_answer"
-              />
-            </div>
-            <div class="subjective" v-if="formData.type === 4">
-              <label>参考答案：</label>
-              <textarea
-                placeholder="参考答案（解析）"
-                v-model="formData.text_answer"
-              ></textarea>
-            </div>
-          </div>
-        </div>
-        <div class="end">
-          <button type="button" class="submit-question" @click="addQuest">
-            上传题目
-          </button>
-        </div>
-      </form>
-    </details>
-    <hr />
     <div class="view-survey">
       <p class="sum-score">试卷总分：{{ survey.sumScore }} 分</p>
       <ul class="question-list">
@@ -252,14 +223,9 @@ const addQuest = () => {
           :key="questionIndex"
           :id="'question' + (questionIndex + 1)"
         >
-          <QuestionCard
-            :question="question"
-            :index="questionIndex"
-          ></QuestionCard>
+          <QuestionCard :question="question" :index="questionIndex"></QuestionCard>
         </li>
-        <li class="question-list-none" v-if="!survey.questions.length">
-          暂未添加题目
-        </li>
+        <li class="question-list-none" v-if="!survey.questions.length">暂未添加题目</li>
       </ul>
     </div>
   </div>
@@ -274,6 +240,8 @@ const addQuest = () => {
   top: 5%;
   left: 50%;
   transform: translate(-50%);
+  display: flex;
+  flex-direction: column;
   padding: 16px;
   background-color: #eee;
   border-radius: 8px;
@@ -443,6 +411,8 @@ const addQuest = () => {
 }
 
 .edit-exam .view-survey {
+  flex-grow: 1;
+  overflow: scroll;
   .sum-score {
     font-size: 20px;
     text-align: center;
@@ -450,8 +420,6 @@ const addQuest = () => {
   }
   .question-list {
     position: relative;
-    height: 500px;
-    overflow-y: auto;
   }
   .question-list-none {
     text-align: center;
