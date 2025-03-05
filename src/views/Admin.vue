@@ -35,6 +35,8 @@
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center;
+  display: flex;
+  justify-content: center;
   height: 100vh;
   width: 100vw;
 }
@@ -45,7 +47,7 @@
   display: flex;
   flex-direction: column;
   background: rgba(255, 255, 255, 0.493);
-  height: 100vh;
+  padding: 15px 25px;
 }
 
 @media (max-width: 1200px) {
@@ -100,5 +102,6 @@ ul {
 .main {
   flex-grow: 1;
   min-height: 500px;
+  overflow: scroll;
 }
 </style>
