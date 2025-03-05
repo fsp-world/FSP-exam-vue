@@ -42,8 +42,7 @@
                   type="radio"
                   name="radio-correct"
                   :id="`option-${index}`"
-                  value="1"
-                  v-model="item.isAnswer"
+                  @change="onChange(item)"
                 />
                 <input
                   v-if="formData.type === 2"
@@ -112,9 +111,14 @@ const types = ref([
   { value: 4, name: '简答' },
 ]);
 
-const delOption = (i: number) => {
+const delOption = (i: number) => {};
 
-}
+const onChange = (item: IOption) => {
+  for (let i of formData.options) {
+    i.isAnswer = false;
+  }
+  item.isAnswer = true;
+};
 
 const newOption = () => {
   formData.options.push({ ...defaultFormData.options[0] });
@@ -122,7 +126,7 @@ const newOption = () => {
 
 const addQuest = () => {
   console.log(formData);
-}
+};
 </script>
 
 <style scoped>
@@ -263,3 +267,4 @@ const addQuest = () => {
   }
 }
 </style>
+
