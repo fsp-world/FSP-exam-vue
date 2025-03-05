@@ -59,7 +59,6 @@ const createSurvey = () => {
     <p v-if="!surveysData.list.length">暂无数据</p>
   </div>
   <hr />
-  <hr />
   <h2>答卷管理</h2>
   <hr />
   <div>
@@ -75,6 +74,8 @@ const createSurvey = () => {
   border: 1px solid #ccc;
   border-radius: 8px;
   padding: 16px 0;
+  margin-top: 10px;
+  background-color: #dcdbdb69;
 }
 .survey-box .title,
 .survey-box .lite-title,

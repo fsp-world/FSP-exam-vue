@@ -81,7 +81,7 @@
 
 <script setup lang="ts">
 import { ref, reactive, watch } from 'vue';
-import { addQuestion } from '@/apis/admin'
+import { addQuestion } from '@/apis/admin';
 
 const { sid } = defineProps({
   sid: {
@@ -152,8 +152,11 @@ const onChange = (item: IOption) => {
 };
 
 const addQuest = () => {
-  console.log(formData);
-  addQuestion(formData)
+  addQuestion(formData);
+  formData.title = '';
+  formData.options = [];
+  newOption();
+  formData.img_url = [];
 };
 
 watch(
