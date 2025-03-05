@@ -81,6 +81,7 @@
 
 <script setup lang="ts">
 import { ref, reactive, watch } from 'vue';
+import { addQuestion } from '@/apis/admin'
 
 const { sid } = defineProps({
   sid: {
@@ -152,6 +153,7 @@ const onChange = (item: IOption) => {
 
 const addQuest = () => {
   console.log(formData);
+  addQuestion(formData)
 };
 
 watch(
