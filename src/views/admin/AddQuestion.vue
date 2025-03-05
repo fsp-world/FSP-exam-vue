@@ -23,7 +23,7 @@
             v-model.trim="formData.title"
           ></textarea>
         </div>
-        <div class="choice" v-if="formData.type === 1 || formData.type === 2">
+        <div class="choice">
           <p>选项列表：</p>
           <ul>
             <li class="option">
@@ -53,13 +53,21 @@
                   v-model="item.isAnswer"
                   :key="`checkbox-${index}-${Date.now()}`"
                 />
+                <input
+                  v-if="formData.type === 3 || formData.type === 4"
+                  type="radio"
+                  name="radio-correct"
+                  :id="`option-${index}`"
+                  :checked="item.isAnswer"
+                  disabled
+                />
               </div>
-              <div class="delete">
+              <div class="delete" v-if="formData.type === 1 || formData.type === 2">
                 <button type="button" @click="delOption(index)">删除选项</button>
               </div>
             </li>
           </ul>
-          <button type="button" class="new-option" @click="newOption">新建选项</button>
+          <button type="button" v-if="formData.type === 1 || formData.type === 2" class="new-option" @click="newOption">新建选项</button>
         </div>
       </div>
     </div>
@@ -70,7 +78,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive } from 'vue';
+import { ref, reactive, watch } from 'vue';
 
 const { sid } = defineProps({
   sid: {
@@ -127,6 +135,12 @@ const newOption = () => {
 const addQuest = () => {
   console.log(formData);
 };
+
+watch(() => formData.type, (newVal, _) => {
+  if (newVal === 3 || newVal === 4) {
+    formData.options[0].isAnswer = true
+  }
+})
 </script>
 
 <style scoped>
