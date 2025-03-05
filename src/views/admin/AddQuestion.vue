@@ -31,7 +31,7 @@
               ><label class="correct">正确答案</label>
               <label class="delete"></label>
             </li>
-            <li class="option" v-for="(item, index) in formData.options" :key="index">
+            <li class="option" v-for="(item, index) in formData.options" :key="item.key">
               <label class="num">选项{{ index + 1 }}</label>
               <div class="text">
                 <textarea v-model="item.option" placeholder="不要写例如ABCD这样的编号！"></textarea>
@@ -41,7 +41,7 @@
                   v-if="formData.type === 1"
                   type="radio"
                   name="radio-correct"
-                  :id="`option-${index}`"
+                  :id="`option-${item.key}`"
                   @change="onChange(item)"
                 />
                 <input
@@ -51,23 +51,25 @@
                   :id="`option-${index}`"
                   :value="index"
                   v-model="item.isAnswer"
-                  :key="`checkbox-${index}-${Date.now()}`"
+                  :key="`checkbox-${item.key}`"
                 />
                 <input
                   v-if="formData.type === 3 || formData.type === 4"
                   type="radio"
                   name="radio-correct"
-                  :id="`option-${index}`"
+                  :id="`option-${item.key}`"
                   :checked="item.isAnswer"
                   disabled
                 />
               </div>
               <div class="delete" v-if="formData.type === 1 || formData.type === 2">
-                <button type="button" @click="delOption(index)">删除选项</button>
+                <button type="button" @click="delOption(item.key)">删除选项</button>
               </div>
             </li>
           </ul>
-          <button type="button" v-if="formData.type === 1 || formData.type === 2" class="new-option" @click="newOption">新建选项</button>
+          <button type="button" v-if="formData.type === 1 || formData.type === 2" class="new-option" @click="newOption">
+            新建选项
+          </button>
         </div>
       </div>
     </div>
@@ -97,6 +99,7 @@ interface IFormData {
 }
 
 interface IOption {
+  key: string;
   option: string;
   isAnswer: boolean;
 }
@@ -106,11 +109,9 @@ const defaultFormData: IFormData = {
   title: '',
   type: 1,
   score: 5,
-  options: [{ option: '', isAnswer: false }],
+  options: [],
   img_url: [],
 };
-
-const formData: IFormData = reactive<IFormData>({ ...defaultFormData });
 
 const types = ref([
   { value: 1, name: '单选' },
@@ -119,7 +120,28 @@ const types = ref([
   { value: 4, name: '简答' },
 ]);
 
-const delOption = (i: number) => {};
+const defaultOption: IOption = {
+  option: '选项',
+  isAnswer: false,
+  key: '',
+};
+
+const formData: IFormData = reactive<IFormData>({ ...defaultFormData });
+
+const newOption = () => {
+  let obj = { ...defaultOption };
+  obj.key = Date();
+  formData.options.push(obj);
+};
+
+newOption();
+
+const delOption = (key: string) => {
+  formData.options.splice(
+    formData.options.findIndex((item) => item.key === key),
+    1
+  );
+};
 
 const onChange = (item: IOption) => {
   for (let i of formData.options) {
@@ -128,19 +150,18 @@ const onChange = (item: IOption) => {
   item.isAnswer = true;
 };
 
-const newOption = () => {
-  formData.options.push({ ...defaultFormData.options[0] });
-};
-
 const addQuest = () => {
   console.log(formData);
 };
 
-watch(() => formData.type, (newVal, _) => {
-  if (newVal === 3 || newVal === 4) {
-    formData.options[0].isAnswer = true
+watch(
+  () => formData.type,
+  (newVal, _) => {
+    if (newVal === 3 || newVal === 4) {
+      formData.options[0].isAnswer = true;
+    }
   }
-})
+);
 </script>
 
 <style scoped>
