@@ -11,14 +11,14 @@ getWhitelist().then((res) => {
 </script>
 
 <template>
-  <p>白名单管理</p>
+  <h1>白名单管理</h1>
   <table>
     <thead>
       <tr>
         <th>#</th>
-        <th>用户</th>
-        <th>name</th>
-        <th>uuid</th>
+        <th>用户ID</th>
+        <th>MC NAME</th>
+        <th>UUID</th>
       </tr>
     </thead>
     <tbody>
@@ -33,18 +33,17 @@ getWhitelist().then((res) => {
 </template>
 
 <style scoped>
-p,
+table,
+table td,
+table th {
+  border: 1px solid #000000;
+}
 table {
+  width: 100%;
+}
+td,
+th {
+  padding: 5px;
   text-align: center;
-}
-
-td {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.uuid {
-  max-width: 260px;
 }
 </style>

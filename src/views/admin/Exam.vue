@@ -36,7 +36,7 @@ const createSurvey = () => {
 
 <template>
   <EditExam v-if="flag" :sid="sid" @close="flag = false"></EditExam>
-  <h2>问卷管理</h2>
+  <h1>问卷管理</h1>
   <p><button @click="createSurvey">新建问卷</button></p>
   <hr />
   <div>
@@ -59,7 +59,7 @@ const createSurvey = () => {
     <p v-if="!surveysData.list.length">暂无数据</p>
   </div>
   <hr />
-  <h2>答卷管理</h2>
+  <h1>答卷管理</h1>
   <hr />
   <div>
     <p v-if="!responsesData.list.length">暂无数据</p>
@@ -82,5 +82,14 @@ const createSurvey = () => {
 .survey-box .desc {
   margin-left: 16px;
   margin-right: 16px;
+}
+button {
+  font-size: 16px;
+  padding: 5px;
+  border-radius: 5px;
+  background-color: #ccc;
+}
+button:hover {
+  background-color: #888;
 }
 </style>

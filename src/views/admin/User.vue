@@ -34,8 +34,8 @@ getUsers().then((res) => {
         <td>{{ item.addtime }}</td>
         <td>{{ item.status }}</td>
         <td>
-          <button>修改</button>
-          <button>封禁</button>
+          <button type="button">修改</button>
+          <button type="button">封禁</button>
         </td>
       </tr>
     </tbody>
@@ -54,5 +54,16 @@ td,
 th {
   padding: 5px;
   text-align: center;
+}
+button {
+  margin: 5px auto;
+  font-size: 16px;
+  text-align: center;
+  padding: 5px;
+  border-radius: 5px;
+  background-color: #ccc;
+}
+button:hover {
+  background-color: #888;
 }
 </style>

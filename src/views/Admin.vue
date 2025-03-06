@@ -12,7 +12,7 @@
           </li>
           <li>
             <RouterLink to="/admin/whitelist" class="router-link"
-              >白名单管理</RouterLink
+              >白名管理</RouterLink
             >
           </li>
           <li>
@@ -72,17 +72,17 @@
   .menu li:last-child {
     margin-top: auto;
   }
+  .menu li:hover {
+    background: rgba(255, 255, 255, 0.5);
+  }
+
   .menu li a {
     color: aqua;
     font-size: 30px;
     max-width: 200px;
-    text-align-last: justify;
-    text-align: justify;
+    text-align: center;
     padding: 10px;
     margin: 0 auto;
-  }
-  .menu li a:hover {
-    background-color: white;
   }
 }
 .container .main {
@@ -98,27 +98,29 @@
     flex: none;
     width: 100%;
     max-width: none;
-    height: 100px;
+    height: 80px;
   }
   .container .nav .menu {
     width: 100%;
     padding-top: 0;
     flex-direction: row;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
     justify-content: space-around;
   }
   .container .nav .menu li {
     width: auto;
-    height: 50%;
+    height: 80px;
   }
   .container .nav .menu li:last-child {
     margin-top: 0;
   }
   .container .nav .menu li a {
-    font-size: 20px;
-    width: 120px;
-    line-height: 50px;
+    padding: 15px;
+    width: 50px;
+    height: 100%;
     margin: 0;
+    font-size: 20px;
+    text-align: center;
   }
 }
 
