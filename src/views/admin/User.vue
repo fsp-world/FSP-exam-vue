@@ -10,18 +10,18 @@ getUsers().then((res) => {
 </script>
 
 <template>
-  <p>用户管理</p>
+  <h1>用户管理</h1>
   <table>
     <thead>
       <tr>
-        <td>#</td>
-        <td>头像</td>
-        <td>用户名</td>
-        <td>用户 QQ</td>
-        <td>用户角色</td>
-        <td>注册时间</td>
-        <td>账号状态</td>
-        <td>操作</td>
+        <th>#</th>
+        <th>头像</th>
+        <th>用户名</th>
+        <th>用户 QQ</th>
+        <th>用户角色</th>
+        <th>注册时间</th>
+        <th>账号状态</th>
+        <th>操作</th>
       </tr>
     </thead>
     <tbody>
@@ -41,3 +41,18 @@ getUsers().then((res) => {
     </tbody>
   </table>
 </template>
+<style scoped>
+table,
+table td,
+table th {
+  border: 1px solid #000000;
+}
+table {
+  width: 100%;
+}
+td,
+th {
+  padding: 5px;
+  text-align: center;
+}
+</style>

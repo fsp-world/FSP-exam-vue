@@ -3,22 +3,30 @@
 <template>
   <div class="bg">
     <div class="container">
-      <div class="top-nav">
-        <ul>
+      <div class="nav">
+        <ul class="menu">
+          <li>
+            <RouterLink to="/admin/user" class="router-link"
+              >用户管理</RouterLink
+            >
+          </li>
+          <li>
+            <RouterLink to="/admin/whitelist" class="router-link"
+              >白名单管理</RouterLink
+            >
+          </li>
+          <li>
+            <RouterLink to="/admin/exam" class="router-link"
+              >问卷管理</RouterLink
+            >
+          </li>
+          <li>
+            <RouterLink to="/admin/guara" class="router-link"
+              >担保管理</RouterLink
+            >
+          </li>
           <li>
             <RouterLink to="/" class="router-link">返回首页</RouterLink>
-          </li>
-          <li>
-            <RouterLink to="/admin/user" class="router-link">用户管理</RouterLink>
-          </li>
-          <li>
-            <RouterLink to="/admin/whitelist" class="router-link">白名单管理</RouterLink>
-          </li>
-          <li>
-            <RouterLink to="/admin/exam" class="router-link">问卷管理</RouterLink>
-          </li>
-          <li>
-            <RouterLink to="/admin/guara" class="router-link">担保管理</RouterLink>
           </li>
         </ul>
       </div>
@@ -41,67 +49,80 @@
   width: 100vw;
 }
 .container {
-  width: 1200px;
-  margin-left: auto;
-  margin-right: auto;
+  width: 100%;
+  height: 100%;
   display: flex;
-  flex-direction: column;
   background: rgba(255, 255, 255, 0.493);
-  padding: 15px 25px;
+}
+.container .nav {
+  flex: 1;
+  max-width: 280px;
+  .menu {
+    width: 100%;
+    height: calc(100% - 20px);
+    padding-top: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    flex-wrap: wrap;
+  }
+  .menu li {
+    width: 100%;
+  }
+  .menu li:last-child {
+    margin-top: auto;
+  }
+  .menu li a {
+    color: aqua;
+    font-size: 30px;
+    max-width: 200px;
+    text-align-last: justify;
+    text-align: justify;
+    padding: 10px;
+    margin: 0 auto;
+  }
+  .menu li a:hover {
+    background-color: white;
+  }
+}
+.container .main {
+  flex: 3;
+  background-color: white;
 }
 
 @media (max-width: 1200px) {
   .container {
-    width: 800px;
+    flex-direction: column;
+  }
+  .container .nav {
+    flex: none;
+    width: 100%;
+    max-width: none;
+    height: 100px;
+  }
+  .container .nav .menu {
+    width: 100%;
+    padding-top: 0;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-around;
+  }
+  .container .nav .menu li {
+    width: auto;
+    height: 50%;
+  }
+  .container .nav .menu li:last-child {
+    margin-top: 0;
+  }
+  .container .nav .menu li a {
+    font-size: 20px;
+    width: 120px;
+    line-height: 50px;
+    margin: 0;
   }
 }
 
-ul {
-  list-style: none;
-  padding: 0;
-}
-
-.router-link {
-  padding: 10px 16px;
-  background-color: #00ffff2b;
-  border: 1px solid #69ffff57;
-  border-radius: 8px;
-}
-
-.router-link:hover {
-  background-color: #6effff7f;
-}
-
-.router-link,
-.router-link:visited {
-  color: white;
-}
-
-.top-nav {
-  height: 80px;
-  flex-shrink: 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.top-nav ul {
-  display: flex;
-  justify-content: center;
-}
-
-.top-nav ul li {
-  display: block;
-}
-
-.top-nav a {
-  margin: 0 14px;
-  padding: 10px 14px;
-}
-
 .main {
-  flex-grow: 1;
-  min-height: 500px;
-  overflow: scroll;
+  padding: 10px;
 }
 </style>
