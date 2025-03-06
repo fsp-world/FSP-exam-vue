@@ -3,6 +3,10 @@ import { ref, defineProps } from 'vue';
 const { question, index } = defineProps({
   question: Object,
   index: Number,
+  lock: {
+    default: false,
+    type: Boolean,
+  },
 });
 
 function selectOption(question, selectedOption) {
@@ -40,7 +44,7 @@ function selectOption(question, selectedOption) {
       v-for="(option, optionIndex) in question.options"
       :key="optionIndex"
       @click="selectOption(question, option)"
-      :class="{ selected: option.select }"
+      :class="{ selected: option.select || lock }"
     >
       {{ ['A.', 'B.', 'C.', 'D.'][optionIndex] }}{{ option.text }}
     </li>

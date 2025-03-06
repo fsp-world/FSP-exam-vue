@@ -1,12 +1,10 @@
 <script setup>
 import { ref } from 'vue';
-import axios from 'axios';
 import MCButton from '@/components/MCButton.vue';
 import QuestionMap from '@/components/QuestionMap.vue';
 import QuestionCard from '@/components/QuestionCard.vue';
 import QuestionBackground from '@/components/QuestionBackground.vue';
 import { useAlertStore } from '@/stores/alert';
-import { testQuestions1 } from '@/stores/questionList.js';
 import { getSurvey } from '@/apis/default.js'
 
 const alertStore = useAlertStore();
@@ -69,6 +67,7 @@ getSurvey(1).then((res) => {
   margin-left: auto;
   margin-right: auto;
   max-width: 1000px;
+  min-height: 100vh;
   background-color: rgba(255, 255, 255, 0.4);
 }
 

@@ -35,7 +35,6 @@ function generatePatterns() {
       y: positions[i].y,
     });
   }
-  console.log(maxX, maxY);
 }
 const bgStonePatterns = ref([]);
 const props = defineProps({
@@ -68,6 +67,7 @@ watch(bgHeight, (newVal, oldVal) => {
 <style scoped>
 .back-ground {
   width: 100%;
+  min-height: 100vh;
   position: relative;
   /* z-index: 1; */
   top: 0;

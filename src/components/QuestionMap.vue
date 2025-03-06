@@ -5,7 +5,7 @@ const { questions } = defineProps({
 </script>
 
 <template>
-  <div class="map">
+  <div class="map y-scroll">
     <ul>
       <li v-for="(question, questionIndex) in questions" :key="questionIndex">
         <a :href="'#' + 'question' + (questionIndex + 1)">{{
@@ -37,6 +37,8 @@ const { questions } = defineProps({
   image-rendering: pixelated;
   padding: 20px;
   z-index: 99;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
 ul {
