@@ -151,7 +151,7 @@ const onChange = (item: IOption) => {
   item.isAnswer = true;
 };
 
-const emit = defineEmits(['onAdd'])
+const emit = defineEmits(['onAdd']);
 
 const addQuest = () => {
   addQuestion(formData);
@@ -159,14 +159,16 @@ const addQuest = () => {
   formData.options = [];
   newOption();
   formData.img_url = [];
-  emit('onAdd', formData)
+  emit('onAdd', formData);
 };
 
 watch(
   () => formData.type,
   (newVal, _) => {
     if (newVal === 3 || newVal === 4) {
-      formData.options[0].isAnswer = true;
+      formData.options = [];
+      newOption();
+      formData.options[0].isAnswer = true
     }
   }
 );
@@ -310,4 +312,3 @@ watch(
   }
 }
 </style>
-
