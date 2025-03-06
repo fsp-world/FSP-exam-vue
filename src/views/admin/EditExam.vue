@@ -152,7 +152,7 @@ const _getSurvey = () => {
           :key="questionIndex"
           :id="'question' + (questionIndex + 1)"
         >
-          <QuestionCard :question="question" :index="questionIndex"></QuestionCard>
+          <QuestionCard :lock="true" :question="question" :index="questionIndex"></QuestionCard>
         </li>
         <li class="question-list-none" v-if="!survey.questions.length">暂未添加题目</li>
       </ul>

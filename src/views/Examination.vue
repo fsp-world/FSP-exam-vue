@@ -19,7 +19,7 @@ const openAlert = (message) => {
   alertStore.openAlert(data);
 };
 
-const questions = ref({});
+const questions = ref([]);
 const remainingTime = ref('');
 const flag = ref(false);
 
