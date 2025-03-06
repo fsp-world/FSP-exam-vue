@@ -151,12 +151,15 @@ const onChange = (item: IOption) => {
   item.isAnswer = true;
 };
 
+const emit = defineEmits(['onAdd'])
+
 const addQuest = () => {
   addQuestion(formData);
   formData.title = '';
   formData.options = [];
   newOption();
   formData.img_url = [];
+  emit('onAdd', formData)
 };
 
 watch(

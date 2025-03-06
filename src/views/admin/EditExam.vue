@@ -56,6 +56,10 @@ const survey = ref({
 // };
 
 onMounted(() => {
+  _getSurvey()
+});
+
+const _getSurvey = () => {
   getSurvey(sid).then((res) => {
     survey.value = res.data;
     survey.value.sumScore = 0;
@@ -63,7 +67,7 @@ onMounted(() => {
       survey.value.sumScore += survey.value.questions[i].score;
     }
   });
-});
+}
 
 // const checkData = (data) => {
 //   if (!data.title) {
@@ -135,7 +139,7 @@ onMounted(() => {
       <hr />
       <details>
         <summary>点击添加题目</summary>
-        <AddQuestion :sid="sid"></AddQuestion>
+        <AddQuestion :sid="sid" @on-add="(payload) => {_getSurvey()}"></AddQuestion>
         <!-- <form class="new-question">
           <div class="title"></div>
           <div class="content">
