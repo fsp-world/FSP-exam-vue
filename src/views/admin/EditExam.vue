@@ -27,6 +27,12 @@ const _getSurvey = () => {
     }
   });
 };
+
+const viewSurveyDirection = ref('column');
+const toggleDirection = () => {
+  viewSurveyDirection.value =
+    viewSurveyDirection.value === 'column' ? 'column-reverse' : 'column';
+};
 </script>
 
 <template>
@@ -54,7 +60,10 @@ const _getSurvey = () => {
     </div>
     <div class="view-survey">
       <p class="sum-score">试卷总分：{{ survey.sumScore }} 分</p>
-      <ul class="question-list">
+      <button type="button" class="toggle-direction" @click="toggleDirection">
+        正序/倒序
+      </button>
+      <ul class="question-list" :style="{ flexDirection: viewSurveyDirection }">
         <li
           class="question"
           v-for="(question, questionIndex) in survey.questions"
@@ -119,14 +128,27 @@ const _getSurvey = () => {
 
 .edit-exam .view-survey {
   flex-grow: 1;
-  overflow: scroll;
+  overflow-y: scroll;
   .sum-score {
     font-size: 20px;
     text-align: center;
     user-select: none;
   }
+  .toggle-direction {
+    margin: 10px auto;
+    font-size: 20px;
+    padding: 5px;
+    background-color: #ccc;
+    border-radius: 5px;
+  }
+  button:hover {
+    background-color: #888;
+  }
+
   .question-list {
     position: relative;
+    display: flex;
+    flex-direction: column;
   }
   .question-list-none {
     text-align: center;
