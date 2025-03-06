@@ -1,6 +1,6 @@
 <script setup>
 import { ref, defineProps } from 'vue';
-const { question, index } = defineProps({
+const { question, index, lock } = defineProps({
   question: Object,
   index: Number,
   lock: {
@@ -9,7 +9,12 @@ const { question, index } = defineProps({
   },
 });
 
+const emit = defineEmits(['onChange'])
+
 function selectOption(question, selectedOption) {
+  if (lock) {
+    return
+  }
   if (question.type === 'singleChoice') {
     for (let opt of question.options) {
       opt.select = false;
@@ -34,6 +39,7 @@ function selectOption(question, selectedOption) {
       <span v-else-if="question.type === 'fillInTheBlanks'"> [填空题] </span>
       <span v-else-if="question.type === 'subjective'"> [主观题] </span>
       <span v-else>[未知类型]</span>
+      <!-- <span>{{ question }}</span> -->
     </span>
     <span class="text"> {{ question.title }}</span>
     <span class="score">({{ question.score }}分)</span>
@@ -44,7 +50,7 @@ function selectOption(question, selectedOption) {
       v-for="(option, optionIndex) in question.options"
       :key="optionIndex"
       @click="selectOption(question, option)"
-      :class="{ selected: option.select || lock }"
+      :class="{ selected: option.select || option.isCorrect }"
     >
       {{ ['A.', 'B.', 'C.', 'D.'][optionIndex] }}{{ option.text }}
     </li>
@@ -55,14 +61,15 @@ function selectOption(question, selectedOption) {
       <p>{{ pic }}</p>
     </li>
   </ul>
-  <input type="txet" required class="input-text" v-model="question.answer" v-if="question.type === 'fillInTheBlanks'" />
+  <input type="txet" required class="input-text" v-model="question.options[0].text" :disabled="lock" v-if="question.type === 'fillInTheBlanks'" />
   <div :class="{ resize: question.type === 'subjective' }">
     <textarea
       required
       class="input-textarea"
-      v-model="question.answer"
+      v-model="question.options[0].text"
       placeholder="请在此处作答"
       v-if="question.type === 'subjective'"
+      :disabled="lock"
     ></textarea>
   </div>
 </template>
