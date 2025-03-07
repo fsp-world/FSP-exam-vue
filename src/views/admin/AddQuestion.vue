@@ -133,6 +133,9 @@ const newOption = () => {
   let obj = { ...defaultOption };
   obj.key = Date();
   formData.options.push(obj);
+  if (formData.type === 3 || formData.type === 4) {
+    formData.options[0].isAnswer = true;
+  }
 };
 
 newOption();
@@ -154,12 +157,13 @@ const onChange = (item: IOption) => {
 const emit = defineEmits(['onAdd']);
 
 const addQuest = () => {
-  addQuestion(formData);
-  formData.title = '';
-  formData.options = [];
-  newOption();
-  formData.img_url = [];
-  emit('onAdd', formData);
+  addQuestion(formData).then(() => {
+    formData.title = '';
+    formData.options = [];
+    formData.img_url = [];
+    newOption();
+    emit('onAdd', formData);
+  });
 };
 
 watch(
@@ -168,7 +172,7 @@ watch(
     if (newVal === 3 || newVal === 4) {
       formData.options = [];
       newOption();
-      formData.options[0].isAnswer = true
+      formData.options[0].isAnswer = true;
     }
   }
 );
@@ -312,3 +316,4 @@ watch(
   }
 }
 </style>
+
