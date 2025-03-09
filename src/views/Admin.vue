@@ -6,24 +6,16 @@
       <div class="nav">
         <ul class="menu">
           <li>
-            <RouterLink to="/admin/user" class="router-link"
-              >用户管理</RouterLink
-            >
+            <RouterLink to="/admin/user" class="router-link">用户管理</RouterLink>
           </li>
           <li>
-            <RouterLink to="/admin/whitelist" class="router-link"
-              >白名管理</RouterLink
-            >
+            <RouterLink to="/admin/whitelist" class="router-link">白名管理</RouterLink>
           </li>
           <li>
-            <RouterLink to="/admin/exam" class="router-link"
-              >问卷管理</RouterLink
-            >
+            <RouterLink to="/admin/exam" class="router-link">问卷管理</RouterLink>
           </li>
           <li>
-            <RouterLink to="/admin/guara" class="router-link"
-              >担保管理</RouterLink
-            >
+            <RouterLink to="/admin/guara" class="router-link">担保管理</RouterLink>
           </li>
           <li>
             <RouterLink to="/" class="router-link">返回首页</RouterLink>
@@ -88,6 +80,7 @@
 .container .main {
   flex: 3;
   background-color: white;
+  position: relative;
 }
 
 @media (max-width: 1200px) {

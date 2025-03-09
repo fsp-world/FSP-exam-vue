@@ -30,8 +30,7 @@ const _getSurvey = () => {
 
 const viewSurveyDirection = ref('column');
 const toggleDirection = () => {
-  viewSurveyDirection.value =
-    viewSurveyDirection.value === 'column' ? 'column-reverse' : 'column';
+  viewSurveyDirection.value = viewSurveyDirection.value === 'column' ? 'column-reverse' : 'column';
 };
 </script>
 
@@ -60,9 +59,7 @@ const toggleDirection = () => {
     </div>
     <div class="view-survey">
       <p class="sum-score">试卷总分：{{ survey.sumScore }} 分</p>
-      <button type="button" class="toggle-direction" @click="toggleDirection">
-        正序/倒序
-      </button>
+      <button type="button" class="toggle-direction" @click="toggleDirection">正序/倒序</button>
       <ul class="question-list" :style="{ flexDirection: viewSurveyDirection }">
         <li
           class="question"
@@ -70,15 +67,9 @@ const toggleDirection = () => {
           :key="questionIndex"
           :id="'question' + (questionIndex + 1)"
         >
-          <QuestionCard
-            :lock="true"
-            :question="question"
-            :index="questionIndex"
-          ></QuestionCard>
+          <QuestionCard :lock="true" :question="question" :index="questionIndex"></QuestionCard>
         </li>
-        <li class="question-list-none" v-if="!survey.questions.length">
-          暂未添加题目
-        </li>
+        <li class="question-list-none" v-if="!survey.questions.length">暂未添加题目</li>
       </ul>
     </div>
   </div>
@@ -86,18 +77,19 @@ const toggleDirection = () => {
 
 <style scoped>
 .edit-exam {
-  max-width: 1000px;
-  width: 90%;
-  height: 85%;
+  /* max-width: 1000px; */
+  width: calc(100% - 32px);
+  height: calc(100% - 32px);
   position: absolute;
-  top: 5%;
-  left: 50%;
-  transform: translate(-50%);
+  top: 0;
+  left: 0;
+  /* top: 5%; */
+  /* left: 50%; */
+  /* transform: translate(-50%); */
   display: flex;
   flex-direction: column;
   padding: 16px;
   background-color: #eee;
-  border-radius: 8px;
   summary {
     user-select: none;
   }
@@ -108,8 +100,8 @@ const toggleDirection = () => {
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 30px;
-    height: 30px;
+    width: 50px;
+    height: 50px;
     position: absolute;
     right: 10px;
     top: 10px;
@@ -127,7 +119,7 @@ const toggleDirection = () => {
 }
 
 .edit-exam .view-survey {
-  flex-grow: 1;
+  width: 100%;
   overflow-y: scroll;
   .sum-score {
     font-size: 20px;
@@ -149,6 +141,7 @@ const toggleDirection = () => {
     position: relative;
     display: flex;
     flex-direction: column;
+    width: calc(100% - 30px);
   }
   .question-list-none {
     text-align: center;
