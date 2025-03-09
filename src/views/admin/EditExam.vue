@@ -77,15 +77,11 @@ const toggleDirection = () => {
 
 <style scoped>
 .edit-exam {
-  /* max-width: 1000px; */
   width: calc(100% - 32px);
   height: calc(100% - 32px);
   position: absolute;
   top: 0;
   left: 0;
-  /* top: 5%; */
-  /* left: 50%; */
-  /* transform: translate(-50%); */
   display: flex;
   flex-direction: column;
   padding: 16px;

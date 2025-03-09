@@ -1,5 +1,5 @@
 <script setup>
-import { ref, defineProps } from 'vue';
+import { defineProps } from 'vue';
 const { question, index, lock } = defineProps({
   question: Object,
   index: Number,
@@ -9,11 +9,11 @@ const { question, index, lock } = defineProps({
   },
 });
 
-const emit = defineEmits(['onChange'])
+const emit = defineEmits(['onChange']);
 
 function selectOption(question, selectedOption) {
   if (lock) {
-    return
+    return;
   }
   if (question.type === 'singleChoice') {
     for (let opt of question.options) {
@@ -31,73 +31,61 @@ function selectOption(question, selectedOption) {
 </script>
 
 <template>
-  <div class="title">
-    <span class="type">
-      {{ index + 1 }}.
-      <span v-if="question.type === 'singleChoice'"> [单选题] </span>
-      <span v-else-if="question.type === 'multipleChoice'"> [多选题] </span>
-      <span v-else-if="question.type === 'fillInTheBlanks'"> [填空题] </span>
-      <span v-else-if="question.type === 'subjective'"> [主观题] </span>
-      <span v-else>[未知类型]</span>
-      <!-- <span>{{ question }}</span> -->
-    </span>
-    <span class="text"> {{ question.title }}</span>
-    <span class="score">({{ question.score }}分)</span>
-  </div>
-  <ul class="option-list" v-if="question.type === 'singleChoice' || question.type === 'multipleChoice'">
-    <li
-      class="option"
-      v-for="(option, optionIndex) in question.options"
-      :key="optionIndex"
-      @click="selectOption(question, option)"
-      :class="{ selected: option.select || option.isCorrect }"
-    >
-      {{ ['A.', 'B.', 'C.', 'D.'][optionIndex] }}{{ option.text }}
-    </li>
-  </ul>
-  <ul v-if="question.img_url" class="images">
-    <li v-for="pic in question.img_url">
-      <img :src="pic" />
-      <p>{{ pic }}</p>
-    </li>
-  </ul>
-  <input type="txet" required class="input-text" v-model="question.options[0].text" :disabled="lock" v-if="question.type === 'fillInTheBlanks'" />
-  <div :class="{ resize: question.type === 'subjective' }">
-    <textarea
+  <div class="question">
+    <div class="title">
+      <span class="type">
+        {{ index + 1 }}.
+        <span v-if="question.type === 'singleChoice'"> [单选题] </span>
+        <span v-else-if="question.type === 'multipleChoice'"> [多选题] </span>
+        <span v-else-if="question.type === 'fillInTheBlanks'"> [填空题] </span>
+        <span v-else-if="question.type === 'subjective'"> [主观题] </span>
+        <span v-else>[未知类型]</span>
+      </span>
+      <span class="text"> {{ question.title }}</span>
+      <span class="score">({{ question.score }}分)</span>
+    </div>
+    <ul class="option-list" v-if="question.type === 'singleChoice' || question.type === 'multipleChoice'">
+      <li
+        class="option"
+        v-for="(option, optionIndex) in question.options"
+        :key="optionIndex"
+        @click="selectOption(question, option)"
+        :class="{ selected: option.select || option.isCorrect }"
+      >
+        {{ ['A.', 'B.', 'C.', 'D.'][optionIndex] }}{{ option.text }}
+      </li>
+    </ul>
+    <ul v-if="question.img_url" class="images">
+      <li v-for="pic in question.img_url">
+        <img :src="pic" />
+        <p>{{ pic }}</p>
+      </li>
+    </ul>
+    <input
+      type="txet"
       required
-      class="input-textarea"
+      class="input-text"
       v-model="question.options[0].text"
-      placeholder="请在此处作答"
-      v-if="question.type === 'subjective'"
       :disabled="lock"
-    ></textarea>
+      v-if="question.type === 'fillInTheBlanks'"
+    />
+    <div :class="{ resize: question.type === 'subjective' }">
+      <textarea
+        required
+        class="input-textarea"
+        v-model="question.options[0].text"
+        placeholder="请在此处作答"
+        v-if="question.type === 'subjective'"
+        :disabled="lock"
+      ></textarea>
+    </div>
   </div>
 </template>
 
 <style scoped>
-.resize::before {
-  content: '';
-  background: url(../assets/images/rainbow_pixel_gui/up-down-icon-1.png);
-  position: absolute;
-  background-size: contain;
-  right: -30px;
-  bottom: 0.5px;
-  width: 32px;
-  height: 32px;
-  image-rendering: pixelated;
+.question {
+  position: relative;
 }
-
-.resize:hover::before {
-  background: url(../assets/images/rainbow_pixel_gui/up-down-icon-2.png);
-  position: absolute;
-  background-size: contain;
-  right: -30px;
-  bottom: 0.5px;
-  width: 32px;
-  height: 32px;
-  image-rendering: pixelated;
-}
-
 .title {
   margin-bottom: 10px;
 }
@@ -171,10 +159,8 @@ function selectOption(question, selectedOption) {
   width: 100%;
   min-height: 100px;
   resize: vertical;
-  /* border: 1px solid #000; */
   border-top: 1px solid #000;
   border-bottom: 1px solid #000;
-  /* border-radius: 6px; */
   padding: 5px;
   outline: none;
   position: relative;
@@ -190,5 +176,27 @@ function selectOption(question, selectedOption) {
 
 .input-textarea::placeholder {
   color: #444;
+}
+.resize::before {
+  content: '';
+  background: url(../assets/images/rainbow_pixel_gui/up-down-icon-1.png);
+  position: absolute;
+  background-size: contain;
+  right: -30px;
+  bottom: 0.5px;
+  width: 32px;
+  height: 32px;
+  image-rendering: pixelated;
+}
+
+.resize:hover::before {
+  background: url(../assets/images/rainbow_pixel_gui/up-down-icon-2.png);
+  position: absolute;
+  background-size: contain;
+  right: -30px;
+  bottom: 0.5px;
+  width: 32px;
+  height: 32px;
+  image-rendering: pixelated;
 }
 </style>
