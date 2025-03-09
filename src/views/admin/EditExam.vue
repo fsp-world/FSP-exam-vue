@@ -46,20 +46,15 @@ const toggleDirection = () => {
       <hr />
       <details>
         <summary>点击添加题目</summary>
-        <AddQuestion
-          :sid="sid"
-          @on-add="
-            (payload) => {
-              _getSurvey();
-            }
-          "
-        ></AddQuestion>
+        <AddQuestion :sid="sid" @on-add="_getSurvey()"></AddQuestion>
       </details>
       <hr />
     </div>
     <div class="view-survey">
-      <p class="sum-score">试卷总分：{{ survey.sumScore }} 分</p>
-      <button type="button" class="toggle-direction" @click="toggleDirection">正序/倒序</button>
+      <div class="info">
+        <p class="sum-score">试卷总分：{{ survey.sumScore }} 分</p>
+        <button type="button" class="toggle-direction" @click="toggleDirection">正序/倒序</button>
+      </div>
       <ul class="question-list" :style="{ flexDirection: viewSurveyDirection }">
         <li
           class="question"
@@ -85,7 +80,8 @@ const toggleDirection = () => {
   display: flex;
   flex-direction: column;
   padding: 16px;
-  background-color: #eee;
+  background-color: #fff;
+
   summary {
     user-select: none;
   }
@@ -117,20 +113,34 @@ const toggleDirection = () => {
 .edit-exam .view-survey {
   width: 100%;
   overflow-y: scroll;
-  .sum-score {
-    font-size: 20px;
-    text-align: center;
-    user-select: none;
-  }
-  .toggle-direction {
-    margin: 10px auto;
-    font-size: 20px;
-    padding: 5px;
-    background-color: #ccc;
+
+  .info {
+    display: flex;
+    height: 40px;
+    padding: 5px 8px;
+    justify-content: center;
+    gap: 20px;
+    background-color: #eee;
     border-radius: 5px;
-  }
-  button:hover {
-    background-color: #888;
+    margin-bottom: 10px;
+    .sum-score {
+      font-size: 20px;
+      text-align: center;
+      user-select: none;
+      line-height: 30px;
+      padding: 5px;
+    }
+
+    .toggle-direction {
+      height: 40px;
+      font-size: 20px;
+      padding: 5px 8px;
+      border-radius: 5px;
+    }
+
+    .toggle-direction:hover {
+      background-color: #ccc;
+    }
   }
 
   .question-list {
@@ -138,7 +148,9 @@ const toggleDirection = () => {
     display: flex;
     flex-direction: column;
     width: calc(100% - 30px);
+    gap: 30px;
   }
+
   .question-list-none {
     text-align: center;
     padding-top: 10px;

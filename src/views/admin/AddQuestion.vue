@@ -15,28 +15,28 @@
       </div>
       <div class="data">
         <div>
-          <label for="oname">问题：</label
+          <label for="oname">问题描述：</label
           ><textarea
             class="question"
             id="oname"
-            placeholder="请在此输入题目（不要输入题号和题目类型！）"
+            placeholder="请在此输入问题（不要输入题号和题目类型！）"
             v-model.trim="formData.title"
           ></textarea>
         </div>
         <div class="choice">
-          <p>选项列表：</p>
+          <p>{{ types[formData.type - 1].optionTitle }}</p>
           <ul>
-            <li class="option">
+            <li class="option" v-if="formData.type === 1 || formData.type === 2">
               <label class="num">编号</label><label class="text">选项（前端会自动打乱选项顺序）</label
-              ><label class="correct">正确答案</label>
+              ><label class="correct">正确选项</label>
               <label class="delete"></label>
             </li>
             <li class="option" v-for="(item, index) in formData.options" :key="item.key">
-              <label class="num">选项{{ index + 1 }}</label>
+              <label class="num" v-show="formData.type === 1 || formData.type === 2">选项{{ index + 1 }}</label>
               <div class="text">
-                <textarea v-model="item.option" placeholder="不要写例如ABCD这样的编号！"></textarea>
+                <textarea v-model="item.option" :placeholder="types[formData.type - 1].placeholder"></textarea>
               </div>
-              <div class="correct">
+              <div class="correct" v-show="formData.type === 1 || formData.type === 2">
                 <input
                   v-if="formData.type === 1"
                   type="radio"
@@ -115,14 +115,14 @@ const defaultFormData: IFormData = {
 };
 
 const types = ref([
-  { value: 1, name: '单选' },
-  { value: 2, name: '多选' },
-  { value: 3, name: '填空' },
-  { value: 4, name: '简答' },
+  { value: 1, name: '单选', optionTitle: '单选列表：', placeholder: '不要写例如 A.B.C.D. 这样的编号！' },
+  { value: 2, name: '多选', optionTitle: '多选列表：', placeholder: '不要写例如 A.B.C.D. 这样的编号！' },
+  { value: 3, name: '填空', optionTitle: '正确答案：', placeholder: '请在此输入正确答案，不要有多余符号' },
+  { value: 4, name: '简答', optionTitle: '参考答案：', placeholder: '请在此输入参考答案' },
 ]);
 
 const defaultOption: IOption = {
-  option: '选项',
+  option: '',
   isAnswer: false,
   key: '',
 };
@@ -143,7 +143,7 @@ newOption();
 const delOption = (key: string) => {
   formData.options.splice(
     formData.options.findIndex((item) => item.key === key),
-    1
+    1,
   );
 };
 
@@ -174,7 +174,7 @@ watch(
       newOption();
       formData.options[0].isAnswer = true;
     }
-  }
+  },
 );
 </script>
 
@@ -203,6 +203,7 @@ watch(
         display: flex;
         height: 100%;
         input {
+          border: 1px solid #888;
           border-radius: 5px;
           width: 30px;
           padding: 5px;
@@ -215,13 +216,17 @@ watch(
         margin-bottom: 10px;
       }
       .question {
-        width: 100%;
+        width: calc(100% - 10px);
         resize: vertical;
         margin: 10px 0;
+        border: 1px solid #888;
         border-radius: 5px;
         padding: 5px;
         height: 20px;
         font-size: var(--normal-font-size);
+      }
+      .option:first-child .num {
+        padding-top: 0;
       }
       .option {
         display: flex;
@@ -231,14 +236,17 @@ watch(
         gap: 10px;
         .num {
           width: 100px;
+          padding-top: 10px;
+          text-align: center;
         }
         .text {
           width: 100%;
           textarea {
             padding: 5px;
-            width: 100%;
+            width: calc(100% - 10px);
             resize: vertical;
             min-height: 30px;
+            border: 1px solid #888;
             border-radius: 5px;
             font-size: var(--normal-font-size);
           }
@@ -316,4 +324,3 @@ watch(
   }
 }
 </style>
-

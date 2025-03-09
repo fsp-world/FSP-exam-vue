@@ -46,11 +46,10 @@ function selectOption(question, selectedOption) {
     </div>
     <ul class="option-list" v-if="question.type === 'singleChoice' || question.type === 'multipleChoice'">
       <li
-        class="option"
         v-for="(option, optionIndex) in question.options"
         :key="optionIndex"
         @click="selectOption(question, option)"
-        :class="{ selected: option.select || option.isCorrect }"
+        :class="[{ selected: option.select || option.isCorrect }, { 'option-hover': !lock }]"
       >
         {{ ['A.', 'B.', 'C.', 'D.'][optionIndex] }}{{ option.text }}
       </li>
@@ -119,7 +118,7 @@ function selectOption(question, selectedOption) {
   border: 1px solid #ffffff00;
 }
 
-.option-list .option:hover {
+.option-list .option-hover:hover {
   background-color: #cccccc80;
 }
 
