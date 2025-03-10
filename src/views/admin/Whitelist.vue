@@ -1,13 +1,15 @@
 <script setup>
-import { onMounted, ref } from 'vue';
+import { ref } from 'vue';
 import { getWhitelist } from '@/apis/admin';
 
 const wlData = ref({});
 
-getWhitelist().then((res) => {
-  console.log(res.data);
-  wlData.value = res.data;
-});
+const getWL = () => {
+  getWhitelist().then((res) => {
+    wlData.value = res.data;
+  });
+};
+getWL();
 </script>
 
 <template>
@@ -47,3 +49,4 @@ th {
   text-align: center;
 }
 </style>
+

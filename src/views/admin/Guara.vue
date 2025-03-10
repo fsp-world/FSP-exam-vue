@@ -1,5 +1,5 @@
 <script></script>
 
 <template>
-  <H1>担保管理</H1>
+  <h1>担保管理</h1>
 </template>

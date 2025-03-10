@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { onMounted, onUnmounted, PropType } from 'vue';
-import { IalertData } from '@/utils/alertType';
+import { IalertData } from '@/types';
 import { useAlertStore } from '@/stores/alert';
 
 const alertStore = useAlertStore();
