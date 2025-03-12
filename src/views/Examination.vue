@@ -28,8 +28,6 @@ const flag = ref(false);
 const type = ref('');
 
 const start = () => {
-  console.log(route.params.sid);
-
   if (!route.params.sid) {
     openAlert('未知试卷');
     return
@@ -46,6 +44,10 @@ const start = () => {
   });
 };
 start()
+
+const submitPaper = () => {
+  console.log(questions);
+}
 </script>
 
 <template>
@@ -63,11 +65,11 @@ start()
           :key="questionIndex"
           :id="'question' + (questionIndex + 1)"
         >
-          <QuestionCard :question="question" :index="questionIndex"></QuestionCard>
+          <QuestionCard v-model="questions[questionIndex]" :index="questionIndex"></QuestionCard>
         </li>
       </ul>
       <div class="submit">
-        <MCButton class="minecraft-button" @click="submitTestPaper()">交卷</MCButton>
+        <MCButton class="minecraft-button" @click="submitPaper()">交卷</MCButton>
       </div>
       <br />
       <br />

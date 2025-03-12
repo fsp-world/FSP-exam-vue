@@ -1,7 +1,6 @@
 <script setup>
 import { defineProps } from 'vue';
-const { question, index, lock } = defineProps({
-  question: Object,
+const { index, lock } = defineProps({
   index: Number,
   lock: {
     default: false,
@@ -9,22 +8,22 @@ const { question, index, lock } = defineProps({
   },
 });
 
-const emit = defineEmits(['onChange']);
+const model = defineModel()
 
-function selectOption(question, selectedOption) {
+const selectOption = (selectedOption) => {
   if (lock) {
     return;
   }
-  if (question.type === 'singleChoice') {
-    for (let opt of question.options) {
+  if (model.value.type === 'singleChoice') {
+    for (let opt of model.value.options) {
       opt.select = false;
     }
   }
   selectedOption.select = !selectedOption.select;
-  question.answer = '';
-  for (let opt of question.options) {
+  model.value.answer = [];
+  for (let opt of model.value.options) {
     if (opt.select) {
-      question.answer += opt.label;
+      model.value.answer.push(opt.id);
     }
   }
 }
@@ -35,27 +34,27 @@ function selectOption(question, selectedOption) {
     <div class="title">
       <span class="type">
         {{ index + 1 }}.
-        <span v-if="question.type === 'singleChoice'"> [单选题] </span>
-        <span v-else-if="question.type === 'multipleChoice'"> [多选题] </span>
-        <span v-else-if="question.type === 'fillInTheBlanks'"> [填空题] </span>
-        <span v-else-if="question.type === 'subjective'"> [主观题] </span>
+        <span v-if="model.type === 'singleChoice'"> [单选题] </span>
+        <span v-else-if="model.type === 'multipleChoice'"> [多选题] </span>
+        <span v-else-if="model.type === 'fillInTheBlanks'"> [填空题] </span>
+        <span v-else-if="model.type === 'subjective'"> [主观题] </span>
         <span v-else>[未知类型]</span>
       </span>
-      <span class="text"> {{ question.title }}</span>
-      <span class="score">({{ question.score }}分)</span>
+      <span class="text"> {{ model.title }}</span>
+      <span class="score">({{ model.score }}分)</span>
     </div>
-    <ul class="option-list" v-if="question.type === 'singleChoice' || question.type === 'multipleChoice'">
+    <ul class="option-list" v-if="model.type === 'singleChoice' || model.type === 'multipleChoice'">
       <li
-        v-for="(option, optionIndex) in question.options"
+        v-for="(option, optionIndex) in model.options"
         :key="optionIndex"
-        @click="selectOption(question, option)"
+        @click="selectOption(option)"
         :class="[{ selected: option.select || option.isCorrect }, { 'option-hover': !lock }]"
       >
         {{ ['A.', 'B.', 'C.', 'D.'][optionIndex] }}{{ option.text }}
       </li>
     </ul>
-    <ul v-if="question.img_url" class="images">
-      <li v-for="pic in question.img_url">
+    <ul v-if="model.img_url" class="images">
+      <li v-for="pic in model.img_url">
         <img :src="pic" />
         <p>{{ pic }}</p>
       </li>
@@ -64,17 +63,17 @@ function selectOption(question, selectedOption) {
       type="txet"
       required
       class="input-text"
-      v-model="question.options[0].text"
+      v-model="model.options[0].text"
       :disabled="lock"
-      v-if="question.type === 'fillInTheBlanks'"
+      v-if="model.type === 'fillInTheBlanks'"
     />
-    <div :class="{ resize: question.type === 'subjective' }">
+    <div :class="{ resize: model.type === 'subjective' }">
       <textarea
         required
         class="input-textarea"
-        v-model="question.options[0].text"
+        v-model="model.options[0].text"
         placeholder="请在此处作答"
-        v-if="question.type === 'subjective'"
+        v-if="model.type === 'subjective'"
         :disabled="lock"
       ></textarea>
     </div>
