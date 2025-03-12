@@ -22,7 +22,7 @@ const router = createRouter({
       meta: { requiresAuth: true },
     },
     {
-      path: '/examination',
+      path: '/examination/:sid',
       name: 'Examination',
       component: () => import('@/views/Examination.vue'),
       meta: { requiresAuth: true },

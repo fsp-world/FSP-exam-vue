@@ -4,8 +4,10 @@ import MCButton from '@/components/MCButton.vue';
 import MCRouterLink from '@/components/MCRouterLink.vue';
 import InfoConfirmDialog from '@/components/InfoConfirmDialog.vue';
 import { getProfilePic } from '@/apis/mj';
+import { startSurvey, checkSurvey } from '@/apis/default';
 import { useAlertStore } from '@/stores/alert';
 import { useRouter } from 'vue-router';
+
 const router = useRouter();
 
 const alertStore = useAlertStore();
@@ -19,6 +21,16 @@ const openAlert = (message) => {
   };
   alertStore.openAlert(data);
 };
+
+const checkSurvey_ = () => {
+  checkSurvey().then((res) => {
+    if (res.data.code === 1) {
+      openAlert(res.data.desc);
+      router.push({ name: 'Examination', params: { sid: res.data.response } });
+    }
+  });
+};
+checkSurvey_()
 
 const examineeInfo = ref({
   playerName: '',
@@ -71,7 +83,15 @@ const startExam = () => {
 
 const handelConfirm = () => {
   flag.value = false;
-  router.push({ name: 'Examination' });
+  startSurvey(examineeInfo.value).then(res => {
+    if (res === 0) {
+      openAlert(res.data.desc)
+      router.push({ name: 'Examination', params: { sid: res.data.response } });
+    }
+    else {
+      openAlert(res.data.desc)
+    }
+  })
 };
 </script>
 

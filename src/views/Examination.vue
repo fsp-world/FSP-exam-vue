@@ -5,7 +5,10 @@ import QuestionMap from '@/components/QuestionMap.vue';
 import QuestionCard from '@/components/QuestionCard.vue';
 import QuestionBackground from '@/components/QuestionBackground.vue';
 import { useAlertStore } from '@/stores/alert';
-import { getSurvey } from '@/apis/default.js'
+import { getSurvey } from '@/apis/default.js';
+import { useRoute } from 'vue-router';
+
+const route = useRoute();
 
 const alertStore = useAlertStore();
 const openAlert = (message) => {
@@ -22,16 +25,27 @@ const openAlert = (message) => {
 const questions = ref([]);
 const remainingTime = ref('');
 const flag = ref(false);
+const type = ref('');
 
-getSurvey(1).then((res) => {
-  flag.value = true;
+const start = () => {
+  console.log(route.params.sid);
 
-  if (res.data['code'] === 1) {
-    openAlert(res.data['desc']);
-  } else {
-    questions.value = res.data.questions;
+  if (!route.params.sid) {
+    openAlert('未知试卷');
+    return
   }
-});
+  getSurvey(route.params.sid).then((res) => {
+    flag.value = true;
+
+    if (res.data['code'] === 1) {
+      openAlert(res.data['desc']);
+    } else {
+      questions.value = res.data.questions;
+      type.value = res.data.type
+    }
+  });
+};
+start()
 </script>
 
 <template>
@@ -39,7 +53,7 @@ getSurvey(1).then((res) => {
     <div class="center">
       <div class="exam-title">
         <p class="title">像素仙缘入服测试卷</p>
-        <p class="type">{{}}类试题</p>
+        <p class="type">{{ type }}类试题</p>
         <p class="time">{{ remainingTime }}</p>
       </div>
       <ul class="question-list">
