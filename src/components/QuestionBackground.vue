@@ -1,5 +1,5 @@
 <script setup>
-import { ref, useTemplateRef, onMounted, watch } from 'vue';
+import { ref, watch } from 'vue';
 import BackgroundOre from './BackgroundOre.vue';
 function generatePatterns() {
   function generateNonOverlappingPositions(count) {
@@ -20,11 +20,12 @@ function generatePatterns() {
     return positions;
   }
   const elementSize = 130;
+  // 不希望矿石生成在草方块、泥土或者基岩里！
   const maxX = window.innerWidth - elementSize;
-  const minY = 260;
-  const maxY = bgHeight.value - elementSize;
+  const minY = elementSize * 2;
+  const maxY = bgHeight.value - elementSize * 2;
   const area = maxX * maxY;
-  const k = area * 0.000001; // 3 ~ 10
+  const k = area * 0.000001; // 建议控制在 3 ~ 10，否则严重影响客户端性能
   const count = k * 8;
   const positions = generateNonOverlappingPositions(count);
   const srcList = ['iron', 'coal'];
@@ -69,8 +70,8 @@ watch(bgHeight, (newVal, oldVal) => {
   width: 100%;
   min-height: 100vh;
   position: relative;
-  /* z-index: 1; */
   top: 0;
+  overflow-x: hidden;
 }
 
 .slot-content {

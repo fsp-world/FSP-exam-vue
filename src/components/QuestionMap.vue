@@ -68,9 +68,27 @@ const { questions } = defineProps({
   }
 }
 
-@media screen and (max-width: 1350px) {
+@media screen and (max-width: 1400px) {
   .map {
     transform: translate(-90%, -50%);
   }
+}
+/*滚动条样式*/
+.y-scroll::-webkit-scrollbar {
+  width: 5px;
+}
+
+.y-scroll::-webkit-scrollbar-thumb {
+  -webkit-box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.y-scroll::-webkit-scrollbar-track {
+  -webkit-box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
+  background: rgba(0, 0, 0, 0.1);
+}
+
+.y-scroll::-webkit-scrollbar-corner {
+  border-radius: 5px;
 }
 </style>
