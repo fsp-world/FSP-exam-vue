@@ -5,12 +5,10 @@ const { questions } = defineProps({
 </script>
 
 <template>
-  <div class="map y-scroll">
-    <ul>
+  <div class="map">
+    <ul class="y-scroll">
       <li v-for="(question, questionIndex) in questions" :key="questionIndex">
-        <a :href="'#' + 'question' + (questionIndex + 1)">{{
-          questionIndex + 1
-        }}</a>
+        <a :href="'#' + 'question' + (questionIndex + 1)">{{ questionIndex + 1 }}</a>
       </li>
     </ul>
   </div>
@@ -20,7 +18,6 @@ const { questions } = defineProps({
 .map:hover {
   transform: translate(0, -50%);
 }
-
 .map {
   top: 50%;
   left: 0;
@@ -37,38 +34,36 @@ const { questions } = defineProps({
   image-rendering: pixelated;
   padding: 20px;
   z-index: 99;
-  overflow-y: auto;
-  overflow-x: hidden;
-}
+  ul {
+    width: 100%;
+    height: 100%;
+    overflow-x: hidden;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-content: flex-start;
+    gap: 5px;
+    margin-right: 10px;
+  }
+  li {
+    width: 34px;
+    height: 36px;
+    a {
+      font-size: 25px;
+      width: 36px;
+      height: 36px;
+      text-align: center;
+      line-height: 36px;
+      color: #000;
+      -webkit-user-drag: none;
+      user-select: none;
+    }
 
-ul {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  align-content: flex-start;
-  gap: 5px;
-}
-
-li {
-  width: 36px;
-  height: 36px;
-}
-
-a {
-  font-size: 25px;
-  width: 36px;
-  height: 36px;
-  text-align: center;
-  line-height: 36px;
-  color: #000;
-  -webkit-user-drag: none;
-  user-select: none;
-}
-
-a:hover {
-  background-color: rgba(0, 0, 0, 0.2);
+    a:hover {
+      background-color: rgba(0, 0, 0, 0.2);
+    }
+  }
 }
 
 @media screen and (max-width: 1350px) {
