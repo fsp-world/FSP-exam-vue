@@ -47,14 +47,16 @@ const { questions } = defineProps({
     margin-right: 10px;
   }
   li {
-    width: 34px;
-    height: 36px;
+    --wid: 34px;
+    --hei: 36px;
+    width: var(--wid);
+    height: var(--hei);
     a {
       font-size: 25px;
-      width: 36px;
-      height: 36px;
+      width: 100%;
+      height: 100%;
       text-align: center;
-      line-height: 36px;
+      line-height: var(--hei);
       color: #000;
       -webkit-user-drag: none;
       user-select: none;
