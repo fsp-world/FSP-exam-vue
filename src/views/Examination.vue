@@ -5,7 +5,7 @@ import QuestionMap from '@/components/QuestionMap.vue';
 import QuestionCard from '@/components/QuestionCard.vue';
 import QuestionBackground from '@/components/QuestionBackground.vue';
 import { useAlertStore } from '@/stores/alert';
-import { getSurvey } from '@/apis/default.js';
+import { getSurvey, submitResponseDetail } from '@/apis/default.js';
 import { useRoute } from 'vue-router';
 
 const route = useRoute();
@@ -30,7 +30,7 @@ const type = ref('');
 const start = () => {
   if (!route.params.sid) {
     openAlert('未知试卷');
-    return
+    return;
   }
   getSurvey(route.params.sid).then((res) => {
     flag.value = true;
@@ -39,15 +39,22 @@ const start = () => {
       openAlert(res.data['desc']);
     } else {
       questions.value = res.data.questions;
-      type.value = res.data.type
+      type.value = res.data.type;
     }
   });
 };
-start()
+start();
 
 const submitPaper = () => {
   console.log(questions);
-}
+};
+
+const handleChange = (payload) => {
+  console.log(payload.value);
+  submitResponseDetail(payload.value).then((res) => {
+    console.log(res);
+  });
+};
 </script>
 
 <template>
@@ -65,7 +72,11 @@ const submitPaper = () => {
           :key="questionIndex"
           :id="'question' + (questionIndex + 1)"
         >
-          <QuestionCard v-model="questions[questionIndex]" :index="questionIndex"></QuestionCard>
+          <QuestionCard
+            v-model="questions[questionIndex]"
+            :index="questionIndex"
+            @option-change="handleChange"
+          ></QuestionCard>
         </li>
       </ul>
       <div class="submit">
