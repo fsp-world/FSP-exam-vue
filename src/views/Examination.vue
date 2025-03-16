@@ -48,13 +48,6 @@ start();
 const submitPaper = () => {
   console.log(questions);
 };
-
-const handleChange = (payload) => {
-  console.log(payload.value);
-  submitResponseDetail(payload.value).then((res) => {
-    console.log(res);
-  });
-};
 </script>
 
 <template>
@@ -75,7 +68,6 @@ const handleChange = (payload) => {
           <QuestionCard
             v-model="questions[questionIndex]"
             :index="questionIndex"
-            @option-change="handleChange"
           ></QuestionCard>
         </li>
       </ul>

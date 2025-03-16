@@ -10,8 +10,6 @@ const { index, lock } = defineProps({
 
 const model = defineModel()
 
-const emit = defineEmits(['optionChange'])
-
 const selectOption = (selectedOption) => {
   console.log(selectOption);
 
@@ -30,7 +28,6 @@ const selectOption = (selectedOption) => {
       model.value.answer.push(opt.id);
     }
   }
-  emit('optionChange', model)
 }
 </script>
 
