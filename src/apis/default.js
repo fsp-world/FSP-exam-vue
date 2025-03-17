@@ -6,5 +6,5 @@ export const checkSurvey = () => request.post('/default/check_survey');
 
 export const startSurvey = (data = {}) => request.post('/default/start_survey', JSON.stringify(data));
 
-export const submitResponseDetail = (data) => request.post('/default/submit_response_detail', JSON.stringify(data))
+export const completeSurvey = (data) => request.post('/default/complete_survey', data)
 

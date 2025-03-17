@@ -5,7 +5,7 @@ import QuestionMap from '@/components/QuestionMap.vue';
 import QuestionCard from '@/components/QuestionCard.vue';
 import QuestionBackground from '@/components/QuestionBackground.vue';
 import { useAlertStore } from '@/stores/alert';
-import { getSurvey, submitResponseDetail } from '@/apis/default.js';
+import { getSurvey, completeSurvey } from '@/apis/default.js';
 import { useRoute } from 'vue-router';
 
 const route = useRoute();
@@ -46,6 +46,9 @@ const start = () => {
 start();
 
 const submitPaper = () => {
+  completeSurvey(questions.value).then((res) => {
+    console.log(res);
+  });
   console.log(questions);
 };
 </script>
@@ -65,10 +68,7 @@ const submitPaper = () => {
           :key="questionIndex"
           :id="'question' + (questionIndex + 1)"
         >
-          <QuestionCard
-            v-model="questions[questionIndex]"
-            :index="questionIndex"
-          ></QuestionCard>
+          <QuestionCard v-model="questions[questionIndex]" :index="questionIndex"></QuestionCard>
         </li>
       </ul>
       <div class="submit">

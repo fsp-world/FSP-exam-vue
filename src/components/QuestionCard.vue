@@ -11,8 +11,6 @@ const { index, lock } = defineProps({
 const model = defineModel()
 
 const selectOption = (selectedOption) => {
-  console.log(selectOption);
-
   if (lock) {
     return;
   }
