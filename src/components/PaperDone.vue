@@ -60,21 +60,24 @@ onMounted(() => {
 <style scoped>
 .paper-done {
   position: fixed;
-  min-width: 670px;
-  width: 70vh;
-  height: 70vh;
-  background-color: #ededed;
-  border-radius: 20px;
-  padding: 10px;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+  width: 100vw;
+  height: 100vh;
+  background-color: #d4d2d29e;
+  top: 0;
+  left: 0;
   display: flex;
   justify-content: center;
   align-items: center;
+  z-index: 10;
   .box {
     text-align: center;
     font-size: 26px;
+    background-color: #eeeeee;
+    border-radius: 20px;
+    padding: 40px;
+    p {
+      margin-bottom: 15px;
+    }
     .score {
       font-size: 36px;
       font-weight: 600;

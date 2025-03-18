@@ -4,6 +4,7 @@ import MCButton from '@/components/MCButton.vue';
 import QuestionMap from '@/components/QuestionMap.vue';
 import QuestionCard from '@/components/QuestionCard.vue';
 import QuestionBackground from '@/components/QuestionBackground.vue';
+import PaperDone from '@/components/PaperDone.vue';
 import { useAlertStore } from '@/stores/alert';
 import { getSurvey, completeSurvey } from '@/apis/default.js';
 import { useRoute } from 'vue-router';
@@ -25,6 +26,8 @@ const openAlert = (message) => {
 const questions = ref([]);
 const remainingTime = ref('');
 const flag = ref(false);
+const isDone = ref(true);
+const score = ref(0)
 const type = ref('');
 
 const start = () => {
@@ -48,6 +51,10 @@ start();
 const submitPaper = () => {
   completeSurvey(questions.value).then((res) => {
     console.log(res);
+    if (res.data.code === 0) {
+      score.value = res.data.score
+      isDone.value = true
+    }
   });
   console.log(questions);
 };
@@ -78,7 +85,8 @@ const submitPaper = () => {
       <br />
     </div>
   </QuestionBackground>
-  <QuestionMap :questions="questions"></QuestionMap>
+  <PaperDone v-if="isDone" :score="score"></PaperDone>
+  <QuestionMap v-else :questions="questions"></QuestionMap>
 </template>
 
 <style scoped>
