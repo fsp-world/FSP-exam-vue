@@ -26,8 +26,8 @@ const openAlert = (message) => {
 const questions = ref([]);
 const remainingTime = ref('');
 const flag = ref(false);
-const isDone = ref(true);
-const score = ref(0)
+const isDone = ref(false);
+const score = ref(0);
 const type = ref('');
 
 const start = () => {
@@ -52,8 +52,8 @@ const submitPaper = () => {
   completeSurvey(questions.value).then((res) => {
     console.log(res);
     if (res.data.code === 0) {
-      score.value = res.data.score
-      isDone.value = true
+      score.value = res.data.score;
+      isDone.value = true;
     }
   });
   console.log(questions);
