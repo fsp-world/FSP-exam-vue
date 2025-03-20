@@ -84,7 +84,7 @@ const startExam = () => {
 const handelConfirm = () => {
   flag.value = false;
   startSurvey(examineeInfo.value).then(res => {
-    if (res === 0) {
+    if (res.data.code === 0) {
       openAlert(res.data.desc)
       router.push({ name: 'Examination', params: { sid: res.data.response } });
     }
