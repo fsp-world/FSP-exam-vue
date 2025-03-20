@@ -8,7 +8,7 @@ const { questions } = defineProps({
   <div class="map">
     <ul class="y-scroll">
       <li v-for="(question, questionIndex) in questions" :key="questionIndex">
-        <a :href="'#' + 'question' + (questionIndex + 1)">{{ questionIndex + 1 }}</a>
+        <a :class="{error: !question.answer}" :href="'#' + 'question' + (questionIndex + 1)">{{ questionIndex + 1 }}</a>
       </li>
     </ul>
   </div>
@@ -60,6 +60,10 @@ const { questions } = defineProps({
       color: #000;
       -webkit-user-drag: none;
       user-select: none;
+    }
+
+    a.error {
+      color: red;
     }
 
     a:hover {

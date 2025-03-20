@@ -8,7 +8,7 @@ const { index, lock } = defineProps({
   },
 });
 
-const model = defineModel()
+const model = defineModel();
 
 const selectOption = (selectedOption) => {
   if (lock) {
@@ -26,7 +26,7 @@ const selectOption = (selectedOption) => {
       model.value.answer.push(opt.id);
     }
   }
-}
+};
 </script>
 
 <template>
@@ -63,7 +63,12 @@ const selectOption = (selectedOption) => {
       type="txet"
       required
       class="input-text"
-      v-model="model.options[0].text"
+      :value="model.options[0].text"
+      @input="
+        (e) => {
+          model.answer = [e.target.value];
+        }
+      "
       :disabled="lock"
       v-if="model.type === 'fillInTheBlanks'"
     />
@@ -71,7 +76,12 @@ const selectOption = (selectedOption) => {
       <textarea
         required
         class="input-textarea"
-        v-model="model.options[0].text"
+        :value="model.options[0].text"
+        @input="
+          (e) => {
+            model.answer = [e.target.value];
+          }
+        "
         placeholder="请在此处作答"
         v-if="model.type === 'subjective'"
         :disabled="lock"
@@ -198,3 +208,4 @@ const selectOption = (selectedOption) => {
   image-rendering: pixelated;
 }
 </style>
+

@@ -5,6 +5,7 @@ import QuestionMap from '@/components/QuestionMap.vue';
 import QuestionCard from '@/components/QuestionCard.vue';
 import QuestionBackground from '@/components/QuestionBackground.vue';
 import PaperDone from '@/components/PaperDone.vue';
+import InfoDialog from '@/components/InfoDialog.vue';
 import { useAlertStore } from '@/stores/alert';
 import { getSurvey, completeSurvey } from '@/apis/default.js';
 import { useRoute } from 'vue-router';
@@ -29,6 +30,7 @@ const flag = ref(false);
 const isDone = ref(false);
 const score = ref(0);
 const type = ref('');
+const confirm = ref(false);
 
 const start = () => {
   if (!route.params.sid) {
@@ -37,7 +39,6 @@ const start = () => {
   }
   getSurvey(route.params.sid).then((res) => {
     flag.value = true;
-
     if (res.data['code'] === 1) {
       openAlert(res.data['desc']);
     } else {
@@ -48,15 +49,39 @@ const start = () => {
 };
 start();
 
-const submitPaper = () => {
+const checkDone = async () => {
+  return new Promise((resolve, reject) => {
+    const not = [];
+    // 找未作答题目
+    questions.value.forEach((item, index) => {
+      if (!item.answer) {
+        not.push(index + 1);
+      }
+    });
+    if (!not.length) resolve();
+    else reject(not);
+  });
+};
+
+const complete = () => {
+  confirm.value = false
   completeSurvey(questions.value).then((res) => {
-    console.log(res);
     if (res.data.code === 0) {
       score.value = res.data.score;
       isDone.value = true;
     }
   });
-  console.log(questions);
+};
+
+const submitPaper = () => {
+  checkDone()
+    .then(() => {
+      complete();
+    })
+    .catch((res) => {
+      openAlert('有题目未完成请查看左侧题目地图！');
+      confirm.value = true;
+    });
 };
 </script>
 
@@ -85,6 +110,13 @@ const submitPaper = () => {
       <br />
     </div>
   </QuestionBackground>
+  <InfoDialog :show="confirm" dialogType="warn-card">
+    <p style="margin-top: 20px">还有未完成题目！确认提交？</p>
+    <p style="display: flex; justify-content: flex-end; padding-right: 30px; margin-top: 10px">
+      <MCButton class="btn" @click="confirm = false">取消</MCButton>
+      <MCButton class="btn" @click="complete()">确认</MCButton>
+    </p>
+  </InfoDialog>
   <PaperDone v-if="isDone" :score="score"></PaperDone>
   <QuestionMap v-else :questions="questions"></QuestionMap>
 </template>
@@ -142,5 +174,11 @@ const submitPaper = () => {
   margin: 10px 0;
   width: 100%;
   position: relative;
+}
+
+.btn {
+  border-radius: 5px;
+  padding: 12px 20px;
+  margin: 0px 10px;
 }
 </style>
