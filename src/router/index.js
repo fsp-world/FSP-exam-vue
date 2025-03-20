@@ -107,42 +107,40 @@ const router = createRouter({
   ],
 });
 
-// 路由守卫：检查用户是否登录
-router.beforeEach((to, from, next) => {
+
+// 路由守卫
+router.beforeEach((to, from) => {
   const user = useUserStore();
-  // 如果用户已登录且尝试访问登录页面，则重定向到个人空间
+
+  // 如果用户已登录且尝试访问 Auth 页面，重定向到 Space 页面
   if (to.name === 'Auth' && user.isLogin) {
-    next({ name: 'Space' }); // 跳转到个人空间
+    return { name: 'Space' };
   }
-  // 检查目标路由是否需要登录
-  else if (to.matched.some((record) => record.meta.requiresAuth)) {
-    // 检查用户是否已登录
+
+  // 检查是否需要认证
+  if (to.matched.some((record) => record.meta.requiresAuth)) {
     if (!user.isLogin) {
-      // 如果未登录，重定向到登录页面
-      next({
+      // 如果未登录，重定向到登录页面，并携带重定向路径
+      return {
         name: 'Auth',
         query: { redirect: to.fullPath },
-      });
-      // 检查目标路由是否需要管理员权限
-    } else if (to.matched.some((record) => record.meta.requiresAdmin)) {
-      // 检查用户是否已登录
+      };
+    }
+
+    // 检查是否需要管理员权限
+    if (to.matched.some((record) => record.meta.requiresAdmin)) {
       if (!user.isAdmin) {
-        // 如果不是，重定向到错误页面
-        next({
+        // 如果不是管理员，重定向到错误页面
+        return {
           name: 'Error',
           query: { redirect: to.fullPath, message: '你不是管理员！' },
-        });
-      } else {
-        // 如果是，继续
-        next();
+        };
       }
-    } else {
-      next();
     }
-  } else {
-    // 如果目标路由不需要登录，直接继续导航
-    next();
   }
+
+  // 默认情况下，允许导航
+  return true;
 });
 
 export default router;
