@@ -51,7 +51,7 @@ watch(bgHeight, (newVal, oldVal) => {
 </script>
 
 <template>
-  <div class="back-ground" :ref="(el) => (bgHeight = el.offsetHeight)">
+  <div class="back-ground" :ref="(el) => (bgHeight = el?.offsetHeight)">
     <div class="bga grass"></div>
     <div class="bga stone"></div>
     <div class="bga deepslate"></div>
