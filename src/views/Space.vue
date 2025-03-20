@@ -10,7 +10,7 @@ import { storeToRefs } from 'pinia';
 
 const alertStore = useAlertStore();
 const userStore = useUserStore()
-const { avatar, username, userQQ, role, avatarUUID, getStatus, dateToLocal } = storeToRefs(userStore)
+const { avatar, username, userQQ, role, avatarUUID, getStatus, dateToLocal, isAdmin } = storeToRefs(userStore)
 
 userStore.syncUserInfo()
 
@@ -87,6 +87,7 @@ const editAvatar = (uuid) => {
         <div class="menu">
           <MCRouterLink class="button" to="/Query/Guarantee"> 担保查询 </MCRouterLink>
           <MCRouterLink class="button" to="/Query/Examination"> 考试查询 </MCRouterLink>
+          <MCRouterLink v-if="isAdmin" class="button" to="/admin"> 管理 </MCRouterLink>
         </div>
       </div>
       <div class="end">
