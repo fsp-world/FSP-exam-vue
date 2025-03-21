@@ -4,7 +4,7 @@ import MCButton from '@/components/MCButton.vue';
 import MCRouterLink from '@/components/MCRouterLink.vue';
 import InfoConfirmDialog from '@/components/InfoConfirmDialog.vue';
 import { getProfilePic } from '@/apis/mj';
-import { startSurvey, checkSurvey } from '@/apis/default';
+import { startSurvey, checkSurvey } from '@/apis/survey';
 import { useAlertStore } from '@/stores/alert';
 import { useRouter } from 'vue-router';
 
@@ -30,7 +30,7 @@ const checkSurvey_ = () => {
     }
   });
 };
-checkSurvey_()
+checkSurvey_();
 
 const examineeInfo = ref({
   playerName: '',
@@ -83,20 +83,23 @@ const startExam = () => {
 
 const handelConfirm = () => {
   flag.value = false;
-  startSurvey(examineeInfo.value).then(res => {
+  startSurvey(examineeInfo.value).then((res) => {
     if (res.data.code === 0) {
-      openAlert(res.data.desc)
+      openAlert(res.data.desc);
       router.push({ name: 'Examination', params: { sid: res.data.response } });
+    } else {
+      openAlert(res.data.desc);
     }
-    else {
-      openAlert(res.data.desc)
-    }
-  })
+  });
 };
 </script>
 
 <template>
-  <InfoConfirmDialog :show="flag" :info="examineeInfo" @confirm="handelConfirm"></InfoConfirmDialog>
+  <InfoConfirmDialog
+    :show="flag"
+    :info="examineeInfo"
+    @confirm="handelConfirm"
+  ></InfoConfirmDialog>
   <div class="prepare-exam-page">
     <div class="translucent-bg"></div>
     <div class="translucent-content">
@@ -109,7 +112,11 @@ const handelConfirm = () => {
             <h1>在开始答题之前，我们需要知晓一些您的个人偏好</h1>
           </div>
           <form class="examineeInfo">
-            <input type="text" v-model="examineeInfo.playerName" placeholder="您的游戏昵称" />
+            <input
+              type="text"
+              v-model="examineeInfo.playerName"
+              placeholder="您的游戏昵称"
+            />
             <p>我们会根据您的选择生成定制的试题</p>
             <ul class="option-list">
               <li
