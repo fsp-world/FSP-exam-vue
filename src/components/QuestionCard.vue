@@ -63,7 +63,7 @@ const selectOption = (selectedOption) => {
       type="txet"
       required
       class="input-text"
-      :value="model.options[0].text"
+      :placeholder="model.options[0].text"
       @input="
         (e) => {
           model.answer = [e.target.value];
@@ -76,7 +76,7 @@ const selectOption = (selectedOption) => {
       <textarea
         required
         class="input-textarea"
-        :value="model.options[0].text"
+        :placeholder="model.options[0].text"
         @input="
           (e) => {
             model.answer = [e.target.value];
