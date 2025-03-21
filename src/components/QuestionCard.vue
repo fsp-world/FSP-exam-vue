@@ -8,13 +8,25 @@ const { index, lock } = defineProps({
   },
 });
 
+const QuestionCategory = {
+  SINGLE_CHOICE: 1,
+  MULTIPLE_CHOICE: 2,
+  FILL_IN_THE_BLANKS: 3,
+  SUBJECTIVE: 4,
+
+  // 根据数值获取枚举名称的方法
+  toName(value) {
+    return Object.keys(this).find((key) => this[key] === value);
+  },
+};
+
 const model = defineModel();
 
 const selectOption = (selectedOption) => {
   if (lock) {
     return;
   }
-  if (model.value.type === 'singleChoice') {
+  if (model.value.type === QuestionCategory.SINGLE_CHOICE) {
     for (let opt of model.value.options) {
       opt.select = false;
     }
@@ -34,16 +46,16 @@ const selectOption = (selectedOption) => {
     <div class="title">
       <span class="type">
         {{ index + 1 }}.
-        <span v-if="model.type === 'singleChoice'"> [单选题] </span>
-        <span v-else-if="model.type === 'multipleChoice'"> [多选题] </span>
-        <span v-else-if="model.type === 'fillInTheBlanks'"> [填空题] </span>
-        <span v-else-if="model.type === 'subjective'"> [主观题] </span>
+        <span v-if="model.type === 1"> [单选题] </span>
+        <span v-else-if="model.type === 2"> [多选题] </span>
+        <span v-else-if="model.type === 3"> [填空题] </span>
+        <span v-else-if="model.type === 4"> [主观题] </span>
         <span v-else>[未知类型]</span>
       </span>
       <span class="text"> {{ model.title }}</span>
       <span class="score">({{ model.score }}分)</span>
     </div>
-    <ul class="option-list" v-if="model.type === 'singleChoice' || model.type === 'multipleChoice'">
+    <ul class="option-list" v-if="model.type === 1 || model.type === 2">
       <li
         v-for="(option, optionIndex) in model.options"
         :key="optionIndex"
@@ -70,9 +82,9 @@ const selectOption = (selectedOption) => {
         }
       "
       :disabled="lock"
-      v-if="model.type === 'fillInTheBlanks'"
+      v-if="model.type === 3"
     />
-    <div :class="{ resize: model.type === 'subjective' }">
+    <div :class="{ resize: model.type === 4 }">
       <textarea
         required
         class="input-textarea"
@@ -83,7 +95,7 @@ const selectOption = (selectedOption) => {
           }
         "
         placeholder="请在此处作答"
-        v-if="model.type === 'subjective'"
+        v-if="model.type === 4"
         :disabled="lock"
       ></textarea>
     </div>
@@ -208,4 +220,3 @@ const selectOption = (selectedOption) => {
   image-rendering: pixelated;
 }
 </style>
-
