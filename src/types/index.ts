@@ -8,3 +8,14 @@ export interface IalertData {
 
 export type CardType = 'warn-card' | 'info-card';
 
+export interface IResponse {
+  id: number;
+  isCompleted: string;
+  isReviewed: string;
+  username: string;
+  survey: string;
+  surveyId: number;
+  responseTime: string;
+  createTime: string;
+}
+

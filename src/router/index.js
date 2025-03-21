@@ -97,6 +97,11 @@ const router = createRouter({
           name: 'Guara',
           component: () => import('@/views/admin/Guara.vue'),
         },
+        {
+          path: 'response',
+          name: 'Response',
+          component: () => import('@/views/admin/Response.vue'),
+        },
       ],
     },
     {

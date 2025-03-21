@@ -18,6 +18,9 @@
             <RouterLink to="/admin/guara" class="router-link">担保管理</RouterLink>
           </li>
           <li>
+            <RouterLink to="/admin/response" class="router-link">答卷审核</RouterLink>
+          </li>
+          <li>
             <RouterLink to="/" class="router-link">返回首页</RouterLink>
           </li>
         </ul>
