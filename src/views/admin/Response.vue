@@ -11,6 +11,7 @@
         <th>用户</th>
         <th>创建日期</th>
         <th>完成日期</th>
+        <th>操作</th>
       </tr>
     </thead>
     <tbody>
@@ -23,16 +24,18 @@
         <td>{{ item.username }}</td>
         <td>{{ moment(item.createTime).format('YY年MM月DD日 HH时') }}</td>
         <td>{{ moment(item.responseTime).format('YY年MM月DD日 HH时') }}</td>
+        <td><MCButton @click="reviewed(item.id)">通过</MCButton></td>
       </tr>
     </tbody>
   </table>
 </template>
 
 <script setup lang="ts">
-import { getResponses } from '@/apis/admin';
+import { getResponses, reviewedResponse } from '@/apis/admin';
 import type { IResponse } from '@/types';
 import { ref } from 'vue';
 import moment from 'moment';
+import MCButton from '@/components/MCButton.vue';
 
 const responses = ref<IResponse[]>();
 
@@ -41,6 +44,12 @@ getResponses().then((res: { data: { list: IResponse[]; code: number } }) => {
     responses.value = res.data.list;
   }
 });
+
+const reviewed = (id: number) => {
+  (reviewedResponse as (data: {response: number}) => Promise<any>)({response: id}).then((res) => {
+    console.log(res.data);
+  });
+};
 </script>
 
 <style scoped>
@@ -58,4 +67,3 @@ th {
   text-align: center;
 }
 </style>
-

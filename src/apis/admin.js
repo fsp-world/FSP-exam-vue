@@ -8,3 +8,4 @@ export const getSurveys = () => request.get('/admin/surveys');
 export const getSurvey = (id) => request.get('/admin/survey/' + id);
 export const addSurvey = (data) => request.post('/admin/addSurvey', JSON.stringify(data));
 export const addQuestion = (data) => request.post('/admin/addQuestion', JSON.stringify(data));
+export const reviewedResponse = (data) => request.post('/admin/reviewed', JSON.stringify(data));
