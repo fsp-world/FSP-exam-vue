@@ -62,7 +62,7 @@ const toggleDirection = () => {
           :key="questionIndex"
           :id="'question' + (questionIndex + 1)"
         >
-          <QuestionCard :lock="true" :question="question" :index="questionIndex"></QuestionCard>
+          <QuestionCard :lock="true" v-model="survey.questions[questionIndex]" :index="questionIndex"></QuestionCard>
         </li>
         <li class="question-list-none" v-if="!survey.questions.length">暂未添加题目</li>
       </ul>
