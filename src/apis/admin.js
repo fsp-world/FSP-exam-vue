@@ -11,3 +11,5 @@ export const addQuestion = (data) => request.post('/admin/addQuestion', JSON.str
 export const reviewedResponse = (data) => request.post('/admin/reviewed', JSON.stringify(data));
 export const responseDetail = (id) => request.get('/admin/detail/' + id);
 export const detailScore = (data) => request.post('/admin/detail_score', JSON.stringify(data))
+export const getQuestionType = () => request.get('/admin/question_type')
+export const setQuestionType = (data) => request.put('/admin/question_type', JSON.stringify(data))

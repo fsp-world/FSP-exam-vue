@@ -102,6 +102,11 @@ const router = createRouter({
           name: 'Response',
           component: () => import('@/views/admin/Response.vue'),
         },
+        {
+          path: 'question_type',
+          name: 'QuestionType',
+          component: () => import('@/views/admin/QuestionType.vue'),
+        },
       ],
     },
     {
