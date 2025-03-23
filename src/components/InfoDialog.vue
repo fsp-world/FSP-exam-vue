@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 const { show, dialogType, dialogStyle } = defineProps({
   show: Boolean,
   dialogType: String,
@@ -7,9 +7,11 @@ const { show, dialogType, dialogStyle } = defineProps({
 </script>
 
 <template>
-  <div class="dialog" :class="[dialogType, { 'dialog-show': show, 'dialog-close': !show }]" :style="dialogStyle">
-    <slot></slot>
-  </div>
+  <Teleport to="body">
+    <div class="dialog" :class="[dialogType, { 'dialog-show': show, 'dialog-close': !show }]" :style="dialogStyle">
+      <slot></slot>
+    </div>
+  </Teleport>
 </template>
 
 <style scoped>
@@ -29,9 +31,7 @@ const { show, dialogType, dialogStyle } = defineProps({
   left: 50%;
   transform: translate(-50%, 0);
   text-align: center;
-  transition:
-    opacity 0.3s ease-in-out,
-    bottom 0.3s ease-in-out;
+  transition: opacity 0.3s ease-in-out, bottom 0.3s ease-in-out;
 }
 .dialog-show {
   bottom: 150px;

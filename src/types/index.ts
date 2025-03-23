@@ -20,3 +20,11 @@ export interface IResponse {
   responseTime: string;
   createTime: string;
 }
+
+export interface IQueryResponse {
+  id: number;
+  type: string;
+  responseTime: string;
+  isReviewed: boolean;
+  score: number;
+}

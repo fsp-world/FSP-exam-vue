@@ -1,26 +1,54 @@
-<script setup>
-import { ref } from 'vue';
-import { examList1 } from '@/stores/examList.js';
-const examList = ref(examList1);
-import MCRouterLink from './MCRouterLink.vue';
-</script>
-
 <template>
   <div class="exam-list">
     <p class="title">考试列表</p>
     <p class="tips">系统只保留最近10条记录</p>
     <ul class="list y-scroll">
-      <li v-for="exam in examList" :key="exam.id">
+      <li v-for="res in responseList" :key="res.id">
         <div>
-          <p>{{ exam.type }}试卷（{{ exam.status }}）</p>
-          <p>{{ exam.time }}</p>
+          <p>{{ res.type }}试卷（{{ res.isReviewed ? '已通过' : '审核中' }}）</p>
+          <p>{{ dateFormat(res.responseTime) }}</p>
         </div>
-        <MCRouterLink v-if="exam.status === '请查收'" class="button" to="">查看成绩</MCRouterLink>
-        <slot></slot>
+        <MCButton v-if="res.isReviewed" class="button" @click="handleClick(res)">查看成绩</MCButton>
       </li>
     </ul>
   </div>
+  <InfoDialog :show="flag" dialog-type="info-card">
+    <p style="margin-top: 20px">
+      您的成绩为: <span>{{ response?.score }}</span>
+    </p>
+    <p style="display: flex; justify-content: center; margin-top: 10px">
+      <span>可以进服游玩！</span>
+    </p>
+    <MCButton class="button" style="width: 80px; height: 40px; position: absolute; right: 30px; bottom: 10px;" @click="flag = false">确认</MCButton>
+  </InfoDialog>
 </template>
+
+<script setup lang="ts">
+import { ref } from 'vue';
+import { getResponses } from '@/apis/query';
+import type { IQueryResponse } from '@/types';
+import { dateFormat } from '@/utils/date';
+import MCButton from './MCButton.vue';
+import InfoDialog from './InfoDialog.vue';
+
+const responseList = ref<IQueryResponse[]>([]);
+const response = ref<IQueryResponse>();
+const flag = ref(false);
+
+const getResponseList = () => {
+  getResponses().then((res) => {
+    if (res.data.code === 0) {
+      responseList.value = res.data.list;
+    }
+  });
+};
+getResponseList();
+
+const handleClick = (res: IQueryResponse) => {
+  flag.value = true;
+  response.value = res;
+};
+</script>
 
 <style scoped>
 .exam-list {
