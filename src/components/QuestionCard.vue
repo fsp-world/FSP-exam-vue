@@ -8,6 +8,8 @@ const { index, lock } = defineProps({
   },
 });
 
+const emit = defineEmits(['scoreChange']);
+
 const QuestionCategory = {
   SINGLE_CHOICE: 1,
   MULTIPLE_CHOICE: 2,
@@ -54,6 +56,14 @@ const selectOption = (selectedOption) => {
       </span>
       <span class="text"> {{ model.title }}</span>
       <span class="score">({{ model.score }}分)</span>
+      <span v-if="model.answer && lock">
+        <select
+          :value="model.countScore"
+          @change="(e) => emit('scoreChange', { questionId: model.id, score: e.target.value })"
+        >
+          <option v-for="i in 5" :value="i">{{ i }}分</option>
+        </select>
+      </span>
     </div>
     <ul class="option-list" v-if="model.type === 1 || model.type === 2">
       <li
@@ -62,6 +72,17 @@ const selectOption = (selectedOption) => {
         @click="selectOption(option)"
         :class="[{ selected: option.select || option.isCorrect }, { 'option-hover': !lock }]"
       >
+        <span
+          v-if="model.answer && model.answer.map((item) => Number(item.text)).indexOf(option.id) != -1"
+          style="
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            background-color: red;
+            border-radius: 50%;
+            transform: translateY(2px);
+          "
+        ></span>
         {{ ['A.', 'B.', 'C.', 'D.'][optionIndex] }}{{ option.text }}
       </li>
     </ul>
@@ -99,6 +120,7 @@ const selectOption = (selectedOption) => {
         :disabled="lock"
       ></textarea>
     </div>
+    <p v-if="model.answer && lock && (model.type === 3 || model.type === 4)">用户答案：{{ model.answer[0]?.text }}</p>
   </div>
 </template>
 

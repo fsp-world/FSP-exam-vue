@@ -15,7 +15,8 @@ export interface IResponse {
   username: string;
   survey: string;
   surveyId: number;
+  score: number;
+  playername: string;
   responseTime: string;
   createTime: string;
 }
-

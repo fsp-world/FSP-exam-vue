@@ -9,3 +9,5 @@ export const getSurvey = (id) => request.get('/admin/survey/' + id);
 export const addSurvey = (data) => request.post('/admin/addSurvey', JSON.stringify(data));
 export const addQuestion = (data) => request.post('/admin/addQuestion', JSON.stringify(data));
 export const reviewedResponse = (data) => request.post('/admin/reviewed', JSON.stringify(data));
+export const responseDetail = (id) => request.get('/admin/detail/' + id);
+export const detailScore = (data) => request.post('/admin/detail_score', JSON.stringify(data))
