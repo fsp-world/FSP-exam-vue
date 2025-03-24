@@ -136,8 +136,11 @@ onMounted(() => {
         <div class="form-group">
           <label>账号状态</label>
           <select v-model="selectedUser.status" required>
+            <option :value="0">未激活</option>
             <option :value="1">正常</option>
-            <option :value="0">封禁</option>
+            <option :value="2">临时封禁</option>
+            <option :value="3">封禁</option>
+            <option :value="4">删除</option>
           </select>
         </div>
         <div class="form-actions">
