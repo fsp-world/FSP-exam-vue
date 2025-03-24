@@ -28,8 +28,6 @@ export async function getProfilePic(PlayerName) {
     // 获取皮肤 URL
     const skinUrl = playerData.textures.SKIN.url.replace('http:', 'https:');
 
-    console.log(skinUrl);
-
 
 
     // 获取皮肤图像
