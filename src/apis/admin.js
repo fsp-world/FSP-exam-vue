@@ -1,6 +1,6 @@
 import request from '@/utils/requers';
 
-export const getWhitelist = () => request.get('/admin/whitelist');
+export const getWhitelist = (data) => request.get('/admin/whitelist', { params: data });
 export const getQuestion = () => request.get('/admin/AllQuestion');
 export const getResponses = () => request.get('/admin/responses');
 export const getUsers = () => request.get('/admin/users');

@@ -1,14 +1,9 @@
 <script setup>
-import { getResponses, getSurveys, addSurvey } from '@/apis/admin';
+import { getSurveys, addSurvey } from '@/apis/admin';
 import EditExam from './EditExam.vue';
 import { ref } from 'vue';
 
 const surveysData = ref({
-  code: -1,
-  list: [],
-  desc: '',
-});
-const responsesData = ref({
   code: -1,
   list: [],
   desc: '',
@@ -19,9 +14,6 @@ const sid = ref(0);
 
 getSurveys().then((res) => {
   surveysData.value = res.data;
-});
-getResponses().then((res) => {
-  responsesData.value = res.data;
 });
 
 const createSurvey = () => {
@@ -57,12 +49,6 @@ const createSurvey = () => {
       <p class="desc">问卷描述：{{ i.description }}</p>
     </div>
     <p v-if="!surveysData.list.length">暂无数据</p>
-  </div>
-  <hr />
-  <h1>答卷管理</h1>
-  <hr />
-  <div>
-    <p v-if="!responsesData.list.length">暂无数据</p>
   </div>
 </template>
 
