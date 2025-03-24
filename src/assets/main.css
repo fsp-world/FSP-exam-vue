@@ -2,6 +2,7 @@
   /* --button-font-size: 30px; */
   /* --bg-img: url('https://s21.ax1x.com/2025/03/24/pEBBVYt.jpg') */
   --bg-img: url('/src/assets/images/bg.jpg');
+  --button-disabled: url('/src/assets/images/rainbow_pixel_gui/button_disabled.png');
 }
 
 @font-face {
@@ -18,8 +19,8 @@ p,
 a,
 form,
 input,
-button,
-textarea {
+textarea,
+button {
   display: block;
   margin: 0;
   border: 0;
@@ -113,29 +114,12 @@ input[type='number'] {
   padding: 10px;
 }
 
-.translucent-content .main input {
-  width: calc(100% - 20px);
-  max-width: 800px;
-  height: 70px;
-  background-image: url(../assets/images/rainbow_pixel_gui/button_disabled.png);
-  image-rendering: pixelated;
-  border-radius: 5px;
-  background-repeat: no-repeat;
-  background-position: center;
-  background-size: 100% 100%;
-  font-family: 'mc-font';
-  font-size: 25px;
-  padding-left: 20px;
-  color: #fff;
-  margin: 10px auto;
-}
-
-/* 这俩一样的 */
+.translucent-content .main input,
 .minecraft-input {
   width: calc(100% - 20px);
   max-width: 800px;
   height: 70px;
-  background-image: url(../assets/images/rainbow_pixel_gui/button_disabled.png);
+  background-image: var(--button-disabled);
   image-rendering: pixelated;
   border-radius: 5px;
   background-repeat: no-repeat;
