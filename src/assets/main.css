@@ -1,6 +1,7 @@
 :root {
   /* --button-font-size: 30px; */
-  --bg-img: url('https://s21.ax1x.com/2025/03/24/pEBBVYt.jpg')
+  /* --bg-img: url('https://s21.ax1x.com/2025/03/24/pEBBVYt.jpg') */
+  --bg-img: url('/src/assets/images/bg.jpg');
 }
 
 @font-face {
