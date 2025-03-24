@@ -30,7 +30,9 @@ const loginForm = ref({
 const sendLogin = () => {
   openDialog('登陆中');
   if (!checkPassword(loginForm.value.password)) {
-    openDialog('密码必须包含至少一个大写字母、一个小写字母、一个数字和一个特殊字符，且长度至少为8个字符');
+    openDialog(
+      '密码必须包含至少一个大写字母、一个小写字母、一个数字和一个特殊字符，且长度为8-16个字符'
+    );
     return;
   }
 
@@ -67,7 +69,9 @@ const sendLogin = () => {
     <h2>登录</h2>
     <input type="text" placeholder="用户名" v-model="loginForm.username" />
     <input type="password" placeholder="密码" v-model="loginForm.password" />
-    <p>密码必须包含至少一个大写字母、一个小写字母、一个数字和一个特殊字符，且长度至少为8个字符。</p>
+    <p>
+      密码必须包含至少一个大写字母、一个小写字母、一个数字和一个特殊字符，且长度为8-16个字符。
+    </p>
     <RouterLink to="/auth/register" class="toReg">还没有账号？</RouterLink>
     <MCButton @click="sendLogin">登录</MCButton>
   </div>
