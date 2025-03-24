@@ -67,7 +67,7 @@ const logout = () => {
   width: 100%;
   height: 100vh;
   position: absolute;
-  background-image: url('/src/assets/images/bg.png');
+  background-image: var(--bg-img);
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;

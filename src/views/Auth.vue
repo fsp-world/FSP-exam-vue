@@ -21,7 +21,7 @@ a:visited {
 }
 
 .box {
-  background-image: url(../assets/images/bg.png);
+  background-image: var(--bg-img);
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center;
