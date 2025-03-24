@@ -20,15 +20,22 @@ const loadUsers = async (page = 1, size = 10) => {
 // 修改用户信息
 const editUser = (user) => {
   selectedUser.value = { ...user };
-  selectedUser.value.password = ''
+  selectedUser.value.password = '';
   showModal.value = true;
 };
 
 // 封禁用户
 const banUserHandler = async (userId) => {
-  const confirm = confirm('确定要封禁该用户吗？');
-  if (confirm) {
-    await banUser(userId);
+  // const confirm = confirm('确定要封禁该用户吗？');
+  // if (confirm) {
+  //   await banUser(userId);
+  //   await loadUsers(data.value.page, data.value.size); // 重新加载数据
+  // }
+};
+
+const delUserHandler = async (userId) => {
+  if (confirm('确定要删除该用户吗？')) {
+    await delUser({ id: userId });
     await loadUsers(data.value.page, data.value.size); // 重新加载数据
   }
 };
@@ -41,7 +48,7 @@ const selectedUser = ref({
   user_qq: '',
   role: '',
   status: 0,
-  password: ''
+  password: '',
 });
 
 // 保存修改
@@ -83,12 +90,7 @@ onMounted(() => {
         <td>{{ item.status === 1 ? '正常' : '封禁' }}</td>
         <td>
           <MCButton @click="editUser(item)">修改</MCButton>
-          <!-- <MCButton
-            @click="banUserHandler(item.id)"
-            :disabled="item.status !== 1"
-          >
-            {{ item.status === 1 ? '封禁' : '已封禁' }}
-          </MCButton> -->
+          <MCButton @click="delUserHandler(item.id)"> 删除 </MCButton>
         </td>
       </tr>
     </tbody>
@@ -96,19 +98,9 @@ onMounted(() => {
 
   <!-- 分页 -->
   <div class="pagination">
-    <button
-      type="button"
-      @click="loadUsers(data.page - 1, data.size)"
-      :disabled="data.page === 1"
-    >
-      上一页
-    </button>
+    <button type="button" @click="loadUsers(data.page - 1, data.size)" :disabled="data.page === 1">上一页</button>
     <span>第 {{ data.page }} 页 / 共 {{ Math.ceil(data.total / data.size) }} 页</span>
-    <button
-      type="button"
-      @click="loadUsers(data.page + 1, data.size)"
-      :disabled="data.page * data.size >= data.total"
-    >
+    <button type="button" @click="loadUsers(data.page + 1, data.size)" :disabled="data.page * data.size >= data.total">
       下一页
     </button>
   </div>
