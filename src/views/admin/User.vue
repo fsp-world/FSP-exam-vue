@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 import { getUsers, updateUser, banUser } from '@/apis/admin';
 import MCButton from '@/components/MCButton.vue';
 
@@ -62,6 +62,19 @@ const saveUser = async () => {
 onMounted(() => {
   loadUsers();
 });
+
+const computStatus = computed(() => {
+  return (status) => {
+    switch (status) {
+      case 0: return '未激活'
+      case 1: return '正常'
+      case 2: return '临时封禁'
+      case 3: return '封禁'
+      case 4: return '删除'
+      default: return '未知'
+    }
+  }
+})
 </script>
 
 <template>
@@ -87,7 +100,7 @@ onMounted(() => {
         <td>{{ item.user_qq }}</td>
         <td>{{ item.role }}</td>
         <td>{{ item.addtime }}</td>
-        <td>{{ item.status === 1 ? '正常' : '封禁' }}</td>
+        <td>{{ computStatus(item.status) }}</td>
         <td>
           <MCButton @click="editUser(item)">修改</MCButton>
           <MCButton @click="delUserHandler(item.id)"> 删除 </MCButton>
