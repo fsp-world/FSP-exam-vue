@@ -9,3 +9,5 @@ export const logout = () => request.post('/auth/logout');
 export const checkLogin = () => request.get('/auth/check');
 
 export const findPassword = (data) => request.post('/auth/findPassword', JSON.stringify(data))
+
+export const findPasswordPut = (data, token) => request.put('/auth/findPassword?token=' + token , JSON.stringify(data))
