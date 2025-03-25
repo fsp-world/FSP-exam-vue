@@ -87,43 +87,36 @@
   flex: 3;
   background-color: white;
   position: relative;
+  padding: 10px;
 }
 
 @media (max-width: 1200px) {
-  .container {
-    flex-direction: column;
-  }
-  .container .nav {
-    flex: none;
-    width: 100%;
-    max-width: none;
-    height: 80px;
-  }
-  .container .nav .menu {
-    width: 100%;
-    padding-top: 0;
-    flex-direction: row;
-    flex-wrap: nowrap;
-    justify-content: space-around;
-  }
-  .container .nav .menu li {
-    width: auto;
-    height: 80px;
-  }
-  .container .nav .menu li:last-child {
-    margin-top: 0;
-  }
-  .container .nav .menu li a {
-    padding: 15px;
-    width: 50px;
+  .nav {
+    top: 50%;
+    left: 0;
+    transform: translate(-90%, -50%);
+    transition: transform 0.35s ease-in-out;
+    background-color: #eee;
+    position: fixed;
+    width: 170px;
     height: 100%;
-    margin: 0;
-    font-size: 20px;
-    text-align: center;
+    padding: 20px;
+    z-index: 90;
   }
-}
-
-.main {
-  padding: 10px;
+  .nav::after {
+    display: block;
+    content: '>';
+    width: 15px;
+    height: 55vh;
+    position: absolute;
+    bottom: 0;
+    right: 0;
+  }
+  .nav:hover {
+    transform: translate(0, -50%);
+  }
+  .main {
+    margin-left: 20px;
+  }
 }
 </style>
