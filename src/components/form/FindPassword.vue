@@ -1,0 +1,50 @@
+<script setup>
+import '../../assets/form.css';
+import { ref } from 'vue';
+import { useRouter, useRoute } from 'vue-router';
+import { findPassword } from '@/apis/auth';
+import { useAlertStore } from '@/stores/alert';
+import MCButton from '@/components/MCButton.vue';
+
+const router = useRouter();
+const route = useRoute();
+
+const alertStore = useAlertStore();
+const openAlert = (message) => {
+  const data = {
+    title: 'register' + Date(),
+    type: 'info-card',
+    message: message,
+    age: 3000,
+    flag: true,
+  };
+  alertStore.openAlert(data);
+};
+
+const findPasswordForm = ref({
+  username: '',
+  userQQ: '',
+});
+
+const sendFindPassword = () => {
+  findPassword(findPasswordForm.value)
+    .then((res) => {
+      openAlert(res.data.desc);
+    })
+    .catch((err) => {
+      console.error(err);
+    });
+};
+</script>
+
+<template>
+  <div class="form">
+    <h2>找回密码</h2>
+    <input type="text" placeholder="用户名" v-model="findPasswordForm.username" />
+    <input type="text" placeholder="QQ号" v-model="findPasswordForm.userQQ" />
+    <RouterLink to="/auth/login" class="toReg">已有账号？</RouterLink>
+    <MCButton @click="sendFindPassword">找回</MCButton>
+  </div>
+</template>
+
+<style scoped></style>
