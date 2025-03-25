@@ -73,6 +73,11 @@ const router = createRouter({
           name: 'Register',
           component: () => import('@/components/form/RegisterForm.vue'),
         },
+        {
+          path: 'find_password',
+          name: 'FindPassword',
+          component: () => import('@/components/form/FindPassword.vue')
+        }
       ],
     },
     {
