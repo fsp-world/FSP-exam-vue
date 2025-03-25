@@ -28,6 +28,11 @@ const router = createRouter({
       meta: { requiresAuth: true },
     },
     {
+      path: '/reset_password',
+      name: 'ResetPassword',
+      component: () => import('@/views/ResetPassword.vue'),
+    },
+    {
       path: '/query',
       name: 'Query',
       redirect: { name: 'QueryExamination' },
@@ -117,7 +122,6 @@ const router = createRouter({
   ],
 });
 
-
 // 路由守卫
 router.beforeEach((to, from) => {
   const user = useUserStore();
@@ -154,3 +158,4 @@ router.beforeEach((to, from) => {
 });
 
 export default router;
+
