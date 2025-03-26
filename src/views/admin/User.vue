@@ -2,6 +2,7 @@
 import { ref, onMounted, computed } from 'vue';
 import { getUsers, updateUser, banUser } from '@/apis/admin';
 import MCButton from '@/components/MCButton.vue';
+import { computStatus } from '@/utils/statusUtil';
 
 // 用户数据
 const data = ref({
@@ -62,10 +63,6 @@ const saveUser = async () => {
 onMounted(() => {
   loadUsers();
 });
-
-const computStatus = computed(() => {
-  return computStatus
-})
 </script>
 
 <template>
