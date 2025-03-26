@@ -82,6 +82,7 @@ onMounted(() => {
     .title {
       font-size: 40px;
       text-align: center;
+      margin: 10px 0;
     }
     .text {
       font-size: 26px;
@@ -93,6 +94,14 @@ onMounted(() => {
       width: 200px;
       height: 50px;
       margin: 20px auto;
+    }
+  }
+}
+@media (max-width: 1200px) {
+  .paper-done {
+    .box {
+      width: 85vw;
+      height: 232px;
     }
   }
 }

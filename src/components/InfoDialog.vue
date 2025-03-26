@@ -31,7 +31,9 @@ const { show, dialogType, dialogStyle } = defineProps({
   left: 50%;
   transform: translate(-50%, 0);
   text-align: center;
-  transition: opacity 0.3s ease-in-out, bottom 0.3s ease-in-out;
+  transition:
+    opacity 0.3s ease-in-out,
+    bottom 0.3s ease-in-out;
 }
 .dialog-show {
   bottom: 150px;
@@ -44,13 +46,19 @@ const { show, dialogType, dialogStyle } = defineProps({
   visibility: hidden;
 }
 
+/* 别删，会出问题，我也不知道为什么！ */
 .warn-card {
   color: #cbcbcb;
   background-image: url(../assets/images/rainbow_pixel_gui/system_info.png);
 }
-
+/* 别删，会出问题，我也不知道为什么！ */
 .info-card {
   color: #313131;
   background-image: url(../assets/images/vanilla_gui/demo_background.png);
+}
+@media (max-width: 1200px) {
+  .dialog {
+    width: 95%;
+  }
 }
 </style>

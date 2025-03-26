@@ -16,18 +16,22 @@ const send = () => {
 <template>
   <div class="dialog info-card" :class="{ 'dialog-show': show, 'dialog-close': !show }">
     <div class="top">
-      <img class="player-pic" :src="info.imgUrl" />
-      <p class="player-name">Name: {{ info.playerName }}</p>
+      <div class="userinfo">
+        <img class="player-pic" :src="info.imgUrl" />
+        <p class="player-name">
+          <span class="tip">Name：</span><span>{{ info.playerName }}</span>
+        </p>
+      </div>
       <MCButton class="minecraft-button button confirm-btn" type="button" @click="send()">确认无误</MCButton>
     </div>
-    <p class="bottom player-uuid">uuid: {{ info.playerUUID }}</p>
+    <p class="player-uuid">uuid: {{ info.playerUUID }}</p>
   </div>
 </template>
 
 <style scoped>
 .dialog {
-  width: 600px;
-  height: 120px;
+  width: 730px;
+  height: 150px;
   display: block;
   position: fixed;
   image-rendering: pixelated;
@@ -41,13 +45,16 @@ const send = () => {
   left: 50%;
   transform: translate(-50%, 0);
   text-align: center;
-  transition: opacity 0.3s ease-in-out, bottom 0.3s ease-in-out;
+  transition:
+    opacity 0.3s ease-in-out,
+    bottom 0.3s ease-in-out;
 }
 .dialog-show {
   bottom: 150px;
   opacity: 1;
   visibility: visible;
 }
+
 .dialog-close {
   bottom: 120px;
   opacity: 0;
@@ -59,33 +66,55 @@ const send = () => {
 }
 
 .top {
-  height: 60px;
-  width: 100%;
   display: flex;
   justify-content: space-evenly;
   align-items: center;
-}
-
-.confirm-btn {
-  width: 200px;
-  height: 50px;
-  font-size: 1.35rem;
-}
-
-.player-name {
-  font-size: 30px;
-}
-
-.player-pic {
-  width: 50px;
-  image-rendering: pixelated;
+  padding-top: 20px;
+  flex-wrap: nowrap;
+  .userinfo {
+    --hei: 70px;
+    display: flex;
+    .player-pic {
+      width: var(--hei);
+      image-rendering: pixelated;
+    }
+    .player-name {
+      padding-left: 20px;
+      line-height: var(--hei);
+      font-size: 30px;
+      display: inline;
+    }
+  }
+  .confirm-btn {
+    width: 200px;
+    height: 50px;
+    font-size: 1.35rem;
+  }
 }
 
 .player-uuid {
-  height: 60px;
-  line-height: 60px;
-  width: 100%;
+  line-height: 50px;
   text-align: center;
 }
+@media (max-width: 1200px) {
+  .dialog {
+    width: 95%;
+    height: 150px;
+  }
+  .top {
+    flex-wrap: wrap;
+    .userinfo {
+      --hei: 50px;
+      .tip {
+        display: none;
+      }
+    }
+    .confirm-btn {
+      width: 120px;
+    }
+  }
+  .player-uuid {
+    display: none;
+  }
+}
 </style>
-
