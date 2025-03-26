@@ -67,35 +67,37 @@ onMounted(() => {
 
 <template>
   <h1>用户管理</h1>
-  <table>
-    <thead>
-      <tr>
-        <th>#</th>
-        <th>头像</th>
-        <th>用户名</th>
-        <th>用户 QQ</th>
-        <th>用户角色</th>
-        <th>注册时间</th>
-        <th>账号状态</th>
-        <th>操作</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr v-for="item in data.list" :key="item.id">
-        <td>{{ item.id }}</td>
-        <td><img :src="item.avatar" alt="头像" class="avatar" /></td>
-        <td>{{ item.username }}</td>
-        <td>{{ item.user_qq }}</td>
-        <td>{{ item.role }}</td>
-        <td>{{ item.addtime }}</td>
-        <td>{{ computStatus(item.status) }}</td>
-        <td>
-          <MCButton @click="editUser(item)">修改</MCButton>
-          <MCButton @click="delUserHandler(item.id)"> 删除 </MCButton>
-        </td>
-      </tr>
-    </tbody>
-  </table>
+  <div class="table">
+    <table>
+      <thead>
+        <tr>
+          <th class="id">#</th>
+          <th class="avatar">头像</th>
+          <th class="name">用户名</th>
+          <th class="qq">用户 QQ</th>
+          <th class="role">用户角色</th>
+          <th class="time">注册时间</th>
+          <th class="status">账号状态</th>
+          <th class="action">操作</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="item in data.list" :key="item.id">
+          <td>{{ item.id }}</td>
+          <td><img :src="item.avatar" alt="头像" class="avatar" /></td>
+          <td>{{ item.username }}</td>
+          <td>{{ item.user_qq }}</td>
+          <td>{{ item.role }}</td>
+          <td>{{ item.addtime }}</td>
+          <td>{{ computStatus(item.status) }}</td>
+          <td class="action">
+            <MCButton class="button" @click="editUser(item)">修改</MCButton>
+            <MCButton class="button" @click="delUserHandler(item.id)"> 删除 </MCButton>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 
   <!-- 分页 -->
   <div class="pagination">
@@ -169,6 +171,26 @@ th {
   padding: 10px;
   text-align: center;
 }
+.action {
+  .button {
+    margin: 5px auto;
+  }
+}
+@media (max-width: 1200px) {
+  .table {
+    max-width: 90vw;
+    overflow-x: auto;
+    .avatar,
+    .name,
+    .qq,
+    .role,
+    .time,
+    .status,
+    .action {
+      min-width: 80px;
+    }
+  }
+}
 .avatar {
   width: 50px;
   height: 50px;
@@ -231,7 +253,7 @@ button:disabled {
 }
 .form-actions {
   display: flex;
-  justify-content: flex-end;
+  justify-content: end;
   gap: 10px;
 }
 </style>

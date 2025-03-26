@@ -1,44 +1,46 @@
 <template>
   <h1>答卷审核</h1>
-  <table>
-    <thead>
-      <tr>
-        <th>#</th>
-        <th>完成</th>
-        <th>审核</th>
-        <th>试卷</th>
-        <th>试卷ID</th>
-        <th>分数</th>
-        <th>用户</th>
-        <th>MCname</th>
-        <th>创建日期</th>
-        <th>完成日期</th>
-        <th>操作</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr v-for="item in responses" :key="item.id">
-        <td>{{ item.id }}</td>
-        <td :style="item.isCompleted ? { color: 'green' } : { color: 'red' }">
-          {{ item.isCompleted ? '已完成' : '未完成' }}
-        </td>
-        <td :style="item.isReviewed ? { color: 'green' } : { color: 'red' }">
-          {{ item.isReviewed ? '已通过' : '未通过' }}
-        </td>
-        <td>{{ item.survey }}</td>
-        <td>{{ item.surveyId }}</td>
-        <td>{{ item.score }}</td>
-        <td>{{ item.username }}</td>
-        <td>{{ item.playername }}</td>
-        <td>{{ moment(item.createTime).format('YY年MM月DD日 HH时') }}</td>
-        <td>{{ moment(item.responseTime).format('YY年MM月DD日 HH时') }}</td>
-        <td>
-          <MCButton style="display: inline-block; padding: 4px 8px" @click="reviewed(item.id)">通过</MCButton>
-          <MCButton style="display: inline-block; padding: 4px 8px" @click="detail(item.id)">详情</MCButton>
-        </td>
-      </tr>
-    </tbody>
-  </table>
+  <div class="table">
+    <table>
+      <thead>
+        <tr>
+          <th class="id">#</th>
+          <th class="is-done">完成</th>
+          <th class="status">审核状态</th>
+          <th class="survey-name">试卷</th>
+          <th class="survey-id">试卷ID</th>
+          <th class="score">分数</th>
+          <th class="user">用户</th>
+          <th class="player-name">MCname</th>
+          <th class="add-time">创建日期</th>
+          <th class="done-time">完成日期</th>
+          <th class="action">操作</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="item in responses" :key="item.id">
+          <td>{{ item.id }}</td>
+          <td :style="item.isCompleted ? { color: 'green' } : { color: 'red' }">
+            {{ item.isCompleted ? '已完成' : '未完成' }}
+          </td>
+          <td :style="item.isReviewed ? { color: 'green' } : { color: 'red' }">
+            {{ item.isReviewed ? '已通过' : '未通过' }}
+          </td>
+          <td>{{ item.survey }}</td>
+          <td>{{ item.surveyId }}</td>
+          <td>{{ item.score }}</td>
+          <td>{{ item.username }}</td>
+          <td>{{ item.playername }}</td>
+          <td>{{ moment(item.createTime).format('YY年MM月DD日 HH时') }}</td>
+          <td>{{ moment(item.responseTime).format('YY年MM月DD日 HH时') }}</td>
+          <td class="action">
+            <MCButton v-if="!item.isReviewed" class="button" @click="reviewed(item.id)">通过</MCButton>
+            <MCButton class="button" @click="detail(item.id)">详情</MCButton>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
   <ResponseDetail v-if="visibility" v-model:visibility="visibility" :data="data"></ResponseDetail>
 </template>
 
@@ -90,5 +92,36 @@ td,
 th {
   padding: 5px;
   text-align: center;
+}
+.is-done,
+.status,
+.survey-name,
+.survey-id,
+.score,
+.user,
+.player-name {
+  min-width: 70px;
+}
+
+.add-time,
+.done-time {
+  min-width: 150px;
+}
+.action {
+  min-width: 120px;
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  .button {
+    font-size: 20px;
+    padding: 5px;
+    width: 100%;
+  }
+}
+@media (max-width: 1200px) {
+  .table {
+    max-width: 90vw;
+    overflow-x: auto;
+  }
 }
 </style>
