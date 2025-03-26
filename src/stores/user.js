@@ -137,6 +137,7 @@ export const useUserStore = defineStore('user', {
         this.addtime = data.data.addtime;
         this.role = data.data.role;
         this.userQQ = data.data.user_qq;
+        this.status = data.data.status;
         let { imgUrl } = await getProfilePic(this.avatarUUID);
         this.avatar = imgUrl;
       } catch (error) {

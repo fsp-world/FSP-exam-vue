@@ -1,7 +1,7 @@
 <script setup>
 import { getProfilePic } from '@/apis/mj.js';
 import { getUserWhitelist } from '@/apis/user.js';
-import { ref, watch } from 'vue';
+import { ref } from 'vue';
 import { useAlertStore } from '@/stores/alert';
 import { useUserStore } from '@/stores/user';
 import MCRouterLink from '@/components/MCRouterLink.vue';
@@ -9,10 +9,10 @@ import MCButton from '@/components/MCButton.vue';
 import { storeToRefs } from 'pinia';
 
 const alertStore = useAlertStore();
-const userStore = useUserStore()
-const { avatar, username, userQQ, role, avatarUUID, getStatus, dateToLocal, isAdmin } = storeToRefs(userStore)
+const userStore = useUserStore();
+const { avatar, username, userQQ, role, avatarUUID, getStatus, dateToLocal, isAdmin } = storeToRefs(userStore);
 
-userStore.syncUserInfo()
+userStore.syncUserInfo();
 
 const openAlert = (message) => {
   const data = {
@@ -49,7 +49,6 @@ const editAvatar = (uuid) => {
     }
   });
 };
-
 </script>
 
 <template>
