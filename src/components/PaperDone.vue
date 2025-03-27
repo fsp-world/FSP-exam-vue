@@ -7,6 +7,7 @@
         >分
       </p>
       <p class="text">主观题请等待人工审核</p>
+      <p class="text">结果请在个人中心查看</p>
       <MCRouterLink to="/space" class="confirm-btn">确认</MCRouterLink>
     </div>
   </div>
@@ -88,12 +89,14 @@ onMounted(() => {
       font-size: 26px;
       text-align: center;
       line-height: 1.5em;
+      width: 300px;
+      margin: 0 auto;
     }
     .confirm-btn {
       font-size: 20px;
       width: 200px;
       height: 50px;
-      margin: 20px auto;
+      margin: 10px auto;
     }
   }
 }

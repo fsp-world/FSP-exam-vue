@@ -78,7 +78,7 @@ const selectOption = (selectedOption) => {
             display: inline-block;
             width: 16px;
             height: 16px;
-            background-color: red;
+            background-color: grey;
             border-radius: 50%;
             transform: translateY(2px);
           "
