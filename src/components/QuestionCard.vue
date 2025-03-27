@@ -61,7 +61,7 @@ const selectOption = (selectedOption) => {
           :value="model.countScore"
           @change="(e) => emit('scoreChange', { questionId: model.id, score: e.target.value })"
         >
-          <option v-for="i in 5" :value="i">{{ i }}分</option>
+          <option v-for="i in 10" :value="i">{{ i }}分</option>
         </select>
       </span>
     </div>

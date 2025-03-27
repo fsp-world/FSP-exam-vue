@@ -10,7 +10,10 @@
           </option>
         </select>
         <div class="score">
-          <label for="oname">分值：</label><input id="score" type="number" v-model="formData.score" />
+          <label for="oname">分值：</label>
+          <select v-model="formData.score" id="score">
+            <option v-for="i in 10" :value="i">{{ i }}分</option>
+          </select>
         </div>
       </div>
       <div class="data">
