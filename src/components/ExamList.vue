@@ -4,7 +4,7 @@
     <p class="tips">系统只保留最近10条记录</p>
     <ul class="list y-scroll">
       <li v-for="res in responseList" :key="res.id">
-        <div>
+        <div class="info">
           <p>{{ res.type }}试卷（{{ res.isReviewed ? '已通过' : '审核中' }}）</p>
           <p>{{ dateFormat(res.responseTime) }}</p>
         </div>
@@ -19,7 +19,12 @@
     <p style="display: flex; justify-content: center; margin-top: 10px">
       <span>可以进服游玩！</span>
     </p>
-    <MCButton class="button" style="width: 80px; height: 40px; position: absolute; right: 30px; bottom: 10px;" @click="flag = false">确认</MCButton>
+    <MCButton
+      class="button"
+      style="width: 80px; height: 40px; position: absolute; right: 30px; bottom: 10px"
+      @click="flag = false"
+      >确认</MCButton
+    >
   </InfoDialog>
 </template>
 
@@ -75,6 +80,8 @@ const handleClick = (res: IQueryResponse) => {
   margin: 0 auto;
   max-height: 600px;
   overflow-y: auto;
+  display: flex;
+  flex-direction: column-reverse;
 }
 
 .list li {
@@ -82,6 +89,7 @@ const handleClick = (res: IQueryResponse) => {
   padding: 15px;
   display: flex;
   justify-content: space-between;
+  flex-wrap: nowrap;
 }
 
 .list li p {
@@ -97,14 +105,28 @@ const handleClick = (res: IQueryResponse) => {
 .list li button {
   width: 200px;
   font-size: 28px;
-  display: none;
+  display: block;
 }
 
 .list li:hover {
   background-color: rgba(0, 0, 0, 0.5);
 }
-
-.list li:hover > button {
-  display: block;
+@media (max-width: 1200px) {
+  .list {
+    width: 95%;
+  }
+  .list li {
+    flex-wrap: wrap;
+  }
+  .list li .info {
+    width: 100%;
+    display: block;
+  }
+  .list li button {
+    width: 100%;
+    height: 60px;
+    font-size: 28px;
+    display: block;
+  }
 }
 </style>
