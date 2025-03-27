@@ -61,12 +61,15 @@ const handleScoreChange = (payload: { questionId: number; score: number }) => {
   right: 0;
   left: 50%;
   transform: translate(-50%);
-  width: 60vw;
+  width: 70vw;
   background-color: white;
   box-shadow: 3px 6px 10px 6px #ccc;
   padding: 20px;
 
   .close-btn {
+    width: 30px;
+    height: 30px;
+    text-align: center;
     position: absolute;
     display: block;
     padding: 4px 4px;
@@ -75,6 +78,16 @@ const handleScoreChange = (payload: { questionId: number; score: number }) => {
     background-color: aqua;
     font-size: 30px;
     z-index: 20;
+    border-radius: 50%;
+  }
+}
+
+@media (max-width: 1200px) {
+  .preview {
+    width: calc(100vw - 60px);
+    top: 0px;
+    left: 20px;
+    transform: none;
   }
 }
 </style>
