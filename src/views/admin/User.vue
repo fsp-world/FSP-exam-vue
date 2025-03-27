@@ -1,6 +1,6 @@
 <script setup>
 import { ref, onMounted } from 'vue';
-import { getUsers, updateUser, banUser } from '@/apis/admin';
+import { getUsers, updateUser } from '@/apis/admin';
 import MCButton from '@/components/MCButton.vue';
 import { computStatus } from '@/utils/statusUtil';
 
@@ -25,22 +25,6 @@ const editUser = (user) => {
   selectedUser.value = { ...user };
   selectedUser.value.password = '';
   showModal.value = true;
-};
-
-// 封禁用户
-const banUserHandler = async (userId) => {
-  // const confirm = confirm('确定要封禁该用户吗？');
-  // if (confirm) {
-  //   await banUser(userId);
-  //   await loadUsers(data.value.page, data.value.size); // 重新加载数据
-  // }
-};
-
-const delUserHandler = async (userId) => {
-  if (confirm('确定要删除该用户吗？')) {
-    await delUser({ id: userId });
-    await loadUsers(data.value.page, data.value.size); // 重新加载数据
-  }
 };
 
 // 模态框相关
@@ -94,7 +78,6 @@ onMounted(() => {
           <td>{{ computStatus(item.status) }}</td>
           <td class="action">
             <MCButton class="button" @click="editUser(item)">修改</MCButton>
-            <MCButton class="button" @click="delUserHandler(item.id)"> 删除 </MCButton>
           </td>
         </tr>
       </tbody>
@@ -178,7 +161,9 @@ th {
 }
 .action {
   .button {
-    margin: 5px auto;
+    width: 100%;
+    height: 40px;
+    margin: 0px auto;
   }
 }
 @media (max-width: 1200px) {
