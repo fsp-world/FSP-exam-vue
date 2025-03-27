@@ -1,47 +1,49 @@
 <template>
-  <h1>答卷审核</h1>
-  <div class="table-box">
-    <table>
-      <thead>
-        <tr>
-          <th class="id">#</th>
-          <th class="is-done">完成</th>
-          <th class="status">审核状态</th>
-          <th class="survey-name">试卷</th>
-          <th class="survey-id">试卷ID</th>
-          <th class="score">分数</th>
-          <th class="user">用户</th>
-          <th class="player-name">MCname</th>
-          <th class="add-time">创建日期</th>
-          <th class="done-time">完成日期</th>
-          <th class="action">操作</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="item in responses" :key="item.id">
-          <td>{{ item.id }}</td>
-          <td :style="item.isCompleted ? { color: 'green' } : { color: 'red' }">
-            {{ item.isCompleted ? '已完成' : '未完成' }}
-          </td>
-          <td :style="item.isReviewed ? { color: 'green' } : { color: 'red' }">
-            {{ item.isReviewed ? '已通过' : '未通过' }}
-          </td>
-          <td>{{ item.survey }}</td>
-          <td>{{ item.surveyId }}</td>
-          <td>{{ item.score }}</td>
-          <td>{{ item.username }}</td>
-          <td>{{ item.playername }}</td>
-          <td>{{ moment(item.createTime).format('YY年MM月DD日 HH时') }}</td>
-          <td>{{ moment(item.responseTime).format('YY年MM月DD日 HH时') }}</td>
-          <td class="action">
-            <MCButton v-if="!item.isReviewed" class="button" @click="reviewed(item.id)">通过</MCButton>
-            <MCButton class="button" @click="detail(item.id)">详情</MCButton>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+  <div class="box">
+    <h1>答卷审核</h1>
+    <div class="table-box">
+      <table>
+        <thead>
+          <tr>
+            <th class="id">#</th>
+            <th class="is-done">完成</th>
+            <th class="status">审核状态</th>
+            <th class="survey-name">试卷</th>
+            <th class="survey-id">试卷ID</th>
+            <th class="score">分数</th>
+            <th class="user">用户</th>
+            <th class="player-name">MCname</th>
+            <th class="add-time">创建日期</th>
+            <th class="done-time">完成日期</th>
+            <th class="action">操作</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="item in responses" :key="item.id">
+            <td>{{ item.id }}</td>
+            <td :style="item.isCompleted ? { color: 'green' } : { color: 'red' }">
+              {{ item.isCompleted ? '已完成' : '未完成' }}
+            </td>
+            <td :style="item.isReviewed ? { color: 'green' } : { color: 'red' }">
+              {{ item.isReviewed ? '已通过' : '未通过' }}
+            </td>
+            <td>{{ item.survey }}</td>
+            <td>{{ item.surveyId }}</td>
+            <td>{{ item.score }}</td>
+            <td>{{ item.username }}</td>
+            <td>{{ item.playername }}</td>
+            <td>{{ moment(item.createTime).format('YY年MM月DD日 HH时') }}</td>
+            <td>{{ moment(item.responseTime).format('YY年MM月DD日 HH时') }}</td>
+            <td class="action">
+              <MCButton v-if="!item.isReviewed" class="button" @click="reviewed(item.id)">通过</MCButton>
+              <MCButton class="button" @click="detail(item.id)">详情</MCButton>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <ResponseDetail v-if="visibility" v-model:visibility="visibility" :data="data"></ResponseDetail>
   </div>
-  <ResponseDetail v-if="visibility" v-model:visibility="visibility" :data="data"></ResponseDetail>
 </template>
 
 <script setup lang="ts">
@@ -80,6 +82,10 @@ const detail = (id: number) => {
 </script>
 
 <style scoped>
+.box {
+  height: 100%;
+  overflow-y: auto;
+}
 .table-box {
   max-width: 1600px;
   overflow-x: auto;
