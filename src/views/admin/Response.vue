@@ -1,6 +1,6 @@
 <template>
   <h1>答卷审核</h1>
-  <div class="table">
+  <div class="table-box">
     <table>
       <thead>
         <tr>
@@ -80,6 +80,10 @@ const detail = (id: number) => {
 </script>
 
 <style scoped>
+.table-box {
+  max-width: 1600px;
+  overflow-x: auto;
+}
 table,
 table td,
 table th {
@@ -121,7 +125,6 @@ th {
 @media (max-width: 1200px) {
   .table {
     max-width: 90vw;
-    overflow-x: auto;
   }
 }
 </style>
