@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted, computed } from 'vue';
+import { ref, onMounted } from 'vue';
 import { getUsers, updateUser, banUser } from '@/apis/admin';
 import MCButton from '@/components/MCButton.vue';
 import { computStatus } from '@/utils/statusUtil';
@@ -10,12 +10,14 @@ const data = ref({
   page: 1,
   size: 10,
   total: 0,
+  totalPages: 0,
 });
 
 // 分页加载用户数据
 const loadUsers = async (page = 1, size = 10) => {
   const res = await getUsers({ page, size });
   data.value = res.data;
+  data.value.totalPages = Math.ceil(data.value.total / data.value.size);
 };
 
 // 修改用户信息
@@ -102,9 +104,12 @@ onMounted(() => {
   <!-- 分页 -->
   <div class="pagination">
     <button type="button" @click="loadUsers(data.page - 1, data.size)" :disabled="data.page === 1">上一页</button>
-    <span>第 {{ data.page }} 页 / 共 {{ Math.ceil(data.total / data.size) }} 页</span>
+    <span>第 {{ data.page }} 页 / 共 {{ data.totalPages }} 页</span>
     <button type="button" @click="loadUsers(data.page + 1, data.size)" :disabled="data.page * data.size >= data.total">
       下一页
+    </button>
+    <button type="button" @click="loadUsers(data.totalPages, data.size)" :disabled="data.page === data.totalPages">
+      最后一页
     </button>
   </div>
 
