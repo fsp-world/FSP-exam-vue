@@ -18,7 +18,9 @@ See [Vite Configuration Reference](https://vite.dev/config/).
 ## Project Setup
 
 ```sh
+cp .env.example .env
 npm install
+
 ```
 
 ### Compile and Hot-Reload for Development
