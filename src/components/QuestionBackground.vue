@@ -76,7 +76,6 @@ watch(bgHeight, (newVal, oldVal) => {
   .bga {
     background-size: var(--block-wid) var(--block-wid);
     width: 100%;
-    height: 130px;
     image-rendering: pixelated;
     background-repeat: repeat-x;
     position: absolute;
@@ -110,6 +109,7 @@ watch(bgHeight, (newVal, oldVal) => {
     background-image: url(../assets/images/vanilla_gui/block/bedrock.png);
     bottom: 0;
     z-index: 1;
+    height: var(--block-wid);
   }
 
   .ore {

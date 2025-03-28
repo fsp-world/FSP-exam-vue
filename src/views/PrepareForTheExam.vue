@@ -105,11 +105,11 @@ const handelConfirm = () => {
       <div class="main">
         <div>
           <div class="sub-title">
-            <h1>在开始答题之前，我们需要知晓一些您的个人偏好</h1>
+            <h1>我们会通过一些题目来确认您大致的游戏水平</h1>
           </div>
           <form class="examineeInfo">
             <input type="text" v-model="examineeInfo.playerName" placeholder="您的游戏昵称" />
-            <p>我们会根据您的选择生成定制的试题</p>
+            <p>系统会根据您的选择生成定制的试题</p>
             <ul class="option-list">
               <li
                 class="option"
@@ -182,7 +182,7 @@ const handelConfirm = () => {
   background-image: url(../assets/images/rainbow_pixel_gui/button_highlighted.png);
   image-rendering: pixelated;
 }
-@media screen and (max-width: 950px) {
+@media screen and (max-width: 750px) {
   .examineeInfo {
     padding: 10px;
     margin: 0 0px 10px 0px;

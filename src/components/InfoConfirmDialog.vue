@@ -96,12 +96,13 @@ const send = () => {
   line-height: 50px;
   text-align: center;
 }
-@media (max-width: 1200px) {
+@media (max-width: 750px) {
   .dialog {
-    width: 95%;
-    height: 150px;
+    width: 92%;
+    height: 100px;
   }
   .top {
+    margin-top: 5px;
     flex-wrap: wrap;
     .userinfo {
       --hei: 50px;
