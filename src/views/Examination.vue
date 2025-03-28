@@ -100,16 +100,11 @@ const submitPaper = () => {
           :key="questionIndex"
           :id="'question' + (questionIndex + 1)"
         >
-          <QuestionCard
-            v-model="questions[questionIndex]"
-            :index="questionIndex"
-          ></QuestionCard>
+          <QuestionCard v-model="questions[questionIndex]" :index="questionIndex"></QuestionCard>
         </li>
       </ul>
       <div class="submit">
-        <MCButton class="minecraft-button" @click="submitPaper()"
-          >交卷</MCButton
-        >
+        <MCButton class="minecraft-button" @click="submitPaper()">交卷</MCButton>
       </div>
       <br />
       <br />
@@ -117,14 +112,7 @@ const submitPaper = () => {
   </QuestionBackground>
   <InfoDialog :show="confirm" dialogType="warn-card">
     <p style="margin-top: 20px">还有未完成题目！确认提交？</p>
-    <p
-      style="
-        display: flex;
-        justify-content: flex-end;
-        padding-right: 30px;
-        margin-top: 10px;
-      "
-    >
+    <p style="display: flex; justify-content: flex-end; padding-right: 30px; margin-top: 10px">
       <MCButton class="btn" @click="confirm = false">取消</MCButton>
       <MCButton class="btn" @click="complete()">确认</MCButton>
     </p>
@@ -163,7 +151,7 @@ const submitPaper = () => {
 
 .exam-title .title {
   font-weight: bold;
-  font-size: 50px;
+  font-size: 42px;
 }
 
 .exam-title .type {

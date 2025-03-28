@@ -7,7 +7,14 @@ function generatePatterns() {
     while (positions.length < count) {
       const x = Math.floor(Math.random() * (maxX + 1));
       const y = Math.floor(Math.random() * (maxY - minY + 1)) + minY;
-      const newPosition = { x, y };
+      const multiple = elementSize;
+
+      // 找到最接近的倍数
+      const closestMultipleX = Math.round(x / multiple) * multiple;
+      const closestMultipleY = Math.round(y / multiple) * multiple;
+
+      // 更新位置
+      const newPosition = { x: closestMultipleX, y: closestMultipleY };
       // 检查新位置是否与现有位置重叠
       const isOverlapping = positions.some(
         (pos) => Math.abs(pos.x - newPosition.x) < elementSize && Math.abs(pos.y - newPosition.y) < elementSize,
@@ -22,7 +29,7 @@ function generatePatterns() {
   const elementSize = 130;
   // 不希望矿石生成在草方块、泥土或者基岩里！
   const maxX = window.innerWidth - elementSize;
-  const minY = elementSize * 2;
+  const minY = elementSize * 7;
   const maxY = bgHeight.value - elementSize * 2;
   const area = maxX * maxY;
   const k = area * 0.000001; // 建议控制在 3 ~ 10，否则严重影响客户端性能
@@ -72,49 +79,46 @@ watch(bgHeight, (newVal, oldVal) => {
   position: relative;
   top: 0;
   overflow-x: hidden;
-  --block-wid: 130px;
   .bga {
-    background-size: var(--block-wid) var(--block-wid);
+    --block-hei: 260px;
     width: 100%;
     image-rendering: pixelated;
-    background-repeat: repeat-x;
     position: absolute;
+    background-repeat: repeat;
+    background-size: var(--block-hei) var(--block-hei);
   }
 
   .grass {
-    background-image: url(../assets/images/vanilla_gui/long-grass.png);
+    background-image: url(/src/assets/images/vanilla_gui/block/grass-dirt-32.png);
     top: 0;
-    z-index: 1;
-    height: calc(var(--block-wid) * 2);
-    background-size: var(--block-wid) calc(var(--block-wid) * 2);
+    z-index: 0;
+    height: calc(var(--block-hei) * 2);
   }
 
   .stone {
-    background-image: url(../assets/images/vanilla_gui/block/stone.png);
-    height: calc(50% - var(--block-wid) * 2);
-    top: calc(var(--block-wid) * 2);
-    background-repeat: repeat;
+    background-image: url(/src/assets/images/vanilla_gui/block/stone-32.png);
+    height: calc(50% - var(--block-hei));
+    top: var(--block-hei);
     z-index: 0;
   }
 
   .deepslate {
-    background-image: url(../assets/images/vanilla_gui/block/deepslate.png);
-    background-repeat: repeat;
-    height: calc(50% - var(--block-wid));
-    bottom: var(--block-wid);
+    background-image: url(/src/assets/images/vanilla_gui/block/deepslate-32.png);
+    height: 50%;
+    bottom: calc(var(--block-hei) / 2);
     z-index: 0;
   }
 
   .bedrock {
-    background-image: url(../assets/images/vanilla_gui/block/bedrock.png);
+    background-image: url(/src/assets/images/vanilla_gui/block/bedrock-32.png);
     bottom: 0;
-    z-index: 1;
-    height: var(--block-wid);
+    z-index: 0;
+    height: calc(var(--block-hei) / 2);
   }
 
   .ore {
     top: 0;
-    z-index: 2;
+    z-index: 1;
   }
 }
 
@@ -122,6 +126,6 @@ watch(bgHeight, (newVal, oldVal) => {
   width: 100%;
   position: relative;
   top: 0;
-  z-index: 3;
+  z-index: 2;
 }
 </style>
