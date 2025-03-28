@@ -35,7 +35,8 @@
             <td>{{ moment(item.createTime).format('YY年MM月DD日 HH时') }}</td>
             <td>{{ moment(item.responseTime).format('YY年MM月DD日 HH时') }}</td>
             <td class="action">
-              <MCButton v-if="!item.isReviewed" class="button" @click="reviewed(item.id)">通过</MCButton>
+              <MCButton v-if="!item.isReviewed" class="button" @click="reviewed(item.id, true)">通过</MCButton>
+              <MCButton v-if="!item.isReviewed" class="button" @click="reviewed(item.id, false)">拒绝</MCButton>
               <MCButton class="button" @click="detail(item.id)">详情</MCButton>
             </td>
           </tr>
@@ -67,10 +68,15 @@ const getRes = () => {
 };
 getRes();
 
-const reviewed = (id: number) => {
-  (reviewedResponse as (data: { response: number }) => Promise<any>)({ response: id }).then((res: { data: any }) => {
-    getRes();
-  });
+const reviewed = (id: number, pass: boolean) => {
+  const text: string = pass ? '确定通过吗？' : '确定拒绝吗？';
+  const userConfirmed = confirm(text);
+  if (userConfirmed && pass) {
+    (reviewedResponse as (data: { response: number }) => Promise<any>)({ response: id }).then((res: { data: any }) => {
+      getRes();
+    });
+  } else if (userConfirmed && !pass) {
+  }
 };
 
 const detail = (id: number) => {
@@ -124,7 +130,7 @@ th {
   min-width: 150px;
 }
 .action {
-  min-width: 120px;
+  min-width: 200px;
   display: flex;
   justify-content: center;
   gap: 6px;
