@@ -49,7 +49,7 @@
 <script setup lang="ts">
 import { getResponses, reviewedResponse, responseDetail } from '@/apis/admin';
 import type { IResponse } from '@/types';
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 import moment from 'moment';
 import MCButton from '@/components/MCButton.vue';
 import ResponseDetail from '@/views/admin/ResponseDetail.vue';
@@ -79,6 +79,12 @@ const detail = (id: number) => {
     visibility.value = true;
   });
 };
+
+watch(visibility, (newValue) => {
+  if (newValue == false) {
+    getRes();
+  }
+});
 </script>
 
 <style scoped>

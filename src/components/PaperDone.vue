@@ -100,7 +100,7 @@ onMounted(() => {
     }
   }
 }
-@media (max-width: 1200px) {
+@media (max-width: 500px) {
   .paper-done {
     .box {
       width: 85vw;
