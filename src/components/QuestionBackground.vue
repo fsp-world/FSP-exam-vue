@@ -72,55 +72,56 @@ watch(bgHeight, (newVal, oldVal) => {
   position: relative;
   top: 0;
   overflow-x: hidden;
+  --block-wid: 130px;
+  .bga {
+    background-size: var(--block-wid) var(--block-wid);
+    width: 100%;
+    height: 130px;
+    image-rendering: pixelated;
+    background-repeat: repeat-x;
+    position: absolute;
+  }
+
+  .grass {
+    background-image: url(../assets/images/vanilla_gui/long-grass.png);
+    top: 0;
+    z-index: 1;
+    height: calc(var(--block-wid) * 2);
+    background-size: var(--block-wid) calc(var(--block-wid) * 2);
+  }
+
+  .stone {
+    background-image: url(../assets/images/vanilla_gui/block/stone.png);
+    height: calc(50% - var(--block-wid) * 2);
+    top: calc(var(--block-wid) * 2);
+    background-repeat: repeat;
+    z-index: 0;
+  }
+
+  .deepslate {
+    background-image: url(../assets/images/vanilla_gui/block/deepslate.png);
+    background-repeat: repeat;
+    height: calc(50% - var(--block-wid));
+    bottom: var(--block-wid);
+    z-index: 0;
+  }
+
+  .bedrock {
+    background-image: url(../assets/images/vanilla_gui/block/bedrock.png);
+    bottom: 0;
+    z-index: 1;
+  }
+
+  .ore {
+    top: 0;
+    z-index: 2;
+  }
 }
 
 .slot-content {
+  width: 100%;
   position: relative;
-  width: 100%;
+  top: 0;
   z-index: 3;
-  top: 0;
-}
-
-.bga {
-  background-size: 130px 130px;
-  width: 100%;
-  height: 130px;
-  image-rendering: pixelated;
-  background-repeat: repeat-x;
-  position: absolute;
-}
-
-.grass {
-  background-image: url(../assets/images/vanilla_gui/long-grass.png);
-  top: 0;
-  z-index: 1;
-  height: 260px;
-  background-size: 130px 260px;
-}
-
-.stone {
-  background-image: url(../assets/images/vanilla_gui/block/stone.png);
-  height: 50%;
-  background-repeat: repeat;
-  z-index: 0;
-}
-
-.deepslate {
-  background-image: url(../assets/images/vanilla_gui/block/deepslate.png);
-  background-repeat: repeat;
-  height: 50%;
-  bottom: 0;
-  z-index: 0;
-}
-
-.bedrock {
-  background-image: url(../assets/images/vanilla_gui/block/bedrock.png);
-  bottom: 0;
-  z-index: 1;
-}
-
-.ore {
-  top: 0;
-  z-index: 2;
 }
 </style>
