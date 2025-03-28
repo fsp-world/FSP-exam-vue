@@ -110,7 +110,7 @@ th {
 .score,
 .user,
 .player-name {
-  min-width: 70px;
+  min-width: 75px;
 }
 
 .add-time,
