@@ -42,9 +42,9 @@ const examineeInfo = ref({
 const flag = ref(false);
 
 const playerTypeList = ref([
-  { id: 'survival', option: '生存玩家' },
-  { id: 'redstone', option: '红石玩家' },
-  { id: 'construction', option: '建筑玩家' },
+  { id: 'survival', option: '生存类' },
+  { id: 'redstone', option: '红石类' },
+  { id: 'construction', option: '建筑类' },
 ]);
 
 const checkPlayerName = () => {
@@ -95,11 +95,7 @@ const handelConfirm = () => {
 </script>
 
 <template>
-  <InfoConfirmDialog
-    :show="flag"
-    :info="examineeInfo"
-    @confirm="handelConfirm"
-  ></InfoConfirmDialog>
+  <InfoConfirmDialog :show="flag" :info="examineeInfo" @confirm="handelConfirm"></InfoConfirmDialog>
   <div class="prepare-exam-page">
     <div class="translucent-bg"></div>
     <div class="translucent-content">
@@ -112,11 +108,7 @@ const handelConfirm = () => {
             <h1>在开始答题之前，我们需要知晓一些您的个人偏好</h1>
           </div>
           <form class="examineeInfo">
-            <input
-              type="text"
-              v-model="examineeInfo.playerName"
-              placeholder="您的游戏昵称"
-            />
+            <input type="text" v-model="examineeInfo.playerName" placeholder="您的游戏昵称" />
             <p>我们会根据您的选择生成定制的试题</p>
             <ul class="option-list">
               <li
@@ -165,10 +157,11 @@ const handelConfirm = () => {
 }
 
 .examineeInfo .option-list .option {
-  height: 70px;
+  --hei: 70px;
+  height: var(--hei);
   width: 50%;
   font-size: 25px;
-  line-height: 70px;
+  line-height: var(--hei);
   text-align: center;
   font-family: 'mc-font';
   color: #fff;
@@ -188,5 +181,14 @@ const handelConfirm = () => {
 .examineeInfo .option-list .selected {
   background-image: url(../assets/images/rainbow_pixel_gui/button_highlighted.png);
   image-rendering: pixelated;
+}
+@media screen and (max-width: 950px) {
+  .examineeInfo {
+    padding: 10px;
+    margin: 0 0px 10px 0px;
+  }
+  .examineeInfo .option-list .option {
+    --hei: 58px;
+  }
 }
 </style>
