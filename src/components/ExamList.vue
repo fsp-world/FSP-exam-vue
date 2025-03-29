@@ -58,16 +58,19 @@ const handleClick = (res: IQueryResponse) => {
 <style scoped>
 .exam-list {
   width: 100%;
+  height: 100%;
 }
 
 .title {
   font-size: 30px;
+  line-height: 30px;
   padding: 5px;
   text-align: center;
 }
 
 .tips {
   font-size: 20px;
+  line-height: 20px;
   padding: 5px;
   padding-bottom: 20px;
   text-align: center;
@@ -77,8 +80,8 @@ const handleClick = (res: IQueryResponse) => {
 .list {
   width: 80%;
   max-width: 1000px;
+  max-height: calc(100vh - 300px);
   margin: 0 auto;
-  max-height: 600px;
   overflow-y: auto;
   display: flex;
   flex-direction: column-reverse;
@@ -111,9 +114,9 @@ const handleClick = (res: IQueryResponse) => {
 .list li:hover {
   background-color: rgba(0, 0, 0, 0.5);
 }
-@media (max-width: 1200px) {
+@media (max-width: 800px) {
   .list {
-    width: 95%;
+    width: 100%;
   }
   .list li {
     flex-wrap: wrap;

@@ -71,7 +71,7 @@ const editAvatar = (uuid) => {
             <p>账号状态: {{ getStatus }}</p>
           </div>
         </div>
-        <div class="white-list">
+        <div class="white-list y-scroll">
           <p class="title">授权的游戏账户</p>
           <ul>
             <li class="player" v-for="(item, index) in userWhiteList" v-bind:key="index">
@@ -97,16 +97,17 @@ const editAvatar = (uuid) => {
 </template>
 
 <style scoped>
-.space-page {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 20px;
-}
-
 .main {
   display: flex;
   flex-direction: column;
+  flex-wrap: nowrap;
   gap: 30px;
+  overflow-y: hidden;
+}
+@media (max-width: 600px) {
+  .main {
+    gap: 10px;
+  }
 }
 
 .user-info {
@@ -142,7 +143,9 @@ const editAvatar = (uuid) => {
 .white-list {
   width: calc(100% - 40px);
   max-width: 440px;
-  min-height: 70px;
+  min-height: 100px;
+  max-height: 270px;
+  overflow-y: auto;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   padding: 20px;
   border-radius: 8px;
@@ -157,6 +160,7 @@ const editAvatar = (uuid) => {
     justify-content: space-between;
     --hei: 50px;
     padding: 5px 0;
+    height: 55px;
     .avatar {
       image-rendering: pixelated;
       border-radius: 5px;
@@ -180,6 +184,7 @@ const editAvatar = (uuid) => {
 .menu {
   width: 100%;
   max-width: 480px;
+  min-height: 150px;
   display: flex;
   flex-direction: column;
   gap: 10px;

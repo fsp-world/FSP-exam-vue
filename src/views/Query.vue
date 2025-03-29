@@ -19,4 +19,8 @@ import MCRouterLink from '@/components/MCRouterLink.vue';
   </div>
 </template>
 
-<style scoped></style>
+<style scoped>
+.main {
+  display: block;
+}
+</style>
