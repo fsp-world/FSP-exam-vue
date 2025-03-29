@@ -19,7 +19,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="item in data.list" :key="item.id">
+          <tr v-for="item in responsesData.list" :key="item.id">
             <td>{{ item.id }}</td>
             <td :style="item.isCompleted ? { color: 'green' } : { color: 'red' }">
               {{ item.isCompleted ? '已完成' : '未完成' }}
@@ -45,27 +45,27 @@
     </div>
     <!-- 分页 -->
     <div class="pagination">
-      <button type="button" @click="loadPagination(data.page - 1, data.size)" :disabled="data.page === 1">
+      <button type="button" @click="loadPagination(responsesData.page - 1, responsesData.size)" :disabled="responsesData.page === 1">
         上一页
       </button>
-      <span>第 {{ data.page }} 页 / 共 {{ data.totalPages }} 页</span>
+      <span>第 {{ responsesData.page }} 页 / 共 {{ responsesData.totalPages }} 页</span>
       <button
         type="button"
-        @click="loadPagination(data.page + 1, data.size)"
-        :disabled="data.page * data.size >= data.total"
+        @click="loadPagination(responsesData.page + 1, responsesData.size)"
+        :disabled="responsesData.page * responsesData.size >= responsesData.total"
       >
         下一页
       </button>
       <button
         type="button"
-        @click="loadPagination(data.totalPages, data.size)"
-        :disabled="data.page === data.totalPages"
+        @click="loadPagination(responsesData.totalPages, responsesData.size)"
+        :disabled="responsesData.page === responsesData.totalPages"
       >
         最后一页
       </button>
     </div>
 
-    <ResponseDetail v-if="visibility" v-model:visibility="visibility" :data="data"></ResponseDetail>
+    <ResponseDetail v-if="visibility" v-model:visibility="visibility" :data="detailData"></ResponseDetail>
   </div>
 </template>
 
@@ -86,20 +86,20 @@ interface IData {
   total: number;
   totalPages: number;
 }
-const data = ref<IData>({
+const detailData = ref()
+const responsesData = ref<IData>({
   list: [],
   page: 1,
   size: 10,
   total: 0,
   totalPages: 0,
-});
-const responsesData = data;
+});;
 // 分页加载用户数据
 const loadPagination = async (page = 1, size = 10) => {
   const res = await getResponses({ page, size });
   if (res.data.code === 0) {
-    data.value = res.data;
-    data.value.totalPages = Math.ceil(data.value.total / data.value.size);
+    responsesData.value = res.data;
+    responsesData.value.totalPages = Math.ceil(res.data.total / res.data.size);
   }
 };
 
@@ -108,7 +108,7 @@ const reviewed = (id: number, pass: boolean) => {
   const userConfirmed = confirm(text);
   if (userConfirmed && pass) {
     (reviewedResponse as (data: { response: number }) => Promise<any>)({ response: id }).then(() => {
-      loadPagination(data.value.page, data.value.size);
+      // loadPagination(data.value.page, data.value.size);
     });
   } else if (userConfirmed && !pass) {
   }
@@ -116,12 +116,12 @@ const reviewed = (id: number, pass: boolean) => {
 
 const detail = (id: number) => {
   (responseDetail as (id: number) => Promise<any>)(id).then((res: { data: any }) => {
-    data.value = res.data;
+    detailData.value = res.data;
     visibility.value = true;
-    pagination.value = {
-      page: responsesData.value.page,
-      size: responsesData.value.size,
-    };
+    // pagination.value = {
+    //   page: responsesData.value.page,
+    //   size: responsesData.value.size,
+    // };
   });
 };
 
@@ -129,7 +129,7 @@ watch(visibility, (newValue) => {
   if (newValue == false) {
     // console.log(data.value.page);
     // console.log(data.value.size);
-    loadPagination(data.value.page, data.value.size);
+    // loadPagination(data.value.page, data.value.size);
   }
 });
 // 初始化加载数据
