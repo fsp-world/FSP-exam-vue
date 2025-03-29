@@ -30,7 +30,7 @@ export interface IQueryResponse {
   id: number;
   type: string;
   responseTime: string;
-  isReviewed: boolean;
+  isReviewed: 0 | 1 | 2;
   score: number;
 }
 
