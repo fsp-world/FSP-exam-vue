@@ -85,6 +85,7 @@
 <script setup lang="ts">
 import { ref, reactive, watch } from 'vue';
 import { addQuestion } from '@/apis/admin';
+import { IQuestion, IOption } from '@/types';
 
 const { sid } = defineProps({
   sid: {
@@ -93,22 +94,7 @@ const { sid } = defineProps({
   },
 });
 
-interface IFormData {
-  survey: number;
-  title: string;
-  type: number;
-  score: number;
-  options: Array<IOption>;
-  img_url: Array<string>;
-}
-
-interface IOption {
-  key: string;
-  option: string;
-  isAnswer: boolean;
-}
-
-const defaultFormData: IFormData = {
+const defaultFormData: IQuestion = {
   survey: sid,
   title: '',
   type: 1,
@@ -130,7 +116,7 @@ const defaultOption: IOption = {
   key: '',
 };
 
-const formData: IFormData = reactive<IFormData>({ ...defaultFormData });
+const formData: IQuestion = reactive<IQuestion>({ ...defaultFormData });
 
 const newOption = () => {
   let obj = { ...defaultOption };

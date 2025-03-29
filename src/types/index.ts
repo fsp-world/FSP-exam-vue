@@ -1,3 +1,8 @@
+export interface IPagination {
+  page?: number
+  size?: number
+}
+
 export interface IalertData {
   type: CardType;
   title: string;
@@ -27,4 +32,39 @@ export interface IQueryResponse {
   responseTime: string;
   isReviewed: boolean;
   score: number;
+}
+
+export interface ISurvey {
+  name: string
+  description: string
+}
+
+export type questionType = 1 | 2 | 3 | 4
+
+export interface IOption {
+  key: string;
+  option: string;
+  isAnswer: boolean;
+}
+
+export interface IQuestion {
+  survey: number
+  title: string
+  type: questionType
+  score: number;
+  options: Array<IOption>;
+  img_url: Array<string>;
+}
+
+export type roleType = 'admin' | 'user'
+
+export type statusType = 0 | 1 | 2 | 3 | 4
+
+export interface IUser {
+  id?: number;
+  username: string
+  userQQ: string
+  role?: roleType,
+  password?: string
+  status?: statusType
 }

@@ -32,7 +32,7 @@ const showModal = ref(false);
 const selectedUser = ref({
   id: null,
   username: '',
-  user_qq: '',
+  userQQ: '',
   role: '',
   status: 0,
   password: '',
@@ -72,7 +72,7 @@ onMounted(() => {
           <td>{{ item.id }}</td>
           <td><img :src="item.avatar" alt="头像" class="avatar" /></td>
           <td>{{ item.username }}</td>
-          <td>{{ item.user_qq }}</td>
+          <td>{{ item.userQQ }}</td>
           <td>{{ item.role }}</td>
           <td>{{ item.addtime }}</td>
           <td>{{ computStatus(item.status) }}</td>
@@ -111,7 +111,7 @@ onMounted(() => {
         </div>
         <div class="form-group">
           <label>用户 QQ</label>
-          <input v-model="selectedUser.user_qq" type="text" required placeholder="修改 QQ" />
+          <input v-model="selectedUser.userQQ" type="text" required placeholder="修改 QQ" />
         </div>
         <div class="form-group">
           <label>用户密码</label>
