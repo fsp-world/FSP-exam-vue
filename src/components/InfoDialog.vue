@@ -56,7 +56,7 @@ const { show, dialogType, dialogStyle } = defineProps({
   color: #313131;
   background-image: url(../assets/images/vanilla_gui/demo_background.png);
 }
-@media (max-width: 1200px) {
+@media (max-width: 800px) {
   .dialog {
     width: 95%;
   }
