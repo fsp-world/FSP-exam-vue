@@ -1,6 +1,6 @@
 export interface IPagination {
-  page?: number
-  size?: number
+  page?: number;
+  size?: number;
 }
 
 export interface IalertData {
@@ -16,7 +16,7 @@ export type CardType = 'warn-card' | 'info-card';
 export interface IResponse {
   id: number;
   isCompleted: string;
-  isReviewed: string;
+  isReviewed: number;
   username: string;
   survey: string;
   surveyId: number;
@@ -35,11 +35,11 @@ export interface IQueryResponse {
 }
 
 export interface ISurvey {
-  name: string
-  description: string
+  name: string;
+  description: string;
 }
 
-export type questionType = 1 | 2 | 3 | 4
+export type questionType = 1 | 2 | 3 | 4;
 
 export interface IOption {
   key: string;
@@ -48,23 +48,24 @@ export interface IOption {
 }
 
 export interface IQuestion {
-  survey: number
-  title: string
-  type: questionType
+  survey: number;
+  title: string;
+  type: questionType;
   score: number;
   options: Array<IOption>;
   img_url: Array<string>;
 }
 
-export type roleType = 'admin' | 'user'
+export type roleType = 'admin' | 'user';
 
-export type statusType = 0 | 1 | 2 | 3 | 4
+export type statusType = 0 | 1 | 2 | 3 | 4;
 
 export interface IUser {
   id?: number;
-  username: string
-  userQQ: string
-  role?: roleType,
-  password?: string
-  status?: statusType
+  username: string;
+  userQQ: string;
+  role?: roleType;
+  password?: string;
+  status?: statusType;
 }
+

@@ -24,7 +24,7 @@
             <td :style="item.isCompleted ? { color: 'green' } : { color: 'red' }">
               {{ item.isCompleted ? '已完成' : '未完成' }}
             </td>
-            <td style="color: red;" :style="item.isReviewed === 1 ? { color: 'green' } : {  }">
+            <td :style="getCellStyle(item.isReviewed)">
               {{ reviewedComput(item.isReviewed) }}
             </td>
             <td>{{ item.survey }}</td>
@@ -45,7 +45,11 @@
     </div>
     <!-- 分页 -->
     <div class="pagination">
-      <button type="button" @click="loadPagination(responsesData.page - 1, responsesData.size)" :disabled="responsesData.page === 1">
+      <button
+        type="button"
+        @click="loadPagination(responsesData.page - 1, responsesData.size)"
+        :disabled="responsesData.page === 1"
+      >
         上一页
       </button>
       <span>第 {{ responsesData.page }} 页 / 共 {{ responsesData.totalPages }} 页</span>
@@ -77,6 +81,16 @@ import moment from 'moment';
 import MCButton from '@/components/MCButton.vue';
 import ResponseDetail from '@/views/admin/ResponseDetail.vue';
 
+const getCellStyle = (isReviewed: number) => {
+  if (isReviewed === 1) {
+    return { color: 'green' };
+  } else if (isReviewed === 2) {
+    return { color: 'red' };
+  } else {
+    return { color: 'grey' };
+  }
+};
+
 const visibility = ref<boolean>(false);
 
 interface IData {
@@ -87,7 +101,7 @@ interface IData {
   totalPages: number;
 }
 // 答卷详情数据
-const detailData = ref()
+const detailData = ref();
 // 答卷分页数据
 const responsesData = ref<IData>({
   list: [],
@@ -95,7 +109,7 @@ const responsesData = ref<IData>({
   size: 10,
   total: 0,
   totalPages: 0,
-});;
+});
 // 分页加载答卷分页数据
 const loadPagination = async (page = 1, size = 10) => {
   const res = await getResponses({ page, size });
@@ -110,7 +124,7 @@ const reviewed = (id: number, pass: boolean) => {
   const text: string = pass ? '确定通过吗？' : '确定拒绝吗？';
   const userConfirmed = confirm(text);
   if (userConfirmed) {
-    reviewedResponse({ response: id, status: pass ? 1 : 2}).then(() => {
+    reviewedResponse({ response: id, status: pass ? 1 : 2 }).then(() => {
       loadPagination(responsesData.value.page, responsesData.value.size);
     });
   }
@@ -134,20 +148,19 @@ onMounted(() => {
 });
 
 const reviewedComput = computed(() => {
-  return (key) => {
+  return (key: number) => {
     switch (key) {
       case 0:
-        return '未通过';
+        return '待审核';
       case 1:
         return '已通过';
       case 2:
         return '已拒绝';
-
       default:
         return '未知';
     }
-  }
-})
+  };
+});
 </script>
 
 <style scoped>
