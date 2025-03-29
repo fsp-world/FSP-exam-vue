@@ -76,8 +76,8 @@ const router = createRouter({
         {
           path: 'find_password',
           name: 'FindPassword',
-          component: () => import('@/components/form/FindPassword.vue')
-        }
+          component: () => import('@/components/form/FindPassword.vue'),
+        },
       ],
     },
     {
@@ -163,4 +163,3 @@ router.beforeEach((to, from) => {
 });
 
 export default router;
-

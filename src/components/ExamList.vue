@@ -1,31 +1,20 @@
 <template>
-  <div class="exam-list">
+  <div v-show="!flag" class="exam-list">
     <p class="title">考试列表</p>
     <p class="tips">系统只保留最近10条记录</p>
     <ul class="list y-scroll">
       <li v-for="res in responseList" :key="res.id">
         <div class="info">
-          <p>{{ res.type }}试卷（{{ res.isReviewed ? res.isReviewed === 1 ? '已通过' : '已拒绝' : '审核中' }}）</p>
+          <p>{{ res.type }}试卷（{{ res.isReviewed ? (res.isReviewed === 1 ? '已通过' : '已拒绝') : '审核中' }}）</p>
           <p>{{ dateFormat(res.responseTime) }}</p>
         </div>
-        <MCButton v-if="res.isReviewed == 1" class="button" @click="handleClick(res)">查看成绩</MCButton>
+        <MCButton v-if="res.isReviewed === 1 || res.isReviewed === 2" class="button" @click="handleClick(res)"
+          >查看成绩</MCButton
+        >
       </li>
     </ul>
   </div>
-  <InfoDialog :show="flag" dialog-type="info-card">
-    <p style="margin-top: 20px">
-      您的成绩为: <span>{{ response?.score }}</span>
-    </p>
-    <p style="display: flex; justify-content: center; margin-top: 10px">
-      <span>可以进服游玩！</span>
-    </p>
-    <MCButton
-      class="button"
-      style="width: 80px; height: 40px; position: absolute; right: 30px; bottom: 10px"
-      @click="flag = false"
-      >确认</MCButton
-    >
-  </InfoDialog>
+  <ShowScore v-if="flag" v-model:flag="flag" :data="showData"></ShowScore>
 </template>
 
 <script setup lang="ts">
@@ -34,11 +23,11 @@ import { getResponses } from '@/apis/query';
 import type { IQueryResponse } from '@/types';
 import { dateFormat } from '@/utils/date';
 import MCButton from './MCButton.vue';
-import InfoDialog from './InfoDialog.vue';
+import ShowScore from './ShowScore.vue';
 
 const responseList = ref<IQueryResponse[]>([]);
-const response = ref<IQueryResponse>();
 const flag = ref(false);
+const showData = ref<IQueryResponse>();
 
 const getResponseList = () => {
   getResponses().then((res) => {
@@ -51,7 +40,7 @@ getResponseList();
 
 const handleClick = (res: IQueryResponse) => {
   flag.value = true;
-  response.value = res;
+  showData.value = res;
 };
 </script>
 
@@ -59,6 +48,7 @@ const handleClick = (res: IQueryResponse) => {
 .exam-list {
   width: 100%;
   height: 100%;
+  position: relative;
 }
 
 .title {
@@ -84,7 +74,7 @@ const handleClick = (res: IQueryResponse) => {
   margin: 0 auto;
   overflow-y: auto;
   display: flex;
-  flex-direction: column-reverse;
+  flex-direction: column;
 }
 
 .list li {
