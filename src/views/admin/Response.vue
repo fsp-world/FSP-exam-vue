@@ -19,7 +19,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="item in responses" :key="item.id">
+          <tr v-for="item in data.list" :key="item.id">
             <td>{{ item.id }}</td>
             <td :style="item.isCompleted ? { color: 'green' } : { color: 'red' }">
               {{ item.isCompleted ? '已完成' : '未完成' }}
@@ -43,6 +43,28 @@
         </tbody>
       </table>
     </div>
+    <!-- 分页 -->
+    <div class="pagination">
+      <button type="button" @click="loadPagination(data.page - 1, data.size)" :disabled="data.page === 1">
+        上一页
+      </button>
+      <span>第 {{ data.page }} 页 / 共 {{ data.totalPages }} 页</span>
+      <button
+        type="button"
+        @click="loadPagination(data.page + 1, data.size)"
+        :disabled="data.page * data.size >= data.total"
+      >
+        下一页
+      </button>
+      <button
+        type="button"
+        @click="loadPagination(data.totalPages, data.size)"
+        :disabled="data.page === data.totalPages"
+      >
+        最后一页
+      </button>
+    </div>
+
     <ResponseDetail v-if="visibility" v-model:visibility="visibility" :data="data"></ResponseDetail>
   </div>
 </template>
@@ -50,30 +72,43 @@
 <script setup lang="ts">
 import { getResponses, reviewedResponse, responseDetail } from '@/apis/admin';
 import type { IResponse } from '@/types';
-import { ref, watch } from 'vue';
+import { ref, watch, onMounted } from 'vue';
 import moment from 'moment';
 import MCButton from '@/components/MCButton.vue';
 import ResponseDetail from '@/views/admin/ResponseDetail.vue';
 
-const responses = ref<IResponse[]>();
 const visibility = ref<boolean>(false);
-const data = ref();
 
-const getRes = () => {
-  getResponses().then((res: { data: { list: IResponse[]; code: number } }) => {
-    if (res.data.code === 0) {
-      responses.value = res.data.list;
-    }
-  });
+interface IData {
+  list: IResponse[];
+  page: number;
+  size: number;
+  total: number;
+  totalPages: number;
+}
+const data = ref<IData>({
+  list: [],
+  page: 1,
+  size: 10,
+  total: 0,
+  totalPages: 0,
+});
+const responsesData = data;
+// 分页加载用户数据
+const loadPagination = async (page = 1, size = 10) => {
+  const res = await getResponses({ page, size });
+  if (res.data.code === 0) {
+    data.value = res.data;
+    data.value.totalPages = Math.ceil(data.value.total / data.value.size);
+  }
 };
-getRes();
 
 const reviewed = (id: number, pass: boolean) => {
   const text: string = pass ? '确定通过吗？' : '确定拒绝吗？';
   const userConfirmed = confirm(text);
   if (userConfirmed && pass) {
-    (reviewedResponse as (data: { response: number }) => Promise<any>)({ response: id }).then((res: { data: any }) => {
-      getRes();
+    (reviewedResponse as (data: { response: number }) => Promise<any>)({ response: id }).then(() => {
+      loadPagination(data.value.page, data.value.size);
     });
   } else if (userConfirmed && !pass) {
   }
@@ -83,13 +118,23 @@ const detail = (id: number) => {
   (responseDetail as (id: number) => Promise<any>)(id).then((res: { data: any }) => {
     data.value = res.data;
     visibility.value = true;
+    pagination.value = {
+      page: responsesData.value.page,
+      size: responsesData.value.size,
+    };
   });
 };
 
 watch(visibility, (newValue) => {
   if (newValue == false) {
-    getRes();
+    // console.log(data.value.page);
+    // console.log(data.value.size);
+    loadPagination(data.value.page, data.value.size);
   }
+});
+// 初始化加载数据
+onMounted(() => {
+  loadPagination();
 });
 </script>
 
@@ -143,6 +188,28 @@ th {
 @media (max-width: 1200px) {
   .table {
     max-width: 90vw;
+  }
+}
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  margin-top: 20px;
+  button {
+    margin: 5px;
+    padding: 5px 10px;
+    font-size: 14px;
+    border-radius: 5px;
+    background-color: #ccc;
+    cursor: pointer;
+  }
+  button:hover {
+    background-color: #888;
+  }
+  button:disabled {
+    background-color: #ddd;
+    cursor: not-allowed;
   }
 }
 </style>

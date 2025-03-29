@@ -2,7 +2,7 @@ import request from '@/utils/requers';
 
 export const getWhitelist = (data) => request.get('/admin/whitelist', { params: data });
 export const getQuestion = () => request.get('/admin/AllQuestion');
-export const getResponses = () => request.get('/admin/responses');
+export const getResponses = (data) => request.get('/admin/responses', { params: data });
 export const getUsers = (data) => request.get('/admin/users', { params: data });
 export const getUser = (id) => request.get('/admin/user', { params: { id } });
 export const addUser = (data) => request.post('/admin/user', JSON.stringify(data));
