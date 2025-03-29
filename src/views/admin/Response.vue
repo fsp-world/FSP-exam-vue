@@ -24,8 +24,8 @@
             <td :style="item.isCompleted ? { color: 'green' } : { color: 'red' }">
               {{ item.isCompleted ? '已完成' : '未完成' }}
             </td>
-            <td :style="item.isReviewed ? { color: 'green' } : { color: 'red' }">
-              {{ item.isReviewed ? '已通过' : '未通过' }}
+            <td style="color: red;" :style="item.isReviewed === 1 ? { color: 'green' } : {  }">
+              {{ reviewedComput(item.isReviewed) }}
             </td>
             <td>{{ item.survey }}</td>
             <td>{{ item.surveyId }}</td>
@@ -72,7 +72,7 @@
 <script setup lang="ts">
 import { getResponses, reviewedResponse, responseDetail } from '@/apis/admin';
 import type { IResponse } from '@/types';
-import { ref, watch, onMounted } from 'vue';
+import { ref, watch, onMounted, computed } from 'vue';
 import moment from 'moment';
 import MCButton from '@/components/MCButton.vue';
 import ResponseDetail from '@/views/admin/ResponseDetail.vue';
@@ -109,11 +109,10 @@ const loadPagination = async (page = 1, size = 10) => {
 const reviewed = (id: number, pass: boolean) => {
   const text: string = pass ? '确定通过吗？' : '确定拒绝吗？';
   const userConfirmed = confirm(text);
-  if (userConfirmed && pass) {
-    (reviewedResponse as (data: { response: number }) => Promise<any>)({ response: id }).then(() => {
+  if (userConfirmed) {
+    reviewedResponse({ response: id, status: pass ? 1 : 2}).then(() => {
       loadPagination(responsesData.value.page, responsesData.value.size);
     });
-  } else if (userConfirmed && !pass) {
   }
 };
 // 获取答卷详情
@@ -133,6 +132,22 @@ watch(visibility, (newValue) => {
 onMounted(() => {
   loadPagination();
 });
+
+const reviewedComput = computed(() => {
+  return (key) => {
+    switch (key) {
+      case 0:
+        return '未通过';
+      case 1:
+        return '已通过';
+      case 2:
+        return '已拒绝';
+
+      default:
+        return '未知';
+    }
+  }
+})
 </script>
 
 <style scoped>
