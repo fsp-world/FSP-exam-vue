@@ -86,7 +86,9 @@ interface IData {
   total: number;
   totalPages: number;
 }
+// 答卷详情数据
 const detailData = ref()
+// 答卷分页数据
 const responsesData = ref<IData>({
   list: [],
   page: 1,
@@ -94,7 +96,7 @@ const responsesData = ref<IData>({
   total: 0,
   totalPages: 0,
 });;
-// 分页加载用户数据
+// 分页加载答卷分页数据
 const loadPagination = async (page = 1, size = 10) => {
   const res = await getResponses({ page, size });
   if (res.data.code === 0) {
@@ -103,6 +105,7 @@ const loadPagination = async (page = 1, size = 10) => {
   }
 };
 
+// 通过
 const reviewed = (id: number, pass: boolean) => {
   const text: string = pass ? '确定通过吗？' : '确定拒绝吗？';
   const userConfirmed = confirm(text);
@@ -113,23 +116,17 @@ const reviewed = (id: number, pass: boolean) => {
   } else if (userConfirmed && !pass) {
   }
 };
-
+// 获取答卷详情
 const detail = (id: number) => {
   (responseDetail as (id: number) => Promise<any>)(id).then((res: { data: any }) => {
     detailData.value = res.data;
     visibility.value = true;
-    // pagination.value = {
-    //   page: responsesData.value.page,
-    //   size: responsesData.value.size,
-    // };
   });
 };
-
+// 退出答卷详情预览重新获取
 watch(visibility, (newValue) => {
   if (newValue == false) {
-    // console.log(data.value.page);
-    // console.log(data.value.size);
-    // loadPagination(data.value.page, data.value.size);
+    loadPagination(responsesData.value.page, responsesData.value.size);
   }
 });
 // 初始化加载数据
