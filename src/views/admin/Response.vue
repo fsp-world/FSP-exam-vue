@@ -108,7 +108,7 @@ const reviewed = (id: number, pass: boolean) => {
   const userConfirmed = confirm(text);
   if (userConfirmed && pass) {
     (reviewedResponse as (data: { response: number }) => Promise<any>)({ response: id }).then(() => {
-      // loadPagination(data.value.page, data.value.size);
+      loadPagination(responsesData.value.page, responsesData.value.size);
     });
   } else if (userConfirmed && !pass) {
   }
