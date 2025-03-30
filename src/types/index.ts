@@ -47,13 +47,19 @@ export interface IOption {
   isAnswer: boolean;
 }
 
+export interface IImg {
+  key: string;
+  alt: string;
+  url: string;
+}
+
 export interface IQuestion {
   survey: number;
   title: string;
   type: questionType;
   score: number;
   options: Array<IOption>;
-  img_url: Array<string>;
+  img_urls: Array<IImg>;
 }
 
 export type roleType = 'admin' | 'user';
@@ -68,4 +74,3 @@ export interface IUser {
   password?: string;
   status?: statusType;
 }
-

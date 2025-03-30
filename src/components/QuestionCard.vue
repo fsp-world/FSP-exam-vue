@@ -65,6 +65,13 @@ const selectOption = (selectedOption) => {
         </select>
       </span>
     </div>
+
+    <ul class="images">
+      <li v-for="pic in model.img_urls">
+        <img :src="pic.url" :alt="pic.alt" />
+        <p>{{ pic.alt }}</p>
+      </li>
+    </ul>
     <ul class="option-list" v-if="model.type === 1 || model.type === 2">
       <li
         v-for="(option, optionIndex) in model.options"
@@ -84,12 +91,6 @@ const selectOption = (selectedOption) => {
           "
         ></span>
         {{ ['A.', 'B.', 'C.', 'D.'][optionIndex] }}{{ option.text }}
-      </li>
-    </ul>
-    <ul v-if="model.img_url" class="images">
-      <li v-for="pic in model.img_url">
-        <img :src="pic" />
-        <p>{{ pic }}</p>
       </li>
     </ul>
     <input

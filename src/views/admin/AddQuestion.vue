@@ -26,6 +26,26 @@
             v-model.trim="formData.title"
           ></textarea>
         </div>
+        <div>
+          <p>图片列表（可选）：</p>
+          <ul>
+            <li class="option">
+              <label class="num">编号</label><label class="text">图片URL</label>
+              <label class="delete"></label>
+            </li>
+            <li class="option" v-for="(item, index) in formData.img_urls" :key="item.key">
+              <label class="num">图{{ index + 1 }}</label>
+              <div class="text">
+                <textarea v-model="item.url" placeholder="e.g. https://exam.fsp.ink/src/abc.jpg"></textarea>
+              </div>
+              <span style="display: none">{{ item.alt = `图${index + 1}` }}</span>
+              <div class="delete">
+                <button type="button" @click="delQuestionImgURL(item.key)">删除选项</button>
+              </div>
+            </li>
+          </ul>
+          <button type="button" class="new-option" @click="newQestionImgURL">新建图片</button>
+        </div>
         <div class="choice">
           <p>{{ types[formData.type - 1].optionTitle }}</p>
           <ul>
@@ -85,7 +105,7 @@
 <script setup lang="ts">
 import { ref, reactive, watch } from 'vue';
 import { addQuestion } from '@/apis/admin';
-import { IQuestion, IOption } from '@/types';
+import { IQuestion, IOption, IImg } from '@/types';
 
 const { sid } = defineProps({
   sid: {
@@ -100,7 +120,7 @@ const defaultFormData: IQuestion = {
   type: 1,
   score: 5,
   options: [],
-  img_url: [],
+  img_urls: [],
 };
 
 const types = ref([
@@ -111,29 +131,72 @@ const types = ref([
 ]);
 
 const defaultOption: IOption = {
+  key: '',
   option: '',
   isAnswer: false,
+};
+
+const defaultImg: IImg = {
   key: '',
+  alt: '',
+  url: '',
+};
+
+// 生成唯一键值
+const generateUniqueKey = (): string => {
+  return crypto.randomUUID();
 };
 
 const formData: IQuestion = reactive<IQuestion>({ ...defaultFormData });
 
 const newOption = () => {
-  let obj = { ...defaultOption };
-  obj.key = Date();
+  const obj = { ...defaultOption };
+  obj.key = generateUniqueKey();
   formData.options.push(obj);
   if (formData.type === 3 || formData.type === 4) {
     formData.options[0].isAnswer = true;
   }
 };
 
-newOption();
+const newQestionImgURL = () => {
+  const obj = { ...defaultImg };
+  obj.key = generateUniqueKey();
+  formData.img_urls.push(obj);
+};
 
+newOption();
+newQestionImgURL();
+
+// const delOption = (key: string) => {
+//   formData.options.splice(
+//     formData.options.findIndex((item) => item.key === key),
+//     1,
+//   );
+// };
+//
+// const delQuestionImgURL = (key: string) => {
+//   formData.img_urls.splice(
+//     formData.img_urls.findIndex((item) => item.key === key),
+//     1,
+//   );
+// };
+
+// 通用删除函数
+const deleteByKey = <T extends { key: string }>(array: T[], key: string): void => {
+  const index = array.findIndex((item) => item.key === key);
+  if (index !== -1) {
+    array.splice(index, 1);
+  }
+};
+
+// 删除选项
 const delOption = (key: string) => {
-  formData.options.splice(
-    formData.options.findIndex((item) => item.key === key),
-    1,
-  );
+  deleteByKey(formData.options, key);
+};
+
+// 删除图片 URL
+const delQuestionImgURL = (key: string) => {
+  deleteByKey(formData.img_urls, key);
 };
 
 const onChange = (item: IOption) => {
@@ -149,7 +212,7 @@ const addQuest = () => {
   addQuestion(formData).then(() => {
     formData.title = '';
     formData.options = [];
-    formData.img_url = [];
+    formData.img_urls = [];
     newOption();
     emit('onAdd', formData);
   });
