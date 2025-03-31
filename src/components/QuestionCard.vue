@@ -67,8 +67,8 @@ const selectOption = (selectedOption) => {
     </div>
 
     <ul class="images">
-      <li v-for="pic in model.img_urls">
-        <img :src="pic.url" :alt="pic.alt" />
+      <li v-for="pic in model.img_list">
+        <img :src="pic.data" :alt="pic.alt" />
         <p>{{ pic.alt }}</p>
       </li>
     </ul>

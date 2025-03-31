@@ -33,10 +33,10 @@
               <label class="num">编号</label><label class="text">图片URL</label>
               <label class="delete"></label>
             </li>
-            <li class="option" v-for="(item, index) in formData.img_urls" :key="item.key">
+            <li class="option" v-for="(item, index) in formData.img_list" :key="item.key">
               <label class="num">图{{ index + 1 }}</label>
               <div class="text">
-                <textarea v-model="item.url" placeholder="e.g. https://exam.fsp.ink/src/abc.jpg"></textarea>
+                <textarea v-model="item.data" placeholder="e.g. https://exam.fsp.ink/src/abc.jpg"></textarea>
               </div>
               <span style="display: none">{{ item.alt = `图${index + 1}` }}</span>
               <div class="delete">
@@ -120,7 +120,7 @@ const defaultFormData: IQuestion = {
   type: 1,
   score: 5,
   options: [],
-  img_urls: [],
+  img_list: [],
 };
 
 const types = ref([
@@ -139,7 +139,7 @@ const defaultOption: IOption = {
 const defaultImg: IImg = {
   key: '',
   alt: '',
-  url: '',
+  data: '',
 };
 
 // 生成唯一键值
@@ -161,25 +161,11 @@ const newOption = () => {
 const newQestionImgURL = () => {
   const obj = { ...defaultImg };
   obj.key = generateUniqueKey();
-  formData.img_urls.push(obj);
+  formData.img_list.push(obj);
 };
 
 newOption();
-// newQestionImgURL();
-
-// const delOption = (key: string) => {
-//   formData.options.splice(
-//     formData.options.findIndex((item) => item.key === key),
-//     1,
-//   );
-// };
-//
-// const delQuestionImgURL = (key: string) => {
-//   formData.img_urls.splice(
-//     formData.img_urls.findIndex((item) => item.key === key),
-//     1,
-//   );
-// };
+newQestionImgURL();
 
 // 通用删除函数
 const deleteByKey = <T extends { key: string }>(array: T[], key: string): void => {
@@ -196,7 +182,7 @@ const delOption = (key: string) => {
 
 // 删除图片 URL
 const delQuestionImgURL = (key: string) => {
-  deleteByKey(formData.img_urls, key);
+  deleteByKey(formData.img_list, key);
 };
 
 const onChange = (item: IOption) => {
@@ -212,7 +198,7 @@ const addQuest = () => {
   addQuestion(formData).then(() => {
     formData.title = '';
     formData.options = [];
-    formData.img_urls = [];
+    formData.img_list = [];
     newOption();
     emit('onAdd', formData);
   });

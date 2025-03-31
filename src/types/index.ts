@@ -50,7 +50,7 @@ export interface IOption {
 export interface IImg {
   key: string;
   alt: string;
-  url: string;
+  data: string;
 }
 
 export interface IQuestion {
@@ -59,7 +59,7 @@ export interface IQuestion {
   type: questionType;
   score: number;
   options: Array<IOption>;
-  img_urls: Array<IImg>;
+  img_list: Array<IImg>;
 }
 
 export type roleType = 'admin' | 'user';
