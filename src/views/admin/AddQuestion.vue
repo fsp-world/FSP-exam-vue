@@ -26,26 +26,31 @@
             v-model.trim="formData.title"
           ></textarea>
         </div>
-        <div>
-          <p>图片列表（可选）：</p>
+        <details class="img-list">
+          <summary>图片列表（可选）：</summary>
           <ul>
             <li class="option">
-              <label class="num">编号</label><label class="text">图片URL</label>
-              <label class="delete"></label>
+              <div class="num">编号</div>
+              <div class="img-input">上传方式1</div>
+              <div class="text">上传方式2</div>
+              <div class="delete"></div>
             </li>
             <li class="option" v-for="(item, index) in formData.img_list" :key="item.key">
-              <label class="num">图{{ index + 1 }}</label>
-              <div class="text">
-                <textarea v-model="item.data" placeholder="e.g. https://exam.fsp.ink/src/abc.jpg"></textarea>
-              </div>
               <span style="display: none">{{ item.alt = `图${index + 1}` }}</span>
+              <div class="num">图{{ index + 1 }}</div>
+              <div class="img-input">
+                <input type="file" accept="image/*" @change="handleFileUpload($event, index)" />
+              </div>
+              <div class="text">
+                <textarea v-model="item.data" placeholder="e.g. https://exam.fsp.ink/assets/images/23-1.png"></textarea>
+              </div>
               <div class="delete">
                 <button type="button" @click="delQuestionImgURL(item.key)">删除选项</button>
               </div>
             </li>
           </ul>
           <button type="button" class="new-option" @click="newQestionImgURL">新建图片</button>
-        </div>
+        </details>
         <div class="choice">
           <p>{{ types[formData.type - 1].optionTitle }}</p>
           <ul>
@@ -106,6 +111,9 @@
 import { ref, reactive, watch } from 'vue';
 import { addQuestion } from '@/apis/admin';
 import { IQuestion, IOption, IImg } from '@/types';
+import { compressionFile } from '@/utils/imageCompression';
+
+const MAX_IMAGE_SIZE = 5 * 1024 * 1024; // 5MB
 
 const { sid } = defineProps({
   sid: {
@@ -192,6 +200,48 @@ const onChange = (item: IOption) => {
   item.isAnswer = true;
 };
 
+// 处理文件上传
+const handleFileUpload = (event: Event, index: number): void => {
+  const target = event.target as HTMLInputElement;
+  const file = target.files?.[0];
+  if (!file) return;
+
+  // 检查文件类型是否为图片
+  if (!file.type.startsWith('image/')) {
+    alert('请选择有效的图片文件');
+    return;
+  }
+
+  // 检查文件大小是否超过5MB
+  if (file.size > MAX_IMAGE_SIZE) {
+    alert('图片大小不能超过5MB');
+    return;
+  }
+
+  // 检查是否已经有文本链接
+  if (formData.img_list[index].data.trim()) {
+    alert('已存在图片链接，忽略文件上传！');
+    return;
+  }
+
+  // 调用图片压缩方法
+  compressionFile(file, 'image/jpeg', 0.5)
+    .then((compressedFile) => {
+      // 将压缩后的文件转换为 Base64
+      const reader = new FileReader();
+      reader.onload = (e: ProgressEvent<FileReader>) => {
+        const base64String = e.target?.result as string;
+        formData.img_list[index].data = base64String; // 更新数据
+        console.log('图片压缩并更新成功:', formData.img_list[index]);
+      };
+      reader.readAsDataURL(compressedFile);
+    })
+    .catch((error) => {
+      console.error('图片压缩或处理失败:', error);
+      alert('图片处理失败，请重试！');
+    });
+};
+
 const emit = defineEmits(['onAdd']);
 
 const addQuest = () => {
@@ -200,6 +250,7 @@ const addQuest = () => {
     formData.options = [];
     formData.img_list = [];
     newOption();
+    newQestionImgURL();
     emit('onAdd', formData);
   });
 };
@@ -253,6 +304,12 @@ watch(
       p {
         margin-bottom: 10px;
       }
+      .img-list {
+        margin-bottom: 10px;
+        summary {
+          margin-bottom: 10px;
+        }
+      }
       .question {
         width: calc(100% - 10px);
         resize: vertical;
@@ -276,6 +333,9 @@ watch(
           width: 100px;
           padding-top: 10px;
           text-align: center;
+        }
+        .img-input {
+          width: 200px;
         }
         .text {
           width: 100%;
