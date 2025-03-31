@@ -165,7 +165,7 @@ const newQestionImgURL = () => {
 };
 
 newOption();
-newQestionImgURL();
+// newQestionImgURL();
 
 // const delOption = (key: string) => {
 //   formData.options.splice(
