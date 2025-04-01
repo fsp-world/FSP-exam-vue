@@ -1,25 +1,22 @@
-<script setup>
-import { ref, computed } from 'vue';
+<script setup lang="ts">
+import { toRef, computed, ref } from 'vue';
 import MCButton from './MCButton.vue';
-
 const props = defineProps(['flag', 'data']);
 const emit = defineEmits(['update:flag']);
 
-const showExamResult = ref({
-  showScore: 0,
-  score: props.data.score,
-  state: props.data.isReviewed,
+const examInfo = toRef(props, 'data');
+const showData = ref({
+  show_score: 0,
+  display_text: false,
 });
-
+const showScorePercent = (examInfo.value.get_score / examInfo.value.full_score) * 100;
 const styleVariables = computed(() => ({
-  '--showScore': `${100 - showExamResult.value.score}%`,
+  '--show-score-percent': `${100 - showScorePercent}%`,
 }));
 
-const animateValue = (start, end, duration, callback) => {
-  showExamResult.value.showScore = 0;
+const animateValue = (start: number, end: number, duration: number, callback: (value: number) => void) => {
   const startTime = performance.now();
-
-  const animate = (currentTime) => {
+  const animate = (currentTime: number) => {
     const elapsed = currentTime - startTime;
     const progress = Math.min(elapsed / duration, 1);
     const value = start + (end - start) * progress;
@@ -28,31 +25,31 @@ const animateValue = (start, end, duration, callback) => {
     if (progress < 1) {
       requestAnimationFrame(animate);
     }
-    if (showExamResult.value.showScore === showExamResult.value.score) {
-      showExamResult.value.display = true;
+    if (showData.value.show_score === examInfo.value.get_score) {
+      showData.value.display_text = true;
     }
   };
 
   requestAnimationFrame(animate);
 };
 
-animateValue(0, showExamResult.value.score, 2000, (value) => {
-  showExamResult.value.showScore = value;
+animateValue(0, examInfo.value.get_score, 2000, (value: number) => {
+  showData.value.show_score = value;
 });
 </script>
 
 <template>
   <div class="show-score">
     <div class="score">
-      <p>您的分数为{{ showExamResult.showScore }}分</p>
+      <p>您的分数为 {{ showData.show_score }}/{{ examInfo.full_score }} 分</p>
       <div class="score-line">
         <div class="score-line-end"></div>
         <div :style="styleVariables" class="score-line-front"></div>
-        <div v-if="showExamResult.state === 1 && showExamResult.display" class="pass"></div>
-        <div v-if="showExamResult.state === 2 && showExamResult.display" class="no-pass"></div>
+        <div v-if="examInfo.state === 1 && showData.display_text" class="pass"></div>
+        <div v-if="examInfo.state === 2 && showData.display_text" class="no-pass"></div>
       </div>
       <div class="text">
-        <div v-if="showExamResult.state === 1 && showExamResult.display">
+        <div v-if="examInfo.state === 1 && showData.display_text">
           <p class="title">恭喜您通过了测试！系统已自动将您添加至白名单</p>
           <div class="info y-scroll">
             <p class="list-title">如何进入服务器：</p>
@@ -70,7 +67,7 @@ animateValue(0, showExamResult.value.score, 2000, (value) => {
             </ul>
           </div>
         </div>
-        <p class="title" v-if="showExamResult.state === 2 && showExamResult.display">非常遗憾，您未通过测试</p>
+        <p class="title" v-if="examInfo.state === 2 && showData.display_text">非常遗憾，您未通过测试</p>
         <MCButton class="button" @click="emit('update:flag', false)">返回考试列表</MCButton>
       </div>
     </div>
@@ -248,7 +245,7 @@ animateValue(0, showExamResult.value.score, 2000, (value) => {
   }
 
   to {
-    clip-path: inset(0 var(--showScore) 0 0);
+    clip-path: inset(0 var(--show-score-percent) 0 0);
     /* 完全显示背景图片 */
   }
 }

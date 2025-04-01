@@ -30,8 +30,9 @@ export interface IQueryResponse {
   id: number;
   type: string;
   responseTime: string;
-  isReviewed: 0 | 1 | 2;
-  score: number;
+  state: 0 | 1 | 2;
+  get_score: number;
+  full_score: number;
 }
 
 export interface ISurvey {

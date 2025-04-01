@@ -5,12 +5,10 @@
     <ul class="list y-scroll">
       <li v-for="res in responseList" :key="res.id">
         <div class="info">
-          <p>{{ res.type }}试卷（{{ res.isReviewed ? (res.isReviewed === 1 ? '已通过' : '已拒绝') : '审核中' }}）</p>
+          <p>{{ res.type }}试卷（{{ res.state ? (res.state === 1 ? '已通过' : '已拒绝') : '审核中' }}）</p>
           <p>{{ dateFormat(res.responseTime) }}</p>
         </div>
-        <MCButton v-if="res.isReviewed === 1 || res.isReviewed === 2" class="button" @click="handleClick(res)"
-          >查看成绩</MCButton
-        >
+        <MCButton v-if="res.state === 1 || res.state === 2" class="button" @click="handleClick(res)">查看成绩</MCButton>
       </li>
     </ul>
   </div>
