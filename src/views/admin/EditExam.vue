@@ -3,6 +3,7 @@ import { getSurvey } from '@/apis/admin';
 import QuestionCard from '@/components/QuestionCard.vue';
 import editQuestion from '@/views/admin/EditQuestion.vue';
 import { onMounted, ref } from 'vue';
+import { addQuestion } from '@/apis/admin';
 
 const { sid } = defineProps({
   sid: Number,
@@ -13,6 +14,8 @@ const survey = ref({
   description: '加载中...',
   questions: [],
 });
+
+const displayEditQuestion = ref(false);
 
 onMounted(() => {
   _getSurvey();
@@ -28,6 +31,12 @@ const _getSurvey = () => {
   });
 };
 
+const handleEdit = (formData) => {
+  addQuestion(formData).then(() => {
+    _getSurvey();
+  });
+};
+
 const viewSurveyDirection = ref('column');
 const toggleDirection = () => {
   viewSurveyDirection.value = viewSurveyDirection.value === 'column' ? 'column-reverse' : 'column';
@@ -36,20 +45,20 @@ const toggleDirection = () => {
 
 <template>
   <div class="edit-exam">
-    <div>
-      <div class="survey-info">
-        <div class="close" @click="$emit('close', 0)"><span>&times;</span></div>
-        <h1 class="title">{{ survey.name }}</h1>
-        <p class="desc">试卷描述：{{ survey.description }}</p>
-        <p class="time">创建时间：{{ survey.create_time }}</p>
-      </div>
-      <hr />
-      <details>
-        <summary>点击添加题目</summary>
-        <editQuestion :sid="sid" @on-add="_getSurvey()"></editQuestion>
-      </details>
-      <hr />
+    <editQuestion
+      v-if="displayEditQuestion"
+      :sid="sid"
+      @on-edit="handleEdit"
+      @close="displayEditQuestion = false"
+    ></editQuestion>
+    <div class="survey-info">
+      <div class="close" @click="$emit('close', 0)"><span>&times;</span></div>
+      <h1 class="title">{{ survey.name }}</h1>
+      <p class="desc">试卷描述：{{ survey.description }}</p>
+      <p class="time">创建时间：{{ survey.create_time }}</p>
     </div>
+    <hr />
+    <button type="button" class="add-question-button" @click="displayEditQuestion = true">添加题目</button>
     <div class="view-survey">
       <div class="info">
         <p class="sum-score">试卷总分：{{ survey.sumScore }} 分</p>
@@ -86,10 +95,17 @@ const toggleDirection = () => {
   flex-direction: column;
   padding: 16px;
   background-color: #fff;
-
-  summary {
-    user-select: none;
-  }
+}
+.edit-exam .add-question-button {
+  font-size: 20px;
+  padding: 10px 50px;
+  border-radius: 5px;
+  margin-bottom: 10px;
+  width: 98%;
+  background-color: #00ffff;
+}
+.edit-exam .add-question-button:hover {
+  background-color: #00bbff;
 }
 
 .edit-exam .survey-info {

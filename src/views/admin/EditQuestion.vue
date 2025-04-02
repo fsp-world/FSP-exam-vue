@@ -1,5 +1,6 @@
 <template>
   <form class="new-question">
+    <div class="close" @click="$emit('close', 0)"><span>&times;</span></div>
     <div class="title"></div>
     <div class="content">
       <div class="meta">
@@ -22,7 +23,7 @@
           ><textarea
             class="question"
             id="oname"
-            placeholder="请在此输入问题（不要输入题号和题目类型！）"
+            placeholder="请在此输入问edit要输入题号和题目类型！）"
             v-model.trim="formData.title"
           ></textarea>
         </div>
@@ -109,11 +110,12 @@
 
 <script setup lang="ts">
 import { ref, reactive, watch } from 'vue';
-import { addQuestion } from '@/apis/admin';
 import { IQuestion, IOption, IImg } from '@/types';
 import { compressionFile } from '@/utils/imageCompression';
 
 const MAX_IMAGE_SIZE = 5 * 1024 * 1024; // 5MB
+
+const emit = defineEmits(['onEdit', 'close']);
 
 const { sid } = defineProps({
   sid: {
@@ -173,7 +175,7 @@ const newQestionImgURL = () => {
 };
 
 newOption();
-newQestionImgURL();
+// newQestionImgURL(); 不需要默认带图片
 
 // 通用删除函数
 const deleteByKey = <T extends { key: string }>(array: T[], key: string): void => {
@@ -242,17 +244,13 @@ const handleFileUpload = (event: Event, index: number): void => {
     });
 };
 
-const emit = defineEmits(['onAdd']);
-
 const addQuest = () => {
-  addQuestion(formData).then(() => {
-    formData.title = '';
-    formData.options = [];
-    formData.img_list = [];
-    newOption();
-    newQestionImgURL();
-    emit('onAdd', formData);
-  });
+  emit('onEdit', formData);
+  formData.title = '';
+  formData.options = [];
+  formData.img_list = [];
+  newOption();
+  newQestionImgURL();
 };
 
 watch(
@@ -268,10 +266,38 @@ watch(
 </script>
 
 <style scoped>
+.close {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 50px;
+  height: 50px;
+  position: absolute;
+  right: 10px;
+  top: 10px;
+  font-size: 25px;
+  background-color: white;
+  border-radius: 50%;
+  box-sizing: border-box;
+}
+.close span {
+  margin: 2px 0px 0px 2px;
+}
+.close:hover {
+  background-color: rgb(139, 139, 139);
+}
+
 .new-question {
   --normal-font-size: 17px;
   --title-font-size: 25px;
   user-select: none;
+  position: absolute;
+  width: calc(100% - 20px);
+  top: 0;
+  left: 0;
+  background-color: #eee;
+  z-index: 10;
+  padding: 10px;
   .title {
     padding: 10px 0;
     font-size: var(--title-font-size);
