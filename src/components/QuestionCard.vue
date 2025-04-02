@@ -1,14 +1,25 @@
 <script setup>
-import { defineProps } from 'vue';
-const { index, lock } = defineProps({
+import { defineProps, ref, computed } from 'vue';
+const { index, lock, displayModel } = defineProps({
   index: Number,
+  displayModel: {
+    type: String,
+    default: 'view', // 默认值为 "view"
+  },
   lock: {
-    default: false,
     type: Boolean,
+    default: false,
   },
 });
 
 const emit = defineEmits(['scoreChange']);
+const model = defineModel();
+
+const disModel = computed(() => ({
+  view: displayModel === 'view',
+  edit: displayModel === 'edit',
+  review: displayModel === 'review',
+}));
 
 const QuestionCategory = {
   SINGLE_CHOICE: 1,
@@ -22,7 +33,20 @@ const QuestionCategory = {
   },
 };
 
-const model = defineModel();
+const getQuestionTypeText = (questionType) => {
+  switch (questionType) {
+    case 1:
+      return '单选题';
+    case 2:
+      return '多选题';
+    case 3:
+      return '填空题';
+    case 4:
+      return '主观题';
+    default:
+      return '未知题';
+  }
+};
 
 const selectOption = (selectedOption) => {
   if (lock) {
@@ -46,14 +70,7 @@ const selectOption = (selectedOption) => {
 <template>
   <div class="question">
     <div class="title">
-      <span class="type">
-        {{ index + 1 }}.
-        <span v-if="model.type === 1"> [单选题] </span>
-        <span v-else-if="model.type === 2"> [多选题] </span>
-        <span v-else-if="model.type === 3"> [填空题] </span>
-        <span v-else-if="model.type === 4"> [主观题] </span>
-        <span v-else>[未知类型]</span>
-      </span>
+      <span class="type"> {{ index + 1 }}.[{{ getQuestionTypeText(model.type) }}] </span>
       <span class="text"> {{ model.title }}</span>
       <span class="score">({{ model.score }}分)</span>
       <span v-if="model.answer && lock">
@@ -64,8 +81,11 @@ const selectOption = (selectedOption) => {
           <option v-for="i in 10" :value="i">{{ i }}分</option>
         </select>
       </span>
+      <span v-if="disModel.edit" class="admin-button">
+        <button type="button" class="edit">编辑</button>
+        <button type="button" class="delete">删除</button>
+      </span>
     </div>
-
     <ul class="images">
       <li v-for="pic in model.img_list">
         <img :src="pic.data" :alt="pic.alt" />
@@ -150,6 +170,26 @@ const selectOption = (selectedOption) => {
 .title .score {
   margin-left: 5px;
   color: #444;
+}
+.title .admin-button {
+  display: flex;
+  float: right;
+  button {
+    margin-left: 5px;
+    display: block;
+    padding: 3px 5px;
+    border-radius: 5px;
+    background-color: #eee;
+  }
+  .edit:hover {
+    background-color: #ccc;
+  }
+  .delete {
+    background-color: red;
+  }
+  .delete:hover {
+    background-color: crimson;
+  }
 }
 
 .option-list li {

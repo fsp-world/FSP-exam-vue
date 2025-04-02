@@ -1,7 +1,7 @@
 <script setup>
 import { getSurvey } from '@/apis/admin';
 import QuestionCard from '@/components/QuestionCard.vue';
-import AddQuestion from '@/views/admin/AddQuestion.vue';
+import editQuestion from '@/views/admin/EditQuestion.vue';
 import { onMounted, ref } from 'vue';
 
 const { sid } = defineProps({
@@ -46,7 +46,7 @@ const toggleDirection = () => {
       <hr />
       <details>
         <summary>点击添加题目</summary>
-        <AddQuestion :sid="sid" @on-add="_getSurvey()"></AddQuestion>
+        <editQuestion :sid="sid" @on-add="_getSurvey()"></editQuestion>
       </details>
       <hr />
     </div>
@@ -62,7 +62,12 @@ const toggleDirection = () => {
           :key="questionIndex"
           :id="'question' + (questionIndex + 1)"
         >
-          <QuestionCard :lock="true" v-model="survey.questions[questionIndex]" :index="questionIndex"></QuestionCard>
+          <QuestionCard
+            :lock="true"
+            :displayModel="'edit'"
+            v-model="survey.questions[questionIndex]"
+            :index="questionIndex"
+          ></QuestionCard>
         </li>
         <li class="question-list-none" v-if="!survey.questions.length">暂未添加题目</li>
       </ul>
