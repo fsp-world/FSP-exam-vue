@@ -239,15 +239,16 @@ const toggleDirection = () => {
     gap: 30px;
     li {
       position: relative;
+      width: calc(100% - 55px);
       .admin-button {
-        display: flex;
+        width: 55px;
         position: absolute;
         top: 0;
-        right: 0;
+        right: -75px;
         z-index: 5;
         button {
           font-size: 15px;
-          margin-left: 5px;
+          margin: 5px;
           display: block;
           padding: 3px 5px;
           border-radius: 5px;
