@@ -89,7 +89,7 @@ onMounted(() => {
       font-size: 26px;
       text-align: center;
       line-height: 1.5em;
-      width: 300px;
+      width: 305px;
       margin: 0 auto;
     }
     .confirm-btn {

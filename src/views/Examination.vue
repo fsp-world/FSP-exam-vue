@@ -100,7 +100,7 @@ const submitPaper = () => {
           :key="questionIndex"
           :id="'question' + (questionIndex + 1)"
         >
-          <QuestionCard v-model="questions[questionIndex]" :index="questionIndex"></QuestionCard>
+          <QuestionCard :displayMode="'view'" v-model="questions[questionIndex]" :index="questionIndex"></QuestionCard>
         </li>
       </ul>
       <div class="submit">

@@ -1,67 +1,50 @@
-<script setup>
-import { defineProps, ref, computed } from 'vue';
-const { index, lock, displayModel } = defineProps({
-  index: Number,
-  displayModel: {
-    type: String,
-    default: 'view', // 默认值为 "view"
+<script setup lang="ts">
+import { defineProps, onMounted } from 'vue';
+import { getStringQuestionType, IOption, IQuestion } from '@/types';
+import { QuestionType } from '@/utils/enum';
+
+const { index, displayMode } = defineProps({
+  index: {
+    type: Number,
+    required: true,
   },
-  lock: {
-    type: Boolean,
-    default: false,
+
+  displayMode: {
+    type: String as () => 'view' | 'admin-view' | 'review',
+    default: 'view',
   },
 });
 
+const mode = displayMode;
+
 const emit = defineEmits(['scoreChange']);
-const model = defineModel();
 
-const disModel = computed(() => ({
-  view: displayModel === 'view',
-  edit: displayModel === 'edit',
-  review: displayModel === 'review',
-}));
+const question = defineModel<IQuestion>({ required: true });
 
-const QuestionCategory = {
-  SINGLE_CHOICE: 1,
-  MULTIPLE_CHOICE: 2,
-  FILL_IN_THE_BLANKS: 3,
-  SUBJECTIVE: 4,
-
-  // 根据数值获取枚举名称的方法
-  toName(value) {
-    return Object.keys(this).find((key) => this[key] === value);
-  },
-};
-
-const getQuestionTypeText = (questionType) => {
-  switch (questionType) {
-    case 1:
-      return '单选题';
-    case 2:
-      return '多选题';
-    case 3:
-      return '填空题';
-    case 4:
-      return '主观题';
-    default:
-      return '未知题';
+function init() {
+  question.value.typeText = getStringQuestionType(question.value.type);
+  if (mode === 'review' && question.value.options[0].inputText == '') {
+    question.value.options[0].inputText = '用户未作答';
   }
-};
+}
 
-const selectOption = (selectedOption) => {
-  if (lock) {
-    return;
-  }
-  if (model.value.type === QuestionCategory.SINGLE_CHOICE) {
-    for (let opt of model.value.options) {
-      opt.select = false;
+onMounted(() => {
+  init();
+  console.log(question.value);
+});
+const selectOption = (selectedOption: IOption) => {
+  if (mode === 'view') {
+    if (question.value.type === QuestionType.SingleChoice) {
+      for (let opt of question.value.options) {
+        opt.isSelected = false;
+      }
     }
-  }
-  selectedOption.select = !selectedOption.select;
-  model.value.answer = [];
-  for (let opt of model.value.options) {
-    if (opt.select) {
-      model.value.answer.push(opt.id);
+    selectedOption.isSelected = !selectedOption.isSelected;
+    question.value.answer = [];
+    for (let opt of question.value.options) {
+      if (opt.isSelected && opt.id !== undefined) {
+        question.value.answer.push(opt.id);
+      }
     }
   }
 };
@@ -70,42 +53,44 @@ const selectOption = (selectedOption) => {
 <template>
   <div class="question">
     <div class="title">
-      <span class="type"> {{ index + 1 }}.[{{ getQuestionTypeText(model.type) }}] </span>
-      <span class="text"> {{ model.title }}</span>
-      <span class="score">({{ model.score }}分)</span>
-      <span v-if="model.answer && lock">
+      <span class="type"> {{ index + 1 }}.[{{ question.typeText }}] </span>
+      <span class="text"> {{ question.title }}</span>
+      <span class="score">({{ question.score }}分)</span>
+      <span v-if="mode === 'review'">
         <select
-          :value="model.countScore"
-          @change="(e) => emit('scoreChange', { questionId: model.id, score: e.target.value })"
+          :value="question.userGetScore"
+          @change="
+            (e: Event) => emit('scoreChange', { questionId: question.id, score: (e.target as HTMLSelectElement).value })
+          "
         >
           <option v-for="i in 10" :value="i">{{ i }}分</option>
         </select>
       </span>
-      <span v-if="disModel.edit" class="admin-button">
-        <button type="button" class="edit">编辑</button>
-        <button type="button" class="delete">删除</button>
-      </span>
     </div>
     <ul class="images">
-      <li v-for="pic in model.img_list">
+      <li v-for="pic in question.img_list">
         <img :src="pic.data" :alt="pic.alt" />
         <p>{{ pic.alt }}</p>
       </li>
     </ul>
-    <ul class="option-list" v-if="model.type === 1 || model.type === 2">
+    <!-- 选择题 -->
+    <ul
+      class="option-list"
+      v-if="question.type === QuestionType.SingleChoice || question.type === QuestionType.MultipleChoice"
+    >
       <li
-        v-for="(option, optionIndex) in model.options"
+        v-for="(option, optionIndex) in question.options"
         :key="optionIndex"
+        :class="{ selected: option.isSelected }"
         @click="selectOption(option)"
-        :class="[{ selected: option.select || option.isCorrect }, { 'option-hover': !lock }]"
       >
         <span
-          v-if="model.answer && model.answer.map((item) => Number(item.text)).indexOf(option.id) != -1"
+          v-if="option.isCorrect"
           style="
             display: inline-block;
             width: 16px;
             height: 16px;
-            background-color: grey;
+            background-color: #54ff9f;
             border-radius: 50%;
             transform: translateY(2px);
           "
@@ -113,35 +98,58 @@ const selectOption = (selectedOption) => {
         {{ ['A.', 'B.', 'C.', 'D.'][optionIndex] }}{{ option.text }}
       </li>
     </ul>
-    <input
-      type="txet"
-      required
-      class="input-text"
-      :placeholder="model.options[0].text"
-      @input="
-        (e) => {
-          model.answer = [e.target.value];
-        }
-      "
-      :disabled="lock"
-      v-if="model.type === 3"
-    />
-    <div :class="{ resize: model.type === 4 }">
-      <textarea
+    <!-- 填空题 -->
+    <div v-if="question.type === QuestionType.FillInTheBlanks">
+      <input
+        v-if="mode === 'view'"
+        type="txet"
         required
-        class="input-textarea"
-        :placeholder="model.options[0].text"
+        class="input-text"
+        placeholder="请在此作答，前后不要有多余符号"
         @input="
-          (e) => {
-            model.answer = [e.target.value];
+          (e: Event) => {
+            question.answer = [(e.target as HTMLSelectElement).value];
           }
         "
-        placeholder="请在此处作答"
-        v-if="model.type === 4"
-        :disabled="lock"
-      ></textarea>
+      />
+      <div v-if="mode === 'admin-view' || mode === 'review'">
+        <p>标准答案：</p>
+        <input type="txet" class="input-text" :placeholder="question.options[0].text" disabled />
+      </div>
+      <div v-if="mode === 'review'">
+        <p>用户答案：</p>
+        <input type="txet" class="input-text" :placeholder="question.options[0].inputText" disabled />
+      </div>
     </div>
-    <p v-if="model.answer && lock && (model.type === 3 || model.type === 4)">用户答案：{{ model.answer[0]?.text }}</p>
+    <!-- 主观题 -->
+    <div
+      v-if="question.type === QuestionType.Subjective"
+      :class="{ resize: question.type === QuestionType.Subjective }"
+    >
+      <textarea
+        v-if="mode === 'view'"
+        required
+        class="input-textarea"
+        placeholder="请在此处作答"
+        @input="
+          (e: Event) => {
+            question.answer = [(e.target as HTMLSelectElement).value];
+          }
+        "
+      ></textarea>
+      <div v-if="mode === 'admin-view' || mode === 'review'">
+        <p>参考答案：</p>
+        <textarea class="input-textarea" disabled>
+          {{ question.options[0].text }}
+        </textarea>
+      </div>
+      <div v-if="mode === 'review'">
+        <p>用户答案：</p>
+        <textarea class="input-textarea" disabled>
+          {{ question.options[0].inputText }}
+        </textarea>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -170,26 +178,6 @@ const selectOption = (selectedOption) => {
 .title .score {
   margin-left: 5px;
   color: #444;
-}
-.title .admin-button {
-  display: flex;
-  float: right;
-  button {
-    margin-left: 5px;
-    display: block;
-    padding: 3px 5px;
-    border-radius: 5px;
-    background-color: #eee;
-  }
-  .edit:hover {
-    background-color: #ccc;
-  }
-  .delete {
-    background-color: red;
-  }
-  .delete:hover {
-    background-color: crimson;
-  }
 }
 
 .option-list li {

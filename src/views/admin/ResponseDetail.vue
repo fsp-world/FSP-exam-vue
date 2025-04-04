@@ -6,7 +6,7 @@
     <div class="readme">
       <ul>
         <li>阅卷过程中请保持客观公正</li>
-        <li>带有黑框的选项是正确选项，带有灰色圆点的是用户选择的选项</li>
+        <li>带有黑框的选项是用户选择的选项，带有绿色圆点的是正确选项</li>
         <li>客观题已自动批分，请为主观题批分，所有题目的得分都可以通过下拉框修改</li>
         <li>改完分数点击右上角的X退出即可，然后在管理页面选择是否通过</li>
       </ul>
@@ -20,7 +20,7 @@
         :id="'question' + (questionIndex + 1)"
       >
         <QuestionCard
-          :lock="true"
+          :displayMode="'review'"
           v-model="props.data.questions[questionIndex]"
           :index="questionIndex"
           @scoreChange="handleScoreChange"

@@ -9,13 +9,22 @@ const { sid } = defineProps({
   sid: Number,
 });
 
+const displayEditQuestion = ref(false);
+const currentMode = ref(null); // 当前模式："add" 或 "edit"
+const currentData = ref(null); // 当前编辑的数据
+
 const survey = ref({
   name: '加载中...',
   description: '加载中...',
   questions: [],
 });
 
-const displayEditQuestion = ref(false);
+// 打开 editQuestion 组件
+const openEditQuestion = (mode, data = null) => {
+  currentMode.value = mode;
+  currentData.value = data;
+  displayEditQuestion.value = true;
+};
 
 onMounted(() => {
   _getSurvey();
@@ -31,10 +40,22 @@ const _getSurvey = () => {
   });
 };
 
-const handleEdit = (formData) => {
-  addQuestion(formData).then(() => {
-    _getSurvey();
-  });
+const handleEdit = (mode, formData) => {
+  console.log(`操作类型: ${mode}`);
+  if (mode === 'add') {
+    addQuestion(formData);
+  } else if (mode === 'edit') {
+    console.log('编辑题目上传');
+  }
+  _getSurvey();
+  closeEditQuestion();
+};
+
+// 关闭 editQuestion 组件
+const closeEditQuestion = () => {
+  displayEditQuestion.value = false;
+  currentMode.value = null;
+  currentData.value = null;
 };
 
 const viewSurveyDirection = ref('column');
@@ -48,8 +69,10 @@ const toggleDirection = () => {
     <editQuestion
       v-if="displayEditQuestion"
       :sid="sid"
+      :mode="currentMode"
+      :initial-data="currentData"
       @on-edit="handleEdit"
-      @close="displayEditQuestion = false"
+      @close="closeEditQuestion"
     ></editQuestion>
     <div class="survey-info">
       <div class="close" @click="$emit('close', 0)"><span>&times;</span></div>
@@ -58,7 +81,7 @@ const toggleDirection = () => {
       <p class="time">创建时间：{{ survey.create_time }}</p>
     </div>
     <hr />
-    <button type="button" class="add-question-button" @click="displayEditQuestion = true">添加题目</button>
+    <button type="button" class="add-question-button" @click="openEditQuestion('add')">添加题目</button>
     <div class="view-survey">
       <div class="info">
         <p class="sum-score">试卷总分：{{ survey.sumScore }} 分</p>
@@ -71,9 +94,15 @@ const toggleDirection = () => {
           :key="questionIndex"
           :id="'question' + (questionIndex + 1)"
         >
+          <span class="admin-button">
+            <button type="button" class="edit" @click="openEditQuestion('edit', survey.questions[questionIndex])">
+              编辑
+            </button>
+            <button type="button" class="delete">删除</button>
+          </span>
+
           <QuestionCard
-            :lock="true"
-            :displayModel="'edit'"
+            :displayMode="'admin-view'"
             v-model="survey.questions[questionIndex]"
             :index="questionIndex"
           ></QuestionCard>
@@ -170,6 +199,33 @@ const toggleDirection = () => {
     flex-direction: column;
     width: calc(100% - 30px);
     gap: 30px;
+    li {
+      position: relative;
+      .admin-button {
+        display: flex;
+        position: absolute;
+        top: 0;
+        right: 0;
+        z-index: 5;
+        button {
+          font-size: 15px;
+          margin-left: 5px;
+          display: block;
+          padding: 3px 5px;
+          border-radius: 5px;
+          background-color: #eee;
+        }
+        .edit:hover {
+          background-color: #ccc;
+        }
+        .delete {
+          background-color: red;
+        }
+        .delete:hover {
+          background-color: crimson;
+        }
+      }
+    }
   }
 
   .question-list-none {

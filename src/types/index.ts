@@ -40,13 +40,20 @@ export interface ISurvey {
   description: string;
 }
 
-export type questionType = 1 | 2 | 3 | 4;
-
-export interface IOption {
-  key: string;
-  option: string;
-  isAnswer: boolean;
-}
+export const getStringQuestionType = (questionType: number): string => {
+  switch (questionType) {
+    case 1:
+      return '单选题';
+    case 2:
+      return '多选题';
+    case 3:
+      return '填空题';
+    case 4:
+      return '主观题';
+    default:
+      return '未知题';
+  }
+};
 
 export interface IImg {
   key: string;
@@ -54,13 +61,26 @@ export interface IImg {
   data: string;
 }
 
+export interface IOption {
+  key?: string;
+  id: string;
+  text: string; // 选项文字，非用户作答状态，如果是填空题或者主观题，则为参考答案
+  isSelected?: boolean; // 用户选择的选项
+  isCorrect?: boolean; // 正确选项，用户作答时不存在此字段
+  inputText?: string; // 如果是填空题或者主观题，内容为用户的作答
+}
+
 export interface IQuestion {
-  survey: number;
+  survey?: number;
+  id: number;
   title: string;
-  type: questionType;
-  score: number;
-  options: Array<IOption>;
+  type: 1 | 2 | 3 | 4;
+  typeText?: string;
+  score: number; // 分值
+  userGetScore?: number; // 用户得分
   img_list: Array<IImg>;
+  options: Array<IOption>;
+  answer?: Array<string>; // 用于用户作答，选择题内容是选择的选项id，填空题和主观题内容是用户输入
 }
 
 export type roleType = 'admin' | 'user';

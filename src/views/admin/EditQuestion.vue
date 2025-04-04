@@ -23,7 +23,7 @@
           ><textarea
             class="question"
             id="oname"
-            placeholder="请在此输入问edit要输入题号和题目类型！）"
+            placeholder="请在此输入问题，不要输入题号和题目类型！）"
             v-model.trim="formData.title"
           ></textarea>
         </div>
@@ -103,13 +103,13 @@
       </div>
     </div>
     <div class="end">
-      <button type="button" class="submit-question" @click="addQuest">上传题目</button>
+      <button type="button" class="submit-question" @click="sendData">上传题目</button>
     </div>
   </form>
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, watch } from 'vue';
+import { ref, reactive, watch, onMounted } from 'vue';
 import { IQuestion, IOption, IImg } from '@/types';
 import { compressionFile } from '@/utils/imageCompression';
 
@@ -117,12 +117,26 @@ const MAX_IMAGE_SIZE = 5 * 1024 * 1024; // 5MB
 
 const emit = defineEmits(['onEdit', 'close']);
 
-const { sid } = defineProps({
+const props = defineProps({
   sid: {
     type: Number,
     required: true,
   },
+
+  mode: {
+    type: String,
+    required: true,
+    validator: (value: string) => ['add', 'edit'].includes(value),
+  },
+  initialData: {
+    type: Object,
+    default: null,
+  },
 });
+const { sid, mode, initialData } = props;
+
+console.log(mode);
+console.log(initialData);
 
 const defaultFormData: IQuestion = {
   survey: sid,
@@ -131,6 +145,7 @@ const defaultFormData: IQuestion = {
   score: 5,
   options: [],
   img_list: [],
+  answer: [],
 };
 
 const types = ref([
@@ -144,6 +159,7 @@ const defaultOption: IOption = {
   key: '',
   option: '',
   isAnswer: false,
+  isSelected: false,
 };
 
 const defaultImg: IImg = {
@@ -173,9 +189,6 @@ const newQestionImgURL = () => {
   obj.key = generateUniqueKey();
   formData.img_list.push(obj);
 };
-
-newOption();
-// newQestionImgURL(); 不需要默认带图片
 
 // 通用删除函数
 const deleteByKey = <T extends { key: string }>(array: T[], key: string): void => {
@@ -244,13 +257,40 @@ const handleFileUpload = (event: Event, index: number): void => {
     });
 };
 
-const addQuest = () => {
-  emit('onEdit', formData);
-  formData.title = '';
-  formData.options = [];
-  formData.img_list = [];
+// 初始化 formData
+const initializeFormData = () => {
+  if (mode === 'edit' && initialData) {
+    // 编辑模式：复制 initialData 的内容，并保留 id 字段
+    Object.assign(formData, {
+      ...defaultFormData,
+      ...initialData,
+    });
+  } else {
+    // 添加模式：重置为默认数据
+    Object.assign(formData, defaultFormData);
+  }
+
+  // 如果是填空或简答类型，确保有一个默认答案
+  if (formData.type === 3 || formData.type === 4) {
+    newOption();
+    // formData.options[0].isAnswer = true;
+  }
+  console.log('新数据');
+  console.log(formData);
+};
+
+// 在组件挂载时初始化 formData
+onMounted(() => {
+  initializeFormData();
   newOption();
-  newQestionImgURL();
+});
+
+const sendData = () => {
+  emit('onEdit', mode, formData);
+  // formData.title = '';
+  // formData.options = [];
+  // formData.img_list = [];
+  // newOption();
 };
 
 watch(
