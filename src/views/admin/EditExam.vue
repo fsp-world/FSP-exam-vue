@@ -1,9 +1,22 @@
 <script setup>
-import { getSurvey } from '@/apis/admin';
+import { delQuestion, getSurvey } from '@/apis/admin';
 import QuestionCard from '@/components/QuestionCard.vue';
 import editQuestion from '@/views/admin/EditQuestion.vue';
 import { onMounted, ref } from 'vue';
 import { addQuestion } from '@/apis/admin';
+import { useAlertStore } from '@/stores/alert';
+
+const alertStore = useAlertStore();
+const openAlert = (message) => {
+  const data = {
+    title: 'login' + Date(),
+    type: 'info-card',
+    message: message,
+    age: 3000,
+    flag: true,
+  };
+  alertStore.openAlert(data);
+};
 
 const { sid } = defineProps({
   sid: Number,
@@ -24,6 +37,23 @@ const openEditQuestion = (mode, data = null) => {
   currentMode.value = mode;
   currentData.value = data;
   displayEditQuestion.value = true;
+};
+
+// 删除题目
+const deleteQuestion = (question) => {
+  const tmp = question.title.slice(0, 10);
+  const confirmDelete = confirm(`确定删除标题为"${tmp}..."的题目吗，任何状态下的问卷都会被影响！`);
+  if (confirmDelete) {
+    const confirmDeleteAgain = confirm('操作不可挽回，确定要删除吗！');
+    if (confirmDeleteAgain) {
+      delQuestion(question.id).then((res) => {
+        openAlert(res.data.desc);
+        if (res.data.code === 0) {
+          _getSurvey();
+        }
+      });
+    }
+  }
 };
 
 onMounted(() => {
@@ -79,10 +109,11 @@ const toggleDirection = () => {
       <h1 class="title">{{ survey.name }}</h1>
       <p class="desc">试卷描述：{{ survey.description }}</p>
       <p class="time">创建时间：{{ survey.create_time }}</p>
+      <button type="button" class="edit-survey">编辑问卷信息（还没做）</button>
     </div>
     <hr />
-    <button type="button" class="add-question-button" @click="openEditQuestion('add')">添加题目</button>
     <div class="view-survey">
+      <button type="button" class="add-question-button" @click="openEditQuestion('add')">添加题目</button>
       <div class="info">
         <p class="sum-score">试卷总分：{{ survey.sumScore }} 分</p>
         <button type="button" class="toggle-direction" @click="toggleDirection">正序/倒序</button>
@@ -98,11 +129,11 @@ const toggleDirection = () => {
             <button type="button" class="edit" @click="openEditQuestion('edit', survey.questions[questionIndex])">
               编辑
             </button>
-            <button type="button" class="delete">删除</button>
+            <button type="button" class="delete" @click="deleteQuestion(question)">删除</button>
           </span>
 
           <QuestionCard
-            :displayMode="'admin-view'"
+            :mode="'admin-view'"
             v-model="survey.questions[questionIndex]"
             :index="questionIndex"
           ></QuestionCard>
@@ -125,12 +156,13 @@ const toggleDirection = () => {
   padding: 16px;
   background-color: #fff;
 }
+
 .edit-exam .add-question-button {
   font-size: 20px;
-  padding: 10px 50px;
+  padding: 12px 50px;
   border-radius: 5px;
   margin-bottom: 10px;
-  width: 98%;
+  width: 100%;
   background-color: #00ffff;
 }
 .edit-exam .add-question-button:hover {
@@ -138,6 +170,12 @@ const toggleDirection = () => {
 }
 
 .edit-exam .survey-info {
+  .edit-survey {
+    font-size: 20px;
+    padding: 5px 10px;
+    border-radius: 5px;
+    margin: 5px;
+  }
   .close {
     display: flex;
     justify-content: center;

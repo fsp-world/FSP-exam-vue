@@ -18,6 +18,7 @@ export const addSurvey = (data: ISurvey) => request.post('/admin/addSurvey', JSO
 // question
 export const getQuestion = () => request.get('/admin/AllQuestion');
 export const addQuestion = (data: IQuestion) => request.post('/admin/addQuestion', JSON.stringify(data));
+export const delQuestion = (data: number) => request.post('/admin/delQuestion', JSON.stringify(data));
 
 // response
 export const getResponses = (data: IPagination) => request.get('/admin/responses', { params: data });

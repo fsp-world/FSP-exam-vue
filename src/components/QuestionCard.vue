@@ -1,21 +1,19 @@
 <script setup lang="ts">
-import { defineProps, onMounted } from 'vue';
+import { defineProps, onMounted, watchEffect } from 'vue';
 import { getStringQuestionType, IOption, IQuestion } from '@/types';
 import { QuestionType } from '@/utils/enum';
 
-const { index, displayMode } = defineProps({
+const { index, mode } = defineProps({
   index: {
     type: Number,
     required: true,
   },
 
-  displayMode: {
+  mode: {
     type: String as () => 'view' | 'admin-view' | 'review',
     default: 'view',
   },
 });
-
-const mode = displayMode;
 
 const emit = defineEmits(['scoreChange']);
 
@@ -28,10 +26,6 @@ function init() {
   }
 }
 
-onMounted(() => {
-  init();
-  console.log(question.value);
-});
 const selectOption = (selectedOption: IOption) => {
   if (mode === 'view') {
     if (question.value.type === QuestionType.SingleChoice) {
@@ -48,6 +42,15 @@ const selectOption = (selectedOption: IOption) => {
     }
   }
 };
+
+watchEffect(() => {
+  init();
+});
+
+onMounted(() => {
+  init();
+  // console.log(question.value);
+});
 </script>
 
 <template>
