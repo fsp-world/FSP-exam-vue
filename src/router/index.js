@@ -90,32 +90,32 @@ const router = createRouter({
         {
           path: 'user',
           name: 'User',
-          component: () => import('@/views/admin/User.vue'),
+          component: () => import('@/components/admin/User.vue'),
         },
         {
           path: 'whitelist',
           name: 'Whitelist',
-          component: () => import('@/views/admin/Whitelist.vue'),
+          component: () => import('@/components/admin/Whitelist.vue'),
         },
         {
           path: 'exam',
           name: 'Exam',
-          component: () => import('@/views/admin/Exam.vue'),
+          component: () => import('@/components/admin/Exam.vue'),
         },
         {
           path: 'guara',
           name: 'Guara',
-          component: () => import('@/views/admin/Guara.vue'),
+          component: () => import('@/components/admin/Guara.vue'),
         },
         {
           path: 'response',
           name: 'Response',
-          component: () => import('@/views/admin/Response.vue'),
+          component: () => import('@/components/admin/Response.vue'),
         },
         {
           path: 'question_type',
           name: 'QuestionType',
-          component: () => import('@/views/admin/QuestionType.vue'),
+          component: () => import('@/components/admin/QuestionType.vue'),
         },
       ],
     },
