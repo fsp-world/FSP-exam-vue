@@ -1,10 +1,5 @@
 <script setup>
-import {
-  addQuestionAPI,
-  editQuestionAPI,
-  delQuestionAPI,
-  getSurvey,
-} from '@/apis/admin';
+import { addQuestionAPI, editQuestionAPI, delQuestionAPI, getSurvey } from '@/apis/admin';
 import QuestionCard from '@/components/QuestionCard.vue';
 import EditQuestion from './EditQuestion.vue';
 import SurveyMetaData from './SurveyMetaData.vue';
@@ -40,9 +35,7 @@ const openEditQuestion = (mode, data = null) => {
 // 删除题目
 const deleteQuestion = (question) => {
   const tmp = question.title.slice(0, 10);
-  const confirmDelete = confirm(
-    `确定删除标题为"${tmp}..."的题目吗，任何状态下的问卷都会被影响！`
-  );
+  const confirmDelete = confirm(`确定删除标题为"${tmp}..."的题目吗，任何状态下的问卷都会被影响！`);
   if (confirmDelete) {
     const confirmDeleteAgain = confirm('操作不可挽回，确定要删除吗！');
     if (confirmDeleteAgain) {
@@ -70,13 +63,17 @@ const _getSurvey = () => {
   });
 };
 
+const SurveyMetaDataUpdate = () => {
+  _getSurvey();
+  emit('flush');
+};
+
 const handleEdit = (mode, formData) => {
   const handleRes = (res) => {
     if (res.code === 0) {
       closeEditQuestion();
       openAlert(res.desc);
       _getSurvey();
-      emit('flush', sid);
     } else {
       openAlert(res.desc);
     }
@@ -101,14 +98,13 @@ const closeEditQuestion = () => {
 
 const viewSurveyDirection = ref('column');
 const toggleDirection = () => {
-  viewSurveyDirection.value =
-    viewSurveyDirection.value === 'column' ? 'column-reverse' : 'column';
+  viewSurveyDirection.value = viewSurveyDirection.value === 'column' ? 'column-reverse' : 'column';
 };
 </script>
 
 <template>
   <div class="edit-exam">
-    <div class="close" @click="emit('close', 0)">&times;</div>
+    <div class="close" @click="emit('close')">&times;</div>
     <EditQuestion
       v-if="displayEditQuestion"
       :sid="sid"
@@ -122,21 +118,13 @@ const toggleDirection = () => {
       :s-name="survey.name"
       :s-desc="survey.description"
       :s-time="survey.create_time"
-      @on-edit="_getSurvey"
+      @on-edit="SurveyMetaDataUpdate"
     ></SurveyMetaData>
     <div class="view-survey">
-      <button
-        type="button"
-        class="add-question-button"
-        @click="openEditQuestion('add')"
-      >
-        添加题目
-      </button>
+      <button type="button" class="add-question-button" @click="openEditQuestion('add')">添加题目</button>
       <div class="info">
         <p class="sum-score">试卷总分：{{ survey.sumScore }} 分</p>
-        <button type="button" class="toggle-direction" @click="toggleDirection">
-          正序/倒序
-        </button>
+        <button type="button" class="toggle-direction" @click="toggleDirection">正序/倒序</button>
       </div>
       <ul class="question-list" :style="{ flexDirection: viewSurveyDirection }">
         <li
@@ -154,12 +142,7 @@ const toggleDirection = () => {
             >
               编辑
             </button>
-            <button
-              type="button"
-              class="delete"
-              @click="deleteQuestion(question)"
-              :disabled="displayEditQuestion"
-            >
+            <button type="button" class="delete" @click="deleteQuestion(question)" :disabled="displayEditQuestion">
               删除
             </button>
           </span>
@@ -170,9 +153,7 @@ const toggleDirection = () => {
             :index="questionIndex"
           ></QuestionCard>
         </li>
-        <li class="question-list-none" v-if="!survey.questions.length">
-          暂未添加题目
-        </li>
+        <li class="question-list-none" v-if="!survey.questions.length">暂未添加题目</li>
       </ul>
     </div>
   </div>

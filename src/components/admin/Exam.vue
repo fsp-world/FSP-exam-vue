@@ -17,14 +17,12 @@ const _getSurveys = () => {
     surveysData.value = res.data;
   });
 };
-_getSurveys()
+_getSurveys();
 
 const createSurvey = () => {
   addSurvey({
     name: prompt('name'),
     description: prompt('description'),
-  }).then((res) => {
-    console.log(res.data);
   });
 };
 </script>
