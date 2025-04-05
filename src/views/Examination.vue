@@ -6,23 +6,11 @@ import QuestionCard from '@/components/QuestionCard.vue';
 import QuestionBackground from '@/components/QuestionBackground.vue';
 import PaperDone from '@/components/PaperDone.vue';
 import InfoDialog from '@/components/InfoDialog.vue';
-import { useAlertStore } from '@/stores/alert';
+import { openAlert } from '@/utils/TsAlert';
 import { getSurvey, completeSurvey } from '@/apis/survey.js';
 import { useRoute } from 'vue-router';
 
 const route = useRoute();
-
-const alertStore = useAlertStore();
-const openAlert = (message) => {
-  const data = {
-    title: 'exam' + Date(),
-    type: 'info-card',
-    message: message,
-    age: 3000,
-    flag: true,
-  };
-  alertStore.openAlert(data);
-};
 
 const questions = ref([]);
 const remainingTime = ref('');

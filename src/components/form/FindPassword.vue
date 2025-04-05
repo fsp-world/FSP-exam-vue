@@ -3,23 +3,11 @@ import '../../assets/form.css';
 import { ref } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 import { findPassword } from '@/apis/auth';
-import { useAlertStore } from '@/stores/alert';
+import { openAlert } from '@/utils/TsAlert';
 import MCButton from '@/components/MCButton.vue';
 
 const router = useRouter();
 const route = useRoute();
-
-const alertStore = useAlertStore();
-const openAlert = (message) => {
-  const data = {
-    title: 'register' + Date(),
-    type: 'info-card',
-    message: message,
-    age: 3000,
-    flag: true,
-  };
-  alertStore.openAlert(data);
-};
 
 const findPasswordForm = ref({
   username: '',

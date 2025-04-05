@@ -2,28 +2,16 @@
 import { getProfilePic } from '@/apis/mj.js';
 import { getUserWhitelist } from '@/apis/user.js';
 import { ref } from 'vue';
-import { useAlertStore } from '@/stores/alert';
+import { openAlert } from '@/utils/TsAlert';
 import { useUserStore } from '@/stores/user';
 import MCRouterLink from '@/components/MCRouterLink.vue';
 import MCButton from '@/components/MCButton.vue';
 import { storeToRefs } from 'pinia';
 
-const alertStore = useAlertStore();
 const userStore = useUserStore();
 const { avatar, username, userQQ, role, avatarUUID, getStatus, dateToLocal, isAdmin } = storeToRefs(userStore);
 
 userStore.syncUserInfo();
-
-const openAlert = (message) => {
-  const data = {
-    title: 'conf' + Date(),
-    type: 'info-card',
-    message: message,
-    age: 3000,
-    flag: true,
-  };
-  alertStore.openAlert(data);
-};
 
 const userWhiteList = ref([]);
 

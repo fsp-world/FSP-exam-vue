@@ -34,20 +34,7 @@
 <script setup lang="ts">
 import QuestionCard from '@/components/QuestionCard.vue';
 import { detailScore } from '@/apis/admin';
-import { useAlertStore } from '@/stores/alert';
-import type { IalertData } from '@/types';
-
-const alertStore = useAlertStore();
-const openAlert = (message: string) => {
-  const data: IalertData = {
-    title: 'login' + Date(),
-    type: 'info-card',
-    message: message,
-    age: 3000,
-    flag: true,
-  };
-  alertStore.openAlert(data);
-};
+import { openAlert } from '@/utils/TsAlert';
 
 const props = defineProps(['data', 'visibility']);
 const emit = defineEmits(['update:visibility']);

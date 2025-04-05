@@ -5,22 +5,10 @@ import MCRouterLink from '@/components/MCRouterLink.vue';
 import InfoConfirmDialog from '@/components/InfoConfirmDialog.vue';
 import { getProfilePic } from '@/apis/mj';
 import { startSurvey, checkSurvey } from '@/apis/survey';
-import { useAlertStore } from '@/stores/alert';
+import { openAlert } from '@/utils/TsAlert';
 import { useRouter } from 'vue-router';
 
 const router = useRouter();
-
-const alertStore = useAlertStore();
-const openAlert = (message) => {
-  const data = {
-    title: 'conf' + Date(),
-    type: 'info-card',
-    message: message,
-    age: 3000,
-    flag: true,
-  };
-  alertStore.openAlert(data);
-};
 
 const checkSurvey_ = () => {
   checkSurvey().then((res) => {

@@ -2,20 +2,7 @@
 import { ref } from 'vue';
 import { modSurveyMetaData } from '@/apis/admin';
 
-import { useAlertStore } from '@/stores/alert';
-import { IalertData } from '@/types';
-
-const alertStore = useAlertStore();
-const openAlert = (message: string) => {
-  const data: IalertData = {
-    title: 'login' + Date(),
-    type: 'info-card',
-    message: message,
-    age: 3000,
-    flag: true,
-  };
-  alertStore.openAlert(data);
-};
+import { openAlert } from '@/utils/TsAlert';
 
 const { sid, sName, sDesc, sTime } = defineProps({
   sid: {

@@ -12,9 +12,12 @@ const surveysData = ref({
 const flag = ref(false);
 const sid = ref(0);
 
-getSurveys().then((res) => {
-  surveysData.value = res.data;
-});
+const _getSurveys = () => {
+  getSurveys().then((res) => {
+    surveysData.value = res.data;
+  });
+};
+_getSurveys()
 
 const createSurvey = () => {
   addSurvey({
@@ -27,7 +30,7 @@ const createSurvey = () => {
 </script>
 
 <template>
-  <EditExam v-if="flag" :sid="sid" @close="flag = false"></EditExam>
+  <EditExam v-if="flag" :sid="sid" @close="flag = false" @flush="_getSurveys"></EditExam>
   <h1>问卷管理</h1>
   <p><button @click="createSurvey">新建问卷</button></p>
   <hr />

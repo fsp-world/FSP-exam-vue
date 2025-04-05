@@ -11,22 +11,10 @@ import MCButton from '@/components/MCButton.vue';
 import { ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { findPasswordPut } from '@/apis/auth';
-import { useAlertStore } from '@/stores/alert';
+import { openAlert } from '@/utils/TsAlert';
 
 const router = useRouter();
 const route = useRoute();
-
-const alertStore = useAlertStore();
-const openAlert = (message) => {
-  const data = {
-    title: 'register' + Date(),
-    type: 'info-card',
-    message: message,
-    age: 3000,
-    flag: true,
-  };
-  alertStore.openAlert(data);
-};
 
 const password = ref('');
 

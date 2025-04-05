@@ -4,19 +4,7 @@ import QuestionCard from '@/components/QuestionCard.vue';
 import EditQuestion from '@/views/admin/EditQuestion.vue';
 import SurveyMetaData from './SurveyMetaData.vue';
 import { onMounted, ref } from 'vue';
-import { useAlertStore } from '@/stores/alert';
-
-const alertStore = useAlertStore();
-const openAlert = (message) => {
-  const data = {
-    title: 'login' + Date(),
-    type: 'info-card',
-    message: message,
-    age: 3000,
-    flag: true,
-  };
-  alertStore.openAlert(data);
-};
+import { openAlert } from '@/utils/TsAlert';
 
 const { sid } = defineProps({
   sid: {
@@ -24,6 +12,7 @@ const { sid } = defineProps({
     required: true,
   },
 });
+const emit = defineEmits(['close', 'flush'])
 
 const displayEditQuestion = ref(false);
 const currentMode = ref(null); // 当前模式："add" 或 "edit"
@@ -80,6 +69,7 @@ const handleEdit = (mode, formData) => {
       closeEditQuestion();
       openAlert(res.desc);
       _getSurvey();
+      emit('flush', sid);
     } else {
       openAlert(res.desc);
     }
@@ -110,7 +100,7 @@ const toggleDirection = () => {
 
 <template>
   <div class="edit-exam">
-    <div class="close" @click="$emit('close', 0)">&times;</div>
+    <div class="close" @click="emit('close', 0)">&times;</div>
     <EditQuestion
       v-if="displayEditQuestion"
       :sid="sid"

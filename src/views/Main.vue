@@ -2,16 +2,15 @@
 import { RouterLink } from 'vue-router';
 import { useUserStore } from '@/stores/user';
 import { storeToRefs } from 'pinia';
-import { useAlertStore } from '@/stores/alert';
+import { openAlert } from '@/utils/TsAlert';
 
 const store = useUserStore();
 const { isLogin, username, avatar } = storeToRefs(store);
 
-const alertStore = useAlertStore();
 
 const logout = () => {
   store.logout().then((res) => {
-    alertStore.openAlert({
+    openAlert({
       title: 'logout' + Date(),
       type: 'info-card',
       message: '成功退出登录',
