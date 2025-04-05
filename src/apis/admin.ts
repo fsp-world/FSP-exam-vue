@@ -14,6 +14,7 @@ export const getWhitelist = (data: IPagination) => request.get('/admin/whitelist
 export const getSurveys = () => request.get('/admin/surveys');
 export const getSurvey = (id: number) => request.get('/admin/survey/' + id);
 export const addSurvey = (data: ISurvey) => request.post('/admin/addSurvey', JSON.stringify(data));
+export const modSurveyMetaData = (data: ISurvey) => request.post('/admin/modSurvey', JSON.stringify(data));
 
 // question
 export const getQuestionAPI = () => request.get('/admin/AllQuestion');

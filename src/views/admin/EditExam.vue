@@ -1,7 +1,8 @@
 <script setup>
 import { addQuestionAPI, editQuestionAPI, delQuestionAPI, getSurvey } from '@/apis/admin';
 import QuestionCard from '@/components/QuestionCard.vue';
-import editQuestion from '@/views/admin/EditQuestion.vue';
+import EditQuestion from '@/views/admin/EditQuestion.vue';
+import SurveyMetaData from './SurveyMetaData.vue';
 import { onMounted, ref } from 'vue';
 import { useAlertStore } from '@/stores/alert';
 
@@ -31,6 +32,7 @@ const currentData = ref(null); // 当前编辑的数据
 const survey = ref({
   name: '加载中...',
   description: '加载中...',
+  create_time: '加载中...',
   questions: [],
 });
 
@@ -108,22 +110,22 @@ const toggleDirection = () => {
 
 <template>
   <div class="edit-exam">
-    <editQuestion
+    <div class="close" @click="$emit('close', 0)">&times;</div>
+    <EditQuestion
       v-if="displayEditQuestion"
       :sid="sid"
       :mode="currentMode"
       :initial-data="currentData"
       @on-edit="handleEdit"
       @close="closeEditQuestion"
-    ></editQuestion>
-    <div class="survey-info">
-      <div class="close" @click="$emit('close', 0)"><span>&times;</span></div>
-      <h1 class="title">{{ survey.name }}</h1>
-      <p class="desc">试卷描述：{{ survey.description }}</p>
-      <p class="time">创建时间：{{ survey.create_time }}</p>
-      <button type="button" class="edit-survey">编辑问卷信息（还没做）</button>
-    </div>
-    <hr />
+    ></EditQuestion>
+    <SurveyMetaData
+      :sid="sid"
+      :s-name="survey.name"
+      :s-desc="survey.description"
+      :s-time="survey.create_time"
+      @on-edit="_getSurvey"
+    ></SurveyMetaData>
     <div class="view-survey">
       <button type="button" class="add-question-button" @click="openEditQuestion('add')">添加题目</button>
       <div class="info">
@@ -164,6 +166,23 @@ const toggleDirection = () => {
 </template>
 
 <style scoped>
+.close {
+  width: 50px;
+  height: 50px;
+  position: absolute;
+  right: 10px;
+  top: 10px;
+  font-size: 40px;
+  line-height: 50px;
+  text-indent: 14px;
+  background-color: #eee;
+  border-radius: 50%;
+  box-sizing: border-box;
+  z-index: 6;
+}
+.close:hover {
+  background-color: #ccc;
+}
 .edit-exam {
   width: calc(100% - 32px);
   height: calc(100% - 32px);
@@ -186,35 +205,6 @@ const toggleDirection = () => {
 }
 .edit-exam .add-question-button:hover {
   background-color: #00bbff;
-}
-
-.edit-exam .survey-info {
-  .edit-survey {
-    font-size: 20px;
-    padding: 5px 10px;
-    border-radius: 5px;
-    margin: 5px;
-  }
-  .close {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 50px;
-    height: 50px;
-    position: absolute;
-    right: 10px;
-    top: 10px;
-    font-size: 25px;
-    background-color: white;
-    border-radius: 50%;
-    box-sizing: border-box;
-  }
-  .close span {
-    margin: 2px 0px 0px 2px;
-  }
-  .close:hover {
-    background-color: rgb(139, 139, 139);
-  }
 }
 
 .edit-exam .view-survey {
