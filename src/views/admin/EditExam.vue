@@ -1,9 +1,8 @@
 <script setup>
-import { delQuestion, getSurvey } from '@/apis/admin';
+import { addQuestionAPI, editQuestionAPI, delQuestionAPI, getSurvey } from '@/apis/admin';
 import QuestionCard from '@/components/QuestionCard.vue';
 import editQuestion from '@/views/admin/EditQuestion.vue';
 import { onMounted, ref } from 'vue';
-import { addQuestion } from '@/apis/admin';
 import { useAlertStore } from '@/stores/alert';
 
 const alertStore = useAlertStore();
@@ -19,7 +18,10 @@ const openAlert = (message) => {
 };
 
 const { sid } = defineProps({
-  sid: Number,
+  sid: {
+    type: Number,
+    required: true,
+  },
 });
 
 const displayEditQuestion = ref(false);
@@ -46,7 +48,7 @@ const deleteQuestion = (question) => {
   if (confirmDelete) {
     const confirmDeleteAgain = confirm('操作不可挽回，确定要删除吗！');
     if (confirmDeleteAgain) {
-      delQuestion(question.id).then((res) => {
+      delQuestionAPI(question.id).then((res) => {
         openAlert(res.data.desc);
         if (res.data.code === 0) {
           _getSurvey();
@@ -71,14 +73,24 @@ const _getSurvey = () => {
 };
 
 const handleEdit = (mode, formData) => {
-  console.log(`操作类型: ${mode}`);
+  const handleRes = (res) => {
+    if (res.code === 0) {
+      closeEditQuestion();
+      openAlert(res.desc);
+      _getSurvey();
+    } else {
+      openAlert(res.desc);
+    }
+  };
   if (mode === 'add') {
-    addQuestion(formData);
+    addQuestionAPI(formData).then((res) => {
+      handleRes(res.data);
+    });
   } else if (mode === 'edit') {
-    console.log('编辑题目上传');
+    editQuestionAPI(formData).then((res) => {
+      handleRes(res.data);
+    });
   }
-  _getSurvey();
-  closeEditQuestion();
 };
 
 // 关闭 editQuestion 组件
@@ -126,10 +138,17 @@ const toggleDirection = () => {
           :id="'question' + (questionIndex + 1)"
         >
           <span class="admin-button">
-            <button type="button" class="edit" @click="openEditQuestion('edit', survey.questions[questionIndex])">
+            <button
+              type="button"
+              class="edit"
+              @click="openEditQuestion('edit', survey.questions[questionIndex])"
+              :disabled="displayEditQuestion"
+            >
               编辑
             </button>
-            <button type="button" class="delete" @click="deleteQuestion(question)">删除</button>
+            <button type="button" class="delete" @click="deleteQuestion(question)" :disabled="displayEditQuestion">
+              删除
+            </button>
           </span>
 
           <QuestionCard

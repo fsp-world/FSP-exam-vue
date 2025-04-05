@@ -46,11 +46,11 @@
                 <textarea v-model="item.data" placeholder="e.g. https://exam.fsp.ink/assets/images/23-1.png"></textarea>
               </div>
               <div class="delete">
-                <button type="button" @click="delQuestionImgURL(item.key)">删除选项</button>
+                <button type="button" @click="deleteImgByKey(item.key)">删除选项</button>
               </div>
             </li>
           </ul>
-          <button type="button" class="new-option" @click="newQestionImgURL">新建图片</button>
+          <button type="button" class="new-option" @click="newImg">新建图片</button>
         </details>
         <div class="choice">
           <p>{{ types[formData.type - 1].optionTitle }}</p>
@@ -63,36 +63,39 @@
             <li class="option" v-for="(item, index) in formData.options" :key="item.key">
               <label class="num" v-show="formData.type === 1 || formData.type === 2">选项{{ index + 1 }}</label>
               <div class="text">
-                <textarea v-model="item.option" :placeholder="types[formData.type - 1].placeholder"></textarea>
+                <textarea v-model="item.text" :placeholder="types[formData.type - 1].placeholder"></textarea>
               </div>
               <div class="correct" v-show="formData.type === 1 || formData.type === 2">
                 <input
                   v-if="formData.type === 1"
                   type="radio"
                   name="radio-correct"
-                  :id="`option-${item.key}`"
+                  :key="`radio-${index}`"
+                  :id="`radio-option-${index}`"
+                  :value="item.key"
+                  v-model="selectedRadioKey"
                   @change="onChange(item)"
                 />
                 <input
                   v-if="formData.type === 2"
                   type="checkbox"
                   name="checkbox-correct"
-                  :id="`option-${index}`"
+                  :key="`checkbox-${index}`"
+                  :id="`checkbox-option-${index}`"
                   :value="index"
-                  v-model="item.isAnswer"
-                  :key="`checkbox-${item.key}`"
+                  v-model="item.isCorrect"
                 />
                 <input
                   v-if="formData.type === 3 || formData.type === 4"
                   type="radio"
                   name="radio-correct"
                   :id="`option-${item.key}`"
-                  :checked="item.isAnswer"
+                  :checked="item.isCorrect"
                   disabled
                 />
               </div>
               <div class="delete" v-if="formData.type === 1 || formData.type === 2">
-                <button type="button" @click="delOption(item.key)">删除选项</button>
+                <button type="button" @click="deleteOptionByKey(item.key)">删除选项</button>
               </div>
             </li>
           </ul>
@@ -103,50 +106,35 @@
       </div>
     </div>
     <div class="end">
-      <button type="button" class="submit-question" @click="sendData">上传题目</button>
+      <button type="button" class="submit-question" @click="emit('onEdit', mode, formData)">上传题目</button>
     </div>
   </form>
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, watch, onMounted } from 'vue';
-import { IQuestion, IOption, IImg } from '@/types';
+import { ref, watch } from 'vue';
+import { IOption, IImg, IQuestion } from '@/types';
 import { compressionFile } from '@/utils/imageCompression';
 
 const MAX_IMAGE_SIZE = 5 * 1024 * 1024; // 5MB
 
 const emit = defineEmits(['onEdit', 'close']);
 
-const props = defineProps({
+const { sid, mode, initialData } = defineProps({
   sid: {
     type: Number,
     required: true,
   },
 
   mode: {
-    type: String,
+    type: String as () => 'add' | 'edit',
     required: true,
-    validator: (value: string) => ['add', 'edit'].includes(value),
   },
   initialData: {
     type: Object,
     default: null,
   },
 });
-const { sid, mode, initialData } = props;
-
-console.log(mode);
-console.log(initialData);
-
-const defaultFormData: IQuestion = {
-  survey: sid,
-  title: '',
-  type: 1,
-  score: 5,
-  options: [],
-  img_list: [],
-  answer: [],
-};
 
 const types = ref([
   { value: 1, name: '单选', optionTitle: '单选列表：', placeholder: '不要写例如 A.B.C.D. 这样的编号！' },
@@ -155,67 +143,66 @@ const types = ref([
   { value: 4, name: '简答', optionTitle: '参考答案：', placeholder: '请在此输入参考答案' },
 ]);
 
-const defaultOption: IOption = {
-  key: '',
-  option: '',
-  isAnswer: false,
-  isSelected: false,
-};
+// 当前选中的 radio 的 id
+const selectedRadioKey = ref<string | null>(null);
 
-const defaultImg: IImg = {
-  key: '',
-  alt: '',
-  data: '',
-};
+interface CarryKeyOption extends IOption {
+  key: string;
+}
 
-// 生成唯一键值
+interface CarryKeyImg extends IImg {
+  key: string;
+}
+
+interface FormData extends IQuestion {
+  survey: number;
+  options: CarryKeyOption[];
+  img_list: CarryKeyImg[];
+}
+
+const formData = ref<FormData>({
+  survey: sid,
+  title: '',
+  type: 1,
+  score: 5,
+  options: [],
+  img_list: [],
+});
+
 const generateUniqueKey = (): string => {
   return crypto.randomUUID();
 };
 
-const formData: IQuestion = reactive<IQuestion>({ ...defaultFormData });
-
 const newOption = () => {
-  const obj = { ...defaultOption };
-  obj.key = generateUniqueKey();
-  formData.options.push(obj);
-  if (formData.type === 3 || formData.type === 4) {
-    formData.options[0].isAnswer = true;
-  }
+  const option: CarryKeyOption = {
+    key: generateUniqueKey(),
+    text: '',
+    isCorrect: false,
+  };
+  formData.value.options.push(option);
 };
 
-const newQestionImgURL = () => {
-  const obj = { ...defaultImg };
-  obj.key = generateUniqueKey();
-  formData.img_list.push(obj);
+const newImg = () => {
+  const img: CarryKeyImg = {
+    key: generateUniqueKey(),
+    alt: '',
+    data: '',
+  };
+  formData.value.img_list.push(img);
 };
 
-// 通用删除函数
-const deleteByKey = <T extends { key: string }>(array: T[], key: string): void => {
-  const index = array.findIndex((item) => item.key === key);
-  if (index !== -1) {
-    array.splice(index, 1);
-  }
+const setOnlyOneOption = () => {
+  formData.value.options = [];
+  newOption();
 };
 
-// 删除选项
-const delOption = (key: string) => {
-  deleteByKey(formData.options, key);
+const deleteOptionByKey = (key: string): void => {
+  formData.value.options = formData.value.options.filter((item: any) => item.key !== key);
+};
+const deleteImgByKey = (key: string): void => {
+  formData.value.img_list = formData.value.img_list.filter((item: any) => item.key !== key);
 };
 
-// 删除图片 URL
-const delQuestionImgURL = (key: string) => {
-  deleteByKey(formData.img_list, key);
-};
-
-const onChange = (item: IOption) => {
-  for (let i of formData.options) {
-    i.isAnswer = false;
-  }
-  item.isAnswer = true;
-};
-
-// 处理文件上传
 const handleFileUpload = (event: Event, index: number): void => {
   const target = event.target as HTMLInputElement;
   const file = target.files?.[0];
@@ -234,7 +221,7 @@ const handleFileUpload = (event: Event, index: number): void => {
   }
 
   // 检查是否已经有文本链接
-  if (formData.img_list[index].data.trim()) {
+  if (formData.value.img_list[index].data.trim()) {
     alert('已存在图片链接，忽略文件上传！');
     return;
   }
@@ -246,8 +233,7 @@ const handleFileUpload = (event: Event, index: number): void => {
       const reader = new FileReader();
       reader.onload = (e: ProgressEvent<FileReader>) => {
         const base64String = e.target?.result as string;
-        formData.img_list[index].data = base64String; // 更新数据
-        console.log('图片压缩并更新成功:', formData.img_list[index]);
+        formData.value.img_list[index].data = base64String; // 更新数据
       };
       reader.readAsDataURL(compressedFile);
     })
@@ -257,49 +243,54 @@ const handleFileUpload = (event: Event, index: number): void => {
     });
 };
 
-// 初始化 formData
-const initializeFormData = () => {
-  if (mode === 'edit' && initialData) {
-    // 编辑模式：复制 initialData 的内容，并保留 id 字段
-    Object.assign(formData, {
-      ...defaultFormData,
-      ...initialData,
-    });
-  } else {
-    // 添加模式：重置为默认数据
-    Object.assign(formData, defaultFormData);
+const onChange = (editOption: CarryKeyOption) => {
+  for (let option of formData.value.options) {
+    option.isCorrect = false;
   }
+  editOption.isCorrect = true;
+};
 
-  // 如果是填空或简答类型，确保有一个默认答案
-  if (formData.type === 3 || formData.type === 4) {
+const init = (): void => {
+  if (mode === 'add') {
     newOption();
-    // formData.options[0].isAnswer = true;
   }
-  console.log('新数据');
-  console.log(formData);
+  if (mode === 'edit' && initialData) {
+    const addKeyforListItem = (oldList: any) => {
+      const newList = JSON.parse(JSON.stringify(oldList));
+      for (let item of newList) {
+        item.key = generateUniqueKey();
+      }
+      return newList;
+    };
+
+    formData.value = {
+      survey: sid,
+      id: initialData.id,
+      title: initialData.title,
+      type: initialData.type,
+      score: initialData.score,
+      options: addKeyforListItem(initialData.options),
+      img_list: addKeyforListItem(initialData.img_list),
+    };
+
+    // 自动选中单选题的正确答案
+    if (formData.value.type === 1) {
+      const correctItem = formData.value.options.find((item) => item.isCorrect);
+      if (correctItem) {
+        selectedRadioKey.value = correctItem.key;
+      }
+    }
+  }
 };
 
-// 在组件挂载时初始化 formData
-onMounted(() => {
-  initializeFormData();
-  newOption();
-});
-
-const sendData = () => {
-  emit('onEdit', mode, formData);
-  // formData.title = '';
-  // formData.options = [];
-  // formData.img_list = [];
-  // newOption();
-};
+init();
 
 watch(
-  () => formData.type,
+  () => formData.value.type,
   (newVal, _) => {
+    // 如果是填空题或者主观题，确保有且只有一个选项
     if (newVal === 3 || newVal === 4) {
-      formData.options = [];
-      newOption();
-      formData.options[0].isAnswer = true;
+      setOnlyOneOption();
     }
   },
 );

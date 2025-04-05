@@ -16,9 +16,10 @@ export const getSurvey = (id: number) => request.get('/admin/survey/' + id);
 export const addSurvey = (data: ISurvey) => request.post('/admin/addSurvey', JSON.stringify(data));
 
 // question
-export const getQuestion = () => request.get('/admin/AllQuestion');
-export const addQuestion = (data: IQuestion) => request.post('/admin/addQuestion', JSON.stringify(data));
-export const delQuestion = (data: number) => request.post('/admin/delQuestion', JSON.stringify(data));
+export const getQuestionAPI = () => request.get('/admin/AllQuestion');
+export const addQuestionAPI = (data: IQuestion) => request.post('/admin/addQuestion', JSON.stringify(data));
+export const editQuestionAPI = (data: IQuestion) => request.post('/admin/editQuestion', JSON.stringify(data));
+export const delQuestionAPI = (data: number) => request.post('/admin/delQuestion', JSON.stringify(data));
 
 // response
 export const getResponses = (data: IPagination) => request.get('/admin/responses', { params: data });

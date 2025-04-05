@@ -49,7 +49,6 @@ watchEffect(() => {
 
 onMounted(() => {
   init();
-  // console.log(question.value);
 });
 </script>
 
@@ -87,17 +86,7 @@ onMounted(() => {
         :class="{ selected: option.isSelected }"
         @click="selectOption(option)"
       >
-        <span
-          v-if="option.isCorrect"
-          style="
-            display: inline-block;
-            width: 16px;
-            height: 16px;
-            background-color: #54ff9f;
-            border-radius: 50%;
-            transform: translateY(2px);
-          "
-        ></span>
+        <div v-if="option.isCorrect" class="correct-option"></div>
         {{ ['A.', 'B.', 'C.', 'D.'][optionIndex] }}{{ option.text }}
       </li>
     </ul>
@@ -184,6 +173,7 @@ onMounted(() => {
 }
 
 .option-list li {
+  position: relative;
   padding: 5px;
   padding-left: 20px;
   font-size: var(--qestion-font-size);
@@ -191,6 +181,15 @@ onMounted(() => {
   border-radius: 5px;
   user-select: none;
   border: 1px solid #ffffff00;
+  .correct-option {
+    position: absolute;
+    top: 6px;
+    left: -1px;
+    width: 16px;
+    height: 16px;
+    background-color: #54ff9f;
+    border-radius: 50%;
+  }
 }
 
 .option-list .option-hover:hover {
