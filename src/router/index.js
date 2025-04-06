@@ -113,9 +113,9 @@ const router = createRouter({
           component: () => import('@/components/admin/Response.vue'),
         },
         {
-          path: 'question_type',
-          name: 'QuestionType',
-          component: () => import('@/components/admin/QuestionType.vue'),
+          path: 'slot',
+          name: 'Slot',
+          component: () => import('@/components/admin/Slot.vue'),
         },
       ],
     },

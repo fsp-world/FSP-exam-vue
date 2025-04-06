@@ -1,4 +1,4 @@
-import type { IPagination, IQuestion, ISurvey, IUser } from '@/types';
+import type { IPagination, IQuestion, ISurvey, IUser, SurveySlot } from '@/types';
 import request from '@/utils/requers';
 
 // user
@@ -31,7 +31,4 @@ export const responseDetail = (id: number) => request.get('/admin/detail/' + id)
 export const detailScore = (data: { score: number; questionId: number; responseId: number }) =>
   request.post('/admin/detail_score', JSON.stringify(data));
 
-// question_type 应该理解为问卷类型，我不知道为什么不叫 survey_type
-export const getQuestionType = () => request.get('/admin/question_type');
-export const setQuestionType = (data: { id: number; surveyId: number; typeName: string }) =>
-  request.put('/admin/question_type', JSON.stringify(data));
+export const setSlotAPI = (data: SurveySlot) => request.put('/admin/set_slot', JSON.stringify(data));

@@ -21,7 +21,7 @@
             <RouterLink to="/admin/response" class="router-link">答卷审核</RouterLink>
           </li>
           <li>
-            <RouterLink to="/admin/question_type" class="router-link">试卷类型</RouterLink>
+            <RouterLink to="/admin/slot" class="router-link">问卷发布</RouterLink>
           </li>
           <li>
             <RouterLink to="/" class="router-link">返回首页</RouterLink>

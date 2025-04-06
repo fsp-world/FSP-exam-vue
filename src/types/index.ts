@@ -11,6 +11,12 @@ export interface IalertData {
   flag: boolean;
 }
 
+export interface SurveySlot {
+  id?: number;
+  slotName: string;
+  mountedSID: number;
+}
+
 export type CardType = 'warn-card' | 'info-card';
 
 export interface IResponse {
@@ -36,8 +42,11 @@ export interface IQueryResponse {
 }
 
 export interface ISurvey {
+  id?: number;
   name: string;
   description: string;
+  createTime?: string;
+  status?: number;
 }
 
 export const getStringQuestionType = (questionType: number): string => {
