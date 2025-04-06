@@ -28,16 +28,19 @@ const editSurvey = (id) => {
 };
 
 const deleteSurvey = (id) => {
-  const confirmDelete = confirm('确定要删除吗！');
+  const confirmDelete = confirm('确定要删除这个问卷吗，问卷中的题目会被一并删除！请三思！');
   if (confirmDelete) {
-    const confirmDeleteAgain = confirm('真的吗，问卷中的题目会被一并删除！请三思！');
-    if (confirmDeleteAgain) {
+    const confirmText = '确认删除问卷';
+    const confirmInput = prompt('请输入：确认删除问卷');
+    if (confirmText === confirmInput) {
       delSurvey(id).then((res) => {
         if (res.data.code === 0) {
           _getSurveys();
         }
         openAlert(res.data.desc);
       });
+    } else {
+      alert('二次确认失败');
     }
   }
 };
