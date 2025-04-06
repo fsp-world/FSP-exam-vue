@@ -1,6 +1,7 @@
 <script setup>
 import { ref } from 'vue';
-import { getSurveys } from '@/apis/admin';
+import { getSurveys, delSurvey } from '@/apis/admin';
+import { openAlert } from '@/utils/TsAlert';
 import EditExam from './EditExam.vue';
 import SetSurveyMetaData from './SetSurveyMetaData.vue';
 
@@ -26,6 +27,21 @@ const editSurvey = (id) => {
   sid.value = id;
 };
 
+const deleteSurvey = (id) => {
+  const confirmDelete = confirm('确定要删除吗！');
+  if (confirmDelete) {
+    const confirmDeleteAgain = confirm('真的吗，问卷中的题目会被一并删除！请三思！');
+    if (confirmDeleteAgain) {
+      delSurvey(id).then((res) => {
+        if (res.data.code === 0) {
+          _getSurveys();
+        }
+        openAlert(res.data.desc);
+      });
+    }
+  }
+};
+
 _getSurveys();
 </script>
 
@@ -47,6 +63,7 @@ _getSurveys();
           <div v-show="i.status === 1" class="button mount">已应用</div>
           <div v-show="i.status === 0" class="button umount">未应用</div>
           <button type="button" class="button hover edit" @click="editSurvey(i.id)">编辑问卷</button>
+          <button type="button" class="button hover del" @click="deleteSurvey(i.id)">删除问卷</button>
         </div>
       </li>
       <button type="button" class="survey hover add" @click="toggleSetSurveyMetaData = true">新建问卷</button>
@@ -97,6 +114,12 @@ _getSurveys();
   }
   .edit {
     border: 1px solid #ddd;
+  }
+  .del {
+    border: 1px solid #ddd;
+  }
+  .del:hover {
+    background-color: red;
   }
 }
 .hover:hover {
