@@ -31,4 +31,7 @@ export const responseDetail = (id: number) => request.get('/admin/detail/' + id)
 export const detailScore = (data: { score: number; questionId: number; responseId: number }) =>
   request.post('/admin/detail_score', JSON.stringify(data));
 
-export const setSlotAPI = (data: SurveySlot) => request.put('/admin/set_slot', JSON.stringify(data));
+// slot
+export const addSlotAPI = (data: SurveySlot) => request.post('/admin/add_slot', JSON.stringify(data));
+export const setSlotAPI = (data: SurveySlot) => request.post('/admin/set_slot', JSON.stringify(data));
+export const delSlotAPI = (data: SurveySlot) => request.post('/admin/del_slot', JSON.stringify(data));
