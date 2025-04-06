@@ -26,8 +26,8 @@ const createSurvey = () => {
 };
 
 const editSurvey = (id) => {
-  flag = true;
-  sid = id;
+  flag.value = true;
+  sid.value = id;
 };
 
 _getSurveys();
@@ -35,23 +35,25 @@ _getSurveys();
 
 <template>
   <EditExam v-if="flag" :sid="sid" @close="flag = false" @flush="_getSurveys"></EditExam>
-  <h1 style="user-select: none">问卷管理</h1>
-  <hr />
-  <ul class="survey-list">
-    <li class="survey" v-if="!surveysData.list.length">暂无数据</li>
-    <li class="survey" v-for="i in surveysData.list" :key="i.id">
-      <p class="name">
-        {{ i.name }}
-      </p>
-      <p class="desc">问卷描述：{{ i.description }}</p>
-      <div class="bot">
-        <div v-show="i.status === 1" class="button mount">已应用</div>
-        <div v-show="i.status === 0" class="button umount">未应用</div>
-        <button type="button" class="button hover edit" @click="editSurvey(i.id)">编辑问卷</button>
-      </div>
-    </li>
-    <button type="button" class="survey hover add" @click="createSurvey">新建问卷</button>
-  </ul>
+  <div v-if="!flag">
+    <h1 style="user-select: none">问卷管理</h1>
+    <hr />
+    <ul class="survey-list">
+      <li class="survey" v-if="!surveysData.list.length">暂无数据</li>
+      <li class="survey" v-for="i in surveysData.list" :key="i.id">
+        <p class="name">
+          {{ i.name }}
+        </p>
+        <p class="desc">问卷描述：{{ i.description }}</p>
+        <div class="bot">
+          <div v-show="i.status === 1" class="button mount">已应用</div>
+          <div v-show="i.status === 0" class="button umount">未应用</div>
+          <button type="button" class="button hover edit" @click="editSurvey(i.id)">编辑问卷</button>
+        </div>
+      </li>
+      <button type="button" class="survey hover add" @click="createSurvey">新建问卷</button>
+    </ul>
+  </div>
 </template>
 
 <style scoped>
