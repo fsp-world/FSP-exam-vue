@@ -65,11 +65,13 @@ getSurveyIds();
 <template>
   <h1>问卷发布</h1>
   <p>插槽名就是用户可选的问卷类型的名称，这里有几个插槽，用户就有几种选择</p>
+  <h3>问卷列表</h3>
   <ul>
     <li v-for="s in surveys">
       <p>问卷id：{{ s.id }}，问卷名称：{{ s.name }}，问卷描述：{{ s.description }}</p>
     </li>
   </ul>
+  <h3>插槽列表</h3>
   <table>
     <thead>
       <tr>

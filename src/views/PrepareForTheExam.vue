@@ -4,7 +4,7 @@ import MCButton from '@/components/MCButton.vue';
 import MCRouterLink from '@/components/MCRouterLink.vue';
 import InfoConfirmDialog from '@/components/InfoConfirmDialog.vue';
 import { getProfilePic } from '@/apis/mj';
-import { startSurvey, checkSurvey } from '@/apis/survey';
+import { getSlotsAPI, startSurvey, checkSurvey } from '@/apis/survey';
 import { openAlert } from '@/utils/TsAlert';
 import { useRouter } from 'vue-router';
 
@@ -18,22 +18,17 @@ const checkSurvey_ = () => {
     }
   });
 };
-checkSurvey_();
 
 const examineeInfo = ref({
   playerName: '',
   playerUUID: 'none',
-  playerType: '',
+  sid: undefined,
   imgUrl: 'none',
 });
 
 const flag = ref(false);
 
-const playerTypeList = ref([
-  { id: 'survival', option: '生存类' },
-  { id: 'redstone', option: '红石类' },
-  { id: 'construction', option: '建筑类' },
-]);
+const surveyList = ref([]);
 
 const checkPlayerName = () => {
   openAlert('确认游戏名称中...');
@@ -48,8 +43,8 @@ const checkPlayerName = () => {
   });
 };
 
-const choicePlayerType = (playerType) => {
-  examineeInfo.value.playerType = playerType;
+const choiceSurvey = (sid) => {
+  examineeInfo.value.sid = sid;
 };
 
 const checkRefDataNotNull = (data) => {
@@ -63,7 +58,7 @@ const checkRefDataNotNull = (data) => {
 
 const startExam = () => {
   if (!checkRefDataNotNull(examineeInfo)) {
-    openAlert('请填写个人信息');
+    openAlert('请填写个人信息并选择类型');
   } else {
     checkPlayerName(examineeInfo.value.playerName);
   }
@@ -80,6 +75,12 @@ const handelConfirm = () => {
     }
   });
 };
+
+// 检查用户有没有未完成的问卷
+checkSurvey_();
+getSlotsAPI().then((res) => {
+  surveyList.value = res.data.list;
+});
 </script>
 
 <template>
@@ -102,14 +103,17 @@ const handelConfirm = () => {
               <li
                 class="option"
                 :class="{
-                  selected: examineeInfo.playerType == item.id,
+                  selected: examineeInfo.sid == item.mountedSID,
                 }"
-                v-for="(item, index) in playerTypeList"
+                v-for="(item, index) in surveyList"
                 v-bind:key="index"
-                @click="choicePlayerType(item.id)"
+                @click="choiceSurvey(item.mountedSID)"
               >
-                {{ item.option }}
+                {{ item.slotName }}类
               </li>
+              <p v-if="surveyList.length === 0" style="font-size: 30px; text-align: center; margin: 0 auto">
+                暂无可用的问卷
+              </p>
             </ul>
           </form>
         </div>

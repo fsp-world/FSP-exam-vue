@@ -7,7 +7,7 @@ import QuestionBackground from '@/components/QuestionBackground.vue';
 import PaperDone from '@/components/PaperDone.vue';
 import InfoDialog from '@/components/InfoDialog.vue';
 import { openAlert } from '@/utils/TsAlert';
-import { getSurvey, completeSurvey } from '@/apis/survey.js';
+import { getSurvey, completeSurvey } from '@/apis/survey';
 import { useRoute } from 'vue-router';
 
 const route = useRoute();
