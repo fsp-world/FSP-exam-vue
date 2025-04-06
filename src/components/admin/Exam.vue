@@ -1,7 +1,10 @@
 <script setup>
-import { getSurveys, addSurvey } from '@/apis/admin';
-import EditExam from './EditExam.vue';
 import { ref } from 'vue';
+import { getSurveys } from '@/apis/admin';
+import EditExam from './EditExam.vue';
+import SetSurveyMetaData from './SetSurveyMetaData.vue';
+
+const toggleSetSurveyMetaData = ref(false);
 
 const surveysData = ref({
   code: -1,
@@ -18,13 +21,6 @@ const _getSurveys = () => {
   });
 };
 
-const createSurvey = () => {
-  addSurvey({
-    name: prompt('name'),
-    description: prompt('description'),
-  });
-};
-
 const editSurvey = (id) => {
   flag.value = true;
   sid.value = id;
@@ -35,6 +31,8 @@ _getSurveys();
 
 <template>
   <EditExam v-if="flag" :sid="sid" @close="flag = false" @flush="_getSurveys"></EditExam>
+  <SetSurveyMetaData :mode="'set'" v-model="toggleSetSurveyMetaData" @on-edit="_getSurveys"></SetSurveyMetaData>
+
   <div v-if="!flag">
     <h1 style="user-select: none">问卷管理</h1>
     <hr />
@@ -51,7 +49,7 @@ _getSurveys();
           <button type="button" class="button hover edit" @click="editSurvey(i.id)">编辑问卷</button>
         </div>
       </li>
-      <button type="button" class="survey hover add" @click="createSurvey">新建问卷</button>
+      <button type="button" class="survey hover add" @click="toggleSetSurveyMetaData = true">新建问卷</button>
     </ul>
   </div>
 </template>
@@ -85,6 +83,7 @@ _getSurveys();
   }
 
   .bot {
+    padding-top: 5px;
     display: flex;
     gap: 8px;
   }

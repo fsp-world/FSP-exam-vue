@@ -2,7 +2,7 @@
 import { addQuestionAPI, editQuestionAPI, delQuestionAPI, getSurvey } from '@/apis/admin';
 import QuestionCard from '@/components/QuestionCard.vue';
 import EditQuestion from './EditQuestion.vue';
-import SurveyMetaData from './SurveyMetaData.vue';
+import SetSurveyMetaData from './SetSurveyMetaData.vue';
 import { onMounted, ref } from 'vue';
 import { openAlert } from '@/utils/TsAlert';
 
@@ -14,7 +14,8 @@ const { sid } = defineProps({
 });
 const emit = defineEmits(['close', 'flush']);
 
-const displayEditQuestion = ref(false);
+const toggleSetSurveyMetaData = ref(false);
+const toggleEditQuestion = ref(false);
 const currentMode = ref(null); // 当前模式："add" 或 "edit"
 const currentData = ref(null); // 当前编辑的数据
 
@@ -29,7 +30,7 @@ const survey = ref({
 const openEditQuestion = (mode, data = null) => {
   currentMode.value = mode;
   currentData.value = data;
-  displayEditQuestion.value = true;
+  toggleEditQuestion.value = true;
 };
 
 // 删除题目
@@ -91,7 +92,7 @@ const handleEdit = (mode, formData) => {
 
 // 关闭 editQuestion 组件
 const closeEditQuestion = () => {
-  displayEditQuestion.value = false;
+  toggleEditQuestion.value = false;
   currentMode.value = null;
   currentData.value = null;
 };
@@ -106,26 +107,49 @@ const toggleDirection = () => {
   <div class="edit-exam">
     <div class="close" @click="emit('close')">&times;</div>
     <EditQuestion
-      v-if="displayEditQuestion"
+      v-if="toggleEditQuestion"
       :sid="sid"
       :mode="currentMode"
       :initial-data="currentData"
       @on-edit="handleEdit"
       @close="closeEditQuestion"
     ></EditQuestion>
-    <SurveyMetaData
+    <SetSurveyMetaData
       :sid="sid"
-      :s-name="survey.name"
-      :s-desc="survey.description"
-      :s-time="survey.create_time"
+      :mode="'set'"
+      v-model="toggleSetSurveyMetaData"
       @on-edit="SurveyMetaDataUpdate"
-    ></SurveyMetaData>
-    <div class="view-survey">
-      <button type="button" class="add-question-button" @click="openEditQuestion('add')">添加题目</button>
+    ></SetSurveyMetaData>
+    <div class="top">
+      <div class="meta">
+        <p class="name">问卷名称：{{ survey.name }}</p>
+        <p class="desc">问卷描述：{{ survey.description }}</p>
+        <p class="time">创建时间：{{ survey.create_time }}</p>
+      </div>
+      <div class="button-menu">
+        <button
+          type="button"
+          class="add-question-button"
+          @click="toggleSetSurveyMetaData = true"
+          :disabled="toggleEditQuestion"
+        >
+          编辑问卷信息
+        </button>
+        <button
+          type="button"
+          class="add-question-button"
+          @click="openEditQuestion('add')"
+          :disabled="toggleSetSurveyMetaData"
+        >
+          添加题目
+        </button>
+      </div>
       <div class="info">
         <p class="sum-score">试卷总分：{{ survey.sumScore }} 分</p>
         <button type="button" class="toggle-direction" @click="toggleDirection">正序/倒序</button>
       </div>
+    </div>
+    <div class="view-survey">
       <ul class="question-list" :style="{ flexDirection: viewSurveyDirection }">
         <li
           class="question"
@@ -138,11 +162,16 @@ const toggleDirection = () => {
               type="button"
               class="edit"
               @click="openEditQuestion('edit', survey.questions[questionIndex])"
-              :disabled="displayEditQuestion"
+              :disabled="toggleEditQuestion || toggleSetSurveyMetaData"
             >
               编辑
             </button>
-            <button type="button" class="delete" @click="deleteQuestion(question)" :disabled="displayEditQuestion">
+            <button
+              type="button"
+              class="delete"
+              @click="deleteQuestion(question)"
+              :disabled="toggleEditQuestion || toggleSetSurveyMetaData"
+            >
               删除
             </button>
           </span>
@@ -188,8 +217,15 @@ const toggleDirection = () => {
   padding: 16px;
   background-color: #fff;
 }
-
-.edit-exam .add-question-button {
+.meta {
+  font-size: 20px;
+  padding-bottom: 10px;
+}
+.button-menu {
+  display: flex;
+  gap: 10px;
+}
+.add-question-button {
   font-size: 20px;
   padding: 12px 50px;
   border-radius: 5px;
@@ -197,42 +233,41 @@ const toggleDirection = () => {
   width: 100%;
   background-color: #00ffff;
 }
-.edit-exam .add-question-button:hover {
+.add-question-button:hover {
   background-color: #00bbff;
 }
+.info {
+  display: flex;
+  height: 40px;
+  padding: 5px 8px;
+  justify-content: center;
+  gap: 20px;
+  background-color: #eee;
+  border-radius: 5px;
+  margin-bottom: 10px;
+  .sum-score {
+    font-size: 20px;
+    text-align: center;
+    user-select: none;
+    line-height: 30px;
+    padding: 5px;
+  }
 
-.edit-exam .view-survey {
+  .toggle-direction {
+    height: 40px;
+    font-size: 20px;
+    padding: 5px 8px;
+    border-radius: 5px;
+  }
+
+  .toggle-direction:hover {
+    background-color: #ccc;
+  }
+}
+
+.view-survey {
   width: 100%;
   overflow-y: scroll;
-
-  .info {
-    display: flex;
-    height: 40px;
-    padding: 5px 8px;
-    justify-content: center;
-    gap: 20px;
-    background-color: #eee;
-    border-radius: 5px;
-    margin-bottom: 10px;
-    .sum-score {
-      font-size: 20px;
-      text-align: center;
-      user-select: none;
-      line-height: 30px;
-      padding: 5px;
-    }
-
-    .toggle-direction {
-      height: 40px;
-      font-size: 20px;
-      padding: 5px 8px;
-      border-radius: 5px;
-    }
-
-    .toggle-direction:hover {
-      background-color: #ccc;
-    }
-  }
 
   .question-list {
     position: relative;
