@@ -104,9 +104,9 @@ export const useUserStore = defineStore('user', {
           this.avatar = imgUrl;
         } else {
           this.avatarUUID = res.data.avatar;
+          this.isLogin = false;
           let { imgUrl } = await getProfilePic(this.avatarUUID);
           this.avatar = imgUrl;
-          this.isLogin = false;
         }
         return res;
       } catch (error) {
@@ -131,15 +131,17 @@ export const useUserStore = defineStore('user', {
     async syncUserInfo() {
       try {
         let { data } = await getUserInfo();
-        this.id = data.data.id;
-        this.username = data.data.username;
-        this.avatarUUID = data.data.avatar;
-        this.addtime = data.data.addtime;
-        this.role = data.data.role;
-        this.userQQ = data.data.user_qq;
-        this.status = data.data.status;
-        let { imgUrl } = await getProfilePic(this.avatarUUID);
-        this.avatar = imgUrl;
+        if (data.code === 0) {
+          this.id = data.data.id;
+          this.username = data.data.username;
+          this.avatarUUID = data.data.avatar;
+          this.addtime = data.data.addtime;
+          this.role = data.data.role;
+          this.userQQ = data.data.user_qq;
+          this.status = data.data.status;
+          let { imgUrl } = await getProfilePic(this.avatarUUID);
+          this.avatar = imgUrl;
+        }
       } catch (error) {
         console.error(error);
         return { code: 1, desc: '错误' };

@@ -54,5 +54,6 @@ export async function getProfilePic(PlayerName) {
     return { msg: 'ok', uuid: skinBase64.uuid, imgUrl: imgData };
   } catch (error) {
     console.error('图像解码失败:', error);
+    return { msg: 'ok', uuid: '', imgUrl: '' };
   }
 }
