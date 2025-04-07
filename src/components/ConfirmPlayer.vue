@@ -5,7 +5,7 @@ import { openAlert } from '@/utils/TsAlert';
 
 import MCButton from './MCButton.vue';
 
-const emit = defineEmits('confirm');
+const emit = defineEmits(['confirm']);
 
 const check = defineModel('check'); // 父组件要定义一个叫check的ref，父组件只负责把check设置为true
 const info = defineModel('info');

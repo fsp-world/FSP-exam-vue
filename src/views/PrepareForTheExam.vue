@@ -6,7 +6,7 @@ import ConfirmPlayer from '@/components/ConfirmPlayer.vue';
 import { getSlotsAPI, startSurvey, checkSurvey } from '@/apis/survey';
 import { openAlert } from '@/utils/TsAlert';
 import { useRouter } from 'vue-router';
-import { SurveySlot } from '@/types';
+import type { SurveySlot } from '@/types';
 
 const router = useRouter();
 

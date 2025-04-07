@@ -53,6 +53,8 @@ const close = () => {
 }
 
 .warn-card {
+  padding-top: 20px;
+  padding-left: 40px;
   color: #cbcbcb;
   background-image: url(../../assets/images/rainbow_pixel_gui/system_info.png);
 }
