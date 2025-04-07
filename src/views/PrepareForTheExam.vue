@@ -1,12 +1,12 @@
-<script setup>
-import { ref } from 'vue';
+<script setup lang="ts">
+import { ref, onMounted } from 'vue';
 import MCButton from '@/components/MCButton.vue';
 import MCRouterLink from '@/components/MCRouterLink.vue';
-import InfoConfirmDialog from '@/components/InfoConfirmDialog.vue';
-import { getProfilePic } from '@/apis/mj';
+import ConfirmPlayer from '@/components/ConfirmPlayer.vue';
 import { getSlotsAPI, startSurvey, checkSurvey } from '@/apis/survey';
 import { openAlert } from '@/utils/TsAlert';
 import { useRouter } from 'vue-router';
+import { SurveySlot } from '@/types';
 
 const router = useRouter();
 
@@ -18,54 +18,27 @@ const checkSurvey_ = () => {
     }
   });
 };
-
-const examineeInfo = ref({
+interface ExamineeInfo {
+  playerName: string;
+  playerUUID: string;
+  sid?: number;
+}
+const examineeInfo = ref<ExamineeInfo>({
   playerName: '',
   playerUUID: 'none',
   sid: undefined,
-  imgUrl: 'none',
 });
 
-const flag = ref(false);
+const check = ref(false);
+const surveyList = ref<SurveySlot[]>([]);
 
-const surveyList = ref([]);
-
-const checkPlayerName = () => {
-  openAlert('确认游戏名称中...');
-  getProfilePic(examineeInfo.value.playerName).then((result) => {
-    if (result.msg === 'ok') {
-      examineeInfo.value.playerUUID = result.uuid;
-      examineeInfo.value.imgUrl = result.imgUrl;
-      flag.value = true;
-    } else {
-      openAlert(result.msg);
-    }
-  });
-};
-
-const choiceSurvey = (sid) => {
+const choiceSurvey = (sid: number) => {
   examineeInfo.value.sid = sid;
 };
 
-const checkRefDataNotNull = (data) => {
-  for (const [key, value] of Object.entries(data.value)) {
-    if (value === '' || value === undefined) {
-      return false;
-    }
-  }
-  return true;
-};
-
-const startExam = () => {
-  if (!checkRefDataNotNull(examineeInfo)) {
-    openAlert('请填写个人信息并选择类型');
-  } else {
-    checkPlayerName(examineeInfo.value.playerName);
-  }
-};
-
-const handelConfirm = () => {
-  flag.value = false;
+// 已确认
+const confirmed = () => {
+  // 开始考试必须的三个参数：sid，mc-name，mc-uuid
   startSurvey(examineeInfo.value).then((res) => {
     if (res.data.code === 0) {
       openAlert(res.data.desc);
@@ -76,15 +49,29 @@ const handelConfirm = () => {
   });
 };
 
-// 检查用户有没有未完成的问卷
-checkSurvey_();
-getSlotsAPI().then((res) => {
-  surveyList.value = res.data.list;
+// 用户点击开始按钮
+const startExam = () => {
+  // 检查用户是否填写必要信息
+  if (examineeInfo.value.playerName && examineeInfo.value.sid) {
+    // 这个组件只负责开启check，关闭check由confirm组件负责
+    check.value = true;
+  } else {
+    openAlert('请填写个人信息并选择类型');
+  }
+};
+
+onMounted(() => {
+  // 检查用户有没有未完成的问卷
+  checkSurvey_();
+  // 获取可选的考试
+  getSlotsAPI().then((res) => {
+    surveyList.value = res.data.list;
+  });
 });
 </script>
 
 <template>
-  <InfoConfirmDialog :show="flag" :info="examineeInfo" @confirm="handelConfirm"></InfoConfirmDialog>
+  <ConfirmPlayer v-model:check="check" v-model:info="examineeInfo" @confirm="confirmed"></ConfirmPlayer>
   <div class="prepare-exam-page">
     <div class="translucent-bg"></div>
     <div class="translucent-content">

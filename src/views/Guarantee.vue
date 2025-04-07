@@ -1,8 +1,9 @@
 <script setup>
 import { ref } from 'vue';
-import InfoDialog from '@/components/InfoDialog.vue';
 import { getProfilePic } from '@/apis/mj.js';
 import { sendRequest } from '@/apis/guarantee.js';
+
+import ConfirmPlayer from '@/components/ConfirmPlayer.vue';
 import MCButton from '@/components/MCButton.vue';
 import MCRouterLink from '@/components/MCRouterLink.vue';
 
@@ -18,7 +19,6 @@ const info = ref({
   opacity: 1,
   imgUrl: '',
 });
-
 const isin = ref(false);
 const guaranteeRequest = ref({
   guaranteeQQ: '',
@@ -86,9 +86,6 @@ function show() {
         .then((result) => {
           if (result.msg == 'ok') {
             info.value.imgUrl = result.imgUrl;
-            // result.imgUrl.then((url) => {
-            //     info.value.imgUrl = url
-            // })
             info.value.uuid = result.uuid;
             openInfoDialog();
           } else {
@@ -111,20 +108,22 @@ function show() {
 </script>
 
 <template>
-  <InfoDialog :show="dialogData.display" :dialogType="dialogData.type" :dialogStyle="dialogData.style">
-    <div style="line-height: 120px; font-size: 40px" v-show="dialogData.stats === 0">加载中</div>
-    <div v-show="dialogData.stats === 1">
-      <div class="top">
-        <img class="player-pic" :src="info.imgUrl" />
-        <p class="player-name">Name: {{ guaranteeRequest.playerName }}</p>
-        <MCButton class="minecraft-button button confirm-btn" type="button" @click="send()">确认无误</MCButton>
-      </div>
-      <p class="bottom player-uuid">uuid: {{ info.uuid }}</p>
-    </div>
-    <div style="line-height: 120px; font-size: 40px" v-show="dialogData.stats === 2">
-      <p>{{ dialogData.desc }}</p>
-    </div>
-  </InfoDialog>
+  <!-- <InfoDialog :show="dialogData.display" :dialogType="dialogData.type" :dialogStyle="dialogData.style"> -->
+  <!--   <div style="line-height: 120px; font-size: 40px" v-show="dialogData.stats === 0">加载中</div> -->
+  <!--   <div v-show="dialogData.stats === 1"> -->
+  <!--     <div class="top"> -->
+  <!--       <img class="player-pic" :src="info.imgUrl" /> -->
+  <!--       <p class="player-name">Name: {{ guaranteeRequest.playerName }}</p> -->
+  <!--       <MCButton class="minecraft-button button confirm-btn" type="button" @click="send()">确认无误</MCButton> -->
+  <!--     </div> -->
+  <!--     <p class="bottom player-uuid">uuid: {{ info.uuid }}</p> -->
+  <!--   </div> -->
+  <!--   <div style="line-height: 120px; font-size: 40px" v-show="dialogData.stats === 2"> -->
+  <!--     <p>{{ dialogData.desc }}</p> -->
+  <!--   </div> -->
+  <!-- </InfoDialog> -->
+
+  <!-- <InfoConfirmDialog :show="flag" :info="examineeInfo" @confirm="handelConfirm"></InfoConfirmDialog> -->
   <div class="guarantee">
     <div class="translucent-bg"></div>
     <div class="translucent-content">
