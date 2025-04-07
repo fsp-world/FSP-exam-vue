@@ -22,6 +22,7 @@ interface ExamineeInfo {
   playerName: string;
   playerUUID: string;
   sid?: number;
+  slot_name?: string;
 }
 const examineeInfo = ref<ExamineeInfo>({
   playerName: '',
@@ -32,8 +33,9 @@ const examineeInfo = ref<ExamineeInfo>({
 const check = ref(false);
 const surveyList = ref<SurveySlot[]>([]);
 
-const choiceSurvey = (sid: number) => {
+const choiceSurvey = (sid: number, sName: string) => {
   examineeInfo.value.sid = sid;
+  examineeInfo.value.slot_name = sName;
 };
 
 // 已确认
@@ -94,7 +96,7 @@ onMounted(() => {
                 }"
                 v-for="(item, index) in surveyList"
                 v-bind:key="index"
-                @click="choiceSurvey(item.mountedSID)"
+                @click="choiceSurvey(item.mountedSID, item.slotName)"
               >
                 {{ item.slotName }}类
               </li>

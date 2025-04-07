@@ -35,6 +35,7 @@ export interface IResponse {
 export interface IQueryResponse {
   id: number;
   type: string;
+  survey_name?: string;
   responseTime: string;
   state: 0 | 1 | 2;
   get_score: number;
