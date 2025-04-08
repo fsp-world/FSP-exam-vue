@@ -94,6 +94,7 @@ table {
   caption {
     font-size: 26px;
     font-weight: bold;
+    padding-bottom: 10px;
   }
   th,
   td {
