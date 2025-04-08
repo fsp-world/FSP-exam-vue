@@ -35,3 +35,6 @@ export const detailScore = (data: { score: number; questionId: number; responseI
 export const addSlotAPI = (data: SurveySlot) => request.post('/admin/add_slot', JSON.stringify(data));
 export const setSlotAPI = (data: SurveySlot) => request.post('/admin/set_slot', JSON.stringify(data));
 export const delSlotAPI = (data: SurveySlot) => request.post('/admin/del_slot', JSON.stringify(data));
+
+// guarantee
+export const getGuaranteeAPI = (data: IPagination) => request.get('/admin/guarantee/get', { params: data });

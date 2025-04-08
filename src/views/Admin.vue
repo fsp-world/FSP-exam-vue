@@ -15,7 +15,7 @@
             <RouterLink to="/admin/exam" class="router-link">问卷管理</RouterLink>
           </li>
           <li>
-            <RouterLink to="/admin/guara" class="router-link">担保管理</RouterLink>
+            <RouterLink to="/admin/guarantee_mgmt" class="router-link">担保管理</RouterLink>
           </li>
           <li>
             <RouterLink to="/admin/response" class="router-link">答卷审核</RouterLink>

@@ -103,9 +103,9 @@ const router = createRouter({
           component: () => import('@/components/admin/Exam.vue'),
         },
         {
-          path: 'guara',
-          name: 'Guara',
-          component: () => import('@/components/admin/Guara.vue'),
+          path: 'guarantee_mgmt',
+          name: 'GuaranteeMgmt',
+          component: () => import('@/components/admin/GuaranteeMgmt.vue'),
         },
         {
           path: 'response',

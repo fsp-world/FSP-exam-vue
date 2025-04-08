@@ -1,6 +1,11 @@
+export interface BaseTableProps {
+  caption?: string;
+  columnMap: Map<string, string>;
+}
+
 export interface IPagination {
-  page?: number;
-  size?: number;
+  page: number;
+  size: number;
 }
 
 export interface IalertData {
