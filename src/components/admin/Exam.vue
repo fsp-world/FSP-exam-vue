@@ -54,6 +54,7 @@ _getSurveys();
 
   <div v-if="!flag">
     <h1 style="user-select: none">问卷管理</h1>
+    <p>注意：已发布的问卷无法编辑或删除！</p>
     <hr />
     <ul class="survey-list">
       <li class="survey" v-if="!surveysData.list.length">暂无数据</li>
@@ -63,10 +64,14 @@ _getSurveys();
         </p>
         <p class="desc">问卷描述：{{ i.description }}</p>
         <div class="bot">
-          <div v-show="i.status === 1" class="button mount">已应用</div>
-          <div v-show="i.status === 0" class="button umount">未应用</div>
-          <button type="button" class="button hover edit" @click="editSurvey(i.id)">编辑问卷</button>
-          <button type="button" class="button hover del" @click="deleteSurvey(i.id)">删除问卷</button>
+          <div v-show="i.status === 1" class="button mount">已发布</div>
+          <div v-show="i.status === 0" class="button umount">未发布</div>
+          <button type="button" class="button hover edit" @click="editSurvey(i.id)" :disabled="i.status === 1">
+            编辑问卷
+          </button>
+          <button type="button" class="button hover del" @click="deleteSurvey(i.id)" :disabled="i.status === 1">
+            删除问卷
+          </button>
         </div>
       </li>
       <button type="button" class="survey hover add" @click="toggleSetSurveyMetaData = true">新建问卷</button>

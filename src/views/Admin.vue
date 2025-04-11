@@ -14,14 +14,16 @@
           <li>
             <RouterLink to="/admin/exam" class="router-link">问卷管理</RouterLink>
           </li>
-          <li>
-            <RouterLink to="/admin/guarantee_mgmt" class="router-link">担保管理</RouterLink>
-          </li>
-          <li>
-            <RouterLink to="/admin/response" class="router-link">答卷审核</RouterLink>
-          </li>
+
           <li>
             <RouterLink to="/admin/slot" class="router-link">问卷发布</RouterLink>
+          </li>
+
+          <li>
+            <RouterLink to="/admin/response" class="router-link">答卷管理</RouterLink>
+          </li>
+          <li>
+            <RouterLink to="/admin/guarantee_mgmt" class="router-link">担保管理</RouterLink>
           </li>
           <li>
             <RouterLink to="/" class="router-link">返回首页</RouterLink>
