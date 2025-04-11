@@ -19,6 +19,11 @@ const sid = ref(0);
 const _getSurveys = () => {
   getSurveys().then((res) => {
     surveysData.value = res.data;
+    for (let survey of surveysData.value.list) {
+      survey.notCompletedCount > 0 || survey.notReviewedCount > 0
+        ? (survey.editable = false)
+        : (survey.editable = true);
+    }
   });
 };
 
@@ -54,7 +59,7 @@ _getSurveys();
 
   <div v-if="!flag">
     <h1 style="user-select: none">问卷管理</h1>
-    <p>注意：已发布的问卷无法编辑或删除！</p>
+    <p>注意：已发布的问卷无法编辑或删除！存在未完成或未批改的答卷的问卷也无法编辑或删除！</p>
     <hr />
     <ul class="survey-list">
       <li class="survey" v-if="!surveysData.list.length">暂无数据</li>
@@ -62,14 +67,26 @@ _getSurveys();
         <p class="name">
           {{ i.name }}
         </p>
-        <p class="desc">问卷描述：{{ i.description }}</p>
+        <p class="desc">
+          问卷描述：{{ i.description }}，答题中的问卷：{{ i.notCompletedCount }}，未批改的问卷：{{ i.notReviewedCount }}
+        </p>
         <div class="bot">
           <div v-show="i.status === 1" class="button mount">已发布</div>
           <div v-show="i.status === 0" class="button umount">未发布</div>
-          <button type="button" class="button hover edit" @click="editSurvey(i.id)" :disabled="i.status === 1">
+          <button
+            type="button"
+            class="button hover edit"
+            @click="editSurvey(i.id)"
+            :disabled="!i.editable || i.status === 1"
+          >
             编辑问卷
           </button>
-          <button type="button" class="button hover del" @click="deleteSurvey(i.id)" :disabled="i.status === 1">
+          <button
+            type="button"
+            class="button hover del"
+            @click="deleteSurvey(i.id)"
+            :disabled="!i.editable || i.status === 1"
+          >
             删除问卷
           </button>
         </div>
