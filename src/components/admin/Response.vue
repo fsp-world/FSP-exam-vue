@@ -43,7 +43,7 @@
             <td class="action">
               <MCButton v-if="!item.isReviewed" class="button" @click="reviewed(item.id, true)">通过</MCButton>
               <MCButton v-if="!item.isReviewed" class="button" @click="reviewed(item.id, false)">拒绝</MCButton>
-              <MCButton class="button" @click="detail(item.id)">详情</MCButton>
+              <MCButton class="button" @click="detail(item)">详情</MCButton>
             </td>
           </tr>
         </tbody>
@@ -136,9 +136,10 @@ const reviewed = (id: number, pass: boolean) => {
   }
 };
 // 获取答卷详情
-const detail = (id: number) => {
-  (responseDetail as (id: number) => Promise<any>)(id).then((res: { data: any }) => {
+const detail = (item: IResponse) => {
+  responseDetail(item.id).then((res: { data: any }) => {
     detailData.value = res.data;
+    detailData.value.archived = item.isReviewed ? true : false;
     visibility.value = true;
   });
 };

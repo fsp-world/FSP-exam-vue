@@ -25,8 +25,10 @@
             :mode="'review'"
             v-model="props.data.questions[questionIndex]"
             :index="questionIndex"
+            :archived="archived"
             @scoreChange="handleScoreChange"
-          ></QuestionCard>
+          >
+          </QuestionCard>
         </li>
       </ul>
     </div>
@@ -37,9 +39,11 @@
 import QuestionCard from '@/components/QuestionCard.vue';
 import { detailScore } from '@/apis/admin';
 import { openAlert } from '@/utils/TsAlert';
+import { ref } from 'vue';
 
 const props = defineProps(['data', 'visibility']);
 const emit = defineEmits(['update:visibility']);
+const archived = ref(props.data.archived);
 
 const handleScoreChange = (payload: { questionId: number; score: number }) => {
   (detailScore as (data: { score: number; questionId: number; responseId: number }) => Promise<any>)({

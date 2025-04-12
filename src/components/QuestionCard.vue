@@ -3,7 +3,7 @@ import { defineProps, onMounted, watchEffect } from 'vue';
 import { getStringQuestionType, IOption, IQuestion } from '@/types';
 import { QuestionType } from '@/utils/enum';
 
-const { index, mode } = defineProps({
+const { index, mode, archived } = defineProps({
   index: {
     type: Number,
     required: true,
@@ -12,6 +12,10 @@ const { index, mode } = defineProps({
   mode: {
     type: String as () => 'view' | 'admin-view' | 'review',
     default: 'view',
+  },
+  archived: {
+    type: Boolean,
+    default: false,
   },
 });
 
@@ -61,6 +65,7 @@ onMounted(() => {
       <span v-if="mode === 'review'">
         <select
           :value="question.userGetScore"
+          :disabled="archived"
           @change="
             (e: Event) => emit('scoreChange', { questionId: question.id, score: (e.target as HTMLSelectElement).value })
           "
@@ -144,7 +149,6 @@ onMounted(() => {
     </div>
   </div>
 </template>
-
 <style scoped>
 .question {
   position: relative;
@@ -184,7 +188,7 @@ onMounted(() => {
   .correct-option {
     position: absolute;
     top: 6px;
-    left: -1px;
+    left: 2px;
     width: 16px;
     height: 16px;
     background-color: #54ff9f;
