@@ -27,7 +27,6 @@ let deadline = null;
 // 更新剩余时间
 const updateTimeRemaining = () => {
   const remainingTimeMs = deadline - new Date().getTime();
-  console.log(remainingTimeMs);
 
   if (remainingTimeMs <= 0) {
     clearInterval(intervalId); // 清除定时器
