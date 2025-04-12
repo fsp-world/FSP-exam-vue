@@ -1,5 +1,5 @@
 <script setup>
-import { getProfilePic } from '@/apis/mj.js';
+import { getProfilePic } from '@/apis/mj';
 import { getUserWhitelist } from '@/apis/user.js';
 import { ref } from 'vue';
 import { openAlert } from '@/utils/TsAlert';
@@ -18,13 +18,18 @@ const userWhiteList = ref([]);
 getUserWhitelist().then((res) => {
   if (res.data.code === 0) {
     userWhiteList.value = res.data.list;
-    for (let player of userWhiteList.value) {
-      getProfilePic(player.name).then((avatar) => {
-        if (avatar.msg === 'ok') {
-          player.avatarUrl = avatar.imgUrl;
-        }
-      });
-    }
+    const avatarPromises = userWhiteList.value.map((player) =>
+      getProfilePic(player.name)
+        .then((avatar) => {
+          if (avatar.msg === 'ok') {
+            player.avatarUrl = avatar.imgUrl;
+          }
+        })
+        .catch((err) => {
+          console.warn(`Failed to fetch avatar for ${player.name}:`, err);
+        }),
+    );
+    return Promise.all(avatarPromises);
   }
 });
 
