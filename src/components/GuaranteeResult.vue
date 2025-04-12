@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import { guaranteeQueryALLAPI, guaranteeActionAPI } from '@/apis/guarantee';
 import { openAlert } from '@/utils/TsAlert';
 import MCButton from '@/components/MCButton.vue';
@@ -30,26 +30,27 @@ function isExpired(createTime: string, expirationTime: string, validityPeriod: n
 
   return timeDifferenceInHours > validityPeriod; // 如果时间差大于 X 小时，返回 true
 }
+const queryAllGuarantee = () => {
+  guaranteeQueryALLAPI().then((res) => {
+    const applicant = res.data.data.applicant as Array<ListItem>;
+    const guarantee = res.data.data.guarantee as Array<ListItem>;
 
-guaranteeQueryALLAPI().then((res) => {
-  const applicant = res.data.data.applicant as Array<ListItem>;
-  const guarantee = res.data.data.guarantee as Array<ListItem>;
-
-  applicantData.value = applicant.map((item) => {
-    const expired = isExpired(item.createTime, item.expirationTime, 1);
-    return {
-      ...item,
-      status: expired ? '已过期' : statusMap[item.status as number] || '未知状态',
-    };
+    applicantData.value = applicant.map((item) => {
+      const expired = isExpired(item.createTime, item.expirationTime, 1);
+      return {
+        ...item,
+        status: expired ? '已过期' : statusMap[item.status as number] || '未知状态',
+      };
+    });
+    guaranteeData.value = guarantee.map((item) => {
+      const expired = isExpired(item.createTime, item.expirationTime, 1);
+      return {
+        ...item,
+        status: expired ? '已过期' : statusMap[item.status as number] || '未知状态',
+      };
+    });
   });
-  guaranteeData.value = guarantee.map((item) => {
-    const expired = isExpired(item.createTime, item.expirationTime, 1);
-    return {
-      ...item,
-      status: expired ? '已过期' : statusMap[item.status as number] || '未知状态',
-    };
-  });
-});
+};
 
 const guaranteeAction = (id: number, action: string) => {
   const data = {
@@ -59,11 +60,16 @@ const guaranteeAction = (id: number, action: string) => {
   guaranteeActionAPI(data).then((res) => {
     if (res.data.code === 0) {
       openAlert(res.data.desc);
+      queryAllGuarantee();
     } else {
       openAlert(res.data.desc, 'warn-card');
     }
   });
 };
+
+onMounted(() => {
+  queryAllGuarantee();
+});
 </script>
 
 <template>
