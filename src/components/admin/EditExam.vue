@@ -6,12 +6,17 @@ import SetSurveyMetaData from './SetSurveyMetaData.vue';
 import { onMounted, ref } from 'vue';
 import { openAlert } from '@/utils/TsAlert';
 
-const { sid } = defineProps({
+const { sid, editable } = defineProps({
   sid: {
     type: Number,
     required: true,
   },
+  editable: {
+    type: Boolean,
+    default: false,
+  },
 });
+
 const emit = defineEmits(['close', 'flush']);
 
 const toggleSetSurveyMetaData = ref(false);
@@ -131,7 +136,7 @@ const toggleDirection = () => {
           type="button"
           class="add-question-button"
           @click="toggleSetSurveyMetaData = true"
-          :disabled="toggleEditQuestion"
+          :disabled="toggleEditQuestion || toggleSetSurveyMetaData || !editable"
         >
           编辑问卷信息
         </button>
@@ -139,7 +144,7 @@ const toggleDirection = () => {
           type="button"
           class="add-question-button"
           @click="openEditQuestion('add')"
-          :disabled="toggleSetSurveyMetaData"
+          :disabled="toggleEditQuestion || toggleSetSurveyMetaData || !editable"
         >
           添加题目
         </button>
@@ -162,7 +167,7 @@ const toggleDirection = () => {
               type="button"
               class="edit"
               @click="openEditQuestion('edit', survey.questions[questionIndex])"
-              :disabled="toggleEditQuestion || toggleSetSurveyMetaData"
+              :disabled="toggleEditQuestion || toggleSetSurveyMetaData || !editable"
             >
               编辑
             </button>
@@ -170,7 +175,7 @@ const toggleDirection = () => {
               type="button"
               class="delete"
               @click="deleteQuestion(question)"
-              :disabled="toggleEditQuestion || toggleSetSurveyMetaData"
+              :disabled="toggleEditQuestion || toggleSetSurveyMetaData || !editable"
             >
               删除
             </button>

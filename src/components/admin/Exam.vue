@@ -15,6 +15,7 @@ const surveysData = ref({
 
 const flag = ref(false);
 const sid = ref(0);
+const survey_editable = ref(false);
 
 const _getSurveys = () => {
   getSurveys().then((res) => {
@@ -27,9 +28,14 @@ const _getSurveys = () => {
   });
 };
 
-const editSurvey = (id) => {
+const editSurvey = (survey) => {
   flag.value = true;
-  sid.value = id;
+  sid.value = survey.id;
+  if (survey.editable && survey.status === 0) {
+    survey_editable.value = true;
+  } else {
+    survey_editable.value = false;
+  }
 };
 
 const deleteSurvey = (id) => {
@@ -54,7 +60,7 @@ _getSurveys();
 </script>
 
 <template>
-  <EditExam v-if="flag" :sid="sid" @close="flag = false" @flush="_getSurveys"></EditExam>
+  <EditExam v-if="flag" :sid="sid" :editable="survey_editable" @close="flag = false" @flush="_getSurveys"></EditExam>
   <SetSurveyMetaData :mode="'set'" v-model="toggleSetSurveyMetaData" @on-edit="_getSurveys"></SetSurveyMetaData>
 
   <div v-if="!flag">
@@ -74,14 +80,7 @@ _getSurveys();
         <div class="bot">
           <div v-show="i.status === 1" class="button mount">已发布</div>
           <div v-show="i.status === 0" class="button umount">未发布</div>
-          <button
-            type="button"
-            class="button hover edit"
-            @click="editSurvey(i.id)"
-            :disabled="!i.editable || i.status === 1"
-          >
-            编辑问卷
-          </button>
+          <button type="button" class="button hover edit" @click="editSurvey(i)">查看问卷</button>
           <button
             type="button"
             class="button hover del"
