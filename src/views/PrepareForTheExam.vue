@@ -89,7 +89,7 @@ onMounted(() => {
             <input type="text" v-model="examineeInfo.playerName" placeholder="您的游戏昵称" />
             <p>系统会根据您的选择生成定制的试题</p>
             <ul class="option-list">
-              <li
+              <MCButton
                 class="option"
                 :class="{
                   selected: examineeInfo.sid == item.mountedSID,
@@ -99,7 +99,7 @@ onMounted(() => {
                 @click="choiceSurvey(item.mountedSID, item.slotName)"
               >
                 {{ item.slotName }}类
-              </li>
+              </MCButton>
               <p v-if="surveyList.length === 0" style="font-size: 30px; text-align: center; margin: 0 auto">
                 暂无可用的问卷
               </p>
@@ -133,30 +133,22 @@ onMounted(() => {
 
 .examineeInfo .option-list {
   display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
   gap: 10px;
   user-select: none;
+  height: 200px;
+  max-width: 800px;
 }
 
 .examineeInfo .option-list .option {
-  --hei: 70px;
-  height: var(--hei);
-  width: 50%;
   font-size: 25px;
-  line-height: var(--hei);
+  flex: 1 1 calc(25% - 10px); /* 每个元素的基础宽度为 25%，减去间距 */
+  box-sizing: border-box; /* 确保 padding 和 border 不会影响宽度 */
+  height: 70px;
   text-align: center;
   font-family: 'mc-font';
   color: #fff;
-  border-radius: 5px;
-  background-image: url(../assets/images/rainbow_pixel_gui/button.png);
-  background-repeat: no-repeat;
-  background-position: center;
-  background-size: 100% 100%;
-  image-rendering: pixelated;
-}
-
-.examineeInfo .option-list .option:hover {
-  background-image: url(../assets/images/rainbow_pixel_gui/button_highlighted.png);
-  image-rendering: pixelated;
 }
 
 .examineeInfo .option-list .selected {
@@ -167,9 +159,6 @@ onMounted(() => {
   .examineeInfo {
     padding: 10px;
     margin: 0 0px 10px 0px;
-  }
-  .examineeInfo .option-list .option {
-    --hei: 58px;
   }
 }
 </style>
