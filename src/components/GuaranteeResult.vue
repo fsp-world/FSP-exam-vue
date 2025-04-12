@@ -3,7 +3,7 @@ import { ref, onMounted } from 'vue';
 import { guaranteeQueryALLAPI, guaranteeActionAPI } from '@/apis/guarantee';
 import { openAlert } from '@/utils/TsAlert';
 import MCButton from '@/components/MCButton.vue';
-import moment from 'moment';
+import { dateFormatMMDDHHMM } from '@/utils/date';
 
 interface ListItem {
   id: number;
@@ -89,8 +89,8 @@ onMounted(() => {
       <tbody>
         <tr v-for="item of applicantData" :key="item.id">
           <td>{{ item.playerName }}</td>
-          <td>{{ moment(item.createTime).format('MM月DD日 HH时 MM分') }}</td>
-          <td>{{ moment(item.expirationTime).format('MM月DD日 HH时 MM分') }}</td>
+          <td>{{ dateFormatMMDDHHMM(item.createTime) }}</td>
+          <td>{{ dateFormatMMDDHHMM(item.expirationTime) }}</td>
           <td>{{ item.status }}</td>
         </tr>
       </tbody>
@@ -114,8 +114,9 @@ onMounted(() => {
         </tr>
         <tr v-for="item of guaranteeData" :key="item.id">
           <td>{{ item.playerName }}</td>
-          <td>{{ moment(item.createTime).format('MM月DD日 HH时 MM分') }}</td>
-          <td>{{ moment(item.expirationTime).format('MM月DD日 HH时 MM分') }}</td>
+          <td>{{ dateFormatMMDDHHMM(item.createTime) }}</td>
+          <td>{{ dateFormatMMDDHHMM(item.expirationTime) }}</td>
+
           <td>{{ item.status }}</td>
           <td class="actions">
             <MCButton v-if="item.status === '待同意'" class="button rejecr" @click="guaranteeAction(item.id, 'reject')"

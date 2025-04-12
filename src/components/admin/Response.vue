@@ -21,9 +21,7 @@
         <tbody>
           <tr v-for="item in responsesData.list" :key="item.id">
             <td>{{ item.id }}</td>
-            <td
-              :style="item.isCompleted ? { color: 'green' } : { color: 'red' }"
-            >
+            <td :style="item.isCompleted ? { color: 'green' } : { color: 'red' }">
               {{ item.isCompleted ? '已完成' : '未完成' }}
             </td>
             <td :style="getCellStyle(item.isReviewed)">
@@ -34,21 +32,11 @@
             <td>{{ item.score }}</td>
             <td>{{ item.username }}</td>
             <td>{{ item.playername }}</td>
-            <td>{{ moment(item.createTime).format('YY年MM月DD日 HH时') }}</td>
-            <td>{{ moment(item.responseTime).format('YY年MM月DD日 HH时') }}</td>
+            <td>{{ dateFormatYYYYMMDDHH(item.createTime) }}</td>
+            <td>{{ dateFormatYYYYMMDDHH(item.responseTime) }}</td>
             <td class="action">
-              <MCButton
-                v-if="!item.isReviewed"
-                class="button"
-                @click="reviewed(item.id, true)"
-                >通过</MCButton
-              >
-              <MCButton
-                v-if="!item.isReviewed"
-                class="button"
-                @click="reviewed(item.id, false)"
-                >拒绝</MCButton
-              >
+              <MCButton v-if="!item.isReviewed" class="button" @click="reviewed(item.id, true)">通过</MCButton>
+              <MCButton v-if="!item.isReviewed" class="button" @click="reviewed(item.id, false)">拒绝</MCButton>
               <MCButton class="button" @click="detail(item.id)">详情</MCButton>
             </td>
           </tr>
@@ -64,16 +52,11 @@
       >
         上一页
       </button>
-      <span
-        >第 {{ responsesData.page }} 页 / 共
-        {{ responsesData.totalPages }} 页</span
-      >
+      <span>第 {{ responsesData.page }} 页 / 共 {{ responsesData.totalPages }} 页</span>
       <button
         type="button"
         @click="loadPagination(responsesData.page + 1, responsesData.size)"
-        :disabled="
-          responsesData.page * responsesData.size >= responsesData.total
-        "
+        :disabled="responsesData.page * responsesData.size >= responsesData.total"
       >
         下一页
       </button>
@@ -86,11 +69,7 @@
       </button>
     </div>
 
-    <ResponseDetail
-      v-if="visibility"
-      v-model:visibility="visibility"
-      :data="detailData"
-    ></ResponseDetail>
+    <ResponseDetail v-if="visibility" v-model:visibility="visibility" :data="detailData"></ResponseDetail>
   </div>
 </template>
 
@@ -98,9 +77,9 @@
 import { getResponses, reviewedResponse, responseDetail } from '@/apis/admin';
 import type { IResponse } from '@/types';
 import { ref, watch, onMounted, computed } from 'vue';
-import moment from 'moment';
 import MCButton from '@/components/MCButton.vue';
 import ResponseDetail from '@/components/admin/ResponseDetail.vue';
+import { dateFormatYYYYMMDDHH } from '@/utils/date';
 
 const getCellStyle = (isReviewed: number) => {
   if (isReviewed === 1) {
@@ -152,12 +131,10 @@ const reviewed = (id: number, pass: boolean) => {
 };
 // 获取答卷详情
 const detail = (id: number) => {
-  (responseDetail as (id: number) => Promise<any>)(id).then(
-    (res: { data: any }) => {
-      detailData.value = res.data;
-      visibility.value = true;
-    }
-  );
+  (responseDetail as (id: number) => Promise<any>)(id).then((res: { data: any }) => {
+    detailData.value = res.data;
+    visibility.value = true;
+  });
 };
 // 退出答卷详情预览重新获取
 watch(visibility, (newValue) => {

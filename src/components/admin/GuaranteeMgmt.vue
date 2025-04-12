@@ -2,7 +2,6 @@
 import type { BaseTableProps, IPagination } from '@/types';
 import BaseTable from './BaseTable.vue';
 import { getGuaranteeAPI } from '@/apis/admin';
-// import moment from 'moment';
 // const statusMap: { [key: number]: string } = {
 //   0: '待同意',
 //   1: '已同意',

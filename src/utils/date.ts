@@ -1,3 +1,5 @@
 import moment from 'moment';
 
-export const dateFormat = (date: string) => moment(date).format('YY年MM月DD日 HH时')
+export const dateFormatYYYYMMDDHH = (date: string) => moment.utc(date).local().format('YYYY年MM月DD日 HH时');
+export const dateFormatHHMMSS = (date: string) => moment.utc(date).local().format('HH时 MM分 SS秒');
+export const dateFormatMMDDHHMM = (date: string) => moment.utc(date).local().format('MM月DD日 HH时MM分');

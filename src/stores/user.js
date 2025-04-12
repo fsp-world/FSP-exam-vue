@@ -9,7 +9,7 @@ import {
 import { getUserInfo, setUserAvatar } from '@/apis/user';
 import { getProfilePic } from '@/apis/mj';
 import { computStatus } from '@/utils/statusUtil';
-
+import { dateFormatYYYYMMDDHH } from '@/utils/date';
 // 你可以任意命名 `defineStore()` 的返回值，但最好使用 store 的名字，同时以 `use` 开头且以 `Store` 结尾。
 // (比如 `useUserStore`，`useCartStore`，`useProductStore`)
 // 第一个参数是你的应用中 Store 的唯一 ID。
@@ -33,8 +33,7 @@ export const useUserStore = defineStore('user', {
       return computStatus(state.status);
     },
     dateToLocal: (state) => {
-      let date = new Date(state.addtime);
-      return `${date.getFullYear()}年 ${date.getMonth() + 1} 月 ${date.getDate()} 日 ${date.getHours()}时`;
+      return dateFormatYYYYMMDDHH(state.addtime);
     },
   },
   actions: {

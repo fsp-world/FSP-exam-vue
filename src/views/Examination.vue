@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue';
+import { ref, onMounted, onUnmounted } from 'vue';
 import MCButton from '@/components/MCButton.vue';
 import QuestionMap from '@/components/QuestionMap.vue';
 import QuestionCard from '@/components/QuestionCard.vue';
@@ -9,16 +9,35 @@ import InfoDialog from '@/components/InfoDialog.vue';
 import { openAlert } from '@/utils/TsAlert';
 import { getSurvey, completeSurvey } from '@/apis/survey';
 import { useRoute } from 'vue-router';
+import { dateFormatHHMMSS } from '@/utils/date';
 
 const route = useRoute();
 
 const questions = ref([]);
-const remainingTime = ref('');
 const flag = ref(false);
 const isDone = ref(false);
 const score = ref(0);
-const type = ref('');
+const surveyName = ref('');
 const confirm = ref(false);
+const timeRemaining = ref('');
+
+let intervalId = null; // 定时器 ID
+let deadline = null;
+
+// 更新剩余时间
+const updateTimeRemaining = () => {
+  const remainingTimeMs = deadline - new Date().getTime();
+  console.log(remainingTimeMs);
+
+  if (remainingTimeMs <= 0) {
+    clearInterval(intervalId); // 清除定时器
+    timeRemaining.value = '00时 00分 00秒'; // 时间已到
+    openAlert('时间已到！');
+    // complete()
+  } else {
+    timeRemaining.value = dateFormatHHMMSS(remainingTimeMs); // 更新剩余时间
+  }
+};
 
 const start = () => {
   if (!route.params.sid) {
@@ -31,11 +50,24 @@ const start = () => {
       openAlert(res.data['desc']);
     } else {
       questions.value = res.data.questions;
-      type.value = res.data.type;
+      surveyName.value = res.data.name;
+      // 获取截止时间并启动计时器
+      deadline = new Date(res.data.ddl).getTime(); // 设置截止时间
+
+      // 初始化剩余时间显示
+      updateTimeRemaining();
+
+      // 启动定时器来实时更新剩余时间
+      intervalId = setInterval(updateTimeRemaining, 1000); // 每秒更新一次
     }
   });
 };
-start();
+// 组件卸载时清除定时器
+onUnmounted(() => {
+  if (intervalId) {
+    clearInterval(intervalId);
+  }
+});
 
 const checkDone = async () => {
   return new Promise((resolve, reject) => {
@@ -71,6 +103,9 @@ const submitPaper = () => {
       confirm.value = true;
     });
 };
+onMounted(() => {
+  start();
+});
 </script>
 
 <template>
@@ -78,8 +113,8 @@ const submitPaper = () => {
     <div class="center">
       <div class="exam-title">
         <p class="title">像素仙缘入服测试卷</p>
-        <p class="type">{{ type }}类试题</p>
-        <p class="time">{{ remainingTime }}</p>
+        <p class="type">{{ surveyName }}</p>
+        <p class="time">剩余时间：{{ timeRemaining }}</p>
       </div>
       <ul class="question-list">
         <li
