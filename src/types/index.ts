@@ -26,7 +26,7 @@ export type CardType = 'warn-card' | 'info-card';
 
 export interface IResponse {
   id: number;
-  isCompleted: string;
+  isCompleted: boolean;
   isReviewed: number;
   username: string;
   survey: string;

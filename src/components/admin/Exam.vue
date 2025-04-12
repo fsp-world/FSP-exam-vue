@@ -60,6 +60,7 @@ _getSurveys();
   <div v-if="!flag">
     <h1 style="user-select: none">问卷管理</h1>
     <p>注意：已发布的问卷无法编辑或删除！存在未完成或未批改的答卷的问卷也无法编辑或删除！</p>
+    <p>注意：删除题目只是逻辑删除，被逻辑删除的题目仅在批卷时可见</p>
     <hr />
     <ul class="survey-list">
       <li class="survey" v-if="!surveysData.list.length">暂无数据</li>

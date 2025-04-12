@@ -43,7 +43,7 @@ const loadData = (page = 1, size = 10) => {
         data.value.page = response.data.page;
         data.value.total = response.data.total;
         data.value.totalPages = Math.ceil(data.value.total / data.value.size);
-        console.log(data.value);
+        // console.log(data.value);
       }
     })
     .catch((error) => {

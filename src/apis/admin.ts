@@ -18,7 +18,7 @@ export const delSurvey = (data: number) => request.post('/admin/delSurvey', JSON
 export const modSurveyMetaData = (data: ISurvey) => request.post('/admin/modSurvey', JSON.stringify(data));
 
 // question
-export const getQuestionAPI = () => request.get('/admin/AllQuestion');
+// export const getQuestionAPI = () => request.get('/admin/AllQuestion'); // 现在分问卷了，获取全部题目应该没意义了
 export const addQuestionAPI = (data: IQuestion) => request.post('/admin/addQuestion', JSON.stringify(data));
 export const editQuestionAPI = (data: IQuestion) => request.post('/admin/editQuestion', JSON.stringify(data));
 export const delQuestionAPI = (data: number) => request.post('/admin/delQuestion', JSON.stringify(data));

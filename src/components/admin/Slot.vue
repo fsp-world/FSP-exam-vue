@@ -76,7 +76,7 @@ getSurveyIds();
     <thead>
       <tr>
         <th>#</th>
-        <th>插槽名</th>
+        <th>插槽名（系统会自动在末尾加‘类’字）</th>
         <th>应用的问卷</th>
         <th>操作</th>
       </tr>

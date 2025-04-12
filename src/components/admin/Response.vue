@@ -1,6 +1,12 @@
 <template>
   <div class="box">
     <h1>答卷审核</h1>
+    <div class="tips">
+      <h3>注意事项：</h3>
+      <ul>
+        <li>已过期的答卷自动设置为已完成和已拒绝</li>
+      </ul>
+    </div>
     <div class="table-box">
       <table>
         <thead>
@@ -11,8 +17,8 @@
             <th class="survey-name">试卷</th>
             <th class="survey-id">试卷ID</th>
             <th class="score">分数</th>
-            <th class="user">用户</th>
-            <th class="player-name">MCname</th>
+            <th class="user">用户名</th>
+            <th class="player-name">玩家名</th>
             <th class="add-time">创建日期</th>
             <th class="done-time">完成日期</th>
             <th class="action">操作</th>
@@ -168,6 +174,20 @@ const reviewedComput = computed(() => {
   height: 100%;
   overflow-y: auto;
 }
+.tips {
+  ul {
+    /* 必须 padding-left: ; */
+    padding-left: 20px;
+    padding-bottom: 10px;
+  }
+  li {
+    list-style-type: disc;
+    display: list-item;
+    padding: 5px;
+    font-size: 20px;
+  }
+}
+
 .table-box {
   max-width: 1600px;
   overflow-x: auto;
