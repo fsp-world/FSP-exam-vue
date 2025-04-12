@@ -1,4 +1,4 @@
-export async function getSkinBase64(PlayerName) {
+export async function getSkinBase64(PlayerName: string) {
   const playerInfoUrl = `https://playerdb.co/api/player/minecraft/${PlayerName}`;
   const response = await fetch(playerInfoUrl);
   const data = await response.json();
@@ -15,7 +15,7 @@ export async function getSkinBase64(PlayerName) {
   };
 }
 
-export async function getProfilePic(PlayerName) {
+export async function getProfilePic(PlayerName: string) {
   const skinBase64 = await getSkinBase64(PlayerName);
   if (!skinBase64.state) {
     return { msg: skinBase64.msg };
@@ -28,8 +28,6 @@ export async function getProfilePic(PlayerName) {
     // 获取皮肤 URL
     const skinUrl = playerData.textures.SKIN.url.replace('http:', 'https:');
 
-
-
     // 获取皮肤图像
     const response = await fetch(skinUrl);
     const blob = await response.blob();
@@ -38,22 +36,19 @@ export async function getProfilePic(PlayerName) {
     // 使用 Canvas 裁剪图像
     const canvas = document.createElement('canvas');
     const ctx = canvas.getContext('2d');
+    if (!ctx) {
+      console.error('2D context is not supported in this environment.');
+      return { msg: 'error', uuid: '', imgUrl: '' };
+    }
     canvas.width = 8;
     canvas.height = 8;
     ctx.drawImage(img, 8, 8, 8, 8, 0, 0, 8, 8);
-
-    // const imgUrl = new Promise((resolve) => {
-    //     canvas.toBlob((blob) => {
-    //         const url = URL.createObjectURL(blob);
-    //         resolve(url);
-    //     }, "image/png");
-    // });
 
     const imgData = canvas.toDataURL('image/png');
 
     return { msg: 'ok', uuid: skinBase64.uuid, imgUrl: imgData };
   } catch (error) {
     console.error('图像解码失败:', error);
-    return { msg: 'ok', uuid: '', imgUrl: '' };
+    return { msg: 'error', uuid: '', imgUrl: '' };
   }
 }

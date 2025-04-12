@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 import { ref, watch } from 'vue';
 import { getProfilePic } from '@/apis/mj';
 import { openAlert } from '@/utils/TsAlert';
@@ -8,15 +8,25 @@ import MCButton from './MCButton.vue';
 const emit = defineEmits(['confirm']);
 
 const check = defineModel('check'); // 父组件要定义一个叫check的ref，父组件只负责把check设置为true
-const info = defineModel('info');
-const show = ref(false);
 
+interface UserInfo {
+  playerName: string;
+  playerUUID: string;
+}
+
+const info = defineModel<UserInfo>('info', {
+  default: () => ({
+    playerName: '',
+    playerUUID: '',
+  }),
+});
+const show = ref(false);
 const imgUrl = ref('');
 
 const getPlayerInfo = () => {
   if (info.value.playerName) {
     openAlert('确认游戏名称中...');
-    getProfilePic(info.value.playerName).then((result) => {
+    getProfilePic(info.value.playerName).then((result: any) => {
       if (result.msg === 'ok') {
         show.value = true;
         info.value.playerUUID = result.uuid;
