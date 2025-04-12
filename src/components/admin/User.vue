@@ -58,7 +58,6 @@ onMounted(() => {
       <thead>
         <tr>
           <th class="id">#</th>
-          <!-- <th class="avatar">头像</th> -->
           <th class="name">用户名</th>
           <th class="qq">用户 QQ</th>
           <th class="role">用户角色</th>
@@ -70,7 +69,6 @@ onMounted(() => {
       <tbody>
         <tr v-for="item in data.list" :key="item.id">
           <td>{{ item.id }}</td>
-          <!-- <td><img :src="item.avatar" alt="头像" class="avatar" /></td> -->
           <td>{{ item.username }}</td>
           <td>{{ item.userQQ }}</td>
           <td>{{ item.role }}</td>

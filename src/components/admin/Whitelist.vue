@@ -50,7 +50,7 @@ onMounted(() => {
     <thead>
       <tr>
         <th>#</th>
-        <th>用户ID</th>
+        <th>用户名</th>
         <th>MC NAME</th>
         <th>UUID</th>
       </tr>
@@ -58,7 +58,7 @@ onMounted(() => {
     <tbody>
       <tr v-for="(item, index) of wlData.list" :key="index">
         <td>{{ item.id }}</td>
-        <td>{{ item.uid }}</td>
+        <td>{{ item.username }}</td>
         <td>{{ item.name }}</td>
         <td class="uuid">{{ item.uuid }}</td>
       </tr>
@@ -67,13 +67,7 @@ onMounted(() => {
 
   <!-- 分页 -->
   <div v-if="!isLoading && !isError" class="pagination">
-    <button
-      type="button"
-      @click="getWL(wlData.page - 1, wlData.size)"
-      :disabled="wlData.page === 1"
-    >
-      上一页
-    </button>
+    <button type="button" @click="getWL(wlData.page - 1, wlData.size)" :disabled="wlData.page === 1">上一页</button>
     <span>第 {{ wlData.page }} 页 / 共 {{ Math.ceil(wlData.total / wlData.size) }} 页</span>
     <button
       type="button"
