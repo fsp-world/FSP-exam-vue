@@ -1,5 +1,6 @@
 import type { IPagination, IQuestion, ISurvey, IUser, SurveySlot } from '@/types';
 import request from '@/utils/requers';
+import { sortQuestion } from '@/utils/sortQuestion';
 
 // user
 export const getUsers = (data: IPagination) => request.get('/admin/users', { params: data });
@@ -12,7 +13,17 @@ export const getWhitelist = (data: IPagination) => request.get('/admin/whitelist
 
 // survey
 export const getSurveys = () => request.get('/admin/surveys');
-export const getSurvey = (id: number) => request.get('/admin/survey/' + id);
+export const getSurvey = async (id: number) => {
+  try {
+    const response = await request.get('/admin/survey/' + id);
+    response.data.questions = sortQuestion(response.data.questions);
+    return response;
+  } catch (error) {
+    console.error('Error fetching survey:', error);
+    throw error;
+  }
+};
+
 export const addSurvey = (data: ISurvey) => request.post('/admin/addSurvey', JSON.stringify(data));
 export const delSurvey = (data: number) => request.post('/admin/delSurvey', JSON.stringify(data));
 export const modSurveyMetaData = (data: ISurvey) => request.post('/admin/modSurvey', JSON.stringify(data));
@@ -27,7 +38,18 @@ export const delQuestionAPI = (data: number) => request.post('/admin/delQuestion
 export const getResponses = (data: IPagination) => request.get('/admin/responses', { params: data });
 export const reviewedResponse = (data: { response: number; status: number }) =>
   request.post('/admin/reviewed', JSON.stringify(data));
-export const responseDetail = (id: number) => request.get('/admin/detail/' + id);
+
+export const responseDetail = async (id: number) => {
+  try {
+    const response = await request.get('/admin/detail/' + id);
+    response.data.questions = sortQuestion(response.data.questions);
+    return response;
+  } catch (error) {
+    console.error('Error fetching survey:', error);
+    throw error;
+  }
+};
+
 export const detailScore = (data: { score: number; questionId: number; responseId: number }) =>
   request.post('/admin/detail_score', JSON.stringify(data));
 

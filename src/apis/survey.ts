@@ -1,8 +1,18 @@
 import request from '@/utils/requers';
+import { sortQuestion } from '@/utils/sortQuestion';
 
 export const getSlotsAPI = () => request.get('/survey/get_slots');
 
-export const getSurvey = (id: any) => request.get('/survey/survey/' + id);
+export const getSurvey = async (id: any) => {
+  try {
+    const response = await request.get('/survey/survey/' + id);
+    response.data.questions = sortQuestion(response.data.questions);
+    return response;
+  } catch (error) {
+    console.error('Error fetching survey:', error);
+    throw error;
+  }
+};
 
 export const checkSurvey = () => request.post('/survey/check_survey');
 

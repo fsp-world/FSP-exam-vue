@@ -85,6 +85,7 @@ export interface IOption {
 }
 
 export interface IQuestion {
+  display_order: number;
   id?: number;
   title: string;
   type: 1 | 2 | 3 | 4;
