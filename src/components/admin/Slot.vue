@@ -68,7 +68,11 @@ getSurveyIds();
   <h3>问卷列表</h3>
   <ul>
     <li v-for="s in surveys">
-      <p>问卷id：{{ s.id }}，问卷名称：{{ s.name }}，问卷描述：{{ s.description }}</p>
+      <p>
+        问卷id：{{ s.id }}，问卷名称：{{ s.name }}，问卷描述：{{ s.description }}，问卷发布：{{
+          s.status ? '已发布' : '未发布'
+        }}
+      </p>
     </li>
   </ul>
   <h3>插槽列表</h3>
