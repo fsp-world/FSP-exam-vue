@@ -86,6 +86,7 @@ import { ref, watch, onMounted, computed } from 'vue';
 import MCButton from '@/components/MCButton.vue';
 import ResponseDetail from '@/components/admin/ResponseDetail.vue';
 import { dateFormatYYYYMMDDHH } from '@/utils/date';
+import { openAlert } from '@/utils/TsAlert';
 
 const getCellStyle = (isReviewed: number) => {
   if (isReviewed === 1) {
@@ -130,8 +131,11 @@ const reviewed = (id: number, pass: boolean) => {
   const text: string = pass ? '确定通过吗？' : '确定拒绝吗？';
   const userConfirmed = confirm(text);
   if (userConfirmed) {
-    reviewedResponse({ response: id, status: pass ? 1 : 2 }).then(() => {
-      loadPagination(responsesData.value.page, responsesData.value.size);
+    reviewedResponse({ response: id, status: pass ? 1 : 2 }).then((res) => {
+      openAlert(res.data.desc);
+      if (res.data.code === 0) {
+        loadPagination(responsesData.value.page, responsesData.value.size);
+      }
     });
   }
 };
