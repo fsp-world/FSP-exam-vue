@@ -32,7 +32,7 @@ const updateTimeRemaining = () => {
     clearInterval(intervalId); // 清除定时器
     timeRemaining.value = '00时 00分 00秒'; // 时间已到
     openAlert('时间已到！');
-    // complete()
+    complete();
   } else {
     timeRemaining.value = dateFormatHHMMSS(remainingTimeMs); // 更新剩余时间
   }
