@@ -23,6 +23,7 @@ const toggleSetSurveyMetaData = ref(false);
 const toggleEditQuestion = ref(false);
 const currentMode = ref(null); // 当前模式："add" 或 "edit"
 const currentData = ref(null); // 当前编辑的数据
+const currentOrder = ref(undefined);
 
 const survey = ref({
   name: '加载中...',
@@ -32,9 +33,11 @@ const survey = ref({
 });
 
 // 打开 editQuestion 组件
-const openEditQuestion = (mode, data = null) => {
+const openEditQuestion = (mode, order, data = null) => {
+  // 新建题目到末尾和编辑题目order都传0，新建题目并插入到指定位置，order就是具体的数字了
   currentMode.value = mode;
   currentData.value = data;
+  currentOrder.value = order;
   toggleEditQuestion.value = true;
 };
 
@@ -74,6 +77,7 @@ const SurveyMetaDataUpdate = () => {
   emit('flush');
 };
 
+// 新建或编辑题目完成后，点击“上传题目”按钮，触发此函数
 const handleEdit = (mode, formData) => {
   const handleRes = (res) => {
     if (res.code === 0) {
@@ -115,6 +119,7 @@ const toggleDirection = () => {
       v-if="toggleEditQuestion"
       :sid="sid"
       :mode="currentMode"
+      :order="currentOrder"
       :initial-data="currentData"
       @on-edit="handleEdit"
       @close="closeEditQuestion"
@@ -143,10 +148,10 @@ const toggleDirection = () => {
         <button
           type="button"
           class="add-question-button"
-          @click="openEditQuestion('add')"
+          @click="openEditQuestion('add', 0)"
           :disabled="toggleEditQuestion || toggleSetSurveyMetaData || !editable"
         >
-          添加题目
+          末尾添加题目
         </button>
       </div>
       <div class="info">
@@ -162,11 +167,11 @@ const toggleDirection = () => {
           :key="questionIndex"
           :id="'question' + (questionIndex + 1)"
         >
-          <span class="admin-button">
+          <span class="buttons">
             <button
               type="button"
               class="edit"
-              @click="openEditQuestion('edit', survey.questions[questionIndex])"
+              @click="openEditQuestion('edit', 0, survey.questions[questionIndex])"
               :disabled="toggleEditQuestion || toggleSetSurveyMetaData || !editable"
             >
               编辑
@@ -186,6 +191,14 @@ const toggleDirection = () => {
             v-model="survey.questions[questionIndex]"
             :index="questionIndex"
           ></QuestionCard>
+          <button
+            type="button"
+            class="insert"
+            @click="openEditQuestion('add', question.display_order + 1, survey.questions[questionIndex])"
+            :disabled="toggleEditQuestion || toggleSetSurveyMetaData || !editable"
+          >
+            在后方插入新题目
+          </button>
         </li>
         <li class="question-list-none" v-if="!survey.questions.length">暂未添加题目</li>
       </ul>
@@ -283,7 +296,7 @@ const toggleDirection = () => {
     li {
       position: relative;
       width: calc(100% - 55px);
-      .admin-button {
+      .buttons {
         width: 55px;
         position: absolute;
         top: 0;
@@ -306,6 +319,17 @@ const toggleDirection = () => {
         .delete:hover {
           background-color: crimson;
         }
+      }
+      .insert {
+        font-size: 15px;
+        margin: 5px;
+        display: block;
+        padding: 3px 5px;
+        border-radius: 5px;
+        background-color: #eee;
+      }
+      .insert:hover {
+        background-color: #ccc;
       }
     }
   }

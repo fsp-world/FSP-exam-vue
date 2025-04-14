@@ -120,14 +120,17 @@ const MAX_IMAGE_SIZE = 5 * 1024 * 1024; // 5MB
 
 const emit = defineEmits(['onEdit', 'close']);
 
-const { sid, mode, initialData } = defineProps({
+const { sid, mode, order, initialData } = defineProps({
   sid: {
     type: Number,
     required: true,
   },
-
   mode: {
     type: String as () => 'add' | 'edit',
+    required: true,
+  },
+  order: {
+    type: Number,
     required: true,
   },
   initialData: {
@@ -161,6 +164,7 @@ interface FormData extends IQuestion {
 }
 
 const formData = ref<FormData>({
+  display_order: 0, // 0 代表新插入到末尾
   survey: sid,
   title: '',
   type: 1,
@@ -252,6 +256,10 @@ const onChange = (editOption: CarryKeyOption) => {
 
 const init = (): void => {
   if (mode === 'add') {
+    if (order !== 0) {
+      //  如果传入了非0的order，代表指定顺序
+      formData.value.display_order = order;
+    }
     newOption();
   }
   if (mode === 'edit' && initialData) {
@@ -264,6 +272,7 @@ const init = (): void => {
     };
 
     formData.value = {
+      display_order: initialData.display_order,
       survey: sid,
       id: initialData.id,
       title: initialData.title,
