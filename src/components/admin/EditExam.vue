@@ -5,7 +5,7 @@ import EditQuestion from './EditQuestion.vue';
 import SetSurveyMetaData from './SetSurveyMetaData.vue';
 import { onMounted, ref } from 'vue';
 import { openAlert } from '@/utils/TsAlert';
-
+import { dateFormatYYYYMMDDHH } from '@/utils/date';
 const { sid, editable } = defineProps({
   sid: {
     type: Number,
@@ -21,6 +21,8 @@ const emit = defineEmits(['close', 'flush']);
 
 const toggleSetSurveyMetaData = ref(false);
 const toggleEditQuestion = ref(false);
+const toggleSortQuestionMode = ref(false);
+
 const currentMode = ref(null); // 当前模式："add" 或 "edit"
 const currentData = ref(null); // 当前编辑的数据
 const currentOrder = ref(undefined);
@@ -110,6 +112,18 @@ const viewSurveyDirection = ref('column');
 const toggleDirection = () => {
   viewSurveyDirection.value = viewSurveyDirection.value === 'column' ? 'column-reverse' : 'column';
 };
+
+const disabledButton = () => {
+  if (
+    toggleEditQuestion.value === true ||
+    toggleSetSurveyMetaData.value === true ||
+    toggleSortQuestionMode.value === true ||
+    !editable
+  ) {
+    return true;
+  }
+  return false;
+};
 </script>
 
 <template>
@@ -134,14 +148,14 @@ const toggleDirection = () => {
       <div class="meta">
         <p class="name">问卷名称：{{ survey.name }}</p>
         <p class="desc">问卷描述：{{ survey.description }}</p>
-        <p class="time">创建时间：{{ survey.create_time }}</p>
+        <p class="time">创建时间：{{ dateFormatYYYYMMDDHH(survey.create_time) }}</p>
       </div>
       <div class="button-menu">
         <button
           type="button"
           class="add-question-button"
           @click="toggleSetSurveyMetaData = true"
-          :disabled="toggleEditQuestion || toggleSetSurveyMetaData || !editable"
+          :disabled="disabledButton()"
         >
           编辑问卷信息
         </button>
@@ -149,9 +163,17 @@ const toggleDirection = () => {
           type="button"
           class="add-question-button"
           @click="openEditQuestion('add', 0)"
-          :disabled="toggleEditQuestion || toggleSetSurveyMetaData || !editable"
+          :disabled="disabledButton()"
         >
           末尾添加题目
+        </button>
+        <button
+          @click="toggleSortQuestionMode = true"
+          type="button"
+          class="add-question-button"
+          :disabled="disabledButton()"
+        >
+          题目排序模式
         </button>
       </div>
       <div class="info">
@@ -172,16 +194,11 @@ const toggleDirection = () => {
               type="button"
               class="edit"
               @click="openEditQuestion('edit', 0, survey.questions[questionIndex])"
-              :disabled="toggleEditQuestion || toggleSetSurveyMetaData || !editable"
+              :disabled="disabledButton()"
             >
               编辑
             </button>
-            <button
-              type="button"
-              class="delete"
-              @click="deleteQuestion(question)"
-              :disabled="toggleEditQuestion || toggleSetSurveyMetaData || !editable"
-            >
+            <button type="button" class="delete" @click="deleteQuestion(question)" :disabled="disabledButton()">
               删除
             </button>
           </span>
@@ -192,10 +209,11 @@ const toggleDirection = () => {
             :index="questionIndex"
           ></QuestionCard>
           <button
+            v-if="!toggleSortQuestionMode"
             type="button"
             class="insert"
             @click="openEditQuestion('add', question.display_order + 1, survey.questions[questionIndex])"
-            :disabled="toggleEditQuestion || toggleSetSurveyMetaData || !editable"
+            :disabled="disabledButton()"
           >
             在后方插入新题目
           </button>
@@ -241,6 +259,7 @@ const toggleDirection = () => {
 }
 .button-menu {
   display: flex;
+  flex-wrap: nowrap;
   gap: 10px;
 }
 .add-question-button {
@@ -338,6 +357,13 @@ const toggleDirection = () => {
     text-align: center;
     padding-top: 10px;
     font-size: 30px;
+  }
+}
+
+@media (max-width: 800px) {
+  .button-menu {
+    flex-wrap: wrap;
+    gap: 0px;
   }
 }
 </style>
