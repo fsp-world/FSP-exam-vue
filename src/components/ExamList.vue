@@ -10,7 +10,7 @@
               res.state ? (res.state === 1 ? '已通过' : '已拒绝') : '审核中'
             }}）
           </p>
-          <p>{{ dateFormat(res.responseTime) }}</p>
+          <p>{{ dateFormatMMDDHHMM(res.responseTime) }}</p>
         </div>
         <MCButton v-if="res.state === 1 || res.state === 2" class="button" @click="handleClick(res)">查看成绩</MCButton>
       </li>
@@ -23,7 +23,7 @@
 import { ref } from 'vue';
 import { getResponses } from '@/apis/query';
 import type { IQueryResponse } from '@/types';
-import { dateFormat } from '@/utils/date';
+import { dateFormatMMDDHHMM } from '@/utils/date';
 import MCButton from './MCButton.vue';
 import ShowScore from './ShowScore.vue';
 

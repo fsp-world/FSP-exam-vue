@@ -87,6 +87,10 @@ onMounted(() => {
         </tr>
       </thead>
       <tbody>
+        <tr v-if="applicantData.length === 0">
+          <td colspan="4" style="text-align: center">暂无数据</td>
+        </tr>
+
         <tr v-for="item of applicantData" :key="item.id">
           <td>{{ item.playerName }}</td>
           <td>{{ dateFormatMMDDHHMM(item.createTime) }}</td>
@@ -110,7 +114,7 @@ onMounted(() => {
       </thead>
       <tbody>
         <tr v-if="guaranteeData.length === 0">
-          <td>暂无数据</td>
+          <td colspan="5" style="text-align: center">暂无数据</td>
         </tr>
         <tr v-for="item of guaranteeData" :key="item.id">
           <td>{{ item.playerName }}</td>
