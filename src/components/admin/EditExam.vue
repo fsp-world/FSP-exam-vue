@@ -30,7 +30,7 @@ const currentOrder = ref(undefined);
 const survey = ref({
   name: '加载中...',
   description: '加载中...',
-  create_time: '加载中...',
+  create_time: undefined,
   questions: [],
 });
 
@@ -60,10 +60,6 @@ const deleteQuestion = (question) => {
   }
 };
 
-onMounted(() => {
-  _getSurvey();
-});
-
 const _getSurvey = () => {
   getSurvey(sid).then((res) => {
     survey.value = res.data;
@@ -73,6 +69,8 @@ const _getSurvey = () => {
     }
   });
 };
+
+_getSurvey();
 
 const SurveyMetaDataUpdate = () => {
   _getSurvey();
@@ -148,6 +146,7 @@ const disabledButton = () => {
       <div class="meta">
         <p class="name">问卷名称：{{ survey.name }}</p>
         <p class="desc">问卷描述：{{ survey.description }}</p>
+        <p>{{ survey.create_time }}</p>
         <p class="time">创建时间：{{ dateFormatYYYYMMDDHH(survey.create_time) }}</p>
       </div>
       <div class="button-menu">
