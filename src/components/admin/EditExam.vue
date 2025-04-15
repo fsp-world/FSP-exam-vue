@@ -3,7 +3,7 @@ import { addQuestionAPI, editQuestionAPI, delQuestionAPI, getSurvey } from '@/ap
 import QuestionCard from '@/components/QuestionCard.vue';
 import EditQuestion from './EditQuestion.vue';
 import SetSurveyMetaData from './SetSurveyMetaData.vue';
-import { onMounted, ref } from 'vue';
+import { ref, computed } from 'vue';
 import { openAlert } from '@/utils/TsAlert';
 import { dateFormatYYYYMMDDHH } from '@/utils/date';
 const { sid, editable } = defineProps({
@@ -67,6 +67,9 @@ const _getSurvey = () => {
     for (let i in survey.value.questions) {
       survey.value.sumScore += survey.value.questions[i].score;
     }
+
+    orderMapBak = survey.value.questions.map(({ id, display_order }) => ({ id, display_order }));
+    orderMap.value = JSON.parse(JSON.stringify(orderMapBak));
   });
 };
 
@@ -122,6 +125,40 @@ const disabledButton = () => {
   }
   return false;
 };
+
+const orderMap = ref([]);
+let orderMapBak = [];
+
+const displayQuestions = computed(() => {
+  console.log('wdnmd');
+  return orderMap.value.map((i) => survey.value.questions.find((j) => j.id === i.id));
+});
+
+const startSort = () => {
+  toggleSortQuestionMode.value = true;
+  console.log(orderMap.value);
+};
+
+const cancelSort = () => {
+  toggleSortQuestionMode.value = false;
+  orderMap.value = JSON.parse(JSON.stringify(orderMapBak));
+  orderMapBak = [];
+};
+
+const moveItem = (display_order) => {};
+const moveUpItem = (display_order) => {
+  for (let index in orderMap.value) {
+    if (orderMap.value[index].display_order === display_order) {
+      const tmp = orderMap.value[index].display_order;
+      orderMap.value[index].display_order = orderMap.value[index - 1].display_order;
+      orderMap.value[index - 1].display_order = tmp;
+    }
+  }
+  console.log(orderMap.value);
+};
+const moveDownItem = (display_order) => {};
+
+const submitSort = () => {};
 </script>
 
 <template>
@@ -146,34 +183,40 @@ const disabledButton = () => {
       <div class="meta">
         <p class="name">问卷名称：{{ survey.name }}</p>
         <p class="desc">问卷描述：{{ survey.description }}</p>
-        <p>{{ survey.create_time }}</p>
         <p class="time">创建时间：{{ dateFormatYYYYMMDDHH(survey.create_time) }}</p>
       </div>
       <div class="button-menu">
         <button
+          v-show="!toggleSortQuestionMode"
           type="button"
-          class="add-question-button"
+          class="item"
           @click="toggleSetSurveyMetaData = true"
           :disabled="disabledButton()"
         >
           编辑问卷信息
         </button>
         <button
+          v-show="!toggleSortQuestionMode"
           type="button"
-          class="add-question-button"
+          class="item"
           @click="openEditQuestion('add', 0)"
           :disabled="disabledButton()"
         >
           末尾添加题目
         </button>
         <button
-          @click="toggleSortQuestionMode = true"
+          @click="startSort()"
           type="button"
-          class="add-question-button"
+          class="item"
+          v-show="!toggleSortQuestionMode"
           :disabled="disabledButton()"
         >
           题目排序模式
         </button>
+        <div class="item sort-mode-buttons" v-show="toggleSortQuestionMode">
+          <button type="button" class="cancel" @click="cancelSort()">取消排序</button>
+          <button type="button" class="submit" @click="submitSort()">提交排序</button>
+        </div>
       </div>
       <div class="info">
         <p class="sum-score">试卷总分：{{ survey.sumScore }} 分</p>
@@ -184,11 +227,11 @@ const disabledButton = () => {
       <ul class="question-list" :style="{ flexDirection: viewSurveyDirection }">
         <li
           class="question"
-          v-for="(question, questionIndex) in survey.questions"
-          :key="questionIndex"
-          :id="'question' + (questionIndex + 1)"
+          v-for="(question, questionIndex) in displayQuestions"
+          :key="question.id"
+          :id="'question' + question.id"
         >
-          <span class="buttons">
+          <span class="buttons" v-show="!toggleSortQuestionMode">
             <button
               type="button"
               class="edit"
@@ -201,14 +244,14 @@ const disabledButton = () => {
               删除
             </button>
           </span>
+          <span class="buttons sort-mode" v-show="toggleSortQuestionMode">
+            <button type="button" class="up" @click="moveUpItem(question.display_order)">上移一题</button>
+            <button type="button" class="down" @click="moveItem(question.id)">指定位置</button>
+            <button type="button" class="down" @click="moveDownItem(question.id)">下移一题</button>
+          </span>
 
-          <QuestionCard
-            :mode="'admin-view'"
-            v-model="survey.questions[questionIndex]"
-            :index="questionIndex"
-          ></QuestionCard>
+          <QuestionCard :mode="'admin-view'" v-model="survey.questions[questionIndex]"></QuestionCard>
           <button
-            v-if="!toggleSortQuestionMode"
             type="button"
             class="insert"
             @click="openEditQuestion('add', question.display_order + 1, survey.questions[questionIndex])"
@@ -241,6 +284,7 @@ const disabledButton = () => {
 .close:hover {
   background-color: #ccc;
 }
+
 .edit-exam {
   width: calc(100% - 32px);
   height: calc(100% - 32px);
@@ -260,18 +304,39 @@ const disabledButton = () => {
   display: flex;
   flex-wrap: nowrap;
   gap: 10px;
+
+  .item {
+    font-size: 20px;
+    padding: 12px 50px;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    width: 100%;
+    background-color: #00ffff;
+  }
+  .item:hover {
+    background-color: #00bbff;
+  }
+  .sort-mode-buttons {
+    display: flex;
+    gap: 10px;
+    background-color: inherit;
+    padding: 0;
+    button {
+      font-size: 20px;
+      padding: 12px 50px;
+      border-radius: 5px;
+      width: 100%;
+      background-color: #eee;
+    }
+    button:hover {
+      background-color: #ccc;
+    }
+  }
+  .sort-mode-buttons:hover {
+    background-color: inherit;
+  }
 }
-.add-question-button {
-  font-size: 20px;
-  padding: 12px 50px;
-  border-radius: 5px;
-  margin-bottom: 10px;
-  width: 100%;
-  background-color: #00ffff;
-}
-.add-question-button:hover {
-  background-color: #00bbff;
-}
+
 .info {
   display: flex;
   height: 40px;
@@ -337,6 +402,13 @@ const disabledButton = () => {
         .delete:hover {
           background-color: crimson;
         }
+        .up:hover,
+        .down:hover {
+          background-color: #ccc;
+        }
+      }
+      .sort-mode {
+        width: 100px;
       }
       .insert {
         font-size: 15px;

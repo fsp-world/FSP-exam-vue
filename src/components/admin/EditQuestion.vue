@@ -106,7 +106,9 @@
       </div>
     </div>
     <div class="end">
-      <button type="button" class="submit-question" @click="emit('onEdit', mode, formData)">上传题目</button>
+      <button type="button" class="submit-question" @click="emit('onEdit', mode, formData)">
+        {{ upload_button_text }}
+      </button>
     </div>
   </form>
 </template>
@@ -145,6 +147,8 @@ const types = ref([
   { value: 3, name: '填空', optionTitle: '正确答案：', placeholder: '请在此输入正确答案，不要有多余符号' },
   { value: 4, name: '简答', optionTitle: '参考答案：', placeholder: '请在此输入参考答案' },
 ]);
+
+const upload_button_text = ref('');
 
 // 当前选中的 radio 的 id
 const selectedRadioKey = ref<string | null>(null);
@@ -256,6 +260,7 @@ const onChange = (editOption: CarryKeyOption) => {
 
 const init = (): void => {
   if (mode === 'add') {
+    upload_button_text.value = '上传题目';
     if (order !== 0) {
       //  如果传入了非0的order，代表指定顺序
       formData.value.display_order = order;
@@ -263,6 +268,7 @@ const init = (): void => {
     newOption();
   }
   if (mode === 'edit' && initialData) {
+    upload_button_text.value = '更新题目';
     const addKeyforListItem = (oldList: any) => {
       const newList = JSON.parse(JSON.stringify(oldList));
       for (let item of newList) {
