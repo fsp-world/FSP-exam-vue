@@ -22,6 +22,7 @@
           :id="'question' + (questionIndex + 1)"
         >
           <QuestionCard
+            :index="questionIndex"
             :mode="'review'"
             v-model="props.data.questions[questionIndex]"
             :archived="archived"

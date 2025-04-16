@@ -305,7 +305,11 @@ const submitSort = () => {
             </button>
           </span>
 
-          <QuestionCard :mode="'admin-view'" v-model="displayQuestions[questionIndex]"></QuestionCard>
+          <QuestionCard
+            :index="questionIndex"
+            :mode="'admin-view'"
+            v-model="displayQuestions[questionIndex]"
+          ></QuestionCard>
           <button
             type="button"
             class="insert"

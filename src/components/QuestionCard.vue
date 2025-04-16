@@ -3,7 +3,11 @@ import { defineProps, onMounted, watchEffect } from 'vue';
 import { getStringQuestionType, IOption, IQuestion } from '@/types';
 import { QuestionType } from '@/utils/enum';
 
-const { mode, archived } = defineProps({
+const { index, mode, archived } = defineProps({
+  index: {
+    type: Number,
+    required: true,
+  },
   mode: {
     type: String as () => 'view' | 'admin-view' | 'review',
     default: 'view',
@@ -54,7 +58,7 @@ onMounted(() => {
 <template>
   <div class="question">
     <div class="title">
-      <span class="type"> {{ question.display_order }}.[{{ question.typeText }}] </span>
+      <span class="type"> {{ index + 1 }}.[{{ question.typeText }}] </span>
       <span class="text"> {{ question.title }}</span>
       <span class="score">({{ question.score }}分)</span>
       <span v-if="mode === 'review'">
