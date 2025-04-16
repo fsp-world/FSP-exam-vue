@@ -130,7 +130,7 @@ const orderMap = ref([]);
 let orderMapBak = [];
 
 const displayQuestions = computed(() => {
-  console.log('wdnmd');
+  orderMap.value.sort((a, b) => a.display_order - b.display_order);
   return orderMap.value.map((i) => survey.value.questions.find((j) => j.id === i.id));
 });
 
@@ -142,7 +142,7 @@ const startSort = () => {
 const cancelSort = () => {
   toggleSortQuestionMode.value = false;
   orderMap.value = JSON.parse(JSON.stringify(orderMapBak));
-  orderMapBak = [];
+  // orderMapBak = [];
 };
 
 const moveItem = (display_order) => {};
@@ -235,7 +235,7 @@ const submitSort = () => {};
             <button
               type="button"
               class="edit"
-              @click="openEditQuestion('edit', 0, survey.questions[questionIndex])"
+              @click="openEditQuestion('edit', 0, displayQuestions[questionIndex])"
               :disabled="disabledButton()"
             >
               编辑
@@ -250,11 +250,11 @@ const submitSort = () => {};
             <button type="button" class="down" @click="moveDownItem(question.id)">下移一题</button>
           </span>
 
-          <QuestionCard :mode="'admin-view'" v-model="survey.questions[questionIndex]"></QuestionCard>
+          <QuestionCard :mode="'admin-view'" v-model="displayQuestions[questionIndex]"></QuestionCard>
           <button
             type="button"
             class="insert"
-            @click="openEditQuestion('add', question.display_order + 1, survey.questions[questionIndex])"
+            @click="openEditQuestion('add', question.display_order + 1, displayQuestions[questionIndex])"
             :disabled="disabledButton()"
           >
             在后方插入新题目
