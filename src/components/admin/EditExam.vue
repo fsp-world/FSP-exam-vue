@@ -1,5 +1,5 @@
 <script setup>
-import { addQuestionAPI, editQuestionAPI, delQuestionAPI, getSurvey } from '@/apis/admin';
+import { getSurvey, addQuestionAPI, editQuestionAPI, delQuestionAPI, sortQuestionsAPI } from '@/apis/admin';
 import QuestionCard from '@/components/QuestionCard.vue';
 import EditQuestion from './EditQuestion.vue';
 import SetSurveyMetaData from './SetSurveyMetaData.vue';
@@ -136,29 +136,70 @@ const displayQuestions = computed(() => {
 
 const startSort = () => {
   toggleSortQuestionMode.value = true;
-  console.log(orderMap.value);
 };
 
 const cancelSort = () => {
   toggleSortQuestionMode.value = false;
   orderMap.value = JSON.parse(JSON.stringify(orderMapBak));
-  // orderMapBak = [];
 };
 
-const moveItem = (display_order) => {};
-const moveUpItem = (display_order) => {
-  for (let index in orderMap.value) {
-    if (orderMap.value[index].display_order === display_order) {
+const moveItem = (question_id) => {
+  const inputGoToIndex = prompt('要和哪题交换位置？请输入那题的编号');
+  if (inputGoToIndex != null && inputGoToIndex != '') {
+    const goToIndex = parseInt(inputGoToIndex) - 1;
+    //应该不会有意外情况被遗漏了吧
+    if (goToIndex > -1 && goToIndex < orderMap.value.length) {
+      for (let index = 0; orderMap.value.length; index++) {
+        if (orderMap.value[index].id === question_id) {
+          const tmp = orderMap.value[index].display_order;
+          orderMap.value[index].display_order = orderMap.value[goToIndex].display_order;
+          orderMap.value[goToIndex].display_order = tmp;
+
+          break;
+        }
+      }
+    } else {
+      openAlert('输入无效');
+    }
+  } else {
+    openAlert('输入无效');
+  }
+};
+const moveUpItem = (question_id) => {
+  for (let index = 0; orderMap.value.length; index++) {
+    if (orderMap.value[index].id === question_id) {
       const tmp = orderMap.value[index].display_order;
       orderMap.value[index].display_order = orderMap.value[index - 1].display_order;
       orderMap.value[index - 1].display_order = tmp;
+
+      break;
     }
   }
-  console.log(orderMap.value);
 };
-const moveDownItem = (display_order) => {};
 
-const submitSort = () => {};
+const moveDownItem = (question_id) => {
+  for (let index = 0; index < orderMap.value.length; index++) {
+    if (orderMap.value[index].id === question_id) {
+      const tmp = orderMap.value[index].display_order;
+      orderMap.value[index].display_order = orderMap.value[index + 1].display_order;
+      orderMap.value[index + 1].display_order = tmp;
+
+      break;
+    }
+  }
+};
+
+const submitSort = () => {
+  sortQuestionsAPI(orderMap.value).then((res) => {
+    if (res.data.code === 0) {
+      toggleSortQuestionMode.value = false;
+      openAlert(res.data.desc);
+      _getSurvey();
+    } else {
+      openAlert(res.data.desc);
+    }
+  });
+};
 </script>
 
 <template>
@@ -214,8 +255,8 @@ const submitSort = () => {};
           题目排序模式
         </button>
         <div class="item sort-mode-buttons" v-show="toggleSortQuestionMode">
-          <button type="button" class="cancel" @click="cancelSort()">取消排序</button>
           <button type="button" class="submit" @click="submitSort()">提交排序</button>
+          <button type="button" class="cancel" @click="cancelSort()">取消排序</button>
         </div>
       </div>
       <div class="info">
@@ -245,9 +286,23 @@ const submitSort = () => {};
             </button>
           </span>
           <span class="buttons sort-mode" v-show="toggleSortQuestionMode">
-            <button type="button" class="up" @click="moveUpItem(question.display_order)">上移一题</button>
-            <button type="button" class="down" @click="moveItem(question.id)">指定位置</button>
-            <button type="button" class="down" @click="moveDownItem(question.id)">下移一题</button>
+            <button
+              type="button"
+              class="up"
+              :disabled="orderMap[questionIndex].display_order === 1"
+              @click="moveUpItem(question.id)"
+            >
+              上移一题
+            </button>
+            <button type="button" class="specify" @click="moveItem(question.id)">指定位置</button>
+            <button
+              type="button"
+              class="down"
+              :disabled="orderMap[questionIndex].display_order === displayQuestions.length"
+              @click="moveDownItem(question.id)"
+            >
+              下移一题
+            </button>
           </span>
 
           <QuestionCard :mode="'admin-view'" v-model="displayQuestions[questionIndex]"></QuestionCard>
@@ -402,6 +457,7 @@ const submitSort = () => {};
         .delete:hover {
           background-color: crimson;
         }
+        .specify:hover,
         .up:hover,
         .down:hover {
           background-color: #ccc;

@@ -24,7 +24,6 @@
           <QuestionCard
             :mode="'review'"
             v-model="props.data.questions[questionIndex]"
-            :index="questionIndex"
             :archived="archived"
             @scoreChange="handleScoreChange"
           >

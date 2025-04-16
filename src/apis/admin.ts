@@ -33,6 +33,8 @@ export const modSurveyMetaData = (data: ISurvey) => request.post('/admin/modSurv
 export const addQuestionAPI = (data: IQuestion) => request.post('/admin/addQuestion', JSON.stringify(data));
 export const editQuestionAPI = (data: IQuestion) => request.post('/admin/editQuestion', JSON.stringify(data));
 export const delQuestionAPI = (data: number) => request.post('/admin/delQuestion', JSON.stringify(data));
+export const sortQuestionsAPI = (data: Array<{ id: number; display_order: number }>) =>
+  request.post('/admin/sortSurveyQuestions', JSON.stringify(data));
 
 // response
 export const getResponses = (data: IPagination) => request.get('/admin/responses', { params: data });

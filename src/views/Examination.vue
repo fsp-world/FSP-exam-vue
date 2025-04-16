@@ -122,7 +122,7 @@ onMounted(() => {
           :key="questionIndex"
           :id="'question' + (questionIndex + 1)"
         >
-          <QuestionCard :mode="'view'" v-model="questions[questionIndex]" :index="questionIndex"></QuestionCard>
+          <QuestionCard :mode="'view'" v-model="questions[questionIndex]"></QuestionCard>
         </li>
       </ul>
       <div class="submit">
