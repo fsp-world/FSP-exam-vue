@@ -23,7 +23,7 @@
           ><textarea
             class="question"
             id="oname"
-            placeholder="请在此输入问题，不要输入题号和题目类型！）"
+            placeholder="请在此输入问题，不要输入题号和题目类型！"
             v-model.trim="formData.title"
           ></textarea>
         </div>

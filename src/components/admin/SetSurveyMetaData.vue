@@ -110,4 +110,9 @@ watch(
     }
   }
 }
+@media (max-width: 800px) {
+  .form {
+    width: calc(100% - 30px);
+  }
+}
 </style>
