@@ -109,3 +109,15 @@ export interface IUser {
   password?: string;
   status?: statusType;
 }
+
+export enum ConfigItemType {
+  STR = 'str',
+  INT = 'int',
+  BOOL = 'bool'
+}
+
+export interface ConfigItem {
+  key: string
+  value: string
+  type: ConfigItemType
+}

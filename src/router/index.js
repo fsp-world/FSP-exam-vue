@@ -117,6 +117,11 @@ const router = createRouter({
           name: 'Slot',
           component: () => import('@/components/admin/Slot.vue'),
         },
+        {
+          path: 'config',
+          name: 'Config',
+          component: () => import('@/components/admin/Config.vue'),
+        },
       ],
     },
     {

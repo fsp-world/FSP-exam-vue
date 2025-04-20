@@ -1,4 +1,4 @@
-import type { IPagination, IQuestion, ISurvey, IUser, SurveySlot } from '@/types';
+import type { ConfigItem, IPagination, IQuestion, ISurvey, IUser, SurveySlot } from '@/types';
 import request from '@/utils/requers';
 import { sortQuestion } from '@/utils/sortQuestion';
 
@@ -62,3 +62,8 @@ export const delSlotAPI = (data: SurveySlot) => request.post('/admin/del_slot', 
 
 // guarantee
 export const getGuaranteeAPI = (data: IPagination) => request.get('/admin/guarantee/get', { params: data });
+
+// config
+export const getConfig = (data: string = '') => request.get('/admin/config', { params: {key: data} });
+export const getConfigs = () => request.get('/admin/config');
+export const setConfig = (data: ConfigItem) => request.post('/admin/config', JSON.stringify(data));

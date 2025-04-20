@@ -26,6 +26,9 @@
             <RouterLink to="/admin/guarantee_mgmt" class="router-link">担保管理</RouterLink>
           </li>
           <li>
+            <RouterLink to="/admin/config" class="router-link">设置</RouterLink>
+          </li>
+          <li>
             <RouterLink to="/" class="router-link">返回首页</RouterLink>
           </li>
         </ul>
