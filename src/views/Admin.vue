@@ -26,7 +26,7 @@
             <RouterLink to="/admin/guarantee_mgmt" class="router-link">担保管理</RouterLink>
           </li>
           <li>
-            <RouterLink to="/admin/config" class="router-link">设置</RouterLink>
+            <RouterLink to="/admin/config" class="router-link">配置管理</RouterLink>
           </li>
           <li>
             <RouterLink to="/" class="router-link">返回首页</RouterLink>
@@ -95,7 +95,37 @@
   padding: 10px;
 }
 
-@media (max-width: 1200px) {
+@media (max-width: 1300px) {
+  .nav {
+    top: 50%;
+    left: 0;
+    transform: translate(-90%, -50%);
+    transition: transform 0.35s ease-in-out;
+    background-color: #eee;
+    position: fixed;
+    width: 170px;
+    height: 100%;
+    padding: 20px;
+    z-index: 90;
+  }
+  .nav::after {
+    display: block;
+    content: '>';
+    width: 15px;
+    height: 55vh;
+    position: absolute;
+    bottom: 0;
+    right: 0;
+  }
+  .nav:hover {
+    transform: translate(0, -50%);
+  }
+  .main {
+    margin-left: 20px;
+  }
+}
+
+@media (max-height: 750px) {
   .nav {
     top: 50%;
     left: 0;

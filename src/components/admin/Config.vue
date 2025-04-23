@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted, computed } from 'vue';
+import { ref, computed } from 'vue';
 import { getConfig, getConfigs, setConfig } from '@/apis/admin';
 import MCButton from '@/components/MCButton.vue';
 import { type ConfigItem, ConfigItemType } from '@/types';
@@ -7,7 +7,7 @@ import { openAlert } from '@/utils/TsAlert';
 
 const data = ref<ConfigItem[]>([]);
 const searchData = ref('');
-const searchType = ref('')
+const searchType = ref('');
 const showModal = ref(false);
 const isAdd = ref(false);
 const selectedConfigItem = ref<ConfigItem>({
@@ -28,7 +28,7 @@ const editItem = (key: string) => {
     key: '',
     value: '',
     type: ConfigItemType.STR,
-  }
+  };
   getConfig(key).then((res: { data: { value: ConfigItem } }) => {
     selectedConfigItem.value = res.data.value;
   });
@@ -41,7 +41,7 @@ const add = () => {
     key: '',
     value: '',
     type: ConfigItemType.STR,
-  }
+  };
   showModal.value = true;
   isAdd.value = true;
 };
@@ -49,9 +49,9 @@ const add = () => {
 const save = async () => {
   const res = await setConfig(selectedConfigItem.value);
   if (res.data.code === 0) {
-    openAlert('成功!')
-  }else {
-    openAlert('失败!')
+    openAlert('成功!');
+  } else {
+    openAlert('失败!');
   }
   showModal.value = false;
   getConfig_();
@@ -59,23 +59,30 @@ const save = async () => {
 
 const searchComputed = computed(() => {
   return data.value.filter((item: ConfigItem) => {
-    return (!searchData.value || item.key.includes(searchData.value) || item.value.includes(searchData.value))
-           &&
-           (!searchType.value || item.type === searchType.value)
-  })
-})
+    return (
+      (!searchData.value || item.key.includes(searchData.value) || item.value.includes(searchData.value)) &&
+      (!searchType.value || item.type === searchType.value)
+    );
+  });
+});
 </script>
 
 <template>
   <h1>配置管理</h1>
   <div class="search">
     <input type="search" v-model="searchData" placeholder="搜索" />
-    &nbsp;
-    type:
+    &nbsp; type:
     <select v-model="searchType">
       <option v-for="i in ConfigItemType" :value="i">{{ i }}</option>
     </select>
-    <MCButton class="button" @click="searchType = '';searchData = ''">&times;</MCButton>
+    <MCButton
+      class="button"
+      @click="
+        searchType = '';
+        searchData = '';
+      "
+      >&times;</MCButton
+    >
     &nbsp;
     <MCButton class="button" @click="add">新增</MCButton>
     &nbsp;
@@ -85,9 +92,10 @@ const searchComputed = computed(() => {
     <table>
       <thead>
         <tr>
-          <th class="name">key</th>
-          <th class="qq">value</th>
-          <th class="role">type</th>
+          <th class="name">键</th>
+          <th class="qq">值</th>
+          <th class="role">类型</th>
+          <th class="action">操作</th>
         </tr>
       </thead>
       <tbody>
