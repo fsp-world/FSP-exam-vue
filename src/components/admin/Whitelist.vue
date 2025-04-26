@@ -1,6 +1,7 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import { getWhitelist } from '@/apis/admin';
+import { dateFormatYYYYMMDDHH } from '@/utils/date';
 
 // 白名单数据
 const wlData = ref({
@@ -22,6 +23,18 @@ const getWL = async (page = 1, size = 10) => {
   try {
     const res = await getWhitelist({ page, size });
     wlData.value = res.data;
+
+    const sourceMap = {
+      0: '考试',
+      1: '担保',
+      2: '其他',
+      unknown: '未知',
+    };
+
+    wlData.value.list = wlData.value.list.map((item) => ({
+      ...item,
+      sourceText: sourceMap[item.source] || sourceMap.unknown,
+    }));
   } catch (error) {
     isError.value = true;
     console.error('加载白名单数据失败:', error);
@@ -38,7 +51,6 @@ onMounted(() => {
 
 <template>
   <h1>白名单管理</h1>
-
   <!-- 加载状态 -->
   <div v-if="isLoading" class="loading">加载中...</div>
 
@@ -53,6 +65,9 @@ onMounted(() => {
         <th>用户名</th>
         <th>MC NAME</th>
         <th>UUID</th>
+        <th>审核方式</th>
+        <th>审核人</th>
+        <th>添加时间</th>
       </tr>
     </thead>
     <tbody>
@@ -61,6 +76,9 @@ onMounted(() => {
         <td>{{ item.username }}</td>
         <td>{{ item.name }}</td>
         <td class="uuid">{{ item.uuid }}</td>
+        <td>{{ item.sourceText }}</td>
+        <td>{{ item.auditor_name }}</td>
+        <td>{{ dateFormatYYYYMMDDHH(item.created_at) }}</td>
       </tr>
     </tbody>
   </table>
