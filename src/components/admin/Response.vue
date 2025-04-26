@@ -14,13 +14,14 @@
             <th class="id">#</th>
             <th class="is-done">完成</th>
             <th class="status">审核状态</th>
-            <th class="survey-name">试卷</th>
+            <th class="status">审核人</th>
+            <th class="survey-name">试卷名称</th>
             <th class="survey-id">试卷ID</th>
             <th class="score">分数</th>
             <th class="user">用户名</th>
             <th class="player-name">玩家名</th>
-            <th class="add-time">创建日期</th>
-            <th class="done-time">完成日期</th>
+            <th class="add-time">作答日期</th>
+            <th class="done-time">交卷日期</th>
             <th class="action">操作</th>
           </tr>
         </thead>
@@ -33,6 +34,7 @@
             <td :style="getCellStyle(item.isReviewed)">
               {{ reviewedComput(item.isReviewed) }}
             </td>
+            <td>{{ item.isReviewed ? item.reviewer_name : '/' }}</td>
             <td>{{ item.survey }}</td>
             <td>{{ item.surveyId }}</td>
             <td>{{ item.score }}</td>
