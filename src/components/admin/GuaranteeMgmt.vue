@@ -29,6 +29,6 @@ const fetchGuaranteeData = (params: IPagination) => {
 
 <template>
   <h1>担保管理</h1>
-  <p>0待同意1已同意2已拒绝，这里把表格组件化了，但是日期格式和status的map不知道怎么传进去</p>
+  <p>0待同意1已同意2已拒绝</p>
   <BaseTable :tableProps="tableProps" :fetchData="fetchGuaranteeData"></BaseTable>
 </template>

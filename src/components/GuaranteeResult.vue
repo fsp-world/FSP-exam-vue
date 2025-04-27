@@ -73,7 +73,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="guarantee-result">
+  <div class="guarantee-result y-scroll">
     <table class="table">
       <caption>
         申请列表
@@ -99,6 +99,37 @@ onMounted(() => {
         </tr>
       </tbody>
     </table>
+    <div class="guarantee-list">
+      <div class="title">申请列表</div>
+      <ul class="y-scroll">
+        <li v-for="item of applicantData" :key="item.id">
+          <p>担保账户：{{ item.playerName }}</p>
+          <p>当前状态：{{ item.status }}</p>
+          <p>创建时间：{{ dateFormatMMDDHHMM(item.createTime) }}</p>
+          <p>过期时间：{{ dateFormatMMDDHHMM(item.expirationTime) }}</p>
+        </li>
+      </ul>
+    </div>
+    <div class="guarantee-list">
+      <div class="title">待确认列表</div>
+      <ul class="y-scroll">
+        <li v-for="item of guaranteeData" :key="item.id">
+          <p>担保账户：{{ item.playerName }}</p>
+          <p>当前状态：{{ item.status }}</p>
+          <p>创建时间：{{ dateFormatMMDDHHMM(item.createTime) }}</p>
+          <p>过期时间：{{ dateFormatMMDDHHMM(item.expirationTime) }}</p>
+          <p class="actions">
+            <MCButton v-if="item.status === '待同意'" class="button rejecr" @click="guaranteeAction(item.id, 'reject')"
+              >拒绝</MCButton
+            >
+            <MCButton v-if="item.status === '待同意'" class="button accept" @click="guaranteeAction(item.id, 'accept')"
+              >同意</MCButton
+            >
+          </p>
+        </li>
+      </ul>
+    </div>
+
     <table class="table">
       <caption>
         待确认列表
@@ -137,12 +168,39 @@ onMounted(() => {
 </template>
 
 <style scoped>
+.guarantee-list {
+  display: none;
+  .title {
+    font-size: 30px;
+    padding: 20px;
+  }
+  ul {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    overflow-y: auto;
+    max-height: 300px;
+    width: fit-content;
+    margin: 0 auto;
+    li {
+      border: 1px solid #000;
+      padding: 10px 20px;
+      border-radius: 5px;
+      background-color: rgba(0, 0, 0, 0.3);
+      width: 100%;
+    }
+    p {
+      text-align: left;
+      font-size: 20px;
+      line-height: 1.5em;
+    }
+  }
+}
 .guarantee-result {
-  margin-top: 10px;
   text-align: center;
-  display: flex;
-  flex-direction: column;
-  overflow: auto;
+  overflow-y: auto;
+  max-height: calc(100vh - 200px);
   --font-size: 18px;
 }
 
@@ -181,6 +239,17 @@ onMounted(() => {
     padding: 8px 16px;
     font-size: var(--font-size);
     border-radius: 5px;
+  }
+}
+@media (max-width: 800px) {
+  .actions {
+    padding-top: 5px;
+  }
+  .guarantee-list {
+    display: block;
+  }
+  .table {
+    display: none;
   }
 }
 </style>

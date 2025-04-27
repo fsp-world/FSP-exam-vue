@@ -86,7 +86,7 @@ onMounted(() => {
       margin: 10px 0;
     }
     .text {
-      font-size: 26px;
+      font-size: 24px;
       text-align: center;
       line-height: 1.5em;
       width: 305px;

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { BaseTableProps, IPagination } from '@/types';
+import { dateFormatYYYYMMDDHH } from '@/utils/date';
 import { ref } from 'vue';
 
 interface Props {
@@ -43,7 +44,21 @@ const loadData = (page = 1, size = 10) => {
         data.value.page = response.data.page;
         data.value.total = response.data.total;
         data.value.totalPages = Math.ceil(data.value.total / data.value.size);
-        // console.log(data.value);
+
+        data.value.list.forEach((item, index) => {
+          for (let key in item) {
+            let value = item[key];
+
+            function isInteger(obj) {
+              return typeof obj === 'number' && obj % 1 === 0;
+            }
+
+            let isDate = !isNaN(Date.parse(value)) && !isInteger(value);
+            if (isDate) {
+              data.value.list[index][key] = dateFormatYYYYMMDDHH(value);
+            }
+          }
+        });
       }
     })
     .catch((error) => {
