@@ -181,7 +181,6 @@ onMounted(() => {
     gap: 10px;
     overflow-y: auto;
     max-height: 300px;
-    width: fit-content;
     margin: 0 auto;
     li {
       border: 1px solid #000;
