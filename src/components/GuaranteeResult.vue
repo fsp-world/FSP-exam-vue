@@ -177,7 +177,7 @@ onMounted(() => {
   ul {
     display: flex;
     justify-content: center;
-    flex-wrap: wrap;
+    flex-direction: column-reverse;
     gap: 10px;
     overflow-y: auto;
     max-height: 300px;
@@ -187,7 +187,6 @@ onMounted(() => {
       padding: 10px 20px;
       border-radius: 5px;
       background-color: rgba(0, 0, 0, 0.3);
-      width: 100%;
     }
     p {
       text-align: left;
