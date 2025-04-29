@@ -35,6 +35,7 @@ export interface IResponse {
   playername: string;
   responseTime: string;
   createTime: string;
+  reviewer_name: string;
 }
 
 export interface IQueryResponse {
@@ -113,11 +114,11 @@ export interface IUser {
 export enum ConfigItemType {
   STR = 'str',
   INT = 'int',
-  BOOL = 'bool'
+  BOOL = 'bool',
 }
 
 export interface ConfigItem {
-  key: string
-  value: string
-  type: ConfigItemType
+  key: string;
+  value: string;
+  type: ConfigItemType;
 }

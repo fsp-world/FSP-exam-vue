@@ -3,6 +3,7 @@ import { ref, onMounted } from 'vue';
 import { getUsers, updateUser } from '@/apis/admin';
 import MCButton from '@/components/MCButton.vue';
 import { computStatus } from '@/utils/statusUtil';
+import { dateFormatYYYYMMDDHH } from '@/utils/date';
 
 // 用户数据
 const data = ref({
@@ -72,7 +73,7 @@ onMounted(() => {
           <td>{{ item.username }}</td>
           <td>{{ item.userQQ }}</td>
           <td>{{ item.role }}</td>
-          <td>{{ item.addtime }}</td>
+          <td>{{ dateFormatYYYYMMDDHH(item.addtime) }}</td>
           <td>{{ computStatus(item.status) }}</td>
           <td class="action">
             <MCButton class="button" @click="editUser(item)">修改</MCButton>

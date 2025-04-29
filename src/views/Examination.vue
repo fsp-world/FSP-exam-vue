@@ -9,7 +9,6 @@ import InfoDialog from '@/components/InfoDialog.vue';
 import { openAlert } from '@/utils/TsAlert';
 import { getSurvey, completeSurvey } from '@/apis/survey';
 import { useRoute } from 'vue-router';
-import { dateFormatHHMMSS } from '@/utils/date';
 
 const route = useRoute();
 
@@ -24,17 +23,34 @@ const timeRemaining = ref('');
 let intervalId = null; // 定时器 ID
 let deadline = null;
 
+const formatRemainingTime = (remainingTimeMs) => {
+  // 将毫秒转换为秒
+  let totalSeconds = Math.floor(remainingTimeMs / 1000);
+
+  // 计算小时、分钟和秒
+  let hours = Math.floor(totalSeconds / 3600); // 一小时有3600秒
+  let minutes = Math.floor((totalSeconds - hours * 3600) / 60); // 剩余秒数除以60得到分钟
+  let seconds = totalSeconds - hours * 3600 - minutes * 60; // 最后剩下的秒数
+
+  // 格式化输出，确保两位数显示
+  hours = String(hours).padStart(2, '0');
+  minutes = String(minutes).padStart(2, '0');
+  seconds = String(seconds).padStart(2, '0');
+
+  // 返回格式化后的字符串
+  return `${hours}时 ${minutes}分 ${seconds}秒`;
+};
+
 // 更新剩余时间
 const updateTimeRemaining = () => {
-  const remainingTimeMs = deadline - new Date().getTime();
-
+  const remainingTimeMs = deadline - new Date();
   if (remainingTimeMs <= 0) {
     clearInterval(intervalId); // 清除定时器
     timeRemaining.value = '00时 00分 00秒'; // 时间已到
     openAlert('时间已到！');
     complete();
   } else {
-    timeRemaining.value = dateFormatHHMMSS(remainingTimeMs); // 更新剩余时间
+    timeRemaining.value = formatRemainingTime(remainingTimeMs); // 更新剩余时间
   }
 };
 
@@ -50,8 +66,9 @@ const start = () => {
     } else {
       questions.value = res.data.questions;
       surveyName.value = res.data.name;
+
       // 获取截止时间并启动计时器
-      deadline = new Date(res.data.ddl).getTime(); // 设置截止时间
+      deadline = new Date(res.data.ddl); // 设置截止时间
 
       // 初始化剩余时间显示
       updateTimeRemaining();
@@ -61,6 +78,7 @@ const start = () => {
     }
   });
 };
+
 // 组件卸载时清除定时器
 onUnmounted(() => {
   if (intervalId) {

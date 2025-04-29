@@ -20,7 +20,7 @@
             <th class="score">分数</th>
             <th class="user">用户名</th>
             <th class="player-name">玩家名</th>
-            <th class="add-time">作答日期</th>
+            <th class="add-time">开考日期</th>
             <th class="done-time">交卷日期</th>
             <th class="action">操作</th>
           </tr>
@@ -41,7 +41,7 @@
             <td>{{ item.username }}</td>
             <td>{{ item.playername }}</td>
             <td>{{ dateFormatYYYYMMDDHH(item.createTime) }}</td>
-            <td>{{ dateFormatYYYYMMDDHH(item.responseTime) }}</td>
+            <td>{{ item.responseTime ? dateFormatYYYYMMDDHH(item.responseTime) : '未交卷' }}</td>
             <td class="action">
               <MCButton v-if="!item.isReviewed" class="button" @click="reviewed(item.id, true)">通过</MCButton>
               <MCButton v-if="!item.isReviewed" class="button" @click="reviewed(item.id, false)">拒绝</MCButton>
