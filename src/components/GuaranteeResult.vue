@@ -10,42 +10,38 @@ interface ListItem {
   playerName: string;
   createTime: string;
   expirationTime: string;
-  status: string | number;
+  status: number;
 }
 
 const applicantData = ref<ListItem[]>([]);
 const guaranteeData = ref<ListItem[]>([]);
+const toggleDisplayDoneGuarantee = ref(true);
 
-const statusMap: { [key: number]: string } = {
-  0: '待同意',
-  1: '已同意',
-  2: '已拒绝',
+const showStatus = (status: number, expirationTime: string) => {
+  const statusMap: { [key: number]: string } = {
+    0: '待同意',
+    1: '已同意',
+    2: '已拒绝',
+  };
+  if ([1, 2].includes(status)) {
+    return statusMap[status];
+  }
+  if (isExpired(expirationTime)) {
+    return '已过期';
+  }
+
+  return statusMap[status] || '未知状态';
 };
 
 function isExpired(expirationTime: string): boolean {
   const expireDate = new Date(expirationTime).getTime();
   const nowDate = new Date().getTime();
-  return nowDate - expireDate > 0;
+  return nowDate - expireDate > 0 ? true : false;
 }
 const queryAllGuarantee = () => {
   guaranteeQueryALLAPI().then((res) => {
-    const applicants = res.data.data.applicant as Array<ListItem>;
-    const guarantees = res.data.data.guarantee as Array<ListItem>;
-
-    applicantData.value = applicants.map((item) => {
-      const expired = isExpired(item.expirationTime);
-      return {
-        ...item,
-        status: expired ? '已过期' : statusMap[item.status as number] || '未知状态',
-      };
-    });
-    guaranteeData.value = guarantees.map((item) => {
-      const expired = isExpired(item.expirationTime);
-      return {
-        ...item,
-        status: expired ? '已过期' : statusMap[item.status as number] || '未知状态',
-      };
-    });
+    applicantData.value = res.data.data.applicant as Array<ListItem>;
+    guaranteeData.value = res.data.data.guarantee as Array<ListItem>;
   });
 };
 
@@ -71,6 +67,8 @@ onMounted(() => {
 
 <template>
   <div class="guarantee-result y-scroll">
+    <div><button type="button" class="toggle">显示已同意/已拒绝的记录</button></div>
+    <!-- 申请列表 -->
     <table class="table">
       <caption>
         申请列表
@@ -92,7 +90,7 @@ onMounted(() => {
           <td>{{ item.playerName }}</td>
           <td>{{ dateFormatMMDDHHMM(item.createTime) }}</td>
           <td>{{ dateFormatMMDDHHMM(item.expirationTime) }}</td>
-          <td>{{ item.status }}</td>
+          <td>{{ showStatus(item.status, item.expirationTime) }}</td>
         </tr>
       </tbody>
     </table>
@@ -101,25 +99,33 @@ onMounted(() => {
       <ul class="y-scroll">
         <li v-for="item of applicantData" :key="item.id">
           <p>担保账户：{{ item.playerName }}</p>
-          <p>当前状态：{{ item.status }}</p>
+          <p>当前状态：{{ showStatus(item.status, item.expirationTime) }}</p>
           <p>创建时间：{{ dateFormatMMDDHHMM(item.createTime) }}</p>
           <p>过期时间：{{ dateFormatMMDDHHMM(item.expirationTime) }}</p>
         </li>
       </ul>
     </div>
+
+    <!-- 待确认列表 -->
     <div class="guarantee-list">
       <div class="title">待确认列表</div>
       <ul class="y-scroll">
         <li v-for="item of guaranteeData" :key="item.id">
           <p>担保账户：{{ item.playerName }}</p>
-          <p>当前状态：{{ item.status }}</p>
+          <p>当前状态：{{ showStatus(item.status, item.expirationTime) }}</p>
           <p>创建时间：{{ dateFormatMMDDHHMM(item.createTime) }}</p>
           <p>过期时间：{{ dateFormatMMDDHHMM(item.expirationTime) }}</p>
           <p class="actions">
-            <MCButton v-if="item.status === '待同意'" class="button rejecr" @click="guaranteeAction(item.id, 'reject')"
+            <MCButton
+              v-if="item.status === 0 && !isExpired(item.expirationTime)"
+              class="button rejecr"
+              @click="guaranteeAction(item.id, 'reject')"
               >拒绝</MCButton
             >
-            <MCButton v-if="item.status === '待同意'" class="button accept" @click="guaranteeAction(item.id, 'accept')"
+            <MCButton
+              v-if="item.status === 0 && !isExpired(item.expirationTime)"
+              class="button accept"
+              @click="guaranteeAction(item.id, 'accept')"
               >同意</MCButton
             >
           </p>
@@ -149,12 +155,18 @@ onMounted(() => {
           <td>{{ dateFormatMMDDHHMM(item.createTime) }}</td>
           <td>{{ dateFormatMMDDHHMM(item.expirationTime) }}</td>
 
-          <td>{{ item.status }}</td>
+          <td>{{ showStatus(item.status, item.expirationTime) }}</td>
           <td class="actions">
-            <MCButton v-if="item.status === '待同意'" class="button rejecr" @click="guaranteeAction(item.id, 'reject')"
+            <MCButton
+              v-if="item.status === 0 && !isExpired(item.expirationTime)"
+              class="button rejecr"
+              @click="guaranteeAction(item.id, 'reject')"
               >拒绝</MCButton
             >
-            <MCButton v-if="item.status === '待同意'" class="button accept" @click="guaranteeAction(item.id, 'accept')"
+            <MCButton
+              v-if="item.status === 0 && !isExpired(item.expirationTime)"
+              class="button accept"
+              @click="guaranteeAction(item.id, 'accept')"
               >同意</MCButton
             >
           </td>
@@ -167,6 +179,9 @@ onMounted(() => {
 <style scoped>
 .guarantee-list {
   display: none;
+  .toggle {
+    font-size: 20px;
+  }
   .title {
     font-size: 30px;
     padding: 20px;
