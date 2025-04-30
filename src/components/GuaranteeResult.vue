@@ -22,28 +22,25 @@ const statusMap: { [key: number]: string } = {
   2: '已拒绝',
 };
 
-function isExpired(createTime: string, expirationTime: string, validityPeriod: number): boolean {
-  const create = new Date(createTime).getTime(); // 转换为时间戳（毫秒）
-  const expire = new Date(expirationTime).getTime(); // 转换为时间戳（毫秒）
-
-  const timeDifferenceInHours = (expire - create) / (1000 * 60 * 60); // 计算时间差（小时）
-
-  return timeDifferenceInHours > validityPeriod; // 如果时间差大于 X 小时，返回 true
+function isExpired(expirationTime: string): boolean {
+  const expireDate = new Date(expirationTime).getTime();
+  const nowDate = new Date().getTime();
+  return nowDate - expireDate > 0;
 }
 const queryAllGuarantee = () => {
   guaranteeQueryALLAPI().then((res) => {
-    const applicant = res.data.data.applicant as Array<ListItem>;
-    const guarantee = res.data.data.guarantee as Array<ListItem>;
+    const applicants = res.data.data.applicant as Array<ListItem>;
+    const guarantees = res.data.data.guarantee as Array<ListItem>;
 
-    applicantData.value = applicant.map((item) => {
-      const expired = isExpired(item.createTime, item.expirationTime, 1);
+    applicantData.value = applicants.map((item) => {
+      const expired = isExpired(item.expirationTime);
       return {
         ...item,
         status: expired ? '已过期' : statusMap[item.status as number] || '未知状态',
       };
     });
-    guaranteeData.value = guarantee.map((item) => {
-      const expired = isExpired(item.createTime, item.expirationTime, 1);
+    guaranteeData.value = guarantees.map((item) => {
+      const expired = isExpired(item.expirationTime);
       return {
         ...item,
         status: expired ? '已过期' : statusMap[item.status as number] || '未知状态',
