@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 import { guaranteeQueryALLAPI, guaranteeActionAPI } from '@/apis/guarantee';
 import { openAlert } from '@/utils/TsAlert';
 import MCButton from '@/components/MCButton.vue';
@@ -15,7 +15,43 @@ interface ListItem {
 
 const applicantData = ref<ListItem[]>([]);
 const guaranteeData = ref<ListItem[]>([]);
-const toggleDisplayDoneGuarantee = ref(true);
+const toggleDisplayDoneReq = ref(true);
+const toggleDisplayDoneTBC = ref(true);
+
+const isExpired = (expirationTime: string): boolean => {
+  const expireDate = new Date(expirationTime).getTime();
+  const nowDate = new Date().getTime();
+  return nowDate - expireDate > 0 ? true : false;
+};
+
+const displayedApplicantData = computed(() => {
+  return applicantData.value.filter((item) => {
+    if (toggleDisplayDoneReq.value) {
+      if ([1, 2].includes(item.status)) {
+        return false;
+      }
+      if (isExpired(item.expirationTime)) {
+        return false;
+      }
+    }
+    return true;
+  });
+});
+
+const displayedGuaranteeData = computed(() => {
+  return guaranteeData.value.filter((item) => {
+    if (toggleDisplayDoneTBC.value) {
+      if ([1, 2].includes(item.status)) {
+        return false;
+      }
+      if (isExpired(item.expirationTime)) {
+        return false;
+      }
+    }
+    return true;
+  });
+});
+
 
 const showStatus = (status: number, expirationTime: string) => {
   const statusMap: { [key: number]: string } = {
@@ -32,16 +68,12 @@ const showStatus = (status: number, expirationTime: string) => {
 
   return statusMap[status] || '未知状态';
 };
-
-function isExpired(expirationTime: string): boolean {
-  const expireDate = new Date(expirationTime).getTime();
-  const nowDate = new Date().getTime();
-  return nowDate - expireDate > 0 ? true : false;
-}
 const queryAllGuarantee = () => {
   guaranteeQueryALLAPI().then((res) => {
     applicantData.value = res.data.data.applicant as Array<ListItem>;
     guaranteeData.value = res.data.data.guarantee as Array<ListItem>;
+    applicantData.value.reverse()
+    guaranteeData.value.reverse()
   });
 };
 
@@ -64,14 +96,19 @@ onMounted(() => {
   queryAllGuarantee();
 });
 </script>
-
 <template>
   <div class="guarantee-result y-scroll">
-    <div><button type="button" class="toggle">显示已同意/已拒绝的记录</button></div>
     <!-- 申请列表 -->
     <table class="table">
       <caption>
-        申请列表
+        申请列表<button
+          type="button"
+          class="toggle"
+          @click="toggleDisplayDoneReq = !toggleDisplayDoneReq"
+          :class="{ toggleOn: toggleDisplayDoneReq }"
+        >
+          显示全部记录
+        </button>
       </caption>
       <thead>
         <tr>
@@ -86,7 +123,7 @@ onMounted(() => {
           <td colspan="4" style="text-align: center">暂无数据</td>
         </tr>
 
-        <tr v-for="item of applicantData" :key="item.id">
+        <tr v-for="item of displayedApplicantData" :key="item.id">
           <td>{{ item.playerName }}</td>
           <td>{{ dateFormatMMDDHHMM(item.createTime) }}</td>
           <td>{{ dateFormatMMDDHHMM(item.expirationTime) }}</td>
@@ -95,9 +132,18 @@ onMounted(() => {
       </tbody>
     </table>
     <div class="guarantee-list">
-      <div class="title">申请列表</div>
+      <div class="title">
+        申请列表<button
+          type="button"
+          class="toggle"
+          @click="toggleDisplayDoneReq = !toggleDisplayDoneReq"
+          :class="{ toggleOn: toggleDisplayDoneReq }"
+        >
+          显示全部记录
+        </button>
+      </div>
       <ul class="y-scroll">
-        <li v-for="item of applicantData" :key="item.id">
+        <li v-for="item of displayedApplicantData" :key="item.id">
           <p>担保账户：{{ item.playerName }}</p>
           <p>当前状态：{{ showStatus(item.status, item.expirationTime) }}</p>
           <p>创建时间：{{ dateFormatMMDDHHMM(item.createTime) }}</p>
@@ -108,9 +154,15 @@ onMounted(() => {
 
     <!-- 待确认列表 -->
     <div class="guarantee-list">
-      <div class="title">待确认列表</div>
+      <div class="title">待确认列表<button
+          type="button"
+          class="toggle"
+          @click="toggleDisplayDoneTBC = !toggleDisplayDoneTBC"
+          :class="{ toggleOn: toggleDisplayDoneTBC }"
+        >显示全部记录</button>
+</div>
       <ul class="y-scroll">
-        <li v-for="item of guaranteeData" :key="item.id">
+        <li v-for="item of displayedGuaranteeData" :key="item.id">
           <p>担保账户：{{ item.playerName }}</p>
           <p>当前状态：{{ showStatus(item.status, item.expirationTime) }}</p>
           <p>创建时间：{{ dateFormatMMDDHHMM(item.createTime) }}</p>
@@ -135,7 +187,13 @@ onMounted(() => {
 
     <table class="table">
       <caption>
-        待确认列表
+        待确认列表<button
+          type="button"
+          class="toggle"
+          @click="toggleDisplayDoneTBC = !toggleDisplayDoneTBC"
+          :class="{ toggleOn: toggleDisplayDoneTBC }"
+        >显示全部记录</button>
+
       </caption>
       <thead>
         <tr>
@@ -150,7 +208,7 @@ onMounted(() => {
         <tr v-if="guaranteeData.length === 0">
           <td colspan="5" style="text-align: center">暂无数据</td>
         </tr>
-        <tr v-for="item of guaranteeData" :key="item.id">
+        <tr v-for="item of displayedGuaranteeData" :key="item.id">
           <td>{{ item.playerName }}</td>
           <td>{{ dateFormatMMDDHHMM(item.createTime) }}</td>
           <td>{{ dateFormatMMDDHHMM(item.expirationTime) }}</td>
@@ -177,11 +235,30 @@ onMounted(() => {
 </template>
 
 <style scoped>
+.guarantee-result {
+  text-align: center;
+  overflow-y: auto;
+  max-height: calc(100vh - 200px);
+  --font-size: 18px;
+  .toggle {
+    display: inline;
+    line-height: var(--font-size);
+    position: relative;
+    top: -3px;
+    left: 5px;
+    font-size: var(--font-size);
+    padding: 5px;
+    border-radius: 5px;
+    text-align: center;
+    margin: 0 auto;
+    background-color: #ccc;
+  }
+  .toggleOn {
+    background-color: #444;
+  }
+}
 .guarantee-list {
   display: none;
-  .toggle {
-    font-size: 20px;
-  }
   .title {
     font-size: 30px;
     padding: 20px;
@@ -189,7 +266,7 @@ onMounted(() => {
   ul {
     display: flex;
     justify-content: center;
-    flex-direction: column-reverse;
+    flex-direction: column;
     gap: 10px;
     overflow-y: auto;
     max-height: 300px;
@@ -206,12 +283,6 @@ onMounted(() => {
       line-height: 1.5em;
     }
   }
-}
-.guarantee-result {
-  text-align: center;
-  overflow-y: auto;
-  max-height: calc(100vh - 200px);
-  --font-size: 18px;
 }
 
 .guarantee-result .table {
