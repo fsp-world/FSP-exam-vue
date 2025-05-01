@@ -3,9 +3,11 @@ import { getSurvey, addQuestionAPI, editQuestionAPI, delQuestionAPI, sortQuestio
 import QuestionCard from '@/components/QuestionCard.vue';
 import EditQuestion from './EditQuestion.vue';
 import SetSurveyMetaData from './SetSurveyMetaData.vue';
+import MigrationQuestionMenu from './MigrationQuestionMenu.vue';
 import { ref, computed } from 'vue';
 import { openAlert } from '@/utils/TsAlert';
 import { dateFormatYYYYMMDDHH } from '@/utils/date';
+
 const { sid, editable } = defineProps({
   sid: {
     type: Number,
@@ -22,10 +24,16 @@ const emit = defineEmits(['close', 'flush']);
 const toggleSetSurveyMetaData = ref(false);
 const toggleEditQuestion = ref(false);
 const toggleSortQuestionMode = ref(false);
-
+const toggleMigrationQuestionMenu = ref(false);
+const migrationQuestionId = ref(0);
 const currentMode = ref(null); // 当前模式："add" 或 "edit"
 const currentData = ref(null); // 当前编辑的数据
 const currentOrder = ref(undefined);
+
+const migrationQuestion = (question_id) => {
+  toggleMigrationQuestionMenu.value = true;
+  migrationQuestionId.value = question_id;
+};
 
 const survey = ref({
   name: '加载中...',
@@ -220,6 +228,13 @@ const submitSort = () => {
       v-model="toggleSetSurveyMetaData"
       @on-edit="SurveyMetaDataUpdate"
     ></SetSurveyMetaData>
+    <MigrationQuestionMenu
+      v-if="toggleMigrationQuestionMenu"
+      :sid="sid"
+      :qid="migrationQuestionId"
+      v-model="toggleMigrationQuestionMenu"
+      @on-edit="_getSurvey()"
+    ></MigrationQuestionMenu>
     <div class="top">
       <div class="meta">
         <p class="name">问卷名称：{{ survey.name }}</p>
@@ -281,6 +296,9 @@ const submitSort = () => {
             >
               编辑
             </button>
+            <button type="button" class="edit" @click="migrationQuestion(question.id)" :disabled="disabledButton()">
+              迁移
+            </button>
             <button type="button" class="delete" @click="deleteQuestion(question)" :disabled="disabledButton()">
               删除
             </button>
@@ -319,7 +337,7 @@ const submitSort = () => {
             在后方插入新题目
           </button>
         </li>
-        <li class="question-list-none" v-if="!survey.questions.length">暂未添加题目</li>
+        <li class="question-list-none" v-if="survey.questions.length === 0">暂未添加题目</li>
       </ul>
     </div>
   </div>

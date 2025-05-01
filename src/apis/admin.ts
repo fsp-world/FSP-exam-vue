@@ -35,6 +35,8 @@ export const editQuestionAPI = (data: IQuestion) => request.post('/admin/editQue
 export const delQuestionAPI = (data: number) => request.post('/admin/delQuestion', JSON.stringify(data));
 export const sortQuestionsAPI = (data: Array<{ id: number; display_order: number }>) =>
   request.post('/admin/sortSurveyQuestions', JSON.stringify(data));
+export const migrationQuestionAPI = (data: { target_sid: number; qid: number }) =>
+  request.post('/admin/migrationQuestion', JSON.stringify(data));
 
 // response
 export const getResponses = (data: IPagination) => request.get('/admin/responses', { params: data });
@@ -64,6 +66,6 @@ export const delSlotAPI = (data: SurveySlot) => request.post('/admin/del_slot', 
 export const getGuaranteeAPI = (data: IPagination) => request.get('/admin/guarantee/get', { params: data });
 
 // config
-export const getConfig = (data: string = '') => request.get('/admin/config', { params: {key: data} });
+export const getConfig = (data: string = '') => request.get('/admin/config', { params: { key: data } });
 export const getConfigs = () => request.get('/admin/config');
 export const setConfig = (data: ConfigItem) => request.post('/admin/config', JSON.stringify(data));

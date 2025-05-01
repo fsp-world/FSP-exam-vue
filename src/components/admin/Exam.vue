@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue';
+import { ref, provide, onMounted } from 'vue';
 import { getSurveys, delSurvey } from '@/apis/admin';
 import { openAlert } from '@/utils/TsAlert';
 import EditExam from './EditExam.vue';
@@ -15,27 +15,33 @@ const surveysData = ref({
 
 const flag = ref(false);
 const sid = ref(0);
-const survey_editable = ref(false);
+const current_survey_editable = ref(false);
 
-const _getSurveys = () => {
-  getSurveys().then((res) => {
+const attachEditableToSurveys = (surveys) => {
+  for (let survey of surveys) {
+    survey.editable = !(survey.notCompletedCount > 0 || survey.notReviewedCount > 0);
+    // status 代表问卷是否被挂载，被挂载的问卷不能编辑
+    survey.editable = survey.status === 0 ? survey.editable : false;
+  }
+  return surveys;
+};
+
+provide('attachEditableToSurveys', attachEditableToSurveys);
+
+const _getSurveys = async () => {
+  try {
+    const res = await getSurveys();
+    res.data.list = attachEditableToSurveys(res.data.list);
     surveysData.value = res.data;
-    for (let survey of surveysData.value.list) {
-      survey.notCompletedCount > 0 || survey.notReviewedCount > 0
-        ? (survey.editable = false)
-        : (survey.editable = true);
-    }
-  });
+  } catch (error) {
+    openAlert('获取问卷列表失败！');
+  }
 };
 
 const editSurvey = (survey) => {
   flag.value = true;
   sid.value = survey.id;
-  if (survey.editable && survey.status === 0) {
-    survey_editable.value = true;
-  } else {
-    survey_editable.value = false;
-  }
+  current_survey_editable.value = survey.editable ? true : false;
 };
 
 const deleteSurvey = (id) => {
@@ -56,11 +62,19 @@ const deleteSurvey = (id) => {
   }
 };
 
-_getSurveys();
+onMounted(() => {
+  _getSurveys();
+});
 </script>
 
 <template>
-  <EditExam v-if="flag" :sid="sid" :editable="survey_editable" @close="flag = false" @flush="_getSurveys"></EditExam>
+  <EditExam
+    v-if="flag"
+    :sid="sid"
+    :editable="current_survey_editable"
+    @close="flag = false"
+    @flush="_getSurveys"
+  ></EditExam>
   <SetSurveyMetaData :mode="'set'" v-model="toggleSetSurveyMetaData" @on-edit="_getSurveys"></SetSurveyMetaData>
 
   <div v-if="!flag">
@@ -72,7 +86,7 @@ _getSurveys();
     </p>
     <hr />
     <ul class="survey-list">
-      <li class="survey" v-if="!surveysData.list.length">暂无数据</li>
+      <li class="survey" v-if="surveysData.list.length === 0">暂无数据</li>
       <li class="survey" v-for="i in surveysData.list" :key="i.id">
         <p class="name">
           {{ i.name }}
@@ -84,12 +98,7 @@ _getSurveys();
           <div v-show="i.status === 1" class="button mount">已发布</div>
           <div v-show="i.status === 0" class="button umount">未发布</div>
           <button type="button" class="button hover edit" @click="editSurvey(i)">查看问卷</button>
-          <button
-            type="button"
-            class="button hover del"
-            @click="deleteSurvey(i.id)"
-            :disabled="!i.editable || i.status === 1"
-          >
+          <button type="button" class="button hover del" @click="deleteSurvey(i.id)" :disabled="!i.editable">
             删除问卷
           </button>
         </div>

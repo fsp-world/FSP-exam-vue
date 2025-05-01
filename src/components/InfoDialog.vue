@@ -56,6 +56,15 @@ const { show, dialogType, dialogStyle } = defineProps({
   color: #313131;
   background-image: url(../assets/images/vanilla_gui/demo_background.png);
 }
+.book-card {
+  color: #313131;
+  background-image: url(../assets/images/vanilla_gui/book.png);
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  height: min(800px, 95%);
+}
 @media (max-width: 800px) {
   .dialog {
     width: 95%;
