@@ -1,6 +1,6 @@
 <script setup>
 import { ref, provide, onMounted } from 'vue';
-import { getSurveys, delSurvey } from '@/apis/admin';
+import { getSurveys, getSurvey, delSurvey } from '@/apis/admin';
 import { openAlert } from '@/utils/TsAlert';
 import EditExam from './EditExam.vue';
 import SetSurveyMetaData from './SetSurveyMetaData.vue';
@@ -62,6 +62,33 @@ const deleteSurvey = (id) => {
   }
 };
 
+const _getSurvey = async (sid) => {
+  try {
+    const res = await getSurvey(sid);
+    if (res.data.code === 1) {
+      openAlert(res.data.desc);
+      return;
+    }
+
+    openAlert('开始导出');
+    const jsonString = JSON.stringify(res.data, null, 2);
+    const blob = new Blob([jsonString], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${res.data.name}.json`;
+    a.click();
+    openAlert('导出成功！');
+  } catch (error) {
+    openAlert('获取问卷失败！');
+  }
+};
+const exportSurvey = (sid) => {
+  _getSurvey(sid);
+};
+const importSurvey = () => {
+  // 记得移除sid
+};
 onMounted(() => {
   _getSurveys();
 });
@@ -98,12 +125,16 @@ onMounted(() => {
           <div v-show="i.status === 1" class="button mount">已发布</div>
           <div v-show="i.status === 0" class="button umount">未发布</div>
           <button type="button" class="button hover edit" @click="editSurvey(i)">查看问卷</button>
+          <button type="button" class="button hover edit" @click="exportSurvey(i.id)">导出问卷</button>
           <button type="button" class="button hover del" @click="deleteSurvey(i.id)" :disabled="!i.editable">
             删除问卷
           </button>
         </div>
       </li>
-      <button type="button" class="survey hover add" @click="toggleSetSurveyMetaData = true">新建问卷</button>
+      <li class="buttons">
+        <button type="button" class="survey hover add" @click="toggleSetSurveyMetaData = true">新建问卷</button>
+        <button type="button" class="survey hover add" @click="importSurvey()">导入问卷</button>
+      </li>
     </ul>
   </div>
 </template>
@@ -159,8 +190,12 @@ onMounted(() => {
     background-color: red;
   }
 }
+.buttons {
+  display: flex;
+  gap: 10px;
+}
 .hover:hover {
-  background-color: #999;
+  background-color: #bbb;
 }
 .add {
   width: 100%;
@@ -168,5 +203,6 @@ onMounted(() => {
   font-size: 24px;
   font-weight: bold;
   text-align: center;
+  user-select: none;
 }
 </style>
