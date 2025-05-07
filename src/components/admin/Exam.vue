@@ -2,6 +2,7 @@
 import { ref, provide, onMounted } from 'vue';
 import { getSurveys, getSurvey, delSurvey } from '@/apis/admin';
 import { openAlert } from '@/utils/TsAlert';
+import { importSurveyData } from '@/utils/survey';
 import EditExam from './EditExam.vue';
 import SetSurveyMetaData from './SetSurveyMetaData.vue';
 
@@ -87,7 +88,31 @@ const exportSurvey = (sid) => {
   _getSurvey(sid);
 };
 const importSurvey = () => {
-  // 记得移除sid
+  const input = document.createElement('input');
+  input.type = 'file';
+  input.accept = '.json';
+
+  input.onchange = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = async function (e) {
+        const content = e.target.result;
+        try {
+          const jsonData = JSON.parse(content);
+          const importRes = await importSurveyData(jsonData);
+          openAlert(importRes.msg);
+          _getSurveys();
+        } catch (error) {
+          console.error('这不是一个有效的JSON文件:', error);
+        }
+      };
+      reader.readAsText(file);
+    }
+  };
+
+  // 触发文件选择框
+  input.click();
 };
 onMounted(() => {
   _getSurveys();
@@ -104,7 +129,7 @@ onMounted(() => {
   ></EditExam>
   <SetSurveyMetaData :mode="'set'" v-model="toggleSetSurveyMetaData" @on-edit="_getSurveys"></SetSurveyMetaData>
 
-  <div v-if="!flag">
+  <div v-if="!flag" class="main">
     <h1 style="user-select: none">问卷管理</h1>
     <p>注意：已发布的问卷无法编辑或删除！存在未完成或未批改的答卷的问卷也无法编辑或删除！</p>
     <p>注意：删除题目只是逻辑删除，被逻辑删除的题目仅在批卷时可见</p>
@@ -147,7 +172,10 @@ onMounted(() => {
   background-color: #ccc;
   user-select: none;
 }
-
+.main {
+  height: 100%;
+  overflow-y: auto;
+}
 .survey-list {
   width: 100%;
 }

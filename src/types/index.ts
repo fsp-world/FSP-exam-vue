@@ -53,7 +53,7 @@ export interface ISurvey {
   name: string;
   description: string;
   createTime?: string;
-  status?: number;
+  status?: number; // 废弃
 }
 
 export const getStringQuestionType = (questionType: number): string => {

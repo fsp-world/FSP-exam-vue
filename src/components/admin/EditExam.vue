@@ -100,7 +100,8 @@ const handleEdit = (mode, formData) => {
     }
   };
   if (mode === 'add') {
-    addQuestionAPI(formData).then((res) => {
+    // 这里一定要传列表
+    addQuestionAPI([formData]).then((res) => {
       handleRes(res.data);
     });
   } else if (mode === 'edit') {
