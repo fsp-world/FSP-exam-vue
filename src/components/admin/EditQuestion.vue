@@ -162,14 +162,14 @@ interface CarryKeyImg extends IImg {
 }
 
 interface FormData extends IQuestion {
-  survey: number;
+  surveyId: number;
   options: CarryKeyOption[];
   img_list: CarryKeyImg[];
 }
 
 const formData = ref<FormData>({
   display_order: 0, // 0 代表新插入到末尾
-  survey: sid,
+  surveyId: sid,
   title: '',
   type: 1,
   score: 5,
@@ -279,7 +279,7 @@ const init = (): void => {
 
     formData.value = {
       display_order: initialData.display_order,
-      survey: sid,
+      surveyId: sid,
       id: initialData.id,
       title: initialData.title,
       type: initialData.type,

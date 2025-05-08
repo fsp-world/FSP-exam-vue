@@ -145,7 +145,6 @@ router.beforeEach((to, from) => {
   if (to.matched.some((record) => record.meta.requiresAuth)) {
     if (!user.isLogin) {
       // 如果未登录，重定向到登录页面，并携带重定向路径
-      console.log('123');
       return {
         name: 'Auth',
         query: { redirect: to.fullPath },
