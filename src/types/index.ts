@@ -48,12 +48,18 @@ export interface IQueryResponse {
   full_score: number;
 }
 
-export interface ISurvey {
-  id?: number;
+export interface NewSurvey {
   name: string;
   description: string;
-  createTime?: string;
-  status?: number; // 废弃
+}
+
+export interface ISurvey extends NewSurvey {
+  id: number;
+  createTime: string;
+  notCompletedCount: number;
+  notReviewedCount: number;
+  editable?: boolean;
+  status?: number; // 查询问卷列表时，代表问卷是否被挂载；查询单个问卷时不携带该属性
 }
 
 export const getStringQuestionType = (questionType: number): string => {

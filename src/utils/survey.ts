@@ -1,5 +1,5 @@
 import type { IQuestion } from '@/types';
-import { addSurveyAPI, addQuestionAPI } from '@/apis/admin';
+import { addSurveyAPI, addQuestionAPI, getSurvey } from '@/apis/admin';
 import { openAlert } from '@/utils/TsAlert';
 
 interface Survey {
@@ -85,4 +85,26 @@ export const importSurveyData = async (jsonData: Survey): Promise<ReturnData> =>
   openAlert(addQuestionsRes.msg);
 
   return { success: true, msg: '导入成功！' };
+};
+
+export const exportSurveyToJsonFile = async (surveyId: number) => {
+  try {
+    const res = await getSurvey(surveyId);
+    if (res.data.code === 1) {
+      openAlert(res.data.desc);
+      return;
+    }
+
+    openAlert('开始导出');
+    const jsonString = JSON.stringify(res.data, null, 2);
+    const blob = new Blob([jsonString], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${res.data.name}.json`;
+    a.click();
+    openAlert('导出成功！');
+  } catch (error) {
+    openAlert('获取问卷失败！');
+  }
 };

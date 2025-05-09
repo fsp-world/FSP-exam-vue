@@ -1,16 +1,19 @@
-<script setup>
+<script setup lang="ts">
 import { ref, provide, onMounted } from 'vue';
-import { getSurveys, getSurvey, delSurvey } from '@/apis/admin';
+import { getSurveys, delSurvey } from '@/apis/admin';
 import { openAlert } from '@/utils/TsAlert';
-import { importSurveyData } from '@/utils/survey';
+import { importSurveyData, exportSurveyToJsonFile } from '@/utils/survey';
+import { selectSingleFile } from '@/utils/file';
+// @ts-ignore: Allow importing JS component into TS file.
 import EditExam from './EditExam.vue';
 import SetSurveyMetaData from './SetSurveyMetaData.vue';
+import type { ISurvey } from '@/types';
 
 const toggleSetSurveyMetaData = ref(false);
 
 const surveysData = ref({
   code: -1,
-  list: [],
+  list: <ISurvey[]>[],
   desc: '',
 });
 
@@ -18,11 +21,12 @@ const flag = ref(false);
 const sid = ref(0);
 const current_survey_editable = ref(false);
 
-const attachEditableToSurveys = (surveys) => {
+const attachEditableToSurveys = (surveys: ISurvey[]) => {
   for (let survey of surveys) {
     survey.editable = !(survey.notCompletedCount > 0 || survey.notReviewedCount > 0);
     // status 代表问卷是否被挂载，被挂载的问卷不能编辑
     survey.editable = survey.status === 0 ? survey.editable : false;
+    console.log(survey.editable);
   }
   return surveys;
 };
@@ -39,13 +43,15 @@ const _getSurveys = async () => {
   }
 };
 
-const editSurvey = (survey) => {
+const editSurvey = (survey: ISurvey) => {
   flag.value = true;
-  sid.value = survey.id;
-  current_survey_editable.value = survey.editable ? true : false;
+  if (survey.id) {
+    sid.value = survey.id;
+    current_survey_editable.value = survey.editable ? true : false;
+  }
 };
 
-const deleteSurvey = (id) => {
+const deleteSurvey = (id: number) => {
   const confirmDelete = confirm('确定要删除这个问卷吗，问卷中的题目会被一并删除！请三思！');
   if (confirmDelete) {
     const confirmText = '确认删除问卷';
@@ -63,56 +69,22 @@ const deleteSurvey = (id) => {
   }
 };
 
-const _getSurvey = async (sid) => {
-  try {
-    const res = await getSurvey(sid);
-    if (res.data.code === 1) {
-      openAlert(res.data.desc);
-      return;
-    }
-
-    openAlert('开始导出');
-    const jsonString = JSON.stringify(res.data, null, 2);
-    const blob = new Blob([jsonString], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `${res.data.name}.json`;
-    a.click();
-    openAlert('导出成功！');
-  } catch (error) {
-    openAlert('获取问卷失败！');
-  }
+const exportSurvey = (sid: number) => {
+  exportSurveyToJsonFile(sid);
 };
-const exportSurvey = (sid) => {
-  _getSurvey(sid);
-};
-const importSurvey = () => {
-  const input = document.createElement('input');
-  input.type = 'file';
-  input.accept = '.json';
 
-  input.onchange = (event) => {
-    const file = event.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = async function (e) {
-        const content = e.target.result;
-        try {
-          const jsonData = JSON.parse(content);
-          const importRes = await importSurveyData(jsonData);
-          openAlert(importRes.msg);
-          _getSurveys();
-        } catch (error) {
-          console.error('这不是一个有效的JSON文件:', error);
-        }
-      };
-      reader.readAsText(file);
+const importSurvey = (): void => {
+  selectSingleFile('.json', async (content) => {
+    try {
+      const jsonData = JSON.parse(content);
+      const importRes = await importSurveyData(jsonData);
+      openAlert(importRes.msg);
+      _getSurveys();
+    } catch (error) {
+      console.error('这不是一个有效的JSON文件:', error);
+      openAlert('导入失败：不是有效的JSON文件');
     }
-  };
-
-  // 触发文件选择框
-  input.click();
+  });
 };
 onMounted(() => {
   _getSurveys();

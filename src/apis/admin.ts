@@ -1,4 +1,4 @@
-import type { ConfigItem, IPagination, IQuestion, ISurvey, IUser, SurveySlot } from '@/types';
+import type { ConfigItem, IPagination, IQuestion, ISurvey, NewSurvey, IUser, SurveySlot } from '@/types';
 import request from '@/utils/requers';
 import { sortQuestion } from '@/utils/sortQuestion';
 
@@ -24,8 +24,8 @@ export const getSurvey = async (id: number) => {
   }
 };
 
-export const addSurvey = (data: ISurvey) => request.post('/admin/addSurvey', JSON.stringify(data));
-export const addSurveyAPI = (data: ISurvey) => request.post('/admin/addSurvey', JSON.stringify(data));
+export const addSurvey = (data: NewSurvey) => request.post('/admin/addSurvey', JSON.stringify(data));
+export const addSurveyAPI = (data: NewSurvey) => request.post('/admin/addSurvey', JSON.stringify(data));
 export const delSurvey = (data: number) => request.post('/admin/delSurvey', JSON.stringify(data));
 export const modSurveyMetaData = (data: ISurvey) => request.post('/admin/modSurvey', JSON.stringify(data));
 
