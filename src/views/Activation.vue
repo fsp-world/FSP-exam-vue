@@ -1,9 +1,9 @@
 <template>
-  <div class="reset-password-form">
-    <h2 style="text-align: center">请输入新密码</h2>
-    <input class="input" type="password" v-model.trim="password" placeholder="请输入新密码" />
+  <div class="activation-form">
+    <h2 style="text-align: center">激活账户</h2>
+    <input class="input" type="text" v-model.trim="username" placeholder="请输入用户名" />
     <div style="display: flex; justify-content: center">
-      <MCButton class="btn" @click="sendResetPassword">修改</MCButton>
+      <MCButton class="btn" @click="sendActivation">激活</MCButton>
     </div>
   </div>
 </template>
@@ -12,26 +12,26 @@
 import MCButton from '@/components/MCButton.vue';
 import { ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
-import { findPasswordPut } from '@/apis/auth';
+import { activation } from '@/apis/auth';
 import { openAlert } from '@/utils/TsAlert';
 
 const router = useRouter();
 const route = useRoute();
 
-const password = ref('');
+const token = route.query.token;
+if (!token) {
+  router.replace('/');
+}
 
-const sendResetPassword = () => {
-  const token = route.query.token;
-  if (!token) {
-    router.replace('/');
-    return;
-  }
-  findPasswordPut({ password: password.value }, token)
+const username = ref('');
+
+const sendActivation = () => {
+  activation({ username: username.value }, token)
     .then((res) => {
       const data = res.data;
       if (data.code === 0) {
         openAlert(data.desc);
-        router.replace('/auth/login');
+        router.replace('/');
       } else {
         openAlert(data.desc);
       }
@@ -43,7 +43,7 @@ const sendResetPassword = () => {
 </script>
 
 <style scoped>
-.reset-password-form {
+.activation-form {
   background-color: bisque;
   padding: 20px;
   border-radius: 14px;

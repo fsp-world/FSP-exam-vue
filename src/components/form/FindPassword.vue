@@ -1,13 +1,9 @@
 <script setup>
 import '../../assets/form.css';
 import { ref } from 'vue';
-import { useRouter, useRoute } from 'vue-router';
 import { findPassword } from '@/apis/auth';
 import { openAlert } from '@/utils/TsAlert';
 import MCButton from '@/components/MCButton.vue';
-
-const router = useRouter();
-const route = useRoute();
 
 const findPasswordForm = ref({
   username: '',

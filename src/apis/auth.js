@@ -11,3 +11,5 @@ export const checkLogin = () => request.get('/auth/check');
 export const findPassword = (data) => request.post('/auth/findPassword', JSON.stringify(data))
 
 export const findPasswordPut = (data, token) => request.put('/auth/findPassword?token=' + token , JSON.stringify(data))
+
+export const activation = (data, token) => request.put('/auth/activation?token=' + token , JSON.stringify(data))
