@@ -1,6 +1,7 @@
 <script setup>
 import { getProfilePic } from '@/apis/mj';
 import { getUserWhitelist } from '@/apis/user.js';
+import { sendActivation } from '@/apis/auth.js';
 import { ref } from 'vue';
 import { openAlert } from '@/utils/TsAlert';
 import { useUserStore } from '@/stores/user';
@@ -9,7 +10,7 @@ import MCButton from '@/components/MCButton.vue';
 import { storeToRefs } from 'pinia';
 
 const userStore = useUserStore();
-const { avatar, username, userQQ, role, avatarUUID, getStatus, dateToLocal, isAdmin } = storeToRefs(userStore);
+const { avatar, username, userQQ, role, avatarUUID, getStatus, dateToLocal, isAdmin, status } = storeToRefs(userStore);
 
 userStore.syncUserInfo();
 
@@ -27,7 +28,7 @@ getUserWhitelist().then((res) => {
         })
         .catch((err) => {
           console.warn(`Failed to fetch avatar for ${player.name}:`, err);
-        }),
+        })
     );
     return Promise.all(avatarPromises);
   }
@@ -40,6 +41,12 @@ const editAvatar = (uuid) => {
     } else {
       openAlert('头像修改失败！');
     }
+  });
+};
+
+const reqActivation = () => {
+  sendActivation().then((res) => {
+    openAlert(res.data.desc)
   });
 };
 </script>
@@ -80,6 +87,7 @@ const editAvatar = (uuid) => {
           <MCRouterLink class="button" to="/Query/Guarantee"> 担保查询 </MCRouterLink>
           <MCRouterLink class="button" to="/Query/Examination"> 考试查询 </MCRouterLink>
           <MCRouterLink v-if="isAdmin" class="button" to="/admin"> 管理 </MCRouterLink>
+          <MCButton v-if="status === 0" class="button" @click="reqActivation"> 激活账户 </MCButton>
         </div>
       </div>
       <div class="end">
