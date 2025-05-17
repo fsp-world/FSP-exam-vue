@@ -1,6 +1,12 @@
+// 定义列映射项的类型
+type ColumnMapItem = {
+  title: string;
+  callback?: (value: any, row?: any) => any; // 可选的回调函数
+};
+
 export interface BaseTableProps {
   caption?: string;
-  columnMap: Map<string, string>;
+  columnMap: Map<string, ColumnMapItem>;
 }
 
 export interface IPagination {

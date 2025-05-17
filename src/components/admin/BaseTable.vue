@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import type { BaseTableProps, IPagination } from '@/types';
-import { dateFormatYYYYMMDDHH } from '@/utils/date';
 import { ref } from 'vue';
 
 interface Props {
@@ -44,21 +43,6 @@ const loadData = (page = 1, size = 10) => {
         data.value.page = response.data.page;
         data.value.total = response.data.total;
         data.value.totalPages = Math.ceil(data.value.total / data.value.size);
-
-        data.value.list.forEach((item, index) => {
-          for (let key in item) {
-            let value = item[key];
-
-            function isInteger(obj) {
-              return typeof obj === 'number' && obj % 1 === 0;
-            }
-
-            let isDate = !isNaN(Date.parse(value)) && !isInteger(value);
-            if (isDate) {
-              data.value.list[index][key] = dateFormatYYYYMMDDHH(value);
-            }
-          }
-        });
       }
     })
     .catch((error) => {
@@ -76,19 +60,26 @@ loadData();
         }}
       </caption>
       <thead>
-        <th v-for="[key, label] in tableProps.columnMap" :key="key">{{ label }}</th>
+        <tr>
+          <th v-for="[key, column] in Array.from(tableProps.columnMap)" :key="key">
+            {{ column.title }}
+          </th>
+        </tr>
       </thead>
       <tbody>
         <tr v-for="item in data.list" :key="item.id">
           <!-- 根据 Map 的顺序生成表格内容 -->
-          <td v-for="[key, label] of Array.from(tableProps.columnMap)" :key="key">{{ item[key as keyof TrData] }}</td>
+          <td v-for="[key, column] of Array.from(tableProps.columnMap)" :key="key">
+            {{
+              column.callback ? column.callback(item[key as keyof typeof item], item) : item[key as keyof typeof item]
+            }}
+          </td>
         </tr>
         <tr v-if="data.list.length === 0">
           <td :colspan="tableProps.columnMap.size" style="text-align: center">暂无数据</td>
         </tr>
       </tbody>
     </table>
-
     <!-- 分页 -->
     <div class="pagination">
       <button type="button" @click="loadData(data.page - 1, data.size)" :disabled="data.page === 1">上一页</button>
