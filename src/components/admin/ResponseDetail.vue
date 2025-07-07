@@ -1,6 +1,10 @@
 <template>
   <div class="preview">
-    <div class="close-btn" @click="emit('update:visibility', false)">&times;</div>
+    <div class="close-btn" @click="emit('update:visibility', false)">
+      <div style="width: 19px;height: 19px;padding: 0;margin: 0;line-height: 20px;">
+        &times;
+      </div>
+    </div>
     <div class="paper">
       <h1>阅卷说明</h1>
       <div class="readme">
@@ -62,12 +66,13 @@ const handleScoreChange = (payload: { questionId: number; score: number }) => {
 <style scoped>
 .close-btn {
   --hei: 30px;
-  display: block;
+  display: flex;
   width: var(--hei);
   height: var(--hei);
   padding: 4px 4px;
-  text-align: center;
-  line-height: var(--hei);
+  display: flex;
+  justify-content: center;
+  align-items: center;
   font-size: var(--hei);
   position: absolute;
   top: 10px;
