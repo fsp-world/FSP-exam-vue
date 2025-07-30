@@ -85,10 +85,14 @@
 import { getResponses, reviewedResponse, responseDetail } from '@/apis/admin';
 import type { IResponse } from '@/types';
 import { ref, watch, onMounted, computed } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
 import MCButton from '@/components/MCButton.vue';
 import ResponseDetail from '@/components/admin/ResponseDetail.vue';
 import { dateFormatYYYYMMDDHH } from '@/utils/date';
 import { openAlert } from '@/utils/TsAlert';
+
+const route = useRoute();
+const router = useRouter();
 
 const getCellStyle = (isReviewed: number) => {
   if (isReviewed === 1) {
@@ -143,12 +147,17 @@ const reviewed = (id: number, pass: boolean) => {
 };
 // 获取答卷详情
 const detail = (item: IResponse) => {
-  responseDetail(item.id).then((res: { data: any }) => {
+  openDetail(item.id)
+};
+
+const openDetail = (id: number) => {
+  responseDetail(id).then((res: { data: any }) => {
     detailData.value = res.data;
-    detailData.value.archived = item.isReviewed ? true : false;
+    detailData.value.archived = res.data.isReviewed ? true : false;
     visibility.value = true;
   });
-};
+}
+
 // 退出答卷详情预览重新获取
 watch(visibility, (newValue) => {
   if (newValue == false) {
@@ -157,7 +166,15 @@ watch(visibility, (newValue) => {
 });
 // 初始化加载数据
 onMounted(() => {
-  loadPagination();
+  loadPagination().then(() => {
+    let id = parseInt(route.query.id as string)
+    if (id) {
+      openDetail(id)
+      let newQuery = JSON.parse(JSON.stringify(route.query))
+      delete newQuery.id
+      router.replace({query: newQuery})
+    }
+  });
 });
 
 const reviewedComput = computed(() => {
