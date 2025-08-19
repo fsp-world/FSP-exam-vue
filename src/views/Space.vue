@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 import { getProfilePic } from '@/apis/mj';
 import { getUserWhitelist } from '@/apis/user.js';
 import { sendActivation } from '@/apis/auth.js';
@@ -10,13 +10,30 @@ import MCButton from '@/components/MCButton.vue';
 import { storeToRefs } from 'pinia';
 
 const userStore = useUserStore();
-const { avatar, username, userQQ, role, avatarUUID, getStatus, dateToLocal, isAdmin, status } = storeToRefs(userStore);
+const { avatar, username, userQQ, role, avatarUUID, getStatus, dateToLocal, isAdmin, status, addtime } =
+  storeToRefs(userStore);
 
 userStore.syncUserInfo();
 
 const userWhiteList = ref([]);
 
-getUserWhitelist().then((res) => {
+const getStudentCohort = (joinTime: Date | string) => {
+  let joinDateTime = null;
+  if (typeof joinTime === 'string') {
+    console.log(joinTime);
+    console.log(typeof joinTime);
+    joinDateTime = new Date(joinTime).getTime();
+  } else {
+    joinDateTime = joinTime.getTime();
+  }
+  if (joinDateTime < new Date('2024-07-05').setHours(0, 0, 0, 0)) {
+    return '一';
+  } else {
+    return '二';
+  }
+};
+
+getUserWhitelist().then((res: any) => {
   if (res.data.code === 0) {
     userWhiteList.value = res.data.list;
     const avatarPromises = userWhiteList.value.map((player) =>
@@ -28,14 +45,14 @@ getUserWhitelist().then((res) => {
         })
         .catch((err) => {
           console.warn(`Failed to fetch avatar for ${player.name}:`, err);
-        })
+        }),
     );
     return Promise.all(avatarPromises);
   }
 });
 
-const editAvatar = (uuid) => {
-  userStore.setAvatar(uuid).then((res) => {
+const editAvatar = (uuid: string) => {
+  userStore.setAvatar(uuid).then((res: any) => {
     if (res.data.code === 0) {
       openAlert('头像修改成功');
     } else {
@@ -45,8 +62,8 @@ const editAvatar = (uuid) => {
 };
 
 const reqActivation = () => {
-  sendActivation().then((res) => {
-    openAlert(res.data.desc)
+  sendActivation().then((res: any) => {
+    openAlert(res.data.desc);
   });
 };
 </script>
@@ -66,7 +83,7 @@ const reqActivation = () => {
           <div class="user-details">
             <h2>{{ username }}</h2>
             <p>用户QQ: {{ userQQ }}</p>
-            <p>角色: {{ role }}</p>
+            <p>角色: {{ role }} {{ getStudentCohort(addtime) }}期成员</p>
             <p>注册日期: {{ dateToLocal }}</p>
             <p>账号状态: {{ getStatus }}</p>
           </div>
