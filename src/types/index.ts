@@ -121,6 +121,7 @@ export interface IUser {
   role?: roleType;
   password?: string;
   status?: statusType;
+  addtime?: string;
 }
 
 export enum ConfigItemType {

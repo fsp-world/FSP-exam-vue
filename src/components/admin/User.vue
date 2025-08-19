@@ -25,6 +25,7 @@ const loadUsers = async (page = 1, size = 10) => {
 const editUser = (user) => {
   selectedUser.value = { ...user };
   selectedUser.value.password = '';
+  selectedUser.value.addtime = '';
   showModal.value = true;
 };
 
@@ -34,13 +35,17 @@ const selectedUser = ref({
   id: null,
   username: '',
   userQQ: '',
+  password: '',
+  addtime: '',
   role: '',
   status: 0,
-  password: '',
 });
 
 // 保存修改
 const saveUser = async () => {
+  if (selectedUser.value.addtime) {
+    selectedUser.value.addtime = new Date(selectedUser.value.addtime);
+  }
   await updateUser(selectedUser.value);
   showModal.value = false;
   await loadUsers(data.value.page, data.value.size); // 重新加载数据
@@ -115,6 +120,10 @@ onMounted(() => {
         <div class="form-group">
           <label>用户密码</label>
           <input v-model="selectedUser.password" type="password" placeholder="修改密码" />
+        </div>
+        <div class="form-group">
+          <label>注册时间</label>
+          <input v-model="selectedUser.addtime" type="datetime-local" />
         </div>
         <div class="form-group">
           <label>用户角色</label>
