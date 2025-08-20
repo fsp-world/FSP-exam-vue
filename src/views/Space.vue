@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { getProfilePic } from '@/apis/mj';
-import { getUserWhitelist } from '@/apis/user.js';
-import { sendActivation } from '@/apis/auth.js';
+import { getUserWhitelist } from '@/apis/user';
+import { sendActivation } from '@/apis/auth';
 import { ref } from 'vue';
 import { openAlert } from '@/utils/TsAlert';
 import { useUserStore } from '@/stores/user';
@@ -15,7 +15,13 @@ const { avatar, username, userQQ, role, avatarUUID, getStatus, dateToLocal, isAd
 
 userStore.syncUserInfo();
 
-const userWhiteList = ref([]);
+const userWhiteList = ref<UserWhitelistItem[]>([]);
+
+interface UserWhitelistItem {
+  name: string;
+  uuid: string;
+  avatarUrl?: string;
+}
 
 getUserWhitelist().then((res: any) => {
   if (res.data.code === 0) {

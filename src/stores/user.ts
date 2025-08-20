@@ -48,8 +48,8 @@ export const useUserStore = defineStore('user', {
           this.username = res.data.username;
           this.isAdmin = res.data.isAdmin;
           this.avatarUUID = res.data.avatar;
-          let { imgUrl } = await getProfilePic(this.avatarUUID);
-          this.avatar = imgUrl;
+          const { imgUrl } = await getProfilePic(this.avatarUUID);
+          this.avatar = imgUrl || this.avatar;
           localStorage.setItem('fsp_token', res.data.token);
         }
         return res;
@@ -66,8 +66,8 @@ export const useUserStore = defineStore('user', {
           this.username = res.data.username;
           this.isAdmin = res.data.isAdmin;
           this.avatarUUID = res.data.avatar;
-          let { imgUrl } = await getProfilePic(this.avatarUUID);
-          this.avatar = imgUrl;
+          const { imgUrl } = await getProfilePic(this.avatarUUID);
+          this.avatar = imgUrl || this.avatar;
           localStorage.setItem('fsp_token', res.data.token);
         }
         return res;
@@ -99,17 +99,17 @@ export const useUserStore = defineStore('user', {
         let res = await checkLoginReq();
         if (res.data.code === 0) {
           this.isLogin = true;
+          this.avatarUUID = res.data.avatar;
           this.username = res.data.username;
           this.isAdmin = res.data.isAdmin;
-          this.avatarUUID = res.data.avatar;
-          let { imgUrl } = await getProfilePic(this.avatarUUID);
-          this.avatar = imgUrl;
         } else {
-          this.avatarUUID = res.data.avatar;
           this.isLogin = false;
-          let { imgUrl } = await getProfilePic(this.avatarUUID);
-          this.avatar = imgUrl;
+          this.avatarUUID = res.data.avatar;
         }
+
+        const { imgUrl } = await getProfilePic(this.avatarUUID);
+        this.avatar = imgUrl || this.avatar;
+
         return res;
       } catch (error) {
         console.error(error);
@@ -121,8 +121,8 @@ export const useUserStore = defineStore('user', {
         let res = await setUserAvatar(uuid);
         if (res.data.code === 0) {
           this.avatarUUID = uuid;
-          let { imgUrl } = await getProfilePic(this.avatarUUID);
-          this.avatar = imgUrl;
+          const { imgUrl } = await getProfilePic(this.avatarUUID);
+          this.avatar = imgUrl || this.avatar;
         }
         return res;
       } catch (error) {
@@ -141,8 +141,8 @@ export const useUserStore = defineStore('user', {
           this.role = data.data.role;
           this.userQQ = data.data.user_qq;
           this.status = data.data.status;
-          let { imgUrl } = await getProfilePic(this.avatarUUID);
-          this.avatar = imgUrl;
+          const { imgUrl } = await getProfilePic(this.avatarUUID);
+          this.avatar = imgUrl || this.avatar;
         }
       } catch (error) {
         console.error(error);
@@ -151,12 +151,8 @@ export const useUserStore = defineStore('user', {
     },
   },
   persist: {
-    enabled: true,
-    strategies: [
-      {
-        key: 'user',
-        storage: localStorage, // 或者 sessionStorage
-      },
-    ],
+    key: 'user',
+    storage: localStorage,
+    // paths: ['...']      // 只持久化部分字段
   },
 });
