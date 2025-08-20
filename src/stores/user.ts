@@ -8,7 +8,7 @@ import {
 
 import { getUserInfo, setUserAvatar } from '@/apis/user';
 import { getProfilePic } from '@/apis/mj';
-import { computStatus } from '@/utils/statusUtil';
+import { computStatus, getUserJoinSeason } from '@/utils/statusUtil';
 import { dateFormatYYYYMMDDHH } from '@/utils/date';
 // 你可以任意命名 `defineStore()` 的返回值，但最好使用 store 的名字，同时以 `use` 开头且以 `Store` 结尾。
 // (比如 `useUserStore`，`useCartStore`，`useProductStore`)
@@ -35,9 +35,12 @@ export const useUserStore = defineStore('user', {
     dateToLocal: (state) => {
       return dateFormatYYYYMMDDHH(state.addtime);
     },
+    getJoinSeason: (state) => {
+      return getUserJoinSeason(state.addtime);
+    },
   },
   actions: {
-    async login(data) {
+    async login(data: any) {
       try {
         let res = await loginReq(data);
         if (res.data.code === 0) {
@@ -55,7 +58,7 @@ export const useUserStore = defineStore('user', {
         return { code: 1, desc: '登录错误' };
       }
     },
-    async register(data) {
+    async register(data: any) {
       try {
         let res = await registerReq(data);
         if (res.data.code === 0) {
@@ -113,7 +116,7 @@ export const useUserStore = defineStore('user', {
         return { code: 1, desc: '错误' };
       }
     },
-    async setAvatar(uuid) {
+    async setAvatar(uuid: string) {
       try {
         let res = await setUserAvatar(uuid);
         if (res.data.code === 0) {

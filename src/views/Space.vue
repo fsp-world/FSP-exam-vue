@@ -10,28 +10,12 @@ import MCButton from '@/components/MCButton.vue';
 import { storeToRefs } from 'pinia';
 
 const userStore = useUserStore();
-const { avatar, username, userQQ, role, avatarUUID, getStatus, dateToLocal, isAdmin, status, addtime } =
+const { avatar, username, userQQ, role, avatarUUID, getStatus, dateToLocal, isAdmin, status, getJoinSeason } =
   storeToRefs(userStore);
 
 userStore.syncUserInfo();
 
 const userWhiteList = ref([]);
-
-const getStudentCohort = (joinTime: Date | string) => {
-  let joinDateTime = null;
-  if (typeof joinTime === 'string') {
-    console.log(joinTime);
-    console.log(typeof joinTime);
-    joinDateTime = new Date(joinTime).getTime();
-  } else {
-    joinDateTime = joinTime.getTime();
-  }
-  if (joinDateTime < new Date('2024-07-05').setHours(0, 0, 0, 0)) {
-    return '一';
-  } else {
-    return '二';
-  }
-};
 
 getUserWhitelist().then((res: any) => {
   if (res.data.code === 0) {
@@ -83,7 +67,7 @@ const reqActivation = () => {
           <div class="user-details">
             <h2>{{ username }}</h2>
             <p>用户QQ: {{ userQQ }}</p>
-            <p>角色: {{ role }} {{ getStudentCohort(addtime) }}期成员</p>
+            <p>角色: {{ role }} {{ getJoinSeason }}</p>
             <p>注册日期: {{ dateToLocal }}</p>
             <p>账号状态: {{ getStatus }}</p>
           </div>
