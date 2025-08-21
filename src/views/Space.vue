@@ -10,13 +10,24 @@ import MCButton from '@/components/MCButton.vue';
 import { storeToRefs } from 'pinia';
 
 const userStore = useUserStore();
-const { avatar, username, userQQ, role, avatarUUID, getStatus, dateToLocal, isAdmin, status, getJoinSeason } =
-  storeToRefs(userStore);
+const {
+  avatar,
+  username,
+  userQQ,
+  role,
+  avatarUUID,
+  getStatus,
+  dateToLocal,
+  isAdmin,
+  status,
+  getJoinSeason,
+  playPermission,
+} = storeToRefs(userStore);
 
 userStore.syncUserInfo();
 
 const userWhiteList = ref<UserWhitelistItem[]>([]);
-
+console.log(playPermission.value);
 interface UserWhitelistItem {
   name: string;
   uuid: string;
@@ -91,9 +102,12 @@ const reqActivation = () => {
           </ul>
         </div>
         <div class="menu">
+          <MCRouterLink v-if="playPermission" class="button" to="https://www.fsp.ink/docs/join/">
+            游玩指南
+          </MCRouterLink>
           <MCRouterLink class="button" to="/Query/Guarantee"> 担保查询 </MCRouterLink>
           <MCRouterLink class="button" to="/Query/Examination"> 考试查询 </MCRouterLink>
-          <MCRouterLink v-if="isAdmin" class="button" to="/admin"> 管理 </MCRouterLink>
+          <MCRouterLink v-if="isAdmin" class="button" to="/admin"> 网站管理 </MCRouterLink>
           <MCButton v-if="status === 0" class="button" @click="reqActivation"> 激活账户 </MCButton>
         </div>
       </div>

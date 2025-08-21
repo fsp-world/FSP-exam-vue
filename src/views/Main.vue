@@ -7,7 +7,6 @@ import { openAlert } from '@/utils/TsAlert';
 const store = useUserStore();
 const { isLogin, username, avatar } = storeToRefs(store);
 
-
 const logout = () => {
   store.logout().then((res) => {
     openAlert({
@@ -28,7 +27,7 @@ const logout = () => {
       <MCRouterLink to="/guarantee" class="minecraft-button"> 熟人担保 </MCRouterLink>
       <MCRouterLink to="/prepareForTheExam" class="minecraft-button"> 参加考试 </MCRouterLink>
       <div class="sub-menu">
-        <MCRouterLink to="https://www.fsp.ink" class="minecraft-button"> 返回主页</MCRouterLink>
+        <MCRouterLink to="https://www.fsp.ink" class="minecraft-button"> 文档中心 </MCRouterLink>
         <MCRouterLink to="/space" class="minecraft-button"> 个人中心 </MCRouterLink>
         <button class="minecraft-button avatar">
           <RouterLink :to="!isLogin ? '/auth' : '/space'">

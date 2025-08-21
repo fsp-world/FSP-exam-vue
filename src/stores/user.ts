@@ -27,6 +27,7 @@ export const useUserStore = defineStore('user', {
     role: '',
     addtime: '',
     status: 0,
+    playPermission: false,
   }),
   getters: {
     getStatus: (state) => {
@@ -50,6 +51,7 @@ export const useUserStore = defineStore('user', {
           this.avatarUUID = res.data.avatar;
           const { imgUrl } = await getProfilePic(this.avatarUUID);
           this.avatar = imgUrl || this.avatar;
+          this.playPermission = res.data.play_permission;
           localStorage.setItem('fsp_token', res.data.token);
         }
         return res;
@@ -102,6 +104,7 @@ export const useUserStore = defineStore('user', {
           this.avatarUUID = res.data.avatar;
           this.username = res.data.username;
           this.isAdmin = res.data.isAdmin;
+          this.playPermission = res.data.play_permission;
         } else {
           this.isLogin = false;
           this.avatarUUID = res.data.avatar;
@@ -143,6 +146,7 @@ export const useUserStore = defineStore('user', {
           this.status = data.data.status;
           const { imgUrl } = await getProfilePic(this.avatarUUID);
           this.avatar = imgUrl || this.avatar;
+          this.playPermission = data.data.play_permission;
         }
       } catch (error) {
         console.error(error);
