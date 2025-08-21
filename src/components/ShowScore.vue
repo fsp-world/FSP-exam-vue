@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { toRef, computed, ref } from 'vue';
 import MCButton from './MCButton.vue';
+import MCRouterLink from '@/components/MCRouterLink.vue';
+
 const props = defineProps(['flag', 'data']);
 const emit = defineEmits(['update:flag']);
 
@@ -51,24 +53,15 @@ animateValue(0, examInfo.value.get_score, 2000, (value: number) => {
       <div class="text">
         <div v-if="examInfo.state === 1 && showData.display_text">
           <p class="title">恭喜您通过了测试！系统已自动将您添加至白名单</p>
-          <div class="info y-scroll">
-            <p class="list-title">如何进入服务器：</p>
-            <ol>
-              <li>建议使用 HMCL 或者 PCL2 启动器</li>
-              <li>下载 MinecraftJavaEdition 1.21 Fabric</li>
-              <li>下载并安装 Xaeros_Minimap 和 XaerosWorldMap</li>
-              <li>启动游戏，在多人游戏中点击“添加服务器”，在服务器地址栏粘贴提供的服务器地址</li>
-            </ol>
-            <p class="list-title">你可能需要的信息：</p>
-            <ul>
-              <li>存档种子：-8593431037239816247</li>
-              <li>官网：https://www.fsp.ink</li>
-              <li>服务器地址列表：mc.fsp.ink 或 www.fsp.ink</li>
-            </ul>
-          </div>
+          <p class="title">点击“游玩指南”获取游玩方式</p>
+          <p class="title">您也可以稍后在个人中心找到这个按钮</p>
+          <MCRouterLink class="button" to="https://www.fsp.ink/docs/join/"> 游玩指南 </MCRouterLink>
         </div>
-        <p class="title" v-if="examInfo.state === 2 && showData.display_text">非常遗憾，您未通过测试</p>
-        <MCButton class="button" @click="emit('update:flag', false)">返回考试列表</MCButton>
+        <div v-if="examInfo.state === 2 && showData.display_text">
+          <p class="title">非常遗憾，您未通过测试</p>
+        </div>
+
+        <MCButton class="button" @click="emit('update:flag', false)"> 考试列表 </MCButton>
       </div>
     </div>
   </div>

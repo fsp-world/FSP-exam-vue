@@ -27,7 +27,7 @@ const {
 userStore.syncUserInfo();
 
 const userWhiteList = ref<UserWhitelistItem[]>([]);
-console.log(playPermission.value);
+
 interface UserWhitelistItem {
   name: string;
   uuid: string;
