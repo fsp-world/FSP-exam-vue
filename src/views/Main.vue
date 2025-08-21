@@ -30,7 +30,7 @@ const logout = () => {
         信息查询（建设中）
       </MCRouterLink>
       <MCRouterLink v-if="playPermission" style="pointer-events: none" to="/" class="minecraft-button">
-        事物大厅（建设中）
+        事务大厅（建设中）
       </MCRouterLink>
       <div class="sub-menu">
         <MCRouterLink to="https://www.fsp.ink" class="minecraft-button"> 文档中心 </MCRouterLink>
