@@ -101,14 +101,16 @@ const reqActivation = () => {
             </li>
           </ul>
         </div>
-        <div class="menu">
-          <MCRouterLink v-if="playPermission" class="button" to="https://www.fsp.ink/docs/join/">
+        <div class="menu y-scroll">
+          <MCRouterLink class="button" v-if="playPermission" to="https://www.fsp.ink/docs/join/">
             游玩指南
           </MCRouterLink>
+          <MCRouterLink class="button" v-if="playPermission" to="/guarantee"> 熟人担保 </MCRouterLink>
+          <MCRouterLink class="button" v-if="playPermission" to="/prepareForTheExam"> 参加考试 </MCRouterLink>
           <MCRouterLink class="button" to="/Query/Guarantee"> 担保查询 </MCRouterLink>
           <MCRouterLink class="button" to="/Query/Examination"> 考试查询 </MCRouterLink>
-          <MCRouterLink v-if="isAdmin" class="button" to="/admin"> 网站管理 </MCRouterLink>
-          <MCButton v-if="status === 0" class="button" @click="reqActivation"> 激活账户 </MCButton>
+          <MCRouterLink class="button" v-if="isAdmin" to="/admin"> 网站管理 </MCRouterLink>
+          <MCButton class="button" v-if="status === 0" @click="reqActivation"> 激活账户 </MCButton>
         </div>
       </div>
       <div class="end">
@@ -210,6 +212,7 @@ const reqActivation = () => {
   display: flex;
   flex-direction: column;
   gap: 10px;
+  overflow-y: auto;
 
   .button {
     width: 100%;

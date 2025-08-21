@@ -5,7 +5,7 @@ import { storeToRefs } from 'pinia';
 import { openAlert } from '@/utils/TsAlert';
 
 const store = useUserStore();
-const { isLogin, username, avatar } = storeToRefs(store);
+const { isLogin, username, avatar, playPermission } = storeToRefs(store);
 
 const logout = () => {
   store.logout().then((res) => {
@@ -24,8 +24,14 @@ const logout = () => {
   <div class="exam-index">
     <img class="logo" src="../assets/images/logo.png" />
     <div class="menu">
-      <MCRouterLink to="/guarantee" class="minecraft-button"> 熟人担保 </MCRouterLink>
-      <MCRouterLink to="/prepareForTheExam" class="minecraft-button"> 参加考试 </MCRouterLink>
+      <MCRouterLink v-if="!playPermission" to="/guarantee" class="minecraft-button"> 熟人担保 </MCRouterLink>
+      <MCRouterLink v-if="!playPermission" to="/prepareForTheExam" class="minecraft-button"> 参加考试 </MCRouterLink>
+      <MCRouterLink v-if="playPermission" style="pointer-events: none" to="/" class="minecraft-button">
+        信息查询（建设中）
+      </MCRouterLink>
+      <MCRouterLink v-if="playPermission" style="pointer-events: none" to="/" class="minecraft-button">
+        事物大厅（建设中）
+      </MCRouterLink>
       <div class="sub-menu">
         <MCRouterLink to="https://www.fsp.ink" class="minecraft-button"> 文档中心 </MCRouterLink>
         <MCRouterLink to="/space" class="minecraft-button"> 个人中心 </MCRouterLink>
