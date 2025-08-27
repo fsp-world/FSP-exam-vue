@@ -19,7 +19,7 @@ insert_final_newline = true
 
 # 大括号不另起一行
 curly_bracket_next_line = false
-#
+
 # 运算符两遍都有空格
 spaces_around_operators = true
 
