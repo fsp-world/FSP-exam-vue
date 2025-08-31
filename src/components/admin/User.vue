@@ -144,7 +144,7 @@ onMounted(() => {
     <!-- 分页模块 -->
     <template #footer>
       <el-pagination :pager-count="5" background v-model:current-page="data.page" v-model:page-size="data.size"
-        :page-sizes="[2, 6, 8, 10]" layout="total, sizes, prev, pager, next, jumper"
+        :page-sizes="[10, 20, 30, 40, 50]" layout="total, sizes, prev, pager, next, jumper"
         :total="data.total"
         @change="loadUsers" />
     </template>
