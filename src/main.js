@@ -23,10 +23,16 @@ app.use(router);
 
 app.component('MCRouterLink', MCRouterLink);
 
-app.mount('#app');
-
 app.use(ElementPlus, {
   locale: zhCn,
   size: 'small',
   zIndex: 3000,
 });
+
+// 注册element-plus所有的图标组件
+import * as ElementPlusIconsVue from '@element-plus/icons-vue'
+for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
+  app.component(key, component)
+}
+
+app.mount('#app');
