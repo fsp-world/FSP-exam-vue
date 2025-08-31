@@ -315,9 +315,9 @@ const isCollapse = ref(false);
             <template #dropdown>
               <el-dropdown-menu style="width: 120px;">
                 <el-dropdown-item command="/space" :icon="User">个人信息</el-dropdown-item>
-                <el-dropdown-item command="/admin/setting" :icon="Setting">系统设置</el-dropdown-item>
-                <el-dropdown-item command="/admin/notice" :icon="Bell">系统通知</el-dropdown-item>
-                <el-dropdown-item command="/admin/editPassword" :icon="Lock">修改密码</el-dropdown-item>
+                <el-dropdown-item command="/admin" :icon="Setting">系统设置</el-dropdown-item>
+                <el-dropdown-item command="/admin" :icon="Bell">系统通知</el-dropdown-item>
+                <el-dropdown-item command="/admin" :icon="Lock">修改密码</el-dropdown-item>
                 <el-dropdown-item command="logout" :icon="SwitchButton" divided>安全退出</el-dropdown-item>
               </el-dropdown-menu>
             </template>

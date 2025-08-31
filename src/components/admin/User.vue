@@ -90,8 +90,8 @@ onMounted(() => {
       <el-row justify="space-between" align="middle">
         <h1>用户管理</h1>
         <el-breadcrumb separator="/">
-          <el-breadcrumb-item to="/newadmin">管理首页</el-breadcrumb-item>
-          <el-breadcrumb-item to="/newadmin/user">会员管理</el-breadcrumb-item>
+          <el-breadcrumb-item to="/admin">管理首页</el-breadcrumb-item>
+          <el-breadcrumb-item to="/admin/user">会员管理</el-breadcrumb-item>
           <el-breadcrumb-item>会员列表</el-breadcrumb-item>
         </el-breadcrumb>
       </el-row>
