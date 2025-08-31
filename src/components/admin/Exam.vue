@@ -26,7 +26,7 @@ const attachEditableToSurveys = (surveys: ISurvey[]) => {
     survey.editable = !(survey.notCompletedCount > 0 || survey.notReviewedCount > 0);
     // status 代表问卷是否被挂载，被挂载的问卷不能编辑
     survey.editable = survey.status === 0 ? survey.editable : false;
-    console.log(survey.editable);
+    // console.log(survey.editable);
   }
   return surveys;
 };

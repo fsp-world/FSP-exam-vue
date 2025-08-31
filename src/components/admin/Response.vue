@@ -1,11 +1,8 @@
 <template>
   <div class="box">
-    <h1>答卷审核</h1>
+    <h1>答卷管理</h1>
     <div class="tips">
-      <h3>注意事项：</h3>
-      <ul>
-        <li>已过期的答卷自动设置为已完成和已拒绝</li>
-      </ul>
+      <p>注意：已过期的答卷自动设置为已完成和已拒绝</p>
     </div>
     <div class="table-box">
       <table>
@@ -147,7 +144,7 @@ const reviewed = (id: number, pass: boolean) => {
 };
 // 获取答卷详情
 const detail = (item: IResponse) => {
-  openDetail(item.id)
+  openDetail(item.id);
 };
 
 const openDetail = (id: number) => {
@@ -156,7 +153,7 @@ const openDetail = (id: number) => {
     detailData.value.archived = res.data.isReviewed ? true : false;
     visibility.value = true;
   });
-}
+};
 
 // 退出答卷详情预览重新获取
 watch(visibility, (newValue) => {
@@ -167,12 +164,12 @@ watch(visibility, (newValue) => {
 // 初始化加载数据
 onMounted(() => {
   loadPagination().then(() => {
-    let id = parseInt(route.query.id as string)
+    let id = parseInt(route.query.id as string);
     if (id) {
-      openDetail(id)
-      let newQuery = JSON.parse(JSON.stringify(route.query))
-      delete newQuery.id
-      router.replace({query: newQuery})
+      openDetail(id);
+      let newQuery = JSON.parse(JSON.stringify(route.query));
+      delete newQuery.id;
+      router.replace({ query: newQuery });
     }
   });
 });

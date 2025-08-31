@@ -128,6 +128,7 @@ export enum ConfigItemType {
   STR = 'str',
   INT = 'int',
   BOOL = 'bool',
+  LIST = 'list',
 }
 
 export interface ConfigItem {
