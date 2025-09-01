@@ -117,6 +117,9 @@ const countUnreaded = computed(() => {
 
 // 菜单收缩
 const isCollapse = ref(false);
+
+const appName = __APP_NAME__;
+const appVersion = __APP_VERSION__;
 </script>
 
 <template>
@@ -126,7 +129,7 @@ const isCollapse = ref(false);
         <el-icon :size="30" color="rgba(255,255,255,.7)">
           <ShoppingBag />
         </el-icon>
-        <span v-show="!isCollapse">FSP-EXAM v1.0.1</span>
+        <span v-show="!isCollapse">{{ appName }} {{ appVersion }}</span>
       </router-link>
 
       <el-scrollbar style="height: calc(100vh - 60px)">
@@ -445,4 +448,3 @@ const isCollapse = ref(false);
   }
 }
 </style>
-

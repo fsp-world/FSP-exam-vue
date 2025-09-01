@@ -7,6 +7,8 @@ import { checkPassword } from '@/utils/passwordUtil';
 import { openAlert } from '@/utils/TsAlert';
 import MCButton from '@/components/MCButton.vue';
 
+const appVersion = __APP_VERSION__;
+
 const router = useRouter();
 const route = useRoute();
 const user = useUserStore();
@@ -52,7 +54,9 @@ const sendLogin = () => {
 
 <template>
   <div class="form">
-    <h2>登录</h2>
+    <h2>
+      登录<span class="version">{{ appVersion }}</span>
+    </h2>
     <input type="text" placeholder="用户名" v-model="loginForm.username" />
     <input type="password" placeholder="密码" v-model="loginForm.password" />
     <p>密码必须包含至少一个大写字母、一个小写字母、一个数字和一个特殊字符，且长度为8-16个字符。</p>
@@ -64,4 +68,15 @@ const sendLogin = () => {
   </div>
 </template>
 
-<style scoped></style>
+<style scoped>
+.form {
+  position: relative;
+}
+.version {
+  font-weight: normal;
+  font-size: 12px;
+  color: #ccc;
+  position: absolute;
+  right: 0;
+}
+</style>
