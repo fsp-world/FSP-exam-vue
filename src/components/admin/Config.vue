@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { type ConfigItem, ConfigItemType } from '@/types';
 import { ref, computed } from 'vue';
-import { getConfig, getConfigs, setConfig } from '@/apis/admin';
+import { getConfig, getConfigs, setConfig, deleteConfig } from '@/apis/admin';
 import { openAlert } from '@/utils/TsAlert';
 
 const data = ref<ConfigItem[]>([]);
@@ -22,6 +22,16 @@ const getConfig_ = () => {
 };
 getConfig_();
 
+const checkConfigKey = (key: string): boolean => {
+  const ALLOWED_CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ_';
+  for (const char of key) {
+    if (!ALLOWED_CHARS.includes(char)) {
+      return false;
+    }
+  }
+  return true;
+};
+
 const editItem = (key: string) => {
   selectedConfigItem.value = {
     key: '',
@@ -36,7 +46,15 @@ const editItem = (key: string) => {
 };
 
 const deleteItem = (key: string) => {
-  alert('这个功能还在写');
+  const check = confirm(`确认删除 ${key} 吗`);
+  if (check) {
+    deleteConfig(key).then((res) => {
+      openAlert(res.data.desc);
+      if (res.data.code === 0) {
+        getConfig_();
+      }
+    });
+  }
 };
 
 const add = () => {
@@ -50,6 +68,11 @@ const add = () => {
 };
 
 const save = async () => {
+  if (!checkConfigKey(selectedConfigItem.value.key)) {
+    openAlert('键名只允许包含大写的26个字母或者下划线');
+    showModal.value = false;
+    return;
+  }
   const res = await setConfig(selectedConfigItem.value);
   if (res.data.code === 0) {
     openAlert('成功!');
@@ -110,7 +133,14 @@ const searchComputed = computed(() => {
   <div v-if="showModal" class="modal">
     <div class="modal-content">
       <h2>修改配置项</h2>
-      <p>{{ selectedConfigItem }}</p>
+      <p>data:</p>
+      <p style="padding-bottom: 10px">
+        {<br />
+        &nbsp;&nbsp;key: {{ selectedConfigItem.key }}<br />
+        &nbsp;&nbsp;value: {{ selectedConfigItem.value }}<br />
+        &nbsp;&nbsp;type: {{ selectedConfigItem.type }}<br />
+        }
+      </p>
       <form @submit.prevent="save">
         <div class="form-group">
           <label>Key</label>

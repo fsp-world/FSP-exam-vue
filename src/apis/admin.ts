@@ -66,6 +66,7 @@ export const delSlotAPI = (data: SurveySlot) => request.post('/admin/del_slot', 
 export const getGuaranteeAPI = (data: IPagination) => request.get('/admin/guarantee/get', { params: data });
 
 // config
-export const getConfig = (data: string = '') => request.get('/admin/config', { params: { key: data } });
-export const getConfigs = () => request.get('/admin/config');
-export const setConfig = (data: ConfigItem) => request.post('/admin/config', JSON.stringify(data));
+export const getConfig = (data: string = '') => request.get('/admin/config/query', { params: { key: data } });
+export const getConfigs = () => request.get('/admin/config/query');
+export const setConfig = (data: ConfigItem) => request.post('/admin/config/set', JSON.stringify(data));
+export const deleteConfig = (data: string) => request.post('/admin/config/delete', JSON.stringify(data));
