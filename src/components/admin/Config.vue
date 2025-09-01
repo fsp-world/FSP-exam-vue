@@ -1,8 +1,7 @@
 <script setup lang="ts">
+import { type ConfigItem, ConfigItemType } from '@/types';
 import { ref, computed } from 'vue';
 import { getConfig, getConfigs, setConfig } from '@/apis/admin';
-import MCButton from '@/components/MCButton.vue';
-import { type ConfigItem, ConfigItemType } from '@/types';
 import { openAlert } from '@/utils/TsAlert';
 
 const data = ref<ConfigItem[]>([]);
@@ -34,6 +33,10 @@ const editItem = (key: string) => {
   });
   showModal.value = true;
   isAdd.value = false;
+};
+
+const deleteItem = (key: string) => {
+  alert('这个功能还在写');
 };
 
 const add = () => {
@@ -69,46 +72,38 @@ const searchComputed = computed(() => {
 
 <template>
   <h1>配置管理</h1>
-  <div class="search">
-    <input type="search" v-model="searchData" placeholder="搜索" />
-    &nbsp; type:
-    <select v-model="searchType">
-      <option v-for="i in ConfigItemType" :value="i">{{ i }}</option>
-    </select>
-    <MCButton
-      class="button"
+  <div class="filter">
+    <el-input type="search" size="large" style="width: 240px" v-model="searchData" placeholder="搜索" />
+    <el-select size="large" style="width: 240px" v-model="searchType" placeholder="筛选类型">
+      <el-option v-for="i in ConfigItemType" :value="i">{{ i }}</el-option>
+    </el-select>
+    <el-button
+      size="large"
       @click="
         searchType = '';
         searchData = '';
       "
-      >&times;</MCButton
     >
-    &nbsp;
-    <MCButton class="button" @click="add">新增</MCButton>
-    &nbsp;
-    <MCButton class="button" @click="getConfig_">刷新</MCButton>
+      <el-icon><Close /></el-icon>
+    </el-button>
+
+    <el-button-group size="large">
+      <el-button @click="add">新增</el-button>
+      <el-button @click="getConfig_">刷新</el-button>
+    </el-button-group>
   </div>
   <div class="table">
-    <table>
-      <thead>
-        <tr>
-          <th class="name">键</th>
-          <th class="qq">值</th>
-          <th class="role">类型</th>
-          <th class="action">操作</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="item in searchComputed" :key="item.key">
-          <td>{{ item.key }}</td>
-          <td>{{ item.value }}</td>
-          <td>{{ item.type }}</td>
-          <td class="action">
-            <MCButton class="button" @click="editItem(item.key)">修改</MCButton>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+    <el-table :data="searchComputed" style="width: 90%; font-size: 16px">
+      <el-table-column fixed prop="key" label="键" width="250" />
+      <el-table-column prop="value" label="值" width="400" />
+      <el-table-column prop="type" label="类型" width="60" />
+      <el-table-column fixed="right" label="操作" min-width="120">
+        <template #default="scope">
+          <el-button size="large" link type="primary" @click="editItem(scope.row.key)">修改</el-button>
+          <el-button size="large" link type="danger" @click="deleteItem(scope.row.key)">删除</el-button>
+        </template>
+      </el-table-column>
+    </el-table>
   </div>
 
   <!-- 模态框 -->
@@ -141,84 +136,15 @@ const searchComputed = computed(() => {
 </template>
 
 <style scoped>
-.search {
-  margin: 10px 0px;
+h1 {
+  font-size: 30px;
+}
+.filter {
+  padding: 20px 0;
   display: flex;
-  align-items: center;
-
-  input {
-    width: 300px;
-    border: 1px solid #ccc;
-    padding: 10px 16px;
-    outline: none;
-    border-radius: 6px;
-  }
-}
-
-table,
-table td,
-table th {
-  border: 1px solid #000000;
-  border-collapse: collapse;
-}
-table {
-  width: 100%;
-  margin-bottom: 20px;
-}
-td,
-th {
-  padding: 10px;
-  text-align: center;
-}
-.action {
-  .button {
-    width: 100%;
-    height: 40px;
-    margin: 0px auto;
-  }
-}
-@media (max-width: 1200px) {
-  .table {
-    max-width: 90vw;
-    overflow-x: auto;
-    .avatar,
-    .name,
-    .qq,
-    .role,
-    .time,
-    .status,
-    .action {
-      min-width: 80px;
-    }
-  }
-}
-.avatar {
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
-}
-button {
-  margin: 5px;
-  padding: 5px 10px;
-  font-size: 14px;
-  border-radius: 5px;
-  background-color: #ccc;
-  cursor: pointer;
-}
-button:hover {
-  background-color: #888;
-}
-button:disabled {
-  background-color: #ddd;
-  cursor: not-allowed;
-}
-.pagination {
-  display: flex;
-  justify-content: center;
-  align-items: center;
   gap: 10px;
-  margin-top: 20px;
 }
+
 .modal {
   position: fixed;
   top: 0;
@@ -229,6 +155,7 @@ button:disabled {
   display: flex;
   justify-content: center;
   align-items: center;
+  z-index: 10000;
 }
 .modal-content {
   background-color: white;
