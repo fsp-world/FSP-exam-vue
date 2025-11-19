@@ -176,9 +176,9 @@ const appVersion = __APP_VERSION__;
           <el-form-item>
             <el-button :icon="Fold" @click="isCollapse = !isCollapse" />
           </el-form-item>
-          <el-form-item>
+          <!-- <el-form-item>
             <el-input v-model.trim="keyword" placeholder="请搜索" :suffix-icon="Search" />
-          </el-form-item>
+          </el-form-item> -->
         </el-form>
 
         <div class="right-menu">
