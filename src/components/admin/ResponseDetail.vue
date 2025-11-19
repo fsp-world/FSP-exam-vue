@@ -82,13 +82,14 @@ const handleScoreChange = (payload: { questionId: number; score: number }) => {
   border-radius: 50%;
 }
 .preview {
+  z-index: 999;
   position: fixed;
   top: 20px;
   right: 0;
   left: 50%;
   transform: translate(-50%);
   width: 70vw;
-  height: 92%;
+  height: 90vh;
   padding: 20px;
   background-color: white;
   box-shadow: 3px 6px 10px 6px #ccc;
@@ -116,8 +117,8 @@ const handleScoreChange = (payload: { questionId: number; score: number }) => {
 @media (max-width: 1200px) {
   .preview {
     width: calc(100vw - 60px);
-    height: 95%;
-    top: 0px;
+    height: 90vh;
+    top: 50px;
     left: 20px;
     transform: none;
     box-shadow: none;
