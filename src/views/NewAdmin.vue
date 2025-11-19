@@ -126,9 +126,10 @@ const appVersion = __APP_VERSION__;
   <el-container style="height: 100vh">
     <el-aside width="auto">
       <router-link to="/" class="logo">
-        <el-icon :size="30" color="rgba(255,255,255,.7)">
+        <!-- <el-icon :size="30" color="rgba(255,255,255,.7)">
           <ShoppingBag />
-        </el-icon>
+        </el-icon> -->
+        <img src="../assets/images/icon-s.png" width="30px">
         <span v-show="!isCollapse">{{ appName }} {{ appVersion }}</span>
       </router-link>
 
