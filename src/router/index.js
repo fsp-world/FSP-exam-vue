@@ -89,8 +89,13 @@ const router = createRouter({
       path: '/admin',
       component: () => import('@/views/NewAdmin.vue'),
       meta: { requiresAuth: true, requiresAdmin: true },
-      redirect: '/admin/user', // TODO: 临时，还没想好首屏放什么
+      redirect: '/admin/dashboard', // TODO: 临时，还没想好首屏放什么
       children: [
+        {
+          path: 'dashboard',
+          name: 'Dashboard',
+          component: () => import('@/components/admin/Dashboard.vue'),
+        },
         {
           path: 'user',
           name: 'User',
