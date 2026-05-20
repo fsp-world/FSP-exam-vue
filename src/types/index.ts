@@ -136,3 +136,27 @@ export interface ConfigItem {
   value: string;
   type: ConfigItemType;
 }
+
+export interface UploadSchematicData {
+  fileName: string,
+  originalAuthor: string,
+  desc: string,
+  type: string,
+  isPublic: 'true' | 'false',
+  gameVersion: string,
+  uploadFile: File | null
+}
+
+export interface Schematic{
+  fileName: string,
+  author: string,
+  originalAuthor: string,
+  uploadDate: string
+  EditDate: string,
+  desc: string,
+  size: string,
+  type: string,
+  isPublic: boolean,
+  downloadVolume: number,
+  gameVersion: string,
+}

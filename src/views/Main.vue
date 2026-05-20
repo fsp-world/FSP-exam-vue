@@ -26,11 +26,11 @@ const logout = () => {
     <div class="menu">
       <MCRouterLink v-if="!playPermission" to="/guarantee" class="minecraft-button"> 熟人担保 </MCRouterLink>
       <MCRouterLink v-if="!playPermission" to="/prepareForTheExam" class="minecraft-button"> 参加考试 </MCRouterLink>
-      <MCRouterLink v-if="playPermission" style="pointer-events: none" to="/" class="minecraft-button">
+      <MCRouterLink v-if="playPermission" to="/" class="minecraft-button">
         信息查询（建设中）
       </MCRouterLink>
-      <MCRouterLink v-if="playPermission" style="pointer-events: none" to="/" class="minecraft-button">
-        事务大厅（建设中）
+      <MCRouterLink v-if="playPermission" to="/resourceCenter" class="minecraft-button">
+        资源中心
       </MCRouterLink>
       <div class="sub-menu">
         <MCRouterLink to="https://www.fsp.ink" class="minecraft-button"> 文档中心 </MCRouterLink>

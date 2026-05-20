@@ -38,6 +38,11 @@ const router = createRouter({
       component: () => import('@/views/Activation.vue'),
     },
     {
+      path: '/resourceCenter',
+      name: 'ResourceCenter',
+      component: () => import('@/views/ResourceCenter.vue')
+    },
+    {
       path: '/query',
       name: 'Query',
       redirect: { name: 'QueryExamination' },
