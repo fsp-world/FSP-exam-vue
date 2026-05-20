@@ -126,9 +126,10 @@ const appVersion = __APP_VERSION__;
   <el-container style="height: 100vh">
     <el-aside width="auto">
       <router-link to="/" class="logo">
-        <el-icon :size="30" color="rgba(255,255,255,.7)">
+        <!-- <el-icon :size="30" color="rgba(255,255,255,.7)">
           <ShoppingBag />
-        </el-icon>
+        </el-icon> -->
+        <img src="../assets/images/icon-s.png" width="30px">
         <span v-show="!isCollapse">{{ appName }} {{ appVersion }}</span>
       </router-link>
 
@@ -176,9 +177,9 @@ const appVersion = __APP_VERSION__;
           <el-form-item>
             <el-button :icon="Fold" @click="isCollapse = !isCollapse" />
           </el-form-item>
-          <el-form-item>
+          <!-- <el-form-item>
             <el-input v-model.trim="keyword" placeholder="请搜索" :suffix-icon="Search" />
-          </el-form-item>
+          </el-form-item> -->
         </el-form>
 
         <div class="right-menu">

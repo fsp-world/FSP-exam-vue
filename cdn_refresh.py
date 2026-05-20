@@ -14,6 +14,9 @@ def generate_cdn_urls(dist_path, base_url):
         list: 包含所有文件CDN URL的列表
     """
     cdn_urls = []
+
+    cdn_urls.append(f"{base_url.rstrip('/')}/")
+
     dist_path = Path(dist_path)
     
     # 遍历dist目录及其子目录
