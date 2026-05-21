@@ -77,6 +77,17 @@ const checkFormData = (): boolean => {
     return false
   }
 
+  const invalidChars = /[\\/:*?"<>|]/;
+  if (invalidChars.test(schematic.value.fileName)) {
+    openAlert('文件名不能包含以下字符: \\ / : * ? " < > |');
+    return false;
+  }
+
+  if (schematic.value.fileName.length > 25) {
+    openAlert('文件名不能超过25个字符');
+    return false;
+  }
+
   if (!schematic.value.gameVersion?.trim()) {
     openAlert('游戏版本不能为空')
     return false
