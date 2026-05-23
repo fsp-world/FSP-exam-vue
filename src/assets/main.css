@@ -3,6 +3,9 @@
   /* --bg-img: url('https://s21.ax1x.com/2025/03/24/pEBBVYt.jpg') */
   --bg-img: url('/src/assets/images/bg.jpg');
   --button-disabled: url('/src/assets/images/rainbow_pixel_gui/button_disabled.png');
+  --button-font-size-large: 30px;
+  --button-font-size-medium: 18px;
+  --button-font-size-small: 14px;
 }
 
 @font-face {

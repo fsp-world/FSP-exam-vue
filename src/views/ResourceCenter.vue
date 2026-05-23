@@ -1,7 +1,9 @@
 <script lang="ts" setup>
-import { type Schematic } from '@/types';
+import type { Schematic } from '@/types';
 import UploadSchematic from '@/components/UploadSchematic.vue';
 import MCButton from '@/components/MCButton.vue';
+import MCRouterLink from '@/components/MCRouterLink.vue';
+import GrassAndDirtBackground from '@/components/background/GrassAndDirtBackground.vue';
 
 const schematicTypes = [
   'redstone', 'architecture', 'abstract'
@@ -50,43 +52,54 @@ const schematicList: Schematic[] = [
 ]
 </script>
 <template>
-  <div class="bg">
-    <div class="grass bga"></div>
-    <div class="dirt1 bga"></div>
-    <div class="dirt2 bga"></div>
-    <div class="dirt3 bga"></div>
-    <div class="dirt4 bga"></div>
-    <div class="dirt5 bga"></div>
-  </div>
-  <div class="main">
-    <div class="nav">
-      <h1>资源中心</h1>
-    </div>
-    <div class="content">
-      <div class="top">
-        <UploadSchematic></UploadSchematic>
-        <div class="buttons">
-          <MCButton class="button">红石</MCButton>
-          <MCButton class="button">建筑</MCButton>
-          <MCButton class="button">抽象</MCButton>
-        </div>
+  <GrassAndDirtBackground>
+    <div class="main">
+      <div class="nav">
+        <h1>资源中心</h1>
+        <MCRouterLink to="/" class="back">
+          返回
+        </MCRouterLink>
       </div>
-      <ul class="list">
-        <li class="schematic" v-for="item in schematicList">{{ item.fileName }}</li>
-      </ul>
-
-
+      <div class="content">
+        <div class="top">
+          <UploadSchematic></UploadSchematic>
+          <div class="buttons">
+            <MCButton class="button">红石</MCButton>
+            <MCButton class="button">建筑</MCButton>
+            <MCButton class="button">抽象</MCButton>
+          </div>
+        </div>
+        <ul class="list">
+          <li class="schematic" v-for="item in schematicList">{{ item.fileName }}</li>
+        </ul>
+      </div>
     </div>
-  </div>
+  </GrassAndDirtBackground>
 </template>
 <style scoped>
 .main {
   width: calc(100% - 40px);
   padding: 20px;
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 1000px;
+  height: calc(100vh - 40px);
+  background-color: rgba(255, 255, 255, 0.4);
 
   .nav {
     border-bottom: 5px solid #eee;
     margin-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .nav .back {
+    height: 40px;
+    background-color: rgba(255, 255, 255, 0.5);
+    border-radius: 5px;
+    font-size: var(--button-font-size-medium);
+    margin-top: 20px;
+    min-width: 100px;
   }
 
   .content {
@@ -105,7 +118,7 @@ const schematicList: Schematic[] = [
           padding: 0px 10px;
           background-color: rgba(255, 255, 255, 0.5);
           border-radius: 5px;
-          font-size: 18px;
+          font-size: var(--button-font-size-medium);
           min-width: 80px;
         }
       }
@@ -126,67 +139,5 @@ const schematicList: Schematic[] = [
   height: 80px;
   background-color: rgba(255, 255, 255, 0.8);
   border-radius: 5px;
-}
-
-.bg {
-  width: 100%;
-  height: 100vh;
-  background-color: black;
-  position: absolute;
-  top: 0;
-  left: 0;
-  opacity: 0.9;
-  z-index: -1;
-
-  .bga {
-    --block-hei: 130px;
-    width: 100%;
-    image-rendering: pixelated;
-    position: absolute;
-    background-repeat: repeat;
-    background-size: var(--block-hei) var(--block-hei);
-  }
-
-  .grass {
-    background-image: url(/src/assets/images/vanilla_gui/block/grass_block_side.png);
-    top: 0;
-    z-index: 1;
-    height: var(--block-hei);
-  }
-
-  .dirt1 {
-    background-image: url(/src/assets/images/vanilla_gui/block/dirt.png);
-    top: var(--block-hei);
-    z-index: 0;
-    height: var(--block-hei);
-  }
-
-  .dirt2 {
-    background-image: url(/src/assets/images/vanilla_gui/block/dirt.png);
-    top: var(--block-hei);
-    z-index: 0;
-    height: calc(var(--block-hei) * 2);
-  }
-
-  .dirt3 {
-    background-image: url(/src/assets/images/vanilla_gui/block/dirt.png);
-    top: var(--block-hei);
-    z-index: 0;
-    height: calc(var(--block-hei) * 3);
-  }
-
-  .dirt4 {
-    background-image: url(/src/assets/images/vanilla_gui/block/dirt.png);
-    top: var(--block-hei);
-    z-index: 0;
-    height: calc(var(--block-hei) * 4);
-  }
-
-  .dirt5 {
-    background-image: url(/src/assets/images/vanilla_gui/block/dirt.png);
-    top: var(--block-hei);
-    z-index: 0;
-    height: calc(var(--block-hei) * 5);
-  }
 }
 </style>

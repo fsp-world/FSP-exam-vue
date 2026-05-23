@@ -197,8 +197,7 @@ const confirmUpload = () => {
 </template>
 <style scoped>
 .button {
-  font-size: 20px;
-  /* padding: 10px 20px; */
+  font-size: var(--button-font-size-medium);
   min-width: 120px;
   width: 30%;
   user-select: none;
