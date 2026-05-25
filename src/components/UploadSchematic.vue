@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import MCButton from './MCButton.vue';
-import type { UploadSchematicData } from '@/types';
+import type { UploadSchematicFormData } from '@/types';
 import { ref } from 'vue';
 import { useUserStore } from '@/stores/user';
 import { storeToRefs } from 'pinia';
@@ -16,10 +16,10 @@ const fileName = ref<string>('');
 const schematicTypes = [
   { displayName: '红石', name: 'redstone' },
   { displayName: '建筑', name: 'architecture' },
-  { displayName: '抽象', name: 'abstract' }
+  { displayName: '其他', name: 'others' }
 ]
 
-const getDefaultSchematic = (): UploadSchematicData => ({
+const getDefaultSchematic = (): UploadSchematicFormData => ({
   fileName: '',
   originalAuthor: '',
   isPublic: 'false',
@@ -27,9 +27,10 @@ const getDefaultSchematic = (): UploadSchematicData => ({
   desc: '',
   gameVersion: '',
   uploadFile: null,
+  tags: '',
 })
 
-const schematic = ref<UploadSchematicData>(getDefaultSchematic())
+const schematic = ref<UploadSchematicFormData>(getDefaultSchematic())
 
 const init = () => {
   schematic.value = getDefaultSchematic()
@@ -67,7 +68,7 @@ const checkFormData = (): boolean => {
     return false
   }
 
-  if (!schematic.value.fileName?.trim()) {
+  if (!schematic.value.fileName.trim()) {
     openAlert('文件名不能为空')
     return false
   }
@@ -88,13 +89,19 @@ const checkFormData = (): boolean => {
     return false;
   }
 
-  if (!schematic.value.gameVersion?.trim()) {
+  if (!schematic.value.gameVersion.trim()) {
     openAlert('游戏版本不能为空')
     return false
   }
 
-  if (!schematic.value.type?.trim()) {
+  if (!schematic.value.type.trim()) {
     openAlert('类型不能为空')
+    return false
+  }
+
+  const tagsArray = schematic.value.tags.trim().split(/\s+/);
+  if (tagsArray.length > 5) {
+    openAlert('标签数量不能超过5个')
     return false
   }
 
@@ -167,6 +174,12 @@ const confirmUpload = () => {
           </td>
         </tr>
         <tr>
+          <td>标签</td>
+          <td>
+            <input v-model="schematic.tags" type="text" placeholder="多个标签用空格分隔, 最多5个标签">
+          </td>
+        </tr>
+        <tr>
           <td>权限</td>
           <td class="permission">
             <label>公开</label><input v-model="schematic.isPublic" value="true" name="isPublic" type="radio">
@@ -203,7 +216,7 @@ const confirmUpload = () => {
 .card {
   width: 90%;
   max-width: 900px;
-  height: 430px;
+  height: 450px;
   background-image: url('@/assets/images/vanilla_gui/demo_background.png');
   background-position: center;
   background-size: 100% 100%;

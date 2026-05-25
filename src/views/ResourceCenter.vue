@@ -5,10 +5,6 @@ import MCButton from '@/components/MCButton.vue';
 import MCRouterLink from '@/components/MCRouterLink.vue';
 import GrassAndDirtBackground from '@/components/background/GrassAndDirtBackground.vue';
 
-const schematicTypes = [
-  'redstone', 'architecture', 'abstract'
-]
-
 const schematicList: Schematic[] = [
   {
     fileName: '全无品',
@@ -21,7 +17,8 @@ const schematicList: Schematic[] = [
     desc: '描述',
     isPublic: true,
     downloadVolume: 114514,
-    gameVersion: '1.21'
+    gameVersion: '1.21',
+    tags: ['标签1', '标签2']
   },
   {
     fileName: '熔炉组',
@@ -34,7 +31,8 @@ const schematicList: Schematic[] = [
     desc: '描述',
     isPublic: true,
     downloadVolume: 114514,
-    gameVersion: '1.21'
+    gameVersion: '1.21',
+    tags: ['标签1', '标签2']
   },
   {
     fileName: '教堂',
@@ -47,7 +45,8 @@ const schematicList: Schematic[] = [
     desc: '描述',
     isPublic: false,
     downloadVolume: 114514,
-    gameVersion: '1.21'
+    gameVersion: '1.21',
+    tags: ['标签1', '标签2']
   }
 ]
 </script>
@@ -66,7 +65,7 @@ const schematicList: Schematic[] = [
           <div class="buttons">
             <MCButton :length="'short'" class="button">红石</MCButton>
             <MCButton :length="'short'" class="button">建筑</MCButton>
-            <MCButton :length="'short'" class="button">抽象</MCButton>
+            <MCButton :length="'short'" class="button">其他</MCButton>
           </div>
         </div>
         <ul class="list">

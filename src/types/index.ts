@@ -137,11 +137,12 @@ export interface ConfigItem {
   type: ConfigItemType;
 }
 
-export interface UploadSchematicData {
+export interface UploadSchematicFormData {
   fileName: string,
   originalAuthor: string,
   desc: string,
   type: string,
+  tags: string,
   isPublic: 'true' | 'false',
   gameVersion: string,
   uploadFile: File | null
@@ -156,6 +157,7 @@ export interface Schematic{
   desc: string,
   size: string,
   type: string,
+  tags: string[]
   isPublic: boolean,
   downloadVolume: number,
   gameVersion: string,
