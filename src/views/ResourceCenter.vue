@@ -56,7 +56,7 @@ const schematicList: Schematic[] = [
     <div class="main">
       <div class="nav">
         <h1>资源中心</h1>
-        <MCRouterLink to="/" class="back">
+        <MCRouterLink :length="'short'" to="/" class="back">
           返回
         </MCRouterLink>
       </div>
@@ -64,9 +64,9 @@ const schematicList: Schematic[] = [
         <div class="top">
           <UploadSchematic></UploadSchematic>
           <div class="buttons">
-            <MCButton class="button">红石</MCButton>
-            <MCButton class="button">建筑</MCButton>
-            <MCButton class="button">抽象</MCButton>
+            <MCButton :length="'short'" class="button">红石</MCButton>
+            <MCButton :length="'short'" class="button">建筑</MCButton>
+            <MCButton :length="'short'" class="button">抽象</MCButton>
           </div>
         </div>
         <ul class="list">
@@ -85,6 +85,7 @@ const schematicList: Schematic[] = [
   max-width: 1000px;
   height: calc(100vh - 40px);
   background-color: rgba(255, 255, 255, 0.4);
+  overflow-x: hidden;
 
   .nav {
     border-bottom: 5px solid #eee;
@@ -94,12 +95,7 @@ const schematicList: Schematic[] = [
   }
 
   .nav .back {
-    height: 40px;
-    background-color: rgba(255, 255, 255, 0.5);
-    border-radius: 5px;
-    font-size: var(--button-font-size-medium);
     margin-top: 20px;
-    min-width: 100px;
   }
 
   .content {
@@ -112,15 +108,6 @@ const schematicList: Schematic[] = [
       .buttons {
         display: flex;
         gap: 10px;
-
-        .button {
-          height: 50px;
-          padding: 0px 10px;
-          background-color: rgba(255, 255, 255, 0.5);
-          border-radius: 5px;
-          font-size: var(--button-font-size-medium);
-          min-width: 80px;
-        }
       }
     }
 

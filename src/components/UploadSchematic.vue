@@ -134,7 +134,7 @@ const confirmUpload = () => {
 
 </script>
 <template>
-  <MCButton class="button" @click="upload">上传投影</MCButton>
+  <MCButton :length="'medium'" class="show-card-button" @click="upload">上传投影</MCButton>
   <form v-if="displayCard" class="card">
     <table class="table">
       <tbody>
@@ -190,33 +190,33 @@ const confirmUpload = () => {
       </tbody>
     </table>
     <div class="buttons">
-      <button class="cancel" type="button" @click="cancel">取消</button>
-      <button class="confirm" type="button" @click="confirmUpload">上传</button>
+      <MCButton :length="'medium'" @click="cancel">取消</MCButton>
+      <MCButton :length="'medium'" @click="confirmUpload">上传</MCButton>
     </div>
   </form>
 </template>
 <style scoped>
-.button {
-  font-size: var(--button-font-size-medium);
+.show-card-button {
   min-width: 120px;
-  width: 30%;
-  user-select: none;
-  border-radius: 5px;
 }
 
 .card {
-  min-width: 370px;
   width: 90%;
   max-width: 900px;
   height: 430px;
-  background-color: rgba(255, 255, 255, 0.7);
-  /* opacity: 0.9; */
+  background-image: url('@/assets/images/vanilla_gui/demo_background.png');
+  background-position: center;
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  image-rendering: pixelated;
   position: fixed;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
   border-radius: 5px;
-  padding: 20px;
+  padding: 30px;
+  z-index: 10;
+  overflow-x: auto;
 }
 
 .table {
@@ -272,15 +272,5 @@ const confirmUpload = () => {
   display: flex;
   gap: 20px;
   justify-content: center;
-
-  button {
-    padding: 10px 50px;
-    border-radius: 5px;
-    font-size: 20px;
-  }
-
-  button:hover {
-    background-color: #ddd;
-  }
 }
 </style>

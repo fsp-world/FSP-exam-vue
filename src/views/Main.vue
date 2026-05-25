@@ -33,8 +33,8 @@ const logout = () => {
         资源中心
       </MCRouterLink>
       <div class="sub-menu">
-        <MCRouterLink to="https://www.fsp.ink" class="minecraft-button"> 文档中心 </MCRouterLink>
-        <MCRouterLink to="/space" class="minecraft-button"> 个人中心 </MCRouterLink>
+        <MCRouterLink :length="'medium'" to="https://www.fsp.ink" class="minecraft-button"> 文档中心 </MCRouterLink>
+        <MCRouterLink :length="'medium'" to="/space" class="minecraft-button"> 个人中心 </MCRouterLink>
         <button class="minecraft-button avatar">
           <RouterLink :to="!isLogin ? '/auth' : '/space'">
             <img :title="!isLogin ? '' : '点我进入个人中心'" class="avatar-img" :src="avatar" alt="头像" width="100%" />
@@ -75,6 +75,7 @@ const logout = () => {
   justify-content: center;
   flex-wrap: wrap;
   padding: 30px;
+
   button {
     font-size: 30px;
     width: 100%;
@@ -87,10 +88,12 @@ const logout = () => {
     gap: 10px;
     width: 100%;
     position: relative;
+
     button {
       width: 50%;
     }
   }
+
   .avatar {
     top: 0;
     right: 0;
@@ -102,6 +105,7 @@ const logout = () => {
     box-sizing: border-box;
     transform: translate(100%, 0);
     border-radius: 5px;
+
     .avatar-img {
       image-rendering: pixelated;
       border-radius: 5px;
@@ -109,17 +113,21 @@ const logout = () => {
       height: 66px;
       width: 66px;
     }
+
     a {
       color: #fff;
     }
+
     span {
       padding: 5px;
     }
   }
+
   .avatar:hover .avatat-hover,
   .avatar:hover .logout {
     display: inline-block;
   }
+
   .avatat-hover {
     display: none;
     word-break: normal;
@@ -154,15 +162,19 @@ const logout = () => {
     flex-direction: column;
     justify-content: space-between;
   }
+
   .exam-index .menu {
     padding-bottom: 30%;
+
     button {
       height: 60px;
     }
+
     .avatar {
       display: none;
     }
   }
+
   .exam-index .logo {
     padding-top: 30%;
     width: 100vw;

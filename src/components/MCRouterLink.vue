@@ -1,5 +1,5 @@
 <template>
-  <MCButton @click="handleClick">
+  <MCButton :disabled="props.disabled" :length="props.length" @click="handleClick">
     <slot></slot>
   </MCButton>
 </template>
@@ -10,12 +10,16 @@ import { useRouter } from "vue-router";
 
 const router = useRouter();
 
-const props = defineProps({
-  to: {
-    type: String,
-    required: true,
-  },
-});
+interface Props {
+  to: string
+  disabled?: boolean
+  length?: 'short' | 'medium' | 'long'
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  disabled: false,
+  length: 'long',
+})
 
 const handleClick = () => {
   if (props.to.startsWith("http://") || props.to.startsWith("https://")) {
