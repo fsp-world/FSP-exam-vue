@@ -1,9 +1,14 @@
 :root {
   --bg-img: url('/src/assets/images/bg.jpg');
   --button-disabled: url('/src/assets/images/rainbow_pixel_gui/button_disabled.png');
+
   --button-font-size-large: 30px;
   --button-font-size-medium: 18px;
   --button-font-size-small: 14px;
+
+  --title-font-size-large: 32px;
+  --title-font-size-medium: 26px;
+  --title-font-size-small: 18px;
 }
 
 @font-face {

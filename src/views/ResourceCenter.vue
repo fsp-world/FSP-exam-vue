@@ -3,7 +3,7 @@ import { ref } from 'vue'
 import type { Schematic } from '@/types';
 import UploadSchematic from '@/components/UploadSchematic.vue';
 import MCRouterLink from '@/components/MCRouterLink.vue';
-import GrassAndDirtBackground from '@/components/background/GrassAndDirtBackground.vue';
+import StrippedBirchLogBackground from '@/components/background/StrippedBirchLogBackground.vue';
 import MCSegmentedControl from '@/components/MCSegmentedControl.vue';
 
 const schematicList: Schematic[] = [
@@ -64,10 +64,10 @@ const changeViewList = (value: any) => {
 
 </script>
 <template>
-  <GrassAndDirtBackground>
+  <StrippedBirchLogBackground>
     <div class="main">
       <div class="nav">
-        <h1>资源中心</h1>
+        <div class="title">资源中心</div>
         <MCRouterLink :length="'short'" to="/" class="back">
           返回
         </MCRouterLink>
@@ -80,13 +80,43 @@ const changeViewList = (value: any) => {
           </MCSegmentedControl>
         </div>
         <ul class="list">
-          <li class="schematic" v-for="item in schematicList">{{ item.fileName }}</li>
+          <li class="schematic" v-for="item in schematicList">
+            <div class="name">{{ item.fileName }}</div>
+            <div class="tags">
+              <span v-for="tag in item.tags" :key="tag" class="tag">{{ tag }}</span>
+            </div>
+          </li>
         </ul>
+        <div class="shelf"></div>
       </div>
     </div>
-  </GrassAndDirtBackground>
+  </StrippedBirchLogBackground>
 </template>
 <style scoped>
+@keyframes titleIn {
+  0% {
+    transform: translateY(-100px);
+    opacity: 0;
+  }
+
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes titleOut {
+  0% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+
+  100% {
+    transform: translateY(-100px);
+    opacity: 0;
+  }
+}
+
 .main {
   width: calc(100% - 40px);
   padding: 20px;
@@ -94,18 +124,41 @@ const changeViewList = (value: any) => {
   margin-right: auto;
   max-width: 1000px;
   height: calc(100vh - 40px);
-  background-color: rgba(255, 255, 255, 0.4);
   overflow-x: hidden;
 
   .nav {
-    border-bottom: 5px solid #eee;
-    margin-bottom: 10px;
     display: flex;
     justify-content: space-between;
   }
 
+  .nav .title {
+    width: 160px;
+    height: 100px;
+    background-image: url(/src/assets/images/vanilla_gui/block/oak_sign.png);
+    background-size: 160px 160px;
+    background-repeat: no-repeat;
+    image-rendering: pixelated;
+    position: relative;
+    /* font-weight: bold; */
+    top: -20px;
+    filter: drop-shadow(4px 4px 2px rgba(0, 0, 0, 0.3));
+
+    font-size: var(--title-font-size-medium);
+    user-select: none;
+    color: #fff;
+    padding-top: 90px;
+    text-align: center;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+
+    animation: titleIn ease-out 0.5s 0.1s backwards;
+  }
+
+  .nav .title:hover {
+    animation: titleOut ease-in-out 0.5s 0.1s forwards;
+  }
+
   .nav .back {
-    margin-top: 20px;
+    margin-top: 30px;
   }
 
   .content {
@@ -125,17 +178,67 @@ const changeViewList = (value: any) => {
     .list {
       display: flex;
       flex-direction: column;
-      gap: 10px;
+      gap: 20px;
       padding: 10px 0;
       /* background-color: #eee; */
     }
   }
+
+}
+
+.shelf {
+  width: 100px;
+  height: 100px;
+  background-image: url(/src/assets/images/vanilla_gui/block/bookshelf.png);
+  background-size: 100px 100px;
+  background-repeat: repeat-x;
+  image-rendering: pixelated;
+  position: fixed;
+  bottom: 0px;
+  left: 0px;
+  border-radius: 5px;
+  box-shadow: 3px 0px 5px rgba(0, 0, 0, 0.5);
+
 }
 
 .schematic {
   width: 100%;
-  height: 80px;
-  background-color: rgba(255, 255, 255, 0.8);
+  height: 100px;
+  background-image: url(/src/assets/images/vanilla_gui/block/stripped_oak_log_rt.png);
+  /* clip-path: inset(38px 0 0 0); */
+  background-size: 100px 100px;
+  background-repeat: repeat;
+  image-rendering: pixelated;
   border-radius: 5px;
+  box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.5);
+  /* filter: drop-shadow(4px 4px 2px rgba(0, 0, 0, 0.3)); */
+  position: relative;
+
+  .name {
+    margin-top: 10px;
+    margin-left: 10px;
+    font-size: var(--title-font-size-medium);
+    color: #fff;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    user-select: none;
+  }
+
+  .tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    padding: 10px;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+  }
+
+  .tag {
+    background-color: #ccc;
+    color: #333;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 14px;
+  }
 }
 </style>
