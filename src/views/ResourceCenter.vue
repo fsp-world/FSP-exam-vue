@@ -60,7 +60,7 @@ const schematicList: Schematic[] = [
         </MCRouterLink>
       </div>
       <div class="content">
-        <div class="top">
+        <div class="top scroll-hidden">
           <UploadSchematic></UploadSchematic>
           <div class="buttons">
             <MCButton :length="'short'" class="button">红石</MCButton>
@@ -103,6 +103,7 @@ const schematicList: Schematic[] = [
       justify-content: space-between;
       margin-bottom: 30px;
       gap: 10px;
+      overflow-x: auto;
 
       .buttons {
         display: flex;

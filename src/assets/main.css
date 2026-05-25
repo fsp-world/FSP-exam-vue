@@ -1,6 +1,4 @@
 :root {
-  /* --button-font-size: 30px; */
-  /* --bg-img: url('https://s21.ax1x.com/2025/03/24/pEBBVYt.jpg') */
   --bg-img: url('/src/assets/images/bg.jpg');
   --button-disabled: url('/src/assets/images/rainbow_pixel_gui/button_disabled.png');
   --button-font-size-large: 30px;
@@ -45,6 +43,16 @@ input[type='number'] {
 }
 
 /*滚动条样式*/
+.scroll-hidden {
+  /*  针对 Firefox 浏览器 */
+  scrollbar-width: none;
+}
+
+.scroll-hidden::-webkit-scrollbar {
+  /* 针对 Chrome, Safari, Edge 等 Webkit 内核浏览器 */
+  display: none;
+}
+
 .y-scroll::-webkit-scrollbar {
   width: 10px;
 }
