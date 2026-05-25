@@ -4,12 +4,14 @@ import { onMounted, ref, computed } from 'vue'
 // 根据不同的length，会使用canvas生成不同长度的按钮图片，避免使用CSS拉伸导致的模糊问题
 interface Props {
   disabled?: boolean
+  disabledStyle?: boolean // 是否使用禁用状态的样式（即使按钮没有真正被禁用），用于在分段控制中表示未选中状态
   length?: 'short' | 'medium' | 'long'
 }
 
 const props = withDefaults(defineProps<Props>(), {
   disabled: false,
-  length: 'long',
+  disabledStyle: false,
+  length: 'long'
 })
 
 async function generateButtonImages(length: 'short' | 'medium' | 'long') {
@@ -126,6 +128,8 @@ const currentBackgroundImage = computed(() => {
     return buttonImages.value.disabled
   } else if (isHovered.value) {
     return buttonImages.value.highlighted
+  } else if (props.disabledStyle) {
+    return buttonImages.value.disabled
   } else {
     return buttonImages.value.normal
   }
@@ -145,7 +149,6 @@ const buttonClassList = computed(() => ({
   'long-button-size': props.length === 'long',
 }))
 
-// 消除报错！！！！！！！！！！！！！！！！！！！！
 </script>
 
 <template>

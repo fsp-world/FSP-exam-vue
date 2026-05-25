@@ -16,7 +16,7 @@ const fileName = ref<string>('');
 const schematicTypes = [
   { displayName: '红石', name: 'redstone' },
   { displayName: '建筑', name: 'architecture' },
-  { displayName: '其他', name: 'others' }
+  { displayName: '其他', name: 'other' }
 ]
 
 const getDefaultSchematic = (): UploadSchematicFormData => ({

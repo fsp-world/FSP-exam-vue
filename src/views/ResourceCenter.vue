@@ -1,9 +1,10 @@
 <script lang="ts" setup>
+import { ref } from 'vue'
 import type { Schematic } from '@/types';
 import UploadSchematic from '@/components/UploadSchematic.vue';
-import MCButton from '@/components/MCButton.vue';
 import MCRouterLink from '@/components/MCRouterLink.vue';
 import GrassAndDirtBackground from '@/components/background/GrassAndDirtBackground.vue';
+import MCSegmentedControl from '@/components/MCSegmentedControl.vue';
 
 const schematicList: Schematic[] = [
   {
@@ -49,6 +50,18 @@ const schematicList: Schematic[] = [
     tags: ['标签1', '标签2']
   }
 ]
+
+const filterButtonList = [
+  { label: '红石', value: 'redstone', default: true },
+  { label: '建筑', value: 'architecture' },
+  { label: '其他', value: 'other' }
+]
+
+const selectedValue = ref('')
+const changeViewList = (value: any) => {
+  // console.log('选中的值:', value);
+};
+
 </script>
 <template>
   <GrassAndDirtBackground>
@@ -62,11 +75,9 @@ const schematicList: Schematic[] = [
       <div class="content">
         <div class="top scroll-hidden">
           <UploadSchematic></UploadSchematic>
-          <div class="buttons">
-            <MCButton :length="'short'" class="button">红石</MCButton>
-            <MCButton :length="'short'" class="button">建筑</MCButton>
-            <MCButton :length="'short'" class="button">其他</MCButton>
-          </div>
+          <MCSegmentedControl :data="filterButtonList" v-model="selectedValue" @change="changeViewList"
+            class="segmented-control">
+          </MCSegmentedControl>
         </div>
         <ul class="list">
           <li class="schematic" v-for="item in schematicList">{{ item.fileName }}</li>
@@ -105,7 +116,7 @@ const schematicList: Schematic[] = [
       gap: 10px;
       overflow-x: auto;
 
-      .buttons {
+      .segmented-control {
         display: flex;
         gap: 10px;
       }
