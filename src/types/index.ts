@@ -135,6 +135,7 @@ export interface ConfigItem {
   key: string;
   value: string;
   type: ConfigItemType;
+  description: string;
 }
 
 export interface UploadSchematicFormData {
