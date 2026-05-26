@@ -28,6 +28,7 @@ const getDefaultSchematic = (): UploadSchematicFormData => ({
   gameVersion: '',
   uploadFile: null,
   tags: '',
+  backupLink: '',
 })
 
 const schematic = ref<UploadSchematicFormData>(getDefaultSchematic())
@@ -162,8 +163,8 @@ const confirmUpload = () => {
           </td>
         </tr>
         <tr>
-          <td>游戏版本</td>
-          <td><input v-model="schematic.gameVersion" type="text" placeholder="例如1.18.2"></td>
+          <td>兼容版本</td>
+          <td><input v-model="schematic.gameVersion" type="text" placeholder="例如1.17+"></td>
         </tr>
         <tr>
           <td>类型</td>
@@ -200,6 +201,10 @@ const confirmUpload = () => {
           <td>描述</td>
           <td><textarea v-model="schematic.desc" class="desc" placeholder="写一些说明和链接"></textarea></td>
         </tr>
+        <tr>
+          <td>备用链接</td>
+          <td><input v-model="schematic.backupLink" type="text" placeholder="填写备用链接，例如百度网盘、蓝奏云"></td>
+        </tr>
       </tbody>
     </table>
     <div class="buttons">
@@ -215,8 +220,8 @@ const confirmUpload = () => {
 
 .card {
   width: 90%;
-  max-width: 900px;
-  height: 450px;
+  max-width: 800px;
+  height: 480px;
   background-image: url('@/assets/images/vanilla_gui/demo_background.png');
   background-position: center;
   background-size: 100% 100%;

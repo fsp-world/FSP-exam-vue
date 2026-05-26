@@ -81,8 +81,9 @@ const changeViewList = (value: any) => {
         </div>
         <ul class="list">
           <li class="schematic" v-for="item in schematicList">
-            <div class="name">{{ item.fileName }}</div>
+            <div class="name">{{ item.fileName }} <span class="author">{{ item.author }}</span></div>
             <div class="tags">
+              <span class="tag">{{ item.gameVersion }}</span>
               <span v-for="tag in item.tags" :key="tag" class="tag">{{ tag }}</span>
             </div>
           </li>
@@ -195,7 +196,7 @@ const changeViewList = (value: any) => {
   image-rendering: pixelated;
   position: fixed;
   bottom: 0px;
-  left: 0px;
+  right: 0px;
   border-radius: 5px;
   box-shadow: 3px 0px 5px rgba(0, 0, 0, 0.5);
 
@@ -221,6 +222,12 @@ const changeViewList = (value: any) => {
     color: #fff;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
     user-select: none;
+
+    .author {
+      font-size: var(--title-font-size-small);
+      color: #eee;
+      padding-left: 5px;
+    }
   }
 
   .tags {

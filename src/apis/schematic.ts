@@ -11,6 +11,7 @@ export const uploadSchematic = async (data: UploadSchematicFormData) => {
   formData.append('tags',data.tags.trim());
   formData.append('isPublic', data.isPublic.trim());
   formData.append('gameVersion',data.gameVersion.trim());
+  formData.append('backupLink', data.backupLink.trim());
 
   if(data.uploadFile){
     formData.append('uploadFile', data.uploadFile );

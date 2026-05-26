@@ -139,27 +139,28 @@ export interface ConfigItem {
 }
 
 export interface UploadSchematicFormData {
-  fileName: string,
-  originalAuthor: string,
-  desc: string,
-  type: string,
-  tags: string,
-  isPublic: 'true' | 'false',
-  gameVersion: string,
-  uploadFile: File | null
+  fileName: string;
+  originalAuthor: string;
+  desc: string;
+  type: string;
+  tags: string;
+  isPublic: 'true' | 'false';
+  gameVersion: string;
+  uploadFile: File | null;
+  backupLink: string;
 }
 
 export interface Schematic{
-  fileName: string,
-  author: string,
-  originalAuthor: string,
-  uploadDate: string
-  EditDate: string,
-  desc: string,
-  size: string,
-  type: string,
-  tags: string[]
-  isPublic: boolean,
-  downloadVolume: number,
-  gameVersion: string,
+  fileName: string;
+  author: string;
+  originalAuthor: string;
+  uploadDate: string;
+  EditDate: string;
+  desc: string;
+  size: string;
+  type: string;
+  tags: string[];
+  isPublic: boolean;
+  downloadVolume: number;
+  gameVersion: string;
 }
