@@ -5,7 +5,7 @@ import { ref } from 'vue';
 import { useUserStore } from '@/stores/user';
 import { storeToRefs } from 'pinia';
 import { openAlert } from '@/utils/TsAlert';
-import { uploadSchematic, getSchematics } from '@/apis/schematic';
+import { uploadSchematic } from '@/apis/schematic';
 
 const store = useUserStore();
 const { username } = storeToRefs(store);

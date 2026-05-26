@@ -151,8 +151,8 @@ export interface UploadSchematicFormData {
 }
 
 export interface Schematic{
-  fileName: string;
-  author: string;
+  name: string;
+  uploader: string;
   originalAuthor: string;
   uploadDate: string;
   EditDate: string;

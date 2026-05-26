@@ -1,65 +1,51 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
 import type { Schematic } from '@/types';
+import type { GetSchematicParams } from '@/apis/schematic';
 import UploadSchematic from '@/components/UploadSchematic.vue';
 import MCRouterLink from '@/components/MCRouterLink.vue';
 import StrippedBirchLogBackground from '@/components/background/StrippedBirchLogBackground.vue';
 import MCSegmentedControl from '@/components/MCSegmentedControl.vue';
+import { getSchematicsByType } from '@/apis/schematic';
+import { openAlert } from '@/utils/TsAlert';
 
-const schematicList: Schematic[] = [
-  {
-    fileName: '全无品',
-    size: '4KB',
-    type: 'redstone',
-    author: 'Sakurashido',
-    originalAuthor: 'Busypacket',
-    uploadDate: '11',
-    EditDate: '11',
-    desc: '描述',
-    isPublic: true,
-    downloadVolume: 114514,
-    gameVersion: '1.21',
-    tags: ['标签1', '标签2']
-  },
-  {
-    fileName: '熔炉组',
-    size: '1KB',
-    type: 'redstone',
-    author: 'tangsu99',
-    originalAuthor: 'Busypacket',
-    uploadDate: '11',
-    EditDate: '11',
-    desc: '描述',
-    isPublic: true,
-    downloadVolume: 114514,
-    gameVersion: '1.21',
-    tags: ['标签1', '标签2']
-  },
-  {
-    fileName: '教堂',
-    size: '4KB',
-    type: 'architecture',
-    author: 'packet',
-    originalAuthor: 'Busypacket',
-    uploadDate: '11',
-    EditDate: '11',
-    desc: '描述',
-    isPublic: false,
-    downloadVolume: 114514,
-    gameVersion: '1.21',
-    tags: ['标签1', '标签2']
-  }
-]
+const schematicList = ref<Schematic[]>([]);
+const selectedValue = ref('redstone')
 
 const filterButtonList = [
-  { label: '红石', value: 'redstone', default: true },
+  { label: '红石', value: 'redstone' },
   { label: '建筑', value: 'architecture' },
   { label: '其他', value: 'other' }
 ]
 
-const selectedValue = ref('')
+const getSchematicsParams: GetSchematicParams = {
+  type: selectedValue.value,
+  page: 1,
+  per_page: 10
+}
+
+const querySchematics = (type?: string) => {
+  if (type) {
+    getSchematicsParams.type = type;
+  }
+  getSchematicsByType(getSchematicsParams).then((res) => {
+    // console.log('获取到的schematic列表:', res);
+    if (res.data.code === 0) {
+      schematicList.value = res.data.data.items;
+      // console.log('schematicList:', schematicList.value);
+    } else {
+      openAlert(res.data.desc, 'warn-card');
+    }
+  }).catch((error) => {
+    console.error('获取schematic列表失败:', error);
+  });
+}
+
+querySchematics()
+
 const changeViewList = (value: any) => {
-  // console.log('选中的值:', value);
+  schematicList.value = [];
+  querySchematics(value)
 };
 
 </script>
@@ -79,14 +65,16 @@ const changeViewList = (value: any) => {
             class="segmented-control">
           </MCSegmentedControl>
         </div>
-        <ul class="list">
+        <ul class="list y-scroll">
           <li class="schematic" v-for="item in schematicList">
-            <div class="name">{{ item.fileName }} <span class="author">{{ item.author }}</span></div>
+            <div class="name">{{ item.name.slice(0, -10) }} <span class="author">{{ item.uploader }}</span></div>
             <div class="tags">
               <span class="tag">{{ item.gameVersion }}</span>
               <span v-for="tag in item.tags" :key="tag" class="tag">{{ tag }}</span>
             </div>
           </li>
+          <li class="paginate">{{ getSchematicsParams.type }} 第{{ getSchematicsParams.page }}页 ，每页{{
+            getSchematicsParams.per_page }}项</li>
         </ul>
         <div class="shelf"></div>
       </div>
@@ -125,7 +113,7 @@ const changeViewList = (value: any) => {
   margin-right: auto;
   max-width: 1000px;
   height: calc(100vh - 40px);
-  overflow-x: hidden;
+  overflow: hidden;
 
   .nav {
     display: flex;
@@ -140,7 +128,6 @@ const changeViewList = (value: any) => {
     background-repeat: no-repeat;
     image-rendering: pixelated;
     position: relative;
-    /* font-weight: bold; */
     top: -20px;
     filter: drop-shadow(4px 4px 2px rgba(0, 0, 0, 0.3));
 
@@ -181,7 +168,14 @@ const changeViewList = (value: any) => {
       flex-direction: column;
       gap: 20px;
       padding: 10px 0;
-      /* background-color: #eee; */
+
+      .paginate {
+        text-align: center;
+        color: #fff;
+        font-size: var(--title-font-size-small);
+        text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+      }
+
     }
   }
 
