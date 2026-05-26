@@ -62,9 +62,10 @@ const logout = () => {
 .exam-index .logo {
   display: block;
   margin: 0 auto;
-  margin-top: 10%;
+  margin-top: 7%;
   user-select: none;
   -webkit-user-drag: none;
+  max-width: 800px;
 }
 
 .exam-index .menu {
@@ -156,11 +157,41 @@ const logout = () => {
   }
 }
 
-@media screen and (max-width: 950px) {
+
+
+@media screen and (max-width: 1000px) {
   .exam-index {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    overflow: hidden;
+  }
+
+  .exam-index .menu {
+    padding-bottom: 15%;
+
+    button {
+      height: 60px;
+    }
+
+    .avatar {
+      display: none;
+    }
+  }
+
+  .exam-index .logo {
+    padding-top: 7%;
+    width: 100vw;
+    max-width: 800px;
+  }
+}
+
+@media screen and (max-width: 700px) {
+  .exam-index {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    overflow: hidden;
   }
 
   .exam-index .menu {
