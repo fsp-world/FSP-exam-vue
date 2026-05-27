@@ -168,6 +168,6 @@ export interface Schematic{
   type: string;
   tags: string[];
   isPublic: boolean;
-  downloadVolume: number;
+  downloadCount: number;
   gameVersion: string;
 }

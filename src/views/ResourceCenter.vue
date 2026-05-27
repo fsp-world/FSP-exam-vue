@@ -66,10 +66,16 @@ const changeViewList = (value: any) => {
             <div class="tags">
               <span class="tag">{{ item.gameVersion }}</span>
               <span v-for="tag in item.tags" :key="tag" class="tag">{{ tag }}</span>
+              <span class="tag">下载量：{{ item.downloadCount }}</span>
             </div>
           </li>
-          <li class="paginate">{{ getSchematicsParams.type }} 第{{ getSchematicsParams.page }}页 ，每页{{
-            getSchematicsParams.per_page }}项</li>
+          <li v-if="schematicList.length === 0" style="text-align: center;">还没有相关类型的投影</li>
+          <li class="paginate">
+            <div class="last"></div>
+            <div class="text">第{{ getSchematicsParams.page }}页 每页{{
+              getSchematicsParams.per_page }}项</div>
+            <div class="next"></div>
+          </li>
         </ul>
         <div class="shelf"></div>
       </div>
@@ -163,17 +169,46 @@ const changeViewList = (value: any) => {
       flex-direction: column;
       gap: 20px;
       padding: 10px 0;
-
-      .paginate {
-        text-align: center;
-        color: #fff;
-        font-size: var(--title-font-size-small);
-        text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
-      }
-
     }
   }
 
+}
+
+.paginate {
+  --button-width: 30px;
+
+  display: flex;
+  justify-content: center;
+
+  .text {
+    text-align: center;
+    color: #fff;
+    font-size: var(--title-font-size-small);
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+    line-height: var(--button-width);
+  }
+
+  .last {
+    height: var(--button-width);
+    width: var(--button-width);
+    background-image: url(/src/assets/images/rainbow_pixel_gui/unselect.png);
+    background-repeat: no-repeat;
+  }
+
+  .next {
+    height: var(--button-width);
+    width: var(--button-width);
+    background-image: url(/src/assets/images/rainbow_pixel_gui/select.png);
+    background-repeat: no-repeat;
+  }
+
+  .last:hover {
+    background-image: url(/src/assets/images/rainbow_pixel_gui/unselect_highlighted.png);
+  }
+
+  .next:hover {
+    background-image: url(/src/assets/images/rainbow_pixel_gui/select_highlighted.png);
+  }
 }
 
 .shelf {
@@ -230,11 +265,15 @@ const changeViewList = (value: any) => {
   }
 
   .tag {
-    background-color: #ccc;
+    background-color: rgba(255, 255, 255, 0.3);
     color: #333;
     padding: 5px 10px;
     border-radius: 5px;
     font-size: 14px;
   }
+}
+
+.schematic:hover {
+  box-shadow: 8px 8px 15px rgba(0, 0, 0, 0.7);
 }
 </style>

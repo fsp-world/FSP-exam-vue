@@ -27,8 +27,17 @@ const sendFindPassword = () => {
     <input type="text" placeholder="用户名" v-model="findPasswordForm.username" />
     <input type="text" placeholder="QQ号" v-model="findPasswordForm.userQQ" />
     <RouterLink to="/auth/login" class="toReg">已有账号？</RouterLink>
-    <MCButton @click="sendFindPassword">找回</MCButton>
+    <MCButton :length="'medium'" class="login-btn" @click="sendFindPassword">找回</MCButton>
   </div>
 </template>
 
-<style scoped></style>
+<style scoped>
+.form {
+  position: relative;
+  width: 300px;
+}
+
+.login-btn {
+  width: 100%;
+}
+</style>

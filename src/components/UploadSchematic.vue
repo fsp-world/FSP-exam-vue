@@ -173,7 +173,7 @@ const confirmUpload = () => {
             <td><input v-model="schematic.gameVersion" type="text" placeholder="例如1.17+"></td>
           </tr>
           <tr>
-            <td class="label required">类型</td>
+            <td class="label required">投影类型</td>
             <td>
               <select v-model="schematic.type">
                 <option :key="item.value" :value="item.value" v-for="item in schematicTypes">{{ item.label }}
@@ -182,35 +182,35 @@ const confirmUpload = () => {
             </td>
           </tr>
           <tr>
-            <td class="label">标签</td>
-            <td>
-              <input v-model="schematic.tags" type="text" placeholder="多个标签用空格分隔, 最多5个标签">
-            </td>
-          </tr>
-          <tr>
-            <td class="label">权限</td>
+            <td class="label required">投影权限</td>
             <td class="permission">
               <label>公开</label><input v-model="schematic.isPublic" value="true" name="isPublic" type="radio">
               <label>私密</label><input checked v-model="schematic.isPublic" value="false" name="isPublic" type="radio">
             </td>
           </tr>
           <tr>
-            <td class="label">作者</td>
+            <td class="label">投影标签</td>
+            <td>
+              <input v-model="schematic.tags" type="text" placeholder="多个标签用空格分隔, 最多5个标签">
+            </td>
+          </tr>
+          <tr>
+            <td class="label">上传用户</td>
             <td>
               <input disabled :value="username" type="text" placeholder="默认为上传用户用户名">
             </td>
           </tr>
           <tr>
-            <td class="label">原作者</td>
+            <td class="label">原始作者</td>
             <td><input v-model="schematic.originalAuthor" type="text" placeholder="不填默认和作者一致"></td>
-          </tr>
-          <tr>
-            <td class="label">描述</td>
-            <td><textarea v-model="schematic.desc" class="desc" placeholder="写一些说明和链接"></textarea></td>
           </tr>
           <tr>
             <td class="label">备用链接</td>
             <td><input v-model="schematic.backupLink" type="text" placeholder="填写备用链接，例如百度网盘、蓝奏云"></td>
+          </tr>
+          <tr>
+            <td class="label">投影描述</td>
+            <td><textarea v-model="schematic.desc" class="desc" placeholder="写一些说明和链接"></textarea></td>
           </tr>
         </tbody>
       </table>

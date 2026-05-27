@@ -64,7 +64,7 @@ const sendLogin = () => {
       <RouterLink to="/auth/register" class="toReg">还没有账号？</RouterLink>
       <RouterLink to="/auth/find_password" class="toReg">忘记密码？</RouterLink>
     </p>
-    <MCButton @click="sendLogin">登录</MCButton>
+    <MCButton :length="'medium'" class="login-btn" @click="sendLogin">登录</MCButton>
   </div>
 </template>
 
@@ -72,6 +72,11 @@ const sendLogin = () => {
 .form {
   position: relative;
 }
+
+.login-btn {
+  width: 100%;
+}
+
 .version {
   font-weight: normal;
   font-size: 12px;
