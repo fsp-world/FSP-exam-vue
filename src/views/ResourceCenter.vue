@@ -10,6 +10,12 @@ import MCSegmentedControl from '@/components/MCSegmentedControl.vue';
 import { getSchematicsByType } from '@/apis/schematic';
 import { openAlert } from '@/utils/TsAlert';
 
+import { useUserStore } from '@/stores/user';
+import { storeToRefs } from 'pinia';
+
+const store = useUserStore();
+const { avatar } = storeToRefs(store);
+
 const schematicList = ref<Schematic[]>([]);
 const selectedValue = ref('redstone')
 
@@ -60,8 +66,8 @@ const changeViewList = (value: any) => {
             class="segmented-control">
           </MCSegmentedControl>
         </div>
-        <ul class="list y-scroll">
-          <li class="schematic" v-for="item in schematicList">
+        <TransitionGroup name="stagger" tag="ul" class="list y-scroll">
+          <li class="schematic" :key="item.name" v-for="item in schematicList">
             <div class="name">{{ item.name }} <span class="author">{{ item.uploader }}</span></div>
             <div class="tags">
               <span class="tag">{{ item.gameVersion }}</span>
@@ -69,14 +75,15 @@ const changeViewList = (value: any) => {
               <span class="tag">下载量：{{ item.downloadCount }}</span>
             </div>
           </li>
-          <li v-if="schematicList.length === 0" style="text-align: center;">还没有相关类型的投影</li>
-          <li class="paginate">
-            <div class="last"></div>
-            <div class="text">第{{ getSchematicsParams.page }}页 每页{{
-              getSchematicsParams.per_page }}项</div>
-            <div class="next"></div>
-          </li>
-        </ul>
+        </TransitionGroup>
+        <div class="paginate">
+          <div class="no-results" v-if="schematicList.length === 0">还没有相关类型的投影</div>
+          <div class="last"></div>
+          <div class="text">第{{ getSchematicsParams.page }}页 每页{{
+            getSchematicsParams.per_page }}项</div>
+          <div class="next"></div>
+        </div>
+        <img class="avatar" :src="avatar"></img>
         <div class="shelf"></div>
       </div>
     </div>
@@ -106,6 +113,62 @@ const changeViewList = (value: any) => {
     opacity: 0;
   }
 }
+
+@keyframes shelfIn {
+  0% {
+    transform: translateX(0);
+    /* opacity: 0; */
+  }
+
+  100% {
+    transform: translateX(100px);
+    /* opacity: 1; */
+  }
+}
+
+@keyframes shelfOut {
+  0% {
+    transform: translateX(100px);
+    /* opacity: 1; */
+  }
+
+  100% {
+    transform: translateX(0);
+    /* opacity: 0; */
+  }
+}
+
+.stagger-enter-active {
+  transition: all 0.5s ease;
+}
+
+.stagger-enter-from {
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+/* 给前 10 个元素分别加上递增的延迟，每个延迟 0.1 秒 */
+.stagger-enter-active:nth-child(1) {
+  transition-delay: 0.1s;
+}
+
+.stagger-enter-active:nth-child(2) {
+  transition-delay: 0.2s;
+}
+
+.stagger-enter-active:nth-child(3) {
+  transition-delay: 0.3s;
+}
+
+.stagger-enter-active:nth-child(4) {
+  transition-delay: 0.4s;
+}
+
+.stagger-enter-active:nth-child(5) {
+  transition-delay: 0.5s;
+}
+
+
 
 .main {
   width: calc(100% - 40px);
@@ -165,79 +228,28 @@ const changeViewList = (value: any) => {
     }
 
     .list {
+      width: calc(100% + 8px);
       display: flex;
       flex-direction: column;
       gap: 20px;
-      padding: 10px 0;
+      height: calc(100vh - 380px);
+      overflow-y: auto;
+      padding-bottom: 20px;
     }
   }
-
-}
-
-.paginate {
-  --button-width: 30px;
-
-  display: flex;
-  justify-content: center;
-
-  .text {
-    text-align: center;
-    color: #fff;
-    font-size: var(--title-font-size-small);
-    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
-    line-height: var(--button-width);
-  }
-
-  .last {
-    height: var(--button-width);
-    width: var(--button-width);
-    background-image: url(/src/assets/images/rainbow_pixel_gui/unselect.png);
-    background-repeat: no-repeat;
-  }
-
-  .next {
-    height: var(--button-width);
-    width: var(--button-width);
-    background-image: url(/src/assets/images/rainbow_pixel_gui/select.png);
-    background-repeat: no-repeat;
-  }
-
-  .last:hover {
-    background-image: url(/src/assets/images/rainbow_pixel_gui/unselect_highlighted.png);
-  }
-
-  .next:hover {
-    background-image: url(/src/assets/images/rainbow_pixel_gui/select_highlighted.png);
-  }
-}
-
-.shelf {
-  width: 100px;
-  height: 100px;
-  background-image: url(/src/assets/images/vanilla_gui/block/bookshelf.png);
-  background-size: 100px 100px;
-  background-repeat: repeat-x;
-  image-rendering: pixelated;
-  position: fixed;
-  bottom: 0px;
-  right: 0px;
-  border-radius: 5px;
-  box-shadow: 3px 0px 5px rgba(0, 0, 0, 0.5);
-
 }
 
 .schematic {
-  width: 100%;
-  height: 100px;
+  /* width: 100%; */
+  min-height: 100px;
   background-image: url(/src/assets/images/vanilla_gui/block/stripped_oak_log_rt.png);
-  /* clip-path: inset(38px 0 0 0); */
   background-size: 100px 100px;
   background-repeat: repeat;
   image-rendering: pixelated;
   border-radius: 5px;
   box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.5);
-  /* filter: drop-shadow(4px 4px 2px rgba(0, 0, 0, 0.3)); */
   position: relative;
+  margin-right: 10px;
 
   .name {
     margin-top: 10px;
@@ -275,5 +287,86 @@ const changeViewList = (value: any) => {
 
 .schematic:hover {
   box-shadow: 8px 8px 15px rgba(0, 0, 0, 0.7);
+}
+
+.paginate {
+  --button-width: 30px;
+
+  display: flex;
+  justify-content: center;
+
+  position: relative;
+  margin-top: 20px;
+
+  .no-results {
+    position: absolute;
+    top: -250px;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: var(--title-font-size-medium);
+  }
+
+  .text {
+    text-align: center;
+    color: #fff;
+    font-size: var(--title-font-size-small);
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+    line-height: var(--button-width);
+    position: relative;
+    top: 1px;
+    user-select: none;
+  }
+
+  .last {
+    height: var(--button-width);
+    width: var(--button-width);
+    background-image: url(/src/assets/images/rainbow_pixel_gui/unselect.png);
+    background-repeat: no-repeat;
+  }
+
+  .next {
+    height: var(--button-width);
+    width: var(--button-width);
+    background-image: url(/src/assets/images/rainbow_pixel_gui/select.png);
+    background-repeat: no-repeat;
+  }
+
+  .last:hover {
+    background-image: url(/src/assets/images/rainbow_pixel_gui/unselect_highlighted.png);
+  }
+
+  .next:hover {
+    background-image: url(/src/assets/images/rainbow_pixel_gui/select_highlighted.png);
+  }
+}
+
+.avatar {
+  width: 60px;
+  height: 60px;
+  border-radius: 5px;
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+  image-rendering: pixelated;
+}
+
+.shelf {
+  width: 100px;
+  height: 100px;
+  background-image: url(/src/assets/images/vanilla_gui/block/bookshelf.png);
+  background-size: 100px 100px;
+  background-repeat: repeat-x;
+  image-rendering: pixelated;
+  position: fixed;
+  bottom: 0px;
+  right: 0px;
+  border-radius: 5px;
+  box-shadow: 3px 0px 5px rgba(0, 0, 0, 0.5);
+  animation: shelfOut ease-out 0.5s 0.5s backwards;
+}
+
+.shelf:hover {
+  animation: shelfIn ease-in-out 0.5s 0.1s forwards;
 }
 </style>

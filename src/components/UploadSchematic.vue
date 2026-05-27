@@ -148,6 +148,7 @@ const confirmUpload = () => {
 <template>
   <MCButton :length="'medium'" class="show-card-button" @click="openDialog">上传投影</MCButton>
   <dialog ref="dialogRef" class="dialog">
+    <!-- <dialog open class="alert">我测</dialog> -->
     <form class="card">
       <table class="table">
         <caption class="title">上传投影</caption>
@@ -224,6 +225,27 @@ const confirmUpload = () => {
 <style scoped>
 .show-card-button {
   min-width: 120px;
+}
+
+.alert {
+  --hei: 40px;
+  width: calc(var(--hei) * 8);
+  height: var(--hei);
+  padding-left: 40px;
+  margin: 5px auto;
+  border-radius: 5px;
+
+  font-size: var(--text-font-size-large);
+  line-height: var(--hei);
+  color: #cbcbcb;
+
+  z-index: 1;
+
+  background-image: url(@/assets/images/rainbow_pixel_gui/system_info.png);
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  image-rendering: pixelated;
 }
 
 .dialog {
