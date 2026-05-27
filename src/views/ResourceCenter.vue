@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
 import type { Schematic } from '@/types';
+import { schematicTypes } from '@/types';
 import type { GetSchematicParams } from '@/apis/schematic';
 import UploadSchematic from '@/components/UploadSchematic.vue';
 import MCRouterLink from '@/components/MCRouterLink.vue';
@@ -11,12 +12,6 @@ import { openAlert } from '@/utils/TsAlert';
 
 const schematicList = ref<Schematic[]>([]);
 const selectedValue = ref('redstone')
-
-const filterButtonList = [
-  { label: '红石', value: 'redstone' },
-  { label: '建筑', value: 'architecture' },
-  { label: '其他', value: 'other' }
-]
 
 const getSchematicsParams: GetSchematicParams = {
   type: selectedValue.value,
@@ -61,13 +56,13 @@ const changeViewList = (value: any) => {
       <div class="content">
         <div class="top scroll-hidden">
           <UploadSchematic></UploadSchematic>
-          <MCSegmentedControl :data="filterButtonList" v-model="selectedValue" @change="changeViewList"
+          <MCSegmentedControl :data="schematicTypes" v-model="selectedValue" @change="changeViewList"
             class="segmented-control">
           </MCSegmentedControl>
         </div>
         <ul class="list y-scroll">
           <li class="schematic" v-for="item in schematicList">
-            <div class="name">{{ item.name.slice(0, -10) }} <span class="author">{{ item.uploader }}</span></div>
+            <div class="name">{{ item.name }} <span class="author">{{ item.uploader }}</span></div>
             <div class="tags">
               <span class="tag">{{ item.gameVersion }}</span>
               <span v-for="tag in item.tags" :key="tag" class="tag">{{ tag }}</span>

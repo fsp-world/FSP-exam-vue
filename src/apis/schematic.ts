@@ -10,7 +10,7 @@ export interface GetSchematicParams {
 export const getSchematicsByType = (params: GetSchematicParams) => request.get('/schematic/query_by_type', {params: params});
 export const uploadSchematic = async (data: UploadSchematicFormData) => {
   const formData = new FormData()
-  formData.append('fileName', data.fileName.trim());
+  formData.append('fileName', data.name.trim());
   formData.append('originalAuthor', data.originalAuthor.trim());
   formData.append('desc',data.desc.trim());
   formData.append('type',data.type.trim());

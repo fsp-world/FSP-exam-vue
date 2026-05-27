@@ -9,6 +9,10 @@
   --title-font-size-large: 32px;
   --title-font-size-medium: 26px;
   --title-font-size-small: 18px;
+
+  --text-font-size-large: 24px;
+  --text-font-size-medium: 16px;
+  --text-font-size-small: 12px;
 }
 
 @font-face {

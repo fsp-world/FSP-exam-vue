@@ -138,14 +138,21 @@ export interface ConfigItem {
   description: string;
 }
 
+export const schematicTypes = [
+  { label: '红石', value: 'redstone' },
+  { label: '建筑', value: 'architecture' },
+  { label: '其他', value: 'other' }
+]
+
 export interface UploadSchematicFormData {
-  fileName: string;
+  name: string;
   originalAuthor: string;
   desc: string;
   type: string;
   tags: string;
   isPublic: 'true' | 'false';
   gameVersion: string;
+  uploadFileName: string;
   uploadFile: File | null;
   backupLink: string;
 }
