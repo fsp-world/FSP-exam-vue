@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 import { useAlertStore } from '@/stores/alert';
 import AlertCard from './AlertCard.vue';
 import { storeToRefs } from 'pinia';
@@ -8,14 +8,8 @@ const { dialogs } = storeToRefs(alertStore);
 </script>
 
 <template>
-  <!-- <div class="dialog-container">
-        <template v-for="(item, index) of dialogs" :key="index">
-            <Transition name="fade" mode="out-in">
-                <DialogCard :card="item"></DialogCard>
-            </Transition>
-        </template>
-    </div> -->
   <TransitionGroup class="alert-container" name="list" tag="ul">
+    <!-- 这里 :key="item" 改成别的会引发显示错误-->
     <li v-for="item in dialogs" :key="item">
       <AlertCard :card="item"></AlertCard>
     </li>

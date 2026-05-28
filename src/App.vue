@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 import { RouterView } from 'vue-router';
 import Alert from '@/components/alert/Alert.vue';
 import { onMounted } from 'vue';

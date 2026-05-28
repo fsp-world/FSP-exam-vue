@@ -1,8 +1,7 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
-import type { Schematic } from '@/types';
-import { schematicTypes } from '@/types';
-import type { GetSchematicParams } from '@/apis/schematic';
+import type { Schematic, GetSchematicParams } from '@/types/schematic';
+import { schematicTypes } from '@/types/schematic';
 import UploadSchematic from '@/components/UploadSchematic.vue';
 import MCRouterLink from '@/components/MCRouterLink.vue';
 import StrippedBirchLogBackground from '@/components/background/StrippedBirchLogBackground.vue';

@@ -1,11 +1,6 @@
 import request from '@/utils/requers';
-import type { UploadSchematicFormData } from '@/types';
+import type { GetSchematicParams, UploadSchematicFormData } from '@/types/schematic';
 
-export interface GetSchematicParams {
-  type: string;
-  page: number;
-  per_page: number;
-}
 
 export const getSchematicsByType = (params: GetSchematicParams) => request.get('/schematic/query_by_type', {params: params});
 export const uploadSchematic = async (data: UploadSchematicFormData) => {

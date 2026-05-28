@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import MCButton from './MCButton.vue';
-import type { UploadSchematicFormData } from '@/types';
-import { schematicTypes } from '@/types';
+import type { UploadSchematicFormData } from '@/types/schematic';
+import { schematicTypes } from '@/types/schematic';
 import { ref } from 'vue';
 import { useUserStore } from '@/stores/user';
 import { storeToRefs } from 'pinia';
