@@ -3,7 +3,7 @@
 
 <!-- ## [0.11.0] (2026-03-11) -->
 ## [0.11.0] (Developing)
-这个版本添加了资源中心页面
+这个版本主要围绕“资源中心”功能展开
 
 ### Features
 
@@ -16,7 +16,7 @@
   * 上传投影
 * 为网站配置项添加'描述'字段
 
-### refactor
+### Refactor
 
 * MCButton & MCRouterLink：重构以根据不同的按钮长度来动态生成背景图片
 * PrepareForExam：使用 MCSegmented 组件重构部分功能
@@ -24,6 +24,8 @@
 ### Chore
 
 * 将编译目标版本从 ES6 升级到 ES2020，以获取更好的性能
+* 由于兼容性问题，降级 pinia-plugin-persistedstate 插件到  `pinia-plugin-persistedstate@3` 版本
+
 
 ### Bug Fixes
 
