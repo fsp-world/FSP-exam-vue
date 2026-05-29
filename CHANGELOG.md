@@ -10,7 +10,7 @@
 * 添加多个 MC 主题的组件
   * MCSegmentedControl：多选一组件，提供一排按钮，只能同时选中一个
   * StrippedBirchLogBackground：草方块 + 去皮白桦木样式背景
-  * MCDialog：由于默认的模态框标签<dialog>会覆盖 OpenAlert 组件，所以开发了此组件，提供多种样式预设，并限制聚焦元素范围，提供近似原生模态框的能力
+  * MCDialog：由于原生 `<dialog>` 标签在层级管理上存在限制，容易覆盖 OpenAlert 等全局弹窗组件，因此我们开发了 MCDialog。该组件在提供近似原生模态框交互体验的同时，解决了层级冲突问题。它内置了多种预设主题样式，并实现了严格的焦点捕获（Focus Trap）机制，确保用户在模态框激活时无法通过 Tab 键切换至外部元素，从而提升了无障碍访问体验。
 * 新增 '资源中心' 页面，功能如下：
   * 根据类型获取投影列表
   * 上传投影
@@ -20,6 +20,7 @@
 
 * MCButton & MCRouterLink：重构以根据不同的按钮长度来动态生成背景图片
 * PrepareForExam：使用 MCSegmented 组件重构部分功能
+* Auth：使用 MCDialog 组件重构部分功能
 
 ### Chore
 

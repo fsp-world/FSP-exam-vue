@@ -1,5 +1,5 @@
-<script setup>
-import '../../assets/form.css';
+<script setup lang="ts">
+import '@/assets/authForm.css';
 import { ref } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 import { useUserStore } from '@/stores/user';
@@ -33,7 +33,7 @@ const sendRegister = () => {
         password: registerForm.value.password,
         repassword: registerForm.value.repassword,
       })
-      .then((res) => {
+      .then((res: any) => {
         if (res.data.code === 0) {
           openAlert('注册成功! 即将跳转...');
           setTimeout(() => {
@@ -41,7 +41,7 @@ const sendRegister = () => {
               // 获取目标页面路径
               const redirect = route.query.redirect;
               // 如果存在目标页面路径，则跳转到该页面；否则跳转到首页
-              if (redirect) {
+              if (typeof redirect === 'string') {
                 router.push(redirect);
               } else {
                 router.push({ name: 'Main' });
@@ -63,9 +63,9 @@ const sendRegister = () => {
 
 <template>
   <div class="form">
-    <h2>
+    <div class="title">
       注册<span class="version">{{ appVersion }}</span>
-    </h2>
+    </div>
     <input type="text" placeholder="用户名" v-model="registerForm.username" />
     <input type="text" placeholder="QQ号" v-model="registerForm.userQQ" />
     <input type="password" placeholder="密码" v-model="registerForm.password" />
@@ -75,25 +75,7 @@ const sendRegister = () => {
       style="color: red; font-size: 12px">
       两次输入的密码不一致。
     </p>
-    <RouterLink to="/auth/login" class="toReg">已有账号？</RouterLink>
-    <MCButton :length="'medium'" class="login-btn" @click="sendRegister">注册</MCButton>
+    <RouterLink to="/auth/login" class="link">已有账号？</RouterLink>
+    <MCButton :length="'long'" style="width: 100%;" @click="sendRegister">注册</MCButton>
   </div>
 </template>
-
-<style scoped>
-.form {
-  position: relative;
-}
-
-.login-btn {
-  width: 100%;
-}
-
-.version {
-  font-weight: normal;
-  font-size: 12px;
-  color: #ccc;
-  position: absolute;
-  right: 0;
-}
-</style>

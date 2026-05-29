@@ -1,5 +1,5 @@
-<script setup>
-import '../../assets/form.css';
+<script setup lang="ts">
+import '@/assets/authForm.css';
 import { ref } from 'vue';
 import { findPassword } from '@/apis/auth';
 import { openAlert } from '@/utils/TsAlert';
@@ -22,22 +22,11 @@ const sendFindPassword = () => {
 </script>
 
 <template>
-  <div class="form">
-    <h2>找回密码</h2>
+  <form class="form">
+    <div class="title">找回密码</div>
     <input type="text" placeholder="用户名" v-model="findPasswordForm.username" />
     <input type="text" placeholder="QQ号" v-model="findPasswordForm.userQQ" />
-    <RouterLink to="/auth/login" class="toReg">已有账号？</RouterLink>
-    <MCButton :length="'medium'" class="login-btn" @click="sendFindPassword">找回</MCButton>
-  </div>
+    <RouterLink to="/auth/login" class="link">已有账号？</RouterLink>
+    <MCButton :length="'long'" style="width: 100%;" @click="sendFindPassword">找回密码</MCButton>
+  </form>
 </template>
-
-<style scoped>
-.form {
-  position: relative;
-  width: 300px;
-}
-
-.login-btn {
-  width: 100%;
-}
-</style>
