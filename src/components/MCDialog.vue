@@ -2,7 +2,7 @@
 // 这个组件的功能：
 // 提供类似原生 Dialog 标签的功能
 // 自动聚焦（按 Tab 不会切到外面）
-// 点击半透明背景关闭模态框
+// 点击半透明背景关闭模态框 (已移除，可能触发BUG）
 
 // 示例调用：
 // <MCDialog v-model:isModalVisible="showModal">
@@ -92,10 +92,6 @@ const modalClassList = computed(() => ({
 
 onMounted(() => {
   document.addEventListener('keydown', handleKeyDown)
-  if (modalRef.value) {
-    if (props.style == 'book') { modalRef.value.classList.add('book') }
-    else if (props.style == 'card') { modalRef.value.classList.add('card') }
-  }
 })
 
 onUnmounted(() => {
@@ -106,7 +102,7 @@ onUnmounted(() => {
 
 </script>
 <template>
-  <div class="bg" v-if="isModalVisible" @click="closeModel">
+  <div class="bg" v-if="isModalVisible">
     <div ref="modalRef" tabindex="-1" :class="modalClassList">
       <slot></slot>
     </div>

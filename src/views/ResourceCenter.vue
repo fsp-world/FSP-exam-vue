@@ -4,7 +4,7 @@ import type { Schematic, GetSchematicParams } from '@/types/schematic';
 import { schematicTypes } from '@/types/schematic';
 
 import StrippedBirchLogBackground from '@/components/background/StrippedBirchLogBackground.vue';
-import UploadSchematic from '@/components/UploadSchematic.vue';
+import UploadSchematicForm from '@/components/form/UploadSchematicForm.vue';
 
 import MCButton from '@/components/MCButton.vue';
 import MCRouterLink from '@/components/MCRouterLink.vue';
@@ -58,9 +58,9 @@ const changeViewList = (value: any) => {
 
 </script>
 <template>
-  <!-- <MCDialog :style="'card'" v-model:isModalVisible="isUploadSchematicVisible">
-    <MCButton @click="isUploadSchematicVisible = false">返回</MCButton>
-  </MCDialog> -->
+  <MCDialog :style="'card'" v-model:isModalVisible="isUploadSchematicVisible">
+    <UploadSchematicForm v-model:isModalVisible="isUploadSchematicVisible"></UploadSchematicForm>
+  </MCDialog>
   <StrippedBirchLogBackground>
     <div class="main">
       <div class="nav">
@@ -71,10 +71,9 @@ const changeViewList = (value: any) => {
       </div>
       <div class="content">
         <div class="top scroll-hidden">
-          <UploadSchematic></UploadSchematic>
-          <!-- <MCButton :length="'medium'" class="show-upload-schematic-button" @click="isUploadSchematicVisible = true">
+          <MCButton :length="'medium'" class="upload-schematic-button" @click="isUploadSchematicVisible = true">
             上传投影
-          </MCButton> -->
+          </MCButton>
           <MCSegmentedControl :data="schematicTypes" v-model="selectedValue" @change="changeViewList"
             class="segmented-control">
           </MCSegmentedControl>
@@ -235,6 +234,10 @@ const changeViewList = (value: any) => {
       margin-bottom: 30px;
       gap: 10px;
       overflow-x: auto;
+
+      .upload-schematic-button {
+        min-width: 120px;
+      }
 
       .segmented-control {
         display: flex;
