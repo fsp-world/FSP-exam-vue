@@ -181,7 +181,7 @@ const uploadSchematic = () => {
           <td class="label required">投影类型</td>
           <td>
             <select v-model="schematic.type">
-              <option :key="item.value" :value="item.value" v-for="item in schematicTypes">{{ item.label }}
+              <option :key="item.data" :value="item.data" v-for="item in schematicTypes">{{ item.label }}
               </option>
             </select>
           </td>

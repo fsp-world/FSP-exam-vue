@@ -10,7 +10,7 @@ import MCButton from './MCButton.vue';
 
 interface ButtonData {
   label: string
-  value: any
+  data: any
   default?: boolean
 }
 
@@ -52,7 +52,7 @@ watch(() => props.data, () => {
 // 监听 modelValue 变化
 watch(() => props.modelValue, (newVal) => {
   if (newVal !== undefined) {
-    const index = props.data.findIndex(item => item.value === newVal)
+    const index = props.data.findIndex(item => item.data === newVal)
     if (index !== -1 && selectedIndex.value !== index) {
       selectedIndex.value = index
     }
@@ -63,7 +63,7 @@ watch(() => props.modelValue, (newVal) => {
 const initializeSelection = () => {
   // 优先使用 props.modelValue
   if (props.modelValue !== undefined) {
-    const index = props.data.findIndex(item => item.value === props.modelValue)
+    const index = props.data.findIndex(item => item.data === props.modelValue)
     if (index !== -1) {
       selectedIndex.value = index
       return
@@ -76,8 +76,8 @@ const initializeSelection = () => {
     if (defaultIndex !== -1) {
       selectedIndex.value = defaultIndex
       // 同时更新 modelValue
-      emit('update:modelValue', props.data[defaultIndex].value)
-      emit('change', props.data[defaultIndex].value)
+      emit('update:modelValue', props.data[defaultIndex].data)
+      emit('change', props.data[defaultIndex].data)
     }
   }
 }
@@ -86,7 +86,7 @@ const initializeSelection = () => {
 const handleButtonClick = (index: number) => {
   if (selectedIndex.value !== index) {
     selectedIndex.value = index
-    const selectedValue = props.data[index].value
+    const selectedValue = props.data[index].data
     emit('update:modelValue', selectedValue)  // 更新 v-model
     emit('change', selectedValue)  // 触发 change 事件
   }
@@ -99,7 +99,7 @@ const getButtonDisabledStyle = (index: number) => {
 </script>
 
 <template>
-  <div class="segmented-control">
+  <div>
     <MCButton :length="props.buttonLength" :disabledStyle="getButtonDisabledStyle(index)"
       v-for="(button, index) in props.data" :key="index" @click="handleButtonClick(index)">
       {{ button.label }}
@@ -107,9 +107,4 @@ const getButtonDisabledStyle = (index: number) => {
   </div>
 </template>
 
-<style scoped>
-.segmented-control {
-  display: flex;
-  gap: 0;
-}
-</style>
+<style scoped></style>

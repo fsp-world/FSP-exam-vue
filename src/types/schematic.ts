@@ -1,7 +1,7 @@
 export const schematicTypes = [
-  { label: '红石', value: 'redstone' },
-  { label: '建筑', value: 'architecture' },
-  { label: '其他', value: 'other' }
+  { label: '红石', data: 'redstone' },
+  { label: '建筑', data: 'architecture' },
+  { label: '其他', data: 'other' }
 ]
 
 export interface GetSchematicParams {
