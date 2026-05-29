@@ -65,6 +65,7 @@ const changeViewList = (value: any) => {
             class="segmented-control">
           </MCSegmentedControl>
         </div>
+        <div class="no-results" v-if="schematicList.length === 0">还没有相关类型的投影</div>
         <TransitionGroup name="stagger" tag="ul" class="list y-scroll">
           <li class="schematic" :key="item.name" v-for="item in schematicList">
             <div class="name">{{ item.name }} <span class="author">{{ item.uploader }}</span></div>
@@ -75,8 +76,7 @@ const changeViewList = (value: any) => {
             </div>
           </li>
         </TransitionGroup>
-        <div class="paginate">
-          <div class="no-results" v-if="schematicList.length === 0">还没有相关类型的投影</div>
+        <div v-show="schematicList.length > 0" class="paginate">
           <div class="last"></div>
           <div class="text">第{{ getSchematicsParams.page }}页 每页{{
             getSchematicsParams.per_page }}项</div>
@@ -213,6 +213,8 @@ const changeViewList = (value: any) => {
   }
 
   .content {
+    position: relative;
+
     .top {
       display: flex;
       justify-content: space-between;
@@ -236,6 +238,15 @@ const changeViewList = (value: any) => {
       padding-bottom: 20px;
     }
   }
+}
+
+.no-results {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  text-align: center;
+  transform: translate(-50%, -50%);
+  font-size: var(--title-font-size-medium);
 }
 
 .schematic {
@@ -297,13 +308,7 @@ const changeViewList = (value: any) => {
   position: relative;
   margin-top: 20px;
 
-  .no-results {
-    position: absolute;
-    top: -250px;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    font-size: var(--title-font-size-medium);
-  }
+
 
   .text {
     text-align: center;
