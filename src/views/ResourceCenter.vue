@@ -2,21 +2,29 @@
 import { ref } from 'vue'
 import type { Schematic, GetSchematicParams } from '@/types/schematic';
 import { schematicTypes } from '@/types/schematic';
-import UploadSchematic from '@/components/UploadSchematic.vue';
-import MCRouterLink from '@/components/MCRouterLink.vue';
+
 import StrippedBirchLogBackground from '@/components/background/StrippedBirchLogBackground.vue';
+import UploadSchematic from '@/components/UploadSchematic.vue';
+
+import MCButton from '@/components/MCButton.vue';
+import MCRouterLink from '@/components/MCRouterLink.vue';
 import MCSegmentedControl from '@/components/MCSegmentedControl.vue';
+import MCDialog from '@/components/MCDialog.vue';
+
 import { getSchematicsByType } from '@/apis/schematic';
 import { openAlert } from '@/utils/TsAlert';
 
 import { useUserStore } from '@/stores/user';
 import { storeToRefs } from 'pinia';
 
+
 const store = useUserStore();
 const { avatar } = storeToRefs(store);
 
 const schematicList = ref<Schematic[]>([]);
 const selectedValue = ref('redstone')
+
+const isUploadSchematicVisible = ref(false)
 
 const getSchematicsParams: GetSchematicParams = {
   type: selectedValue.value,
@@ -50,6 +58,9 @@ const changeViewList = (value: any) => {
 
 </script>
 <template>
+  <!-- <MCDialog :style="'card'" v-model:isModalVisible="isUploadSchematicVisible">
+    <MCButton @click="isUploadSchematicVisible = false">返回</MCButton>
+  </MCDialog> -->
   <StrippedBirchLogBackground>
     <div class="main">
       <div class="nav">
@@ -61,6 +72,9 @@ const changeViewList = (value: any) => {
       <div class="content">
         <div class="top scroll-hidden">
           <UploadSchematic></UploadSchematic>
+          <!-- <MCButton :length="'medium'" class="show-upload-schematic-button" @click="isUploadSchematicVisible = true">
+            上传投影
+          </MCButton> -->
           <MCSegmentedControl :data="schematicTypes" v-model="selectedValue" @change="changeViewList"
             class="segmented-control">
           </MCSegmentedControl>
