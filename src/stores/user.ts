@@ -157,6 +157,6 @@ export const useUserStore = defineStore('user', {
   persist: {
     key: 'user',
     storage: localStorage,
-    // paths: ['...']      // 只持久化部分字段
+    paths: ['username', 'avatarUUID', 'avatar', 'isLogin'] // 只持久化部分字段
   },
 });
