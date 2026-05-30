@@ -137,3 +137,21 @@ export interface ConfigItem {
   type: ConfigItemType;
   description: string;
 }
+
+export interface FetchResponse<T = any> {
+  data: {
+    code: number;
+    desc: string;
+    data: T;
+  }
+}
+
+export interface PaginateData<T = any> {
+  items: T[];
+  total: number;
+  page: number;
+  pages: number;
+  per_page: number;
+  has_next: boolean;
+  has_prev: boolean;
+}

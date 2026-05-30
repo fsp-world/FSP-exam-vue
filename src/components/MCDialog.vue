@@ -38,7 +38,7 @@ const closeModel = () => {
   emit('update:isModalVisible', false)
 }
 
-const focusableElementsText = 'input, textarea, select, a[href], button'
+const focusableElementsText = 'input, textarea, select, button'
 
 const handleKeyDown = (e: KeyboardEvent) => {
   // 如果模态框没显示，或者按下的不是 Tab 键，则不处理
@@ -160,7 +160,7 @@ a:visited {
   --wid: calc(148px * var(--k) * var(--ratioX));
   --hei: calc(182px * var(--k) * var(--ratioY));
 
-  max-width: var(--wid);
+  width: var(--wid);
   min-height: var(--hei);
 
 

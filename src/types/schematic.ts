@@ -1,7 +1,9 @@
+import type { FetchResponse, PaginateData } from ".";
+
 export const schematicTypes = [
-  { label: '红石', data: 'redstone' },
-  { label: '建筑', data: 'architecture' },
-  { label: '其他', data: 'other' }
+  { label: '其他', data: 'other', code: 0 },
+  { label: '红石', data: 'redstone', code: 1 },
+  { label: '建筑', data: 'architecture', code: 2 },
 ]
 
 export interface GetSchematicParams {
@@ -23,17 +25,25 @@ export interface UploadSchematicFormData {
   backupLink: string;
 }
 
-export interface Schematic{
+export interface SchematicBrief {
+  id: number
   name: string;
+  type: number | string;
   uploader: string;
   originalAuthor: string;
   uploadDate: string;
-  EditDate: string;
-  desc: string;
-  size: string;
-  type: string;
+  updateDate: string;
   tags: string[];
   isPublic: boolean;
   downloadCount: number;
   gameVersion: string;
 }
+
+export interface SchematicDetail extends SchematicBrief{
+  description: string;
+  fileSizeKB: string;
+  backupLink: string;
+}
+
+export type SchematicsResponse = FetchResponse<PaginateData<SchematicBrief>>
+export type SchematicDetailResponse = FetchResponse<SchematicDetail>

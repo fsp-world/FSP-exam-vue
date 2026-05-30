@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
-import type { Schematic, GetSchematicParams } from '@/types/schematic';
+import type { SchematicBrief, GetSchematicParams, SchematicsResponse } from '@/types/schematic';
+
 import { schematicTypes } from '@/types/schematic';
 
 import StrippedBirchLogBackground from '@/components/background/StrippedBirchLogBackground.vue';
@@ -11,20 +12,23 @@ import MCRouterLink from '@/components/MCRouterLink.vue';
 import MCSegmentedControl from '@/components/MCSegmentedControl.vue';
 import MCDialog from '@/components/MCDialog.vue';
 
-import { getSchematicsByType } from '@/apis/schematic';
+import { getSchematicsByTypeAPI } from '@/apis/schematic';
 import { openAlert } from '@/utils/TsAlert';
 
 import { useUserStore } from '@/stores/user';
 import { storeToRefs } from 'pinia';
+import SchematicInfoDetail from '@/components/SchematicInfoDetail.vue';
 
 
 const store = useUserStore();
 const { avatar } = storeToRefs(store);
 
-const schematicList = ref<Schematic[]>([]);
+const schematicList = ref<SchematicBrief[]>([]);
 const selectedValue = ref('redstone')
+const fetchingData = ref(true)
 
 const isUploadSchematicVisible = ref(false)
+const isSchematicDetailVisible = ref(false)
 
 const getSchematicsParams: GetSchematicParams = {
   type: selectedValue.value,
@@ -33,33 +37,46 @@ const getSchematicsParams: GetSchematicParams = {
 }
 
 const querySchematics = (type?: string) => {
+  fetchingData.value = true
   if (type) {
     getSchematicsParams.type = type;
   }
-  getSchematicsByType(getSchematicsParams).then((res) => {
-    // console.log('获取到的schematic列表:', res);
+
+  getSchematicsByTypeAPI(getSchematicsParams).then((res: SchematicsResponse) => {
     if (res.data.code === 0) {
       schematicList.value = res.data.data.items;
-      // console.log('schematicList:', schematicList.value);
     } else {
       openAlert(res.data.desc, 'warn-card');
     }
+    fetchingData.value = false
   }).catch((error) => {
-    console.error('获取schematic列表失败:', error);
+    console.error('获取投影列表失败:', error);
   });
 }
-
-querySchematics()
 
 const changeViewList = (value: any) => {
   schematicList.value = [];
   querySchematics(value)
 };
 
+
+
+const showSchematicDetail = (id: number) => {
+  querySchematicId.value = id
+  isSchematicDetailVisible.value = true
+}
+const querySchematicId = ref(0)
+
+querySchematics()
+
 </script>
 <template>
   <MCDialog :style="'card'" v-model:isModalVisible="isUploadSchematicVisible">
     <UploadSchematicForm v-model:isModalVisible="isUploadSchematicVisible"></UploadSchematicForm>
+  </MCDialog>
+  <MCDialog :style="'book'" :resizeX="1.3" :resizeY="1.3" v-model:isModalVisible="isSchematicDetailVisible">
+    <SchematicInfoDetail :sid="querySchematicId" v-model:isModalVisible="isSchematicDetailVisible">
+    </SchematicInfoDetail>
   </MCDialog>
   <StrippedBirchLogBackground>
     <div class="main">
@@ -78,9 +95,9 @@ const changeViewList = (value: any) => {
             class="segmented-control">
           </MCSegmentedControl>
         </div>
-        <div class="no-results" v-if="schematicList.length === 0">还没有相关类型的投影</div>
+        <div class="no-results" v-if="schematicList.length === 0 && !fetchingData">还没有相关类型的投影</div>
         <TransitionGroup name="stagger" tag="ul" class="list y-scroll">
-          <li class="schematic" :key="item.name" v-for="item in schematicList">
+          <li class="schematic" :key="item.id" v-for="item in schematicList" @click="showSchematicDetail(item.id)">
             <div class="name">{{ item.name }} <span class="author">{{ item.uploader }}</span></div>
             <div class="tags">
               <span class="tag">{{ item.gameVersion }}</span>
