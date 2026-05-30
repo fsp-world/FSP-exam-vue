@@ -40,7 +40,8 @@ const router = createRouter({
     {
       path: '/resourceCenter',
       name: 'ResourceCenter',
-      component: () => import('@/views/ResourceCenter.vue')
+      component: () => import('@/views/ResourceCenter.vue'),
+      meta: { requiresAuth: true },
     },
     {
       path: '/query',
@@ -92,6 +93,7 @@ const router = createRouter({
     },
     {
       path: '/admin',
+      name: 'Admin',
       component: () => import('@/views/NewAdmin.vue'),
       meta: { requiresAuth: true, requiresAdmin: true },
       redirect: '/admin/user', // TODO: 临时，还没想好首屏放什么
@@ -133,50 +135,50 @@ const router = createRouter({
         },
       ],
     },
-    {
-      path: '/admin',
-      name: 'Admin',
-      redirect: { name: 'User' },
-      component: () => import('@/views/Admin.vue'),
-      meta: { requiresAuth: true, requiresAdmin: true },
-      // children: [
-      //   {
-      //     path: 'user',
-      //     name: 'User',
-      //     component: () => import('@/components/admin/User.vue'),
-      //   },
-      //   {
-      //     path: 'whitelist',
-      //     name: 'Whitelist',
-      //     component: () => import('@/components/admin/Whitelist.vue'),
-      //   },
-      //   {
-      //     path: 'exam',
-      //     name: 'Exam',
-      //     component: () => import('@/components/admin/Exam.vue'),
-      //   },
-      //   {
-      //     path: 'guarantee_mgmt',
-      //     name: 'GuaranteeMgmt',
-      //     component: () => import('@/components/admin/GuaranteeMgmt.vue'),
-      //   },
-      //   {
-      //     path: 'response',
-      //     name: 'Response',
-      //     component: () => import('@/components/admin/Response.vue'),
-      //   },
-      //   {
-      //     path: 'slot',
-      //     name: 'Slot',
-      //     component: () => import('@/components/admin/Slot.vue'),
-      //   },
-      //   {
-      //     path: 'config',
-      //     name: 'Config',
-      //     component: () => import('@/components/admin/Config.vue'),
-      //   },
-      // ],
-    },
+    // {
+    //   path: '/admin',
+    //   name: 'Admin',
+    //   redirect: { name: 'User' },
+    //   component: () => import('@/views/Admin.vue'),
+    //   meta: { requiresAuth: true, requiresAdmin: true },
+    //   children: [
+    //     {
+    //       path: 'user',
+    //       name: 'User',
+    //       component: () => import('@/components/admin/User.vue'),
+    //     },
+    //     {
+    //       path: 'whitelist',
+    //       name: 'Whitelist',
+    //       component: () => import('@/components/admin/Whitelist.vue'),
+    //     },
+    //     {
+    //       path: 'exam',
+    //       name: 'Exam',
+    //       component: () => import('@/components/admin/Exam.vue'),
+    //     },
+    //     {
+    //       path: 'guarantee_mgmt',
+    //       name: 'GuaranteeMgmt',
+    //       component: () => import('@/components/admin/GuaranteeMgmt.vue'),
+    //     },
+    //     {
+    //       path: 'response',
+    //       name: 'Response',
+    //       component: () => import('@/components/admin/Response.vue'),
+    //     },
+    //     {
+    //       path: 'slot',
+    //       name: 'Slot',
+    //       component: () => import('@/components/admin/Slot.vue'),
+    //     },
+    //     {
+    //       path: 'config',
+    //       name: 'Config',
+    //       component: () => import('@/components/admin/Config.vue'),
+    //     },
+    //   ],
+    // },
     {
       path: '/error',
       name: 'Error',
