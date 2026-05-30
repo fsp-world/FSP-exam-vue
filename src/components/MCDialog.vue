@@ -15,6 +15,8 @@ import { ref, onMounted, onUnmounted, watch, nextTick, computed } from 'vue'
 interface Props {
   isModalVisible: boolean
   style?: 'book' | 'card'
+  resizeX?: number
+  resizeY?: number
 }
 
 interface Emits {
@@ -24,6 +26,8 @@ interface Emits {
 const props = withDefaults(defineProps<Props>(), {
   isModalVisible: false,
   style: 'book',
+  resizeX: 1,
+  resizeY: 1,
 })
 
 const emit = defineEmits<Emits>()
@@ -103,7 +107,7 @@ onUnmounted(() => {
 </script>
 <template>
   <div class="bg" v-if="isModalVisible">
-    <div ref="modalRef" tabindex="-1" :class="modalClassList">
+    <div ref="modalRef" tabindex="-1" :class="modalClassList" :style="{ '--ratioX': resizeX, '--ratioY': resizeY }">
       <slot></slot>
     </div>
   </div>
@@ -127,12 +131,20 @@ a:visited {
 
 .normal {
   position: relative;
+  --ratioX: 1;
+  --ratioY: 1;
 }
 
 .card {
+  /* 图片原始尺寸：248 * 166 */
+  --k: 3;
+  --wid: calc(248px * var(--k) * var(--ratioX));
+  --hei: calc(166px * var(--k) * var(--ratioY));
+
   width: 90%;
-  min-height: 500px;
-  max-width: 700px;
+  max-width: var(--wid);
+  min-height: var(--hei);
+
   background-image: url('@/assets/images/vanilla_gui/demo_background.png');
   background-position: center;
   background-size: 100% 100%;
@@ -144,14 +156,12 @@ a:visited {
 
 .book {
   /* 图片原始尺寸：148 * 182 */
-  --ratio: 4;
-  --wid: calc(148px * var(--ratio));
-  --hei: calc(var(--wid) * 1.23);
+  --k: 3;
+  --wid: calc(148px * var(--k) * var(--ratioX));
+  --hei: calc(182px * var(--k) * var(--ratioY));
 
-  width: var(--wid);
-  height: var(--hei);
-
-  padding: 80px;
+  max-width: var(--wid);
+  min-height: var(--hei);
 
 
   /* 核心作用是改变元素宽高的计算方式，让你设置的 width 和 height 直接等于元素的最终视觉大小 */
@@ -161,11 +171,10 @@ a:visited {
 
   background-image: url(/src/assets/images/vanilla_gui/book.png);
   background-repeat: no-repeat;
-  background-size: var(--wid) var(--hei);
+  background-size: 100% 100%;
   image-rendering: pixelated;
   background-position: center;
 
   filter: drop-shadow(4px 4px 10px rgba(0, 0, 0, 0.6));
-  /* background-color: aqua; */
 }
 </style>

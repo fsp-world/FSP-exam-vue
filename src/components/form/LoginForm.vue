@@ -65,5 +65,6 @@ const sendLogin = () => {
       <RouterLink to="/auth/find_password" class="link">忘记密码？</RouterLink>
     </p>
     <MCButton :length="'long'" style="width: 100%;" @click="sendLogin">登录</MCButton>
+    <MCRouterLink :length="'long'" style="width: 100%;" to="/">返回主页</MCRouterLink>
   </form>
 </template>

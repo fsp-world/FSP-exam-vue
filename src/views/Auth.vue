@@ -3,7 +3,6 @@ import { ref } from 'vue'
 import { RouterView } from 'vue-router';
 
 import MCDialog from '@/components/MCDialog.vue';
-import MCRouterLink from '@/components/MCRouterLink.vue';
 
 const isShowModal = ref(true)
 </script>
@@ -12,7 +11,6 @@ const isShowModal = ref(true)
   <div class="background">
     <MCDialog class="dialog" :style="'book'" v-model:isModalVisible="isShowModal">
       <RouterView class="form" />
-      <MCRouterLink :length="'long'" class="back" to="/">返回主页</MCRouterLink>
     </MCDialog>
   </div>
 </template>
@@ -33,10 +31,5 @@ a:visited {
   display: flex;
   justify-content: center;
   align-items: center;
-}
-
-.back {
-  width: 100%;
-  margin-top: 15px;
 }
 </style>
