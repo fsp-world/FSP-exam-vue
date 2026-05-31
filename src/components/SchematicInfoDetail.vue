@@ -7,6 +7,7 @@ import { openAlert } from '@/utils/TsAlert';
 import { dateFormatYYYYMMDDHH } from '@/utils/date';
 
 import MCButton from '@/components/MCButton.vue';
+import MCNametag from '@/components/MCNametag.vue';
 
 interface Props {
   isModalVisible: boolean
@@ -65,7 +66,7 @@ querySchematicDetail(props.sid)
 <template>
   <div class="info">
     <div class="title">投影信息</div>
-    <table class="table">
+    <table class="table y-scroll">
       <tbody>
         <tr>
           <td class="label">
@@ -97,7 +98,11 @@ querySchematicDetail(props.sid)
         <tr>
           <td class="label">投影标签</td>
           <td class="value">
-            <span class="tag" :key="index" v-for="(tag, index) in schematicDetail.tags">{{ tag }}&nbsp;</span>
+            <div class="tags">
+              <MCNametag v-show="tag !== ''" :key="index" v-for="(tag, index) in schematicDetail.tags">{{ tag }}
+              </MCNametag>
+            </div>
+
           </td>
         </tr>
         <tr>
@@ -143,6 +148,8 @@ querySchematicDetail(props.sid)
   padding: 55px 60px;
   box-sizing: border-box;
   width: 100%;
+  max-width: 530px;
+  max-height: 700px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -152,6 +159,7 @@ querySchematicDetail(props.sid)
   font-weight: bold;
   text-align: center;
   line-height: 50px;
+  user-select: none;
 }
 
 .table {
@@ -165,15 +173,16 @@ querySchematicDetail(props.sid)
     overflow-y: auto;
   }
 
-  .tag::after {
-    content: ',';
-    position: relative;
-    left: -8px;
+  .label {
+    color: #777;
   }
+}
 
-  .tag:last-child::after {
-    content: '';
-  }
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 30px;
+  padding: 10px;
 }
 
 .no-in-mobil {

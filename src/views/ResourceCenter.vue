@@ -11,6 +11,7 @@ import MCButton from '@/components/MCButton.vue';
 import MCRouterLink from '@/components/MCRouterLink.vue';
 import MCSegmentedControl from '@/components/MCSegmentedControl.vue';
 import MCDialog from '@/components/MCDialog.vue';
+import MCNametag from '@/components/MCNametag.vue';
 
 import { getSchematicsByTypeAPI } from '@/apis/schematic';
 import { openAlert } from '@/utils/TsAlert';
@@ -101,16 +102,16 @@ querySchematics()
           <li class="schematic" :key="item.id" v-for="item in schematicList" @click="showSchematicDetail(item.id)">
             <div class="name">{{ item.name }} <span class="author">{{ item.uploader }}</span></div>
             <div class="tags">
-              <span class="tag">{{ item.gameVersion }}</span>
-              <span v-for="tag in item.tags" :key="tag" class="tag">{{ tag }}</span>
-              <span class="tag">下载量：{{ item.downloadCount }}</span>
+              <MCNametag>{{ item.gameVersion }}</MCNametag>
+              <MCNametag v-show="tag !== ''" :key="index" v-for="(tag, index) in item.tags">{{ tag }}
+              </MCNametag>
+              <MCNametag>下载量：{{ item.downloadCount }}</MCNametag>
             </div>
           </li>
         </TransitionGroup>
         <div v-show="schematicList.length > 0" class="paginate">
           <div class="last"></div>
-          <div class="text">第{{ getSchematicsParams.page }}页 每页{{
-            getSchematicsParams.per_page }}项</div>
+          <div class="text">第{{ getSchematicsParams.page }}页</div>
           <div class="next"></div>
         </div>
         <img class="avatar" :src="avatar"></img>
@@ -147,24 +148,20 @@ querySchematics()
 @keyframes shelfIn {
   0% {
     transform: translateX(0);
-    /* opacity: 0; */
   }
 
   100% {
     transform: translateX(100px);
-    /* opacity: 1; */
   }
 }
 
 @keyframes shelfOut {
   0% {
     transform: translateX(100px);
-    /* opacity: 1; */
   }
 
   100% {
     transform: translateX(0);
-    /* opacity: 0; */
   }
 }
 
@@ -297,16 +294,16 @@ querySchematics()
   margin-right: 10px;
 
   .name {
-    margin-top: 10px;
-    margin-left: 10px;
+    padding-top: 15px;
+    padding-left: 10px;
     font-size: var(--title-font-size-medium);
-    color: #fff;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    color: #333;
+    /* text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); */
     user-select: none;
 
     .author {
       font-size: var(--title-font-size-small);
-      color: #eee;
+      color: #444;
       padding-left: 5px;
     }
   }
@@ -314,19 +311,12 @@ querySchematics()
   .tags {
     display: flex;
     flex-wrap: wrap;
-    gap: 10px;
+    gap: 30px;
     padding: 10px;
+    margin-left: 8px;
     position: absolute;
     bottom: 0;
     left: 0;
-  }
-
-  .tag {
-    background-color: rgba(255, 255, 255, 0.3);
-    color: #333;
-    padding: 5px 10px;
-    border-radius: 5px;
-    font-size: 14px;
   }
 }
 
