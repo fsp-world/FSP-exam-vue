@@ -64,41 +64,18 @@ querySchematicDetail(props.sid)
 </script>
 <template>
   <div class="info">
+    <div class="title">投影信息</div>
     <table class="table">
-      <caption class="title">投影信息</caption>
       <tbody>
         <tr>
-          <td class="label">更新日期</td>
-          <td class="value">
-            {{ dateFormatYYYYMMDDHH(schematicDetail.updateDate) }}
+          <td class="label">
+            <span class="no-in-mobil">投影类型</span>
+            <span class="mobil">{{ schematicTypeMap[schematicDetail.type as number] ?? '未知' }}类型</span>
           </td>
-        </tr>
-        <tr>
-          <td class="label">投影名称</td>
           <td class="value">
-            {{ schematicDetail.name }}
-          </td>
-        </tr>
-        <tr>
-          <td class="label">兼容版本</td>
-          <td class="value">{{ schematicDetail.gameVersion }}</td>
-        </tr>
-        <tr>
-          <td class="label">投影类型</td>
-          <td class="value">
-            {{ schematicTypeMap[schematicDetail.type as number] ?? '未知类型' }}
-          </td>
-        </tr>
-        <tr>
-          <td class="label">投影权限</td>
-          <td class="value">
-            {{ schematicDetail.isPublic ? '公开' : '私密' }}
-          </td>
-        </tr>
-        <tr>
-          <td class="label">投影标签</td>
-          <td class="value">
-            <span class="tag" :key="index" v-for="(tag, index) in schematicDetail.tags">{{ tag }}&nbsp;</span>
+            <span class="no-in-mobil">{{ schematicTypeMap[schematicDetail.type as number] ?? '未知类型' }} | 兼容版本&nbsp;{{
+              schematicDetail.gameVersion }}</span>
+            <span class="mobil">{{ schematicDetail.gameVersion }}</span>
           </td>
         </tr>
         <tr>
@@ -112,21 +89,51 @@ querySchematicDetail(props.sid)
           <td class="value">{{ schematicDetail.originalAuthor }}</td>
         </tr>
         <tr>
+          <td class="label">投影名称</td>
+          <td class="value">
+            {{ schematicDetail.name }}
+          </td>
+        </tr>
+        <tr>
+          <td class="label">投影标签</td>
+          <td class="value">
+            <span class="tag" :key="index" v-for="(tag, index) in schematicDetail.tags">{{ tag }}&nbsp;</span>
+          </td>
+        </tr>
+        <tr>
+          <td class="label">更新日期</td>
+          <td class="value">
+            {{ dateFormatYYYYMMDDHH(schematicDetail.updateDate) }}
+          </td>
+        </tr>
+        <tr>
+          <td class="label">投影权限</td>
+          <td class="value">
+            {{ schematicDetail.isPublic ? '公开' : '私密' }}
+          </td>
+        </tr>
+        <tr>
           <td class="label">备用链接</td>
           <td class="value">
             <a :href="schematicDetail.backupLink" target="_blank" rel="noopener noreferrer">
-              {{ schematicDetail.backupLink }}
+              {{ schematicDetail.backupLink ? schematicDetail.backupLink.slice(0, 20) + "..." : "" }}
             </a>
           </td>
         </tr>
         <tr>
           <td class="label">投影描述</td>
-          <td class="value">{{ schematicDetail.description }}</td>
+          <td class="value">
+            <details>
+              <summary>{{ schematicDetail.description ? schematicDetail.description.slice(0, 15) + "..." : "" }}
+              </summary>
+              {{ schematicDetail.description }}
+            </details>
+          </td>
         </tr>
       </tbody>
     </table>
     <div class="buttons">
-      <MCButton :disabled="true" :length="'medium'">下载 ({{ schematicDetail.fileSizeKB }} KB)</MCButton>
+      <MCButton :disabled="true" :length="'medium'">下载<span>({{ schematicDetail.fileSizeKB }} KB)</span></MCButton>
       <MCButton :length="'medium'" @click="emit('update:isModalVisible', false)">关闭</MCButton>
     </div>
   </div>
@@ -136,22 +143,26 @@ querySchematicDetail(props.sid)
   padding: 55px 60px;
   box-sizing: border-box;
   width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.title {
+  font-weight: bold;
+  text-align: center;
+  line-height: 50px;
 }
 
 .table {
-  width: 100%;
-
-  .title {
-    width: 100%;
-    font-weight: bold;
-    padding-top: 10px;
-    padding-bottom: 12px;
-    text-align: center;
-  }
+  display: block;
+  overflow: auto;
 
   td {
     line-height: 43px;
     min-width: 120px;
+    max-height: 43px;
+    overflow-y: auto;
   }
 
   .tag::after {
@@ -163,38 +174,44 @@ querySchematicDetail(props.sid)
   .tag:last-child::after {
     content: '';
   }
+}
 
+.no-in-mobil {
+  display: inline;
+}
+
+.mobil {
+  display: none;
 }
 
 .buttons {
-  margin: 30px auto;
-  width: 100%;
-  box-sizing: border-box;
   display: flex;
   gap: 10px;
   justify-content: center;
-  position: absolute;
-  bottom: 40px;
-  left: 0;
+
+  span {
+    display: inline;
+  }
 }
 
 @media screen and (max-width: 500px) {
   .info {
-    padding: 40px;
-    box-sizing: border-box;
-    width: 100%;
+    width: 100vw;
+    padding: 50px 40px;
+  }
+
+  .no-in-mobil {
+    display: none;
+  }
+
+  .mobil {
+    display: inline;
   }
 
   .buttons {
-    margin: 10px auto;
-    padding: 0 50px;
-    box-sizing: border-box;
-    display: flex;
-    gap: 10px;
-    justify-content: center;
-    position: absolute;
-    bottom: 40px;
-    left: 0;
+    span {
+      display: none;
+    }
   }
 }
 </style>

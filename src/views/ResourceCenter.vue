@@ -74,7 +74,8 @@ querySchematics()
   <MCDialog :style="'card'" v-model:isModalVisible="isUploadSchematicVisible">
     <UploadSchematicForm v-model:isModalVisible="isUploadSchematicVisible"></UploadSchematicForm>
   </MCDialog>
-  <MCDialog :style="'book'" :resizeX="1.3" :resizeY="1.3" v-model:isModalVisible="isSchematicDetailVisible">
+  <MCDialog class="detail" :style="'book'" :resizeX="1.3" :resizeY="1.3"
+    v-model:isModalVisible="isSchematicDetailVisible">
     <SchematicInfoDetail :sid="querySchematicId" v-model:isModalVisible="isSchematicDetailVisible">
     </SchematicInfoDetail>
   </MCDialog>
@@ -376,6 +377,10 @@ querySchematics()
   .next:hover {
     background-image: url(/src/assets/images/rainbow_pixel_gui/select_highlighted.png);
   }
+}
+
+.detail :deep(.normal) {
+  display: flex;
 }
 
 .avatar {

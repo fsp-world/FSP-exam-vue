@@ -160,8 +160,9 @@ a:visited {
   --wid: calc(148px * var(--k) * var(--ratioX));
   --hei: calc(182px * var(--k) * var(--ratioY));
 
-  width: var(--wid);
+  max-width: var(--wid);
   min-height: var(--hei);
+  max-height: 100vh;
 
 
   /* 核心作用是改变元素宽高的计算方式，让你设置的 width 和 height 直接等于元素的最终视觉大小 */
