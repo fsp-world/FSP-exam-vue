@@ -7,7 +7,7 @@ import { openAlert } from '@/utils/TsAlert';
 import { dateFormatYYYYMMDDHH } from '@/utils/date';
 
 import MCButton from '@/components/MCButton.vue';
-import MCNametag from '@/components/MCNametag.vue';
+import MCNameTag from '@/components/MCNameTag.vue';
 
 interface Props {
   isModalVisible: boolean
@@ -99,8 +99,8 @@ querySchematicDetail(props.sid)
           <td class="label">投影标签</td>
           <td class="value">
             <div class="tags">
-              <MCNametag v-show="tag !== ''" :key="index" v-for="(tag, index) in schematicDetail.tags">{{ tag }}
-              </MCNametag>
+              <MCNameTag v-show="tag !== ''" :key="index" v-for="(tag, index) in schematicDetail.tags">{{ tag }}
+              </MCNameTag>
             </div>
 
           </td>

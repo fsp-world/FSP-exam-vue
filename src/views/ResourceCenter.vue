@@ -11,7 +11,7 @@ import MCButton from '@/components/MCButton.vue';
 import MCRouterLink from '@/components/MCRouterLink.vue';
 import MCSegmentedControl from '@/components/MCSegmentedControl.vue';
 import MCDialog from '@/components/MCDialog.vue';
-import MCNametag from '@/components/MCNametag.vue';
+import MCNameTag from '@/components/MCNameTag.vue';
 
 import { getSchematicsByTypeAPI } from '@/apis/schematic';
 import { openAlert } from '@/utils/TsAlert';
@@ -102,10 +102,10 @@ querySchematics()
           <li class="schematic" :key="item.id" v-for="item in schematicList" @click="showSchematicDetail(item.id)">
             <div class="name">{{ item.name }} <span class="author">{{ item.uploader }}</span></div>
             <div class="tags">
-              <MCNametag>{{ item.gameVersion }}</MCNametag>
-              <MCNametag v-show="tag !== ''" :key="index" v-for="(tag, index) in item.tags">{{ tag }}
-              </MCNametag>
-              <MCNametag>下载量：{{ item.downloadCount }}</MCNametag>
+              <MCNameTag>{{ item.gameVersion }}</MCNameTag>
+              <MCNameTag v-show="tag !== ''" :key="index" v-for="(tag, index) in item.tags">{{ tag }}
+              </MCNameTag>
+              <MCNameTag>下载量：{{ item.downloadCount }}</MCNameTag>
             </div>
           </li>
         </TransitionGroup>
@@ -282,7 +282,6 @@ querySchematics()
 }
 
 .schematic {
-  /* width: 100%; */
   min-height: 100px;
   background-image: url(/src/assets/images/vanilla_gui/block/stripped_oak_log_rt.png);
   background-size: 100px 100px;
@@ -298,7 +297,6 @@ querySchematics()
     padding-left: 10px;
     font-size: var(--title-font-size-medium);
     color: #333;
-    /* text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); */
     user-select: none;
 
     .author {
