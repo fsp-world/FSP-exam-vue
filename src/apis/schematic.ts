@@ -23,3 +23,4 @@ export const uploadSchematic = async (data: UploadSchematicFormData) => {
 }
 
 export const getSchematicsBySearchAPI = (params: GetSchematicBySearchParams) => request.get('/schematic/search', {params: params});
+export const downloadSchematicAPI = (id: number) => request.get('/schematic/download', { params: {id: id}, responseType: 'blob' });

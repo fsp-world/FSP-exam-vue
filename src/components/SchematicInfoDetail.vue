@@ -2,12 +2,17 @@
 import { ref } from 'vue'
 import type { SchematicDetailResponse, SchematicDetail } from '@/types/schematic';
 import { schematicTypes } from '@/types/schematic';
-import { getSchematicDetailAPI } from '@/apis/schematic';
+import { downloadSchematicAPI, getSchematicDetailAPI } from '@/apis/schematic';
 import { openAlert } from '@/utils/TsAlert';
 import { dateFormatYYYYMMDDHH } from '@/utils/date';
+import { useUserStore } from '@/stores/user';
+import { storeToRefs } from 'pinia';
 
 import MCButton from '@/components/MCButton.vue';
 import MCNameTag from '@/components/MCNameTag.vue';
+
+const store = useUserStore();
+const { username } = storeToRefs(store);
 
 interface Props {
   isModalVisible: boolean
@@ -61,6 +66,48 @@ const querySchematicDetail = (id: number) => {
 }
 
 querySchematicDetail(props.sid)
+
+const download = () => {
+  openAlert('开始下载...')
+  downloadSchematicAPI(props.sid).then((res) => {
+
+    if (res.headers['content-type']?.includes('application/json')) {
+      const text = res.data.text();
+      const errorData = JSON.parse(text);
+      openAlert(errorData.desc || '下载失败', 'warn-card');
+      return;
+    }
+
+    let fileName = `${schematicDetail.value.name}.litematic`;
+    const disposition = res.headers['content-disposition'];
+    if (disposition) {
+      const utf8Match = disposition.match(/filename\*=(?:UTF-8''|utf-8'')(.+)/i);
+      const fallbackMatch = disposition.match(/filename="?([^";]+)"?/);
+
+      if (utf8Match) {
+        fileName = decodeURIComponent(utf8Match[1]);
+      } else if (fallbackMatch) {
+        fileName = fallbackMatch[1];
+      }
+    }
+
+    const blob = new Blob([res.data]);
+    const link = document.createElement('a');
+    link.href = window.URL.createObjectURL(blob);
+    link.download = fileName;
+    document.body.appendChild(link);
+    link.click();
+
+    document.body.removeChild(link);
+    window.URL.revokeObjectURL(link.href);
+
+    openAlert('下载成功！');
+  }).catch((error) => {
+    console.error('下载失败:', error);
+    openAlert('下载失败，请稍后再试', 'warn-card');
+  });
+
+}
 
 </script>
 <template>
@@ -117,8 +164,8 @@ querySchematicDetail(props.sid)
             {{ schematicDetail.isPublic ? '公开' : '私密' }}
           </td>
         </tr>
-        <tr>
-          <td class="label">备用链接</td>
+        <tr v-show="schematicDetail.backupLink">
+          <td class="label">备用下载</td>
           <td class="value">
             <a :href="schematicDetail.backupLink" target="_blank" rel="noopener noreferrer">
               {{ schematicDetail.backupLink ? schematicDetail.backupLink.slice(0, 20) + "..." : "" }}
@@ -138,7 +185,9 @@ querySchematicDetail(props.sid)
       </tbody>
     </table>
     <div class="buttons">
-      <MCButton :disabled="true" :length="'medium'">下载<span>({{ schematicDetail.fileSizeKB }} KB)</span></MCButton>
+      <MCButton :disabled="schematicDetail.uploader != username && !schematicDetail.isPublic" :length="'medium'"
+        @click="download">下载<span>({{
+          schematicDetail.fileSizeKB }} KB)</span></MCButton>
       <MCButton :length="'medium'" @click="emit('update:isModalVisible', false)">关闭</MCButton>
     </div>
   </div>
