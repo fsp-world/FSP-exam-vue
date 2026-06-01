@@ -98,7 +98,8 @@ querySchematics()
           </MCSegmentedControl>
         </div>
         <div class="no-results" v-if="schematicList.length === 0 && !fetchingData">还没有相关类型的投影</div>
-        <TransitionGroup name="stagger" tag="ul" class="list y-scroll">
+        <TransitionGroup name="stagger" tag="ul" class="list mc-scroll"
+          :style="{ '--scrollbar-avatar': `url(${avatar})` }">
           <li class="schematic" :key="item.id" v-for="item in schematicList" @click="showSchematicDetail(item.id)">
             <div class="name">{{ item.name }} <span class="author">{{ item.uploader }}</span></div>
             <div class="tags">
@@ -331,8 +332,6 @@ querySchematics()
   position: relative;
   margin-top: 20px;
 
-
-
   .text {
     text-align: center;
     color: #fff;
@@ -399,5 +398,22 @@ querySchematics()
 
 .shelf:hover {
   animation: shelfIn ease-in-out 0.5s 0.1s forwards;
+}
+
+.mc-scroll::-webkit-scrollbar {
+  width: 32px;
+  background-color: transparent;
+  background-image: url('/src/assets/images/vanilla_gui/item/ladder.png');
+  background-repeat: repeat-y;
+  background-size: 32px;
+  image-rendering: pixelated;
+}
+
+.mc-scroll::-webkit-scrollbar-thumb {
+  background-image: var(--scrollbar-avatar);
+  background-repeat: no-repeat;
+  background-size: 32px;
+  background-position: center;
+  image-rendering: pixelated;
 }
 </style>
