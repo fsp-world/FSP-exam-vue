@@ -100,8 +100,10 @@ querySchematics()
         <div class="no-results" v-if="schematicList.length === 0 && !fetchingData">还没有相关类型的投影</div>
         <TransitionGroup name="stagger" tag="ul" class="list mc-scroll"
           :style="{ '--scrollbar-avatar': `url(${avatar})` }">
-          <li class="schematic" :key="item.id" v-for="item in schematicList" @click="showSchematicDetail(item.id)">
+          <li class="schematic scroll-hidden" :key="item.id" v-for="item in schematicList"
+            @click="showSchematicDetail(item.id)">
             <div class="name">{{ item.name }} <span class="author">{{ item.uploader }}</span></div>
+            <div class="author author-mobil">{{ item.uploader }}</div>
             <div class="tags">
               <MCNameTag>{{ item.gameVersion }}</MCNameTag>
               <MCNameTag v-show="tag !== ''" :key="index" v-for="(tag, index) in item.tags">{{ tag }}
@@ -259,6 +261,20 @@ querySchematics()
         display: flex;
         gap: 10px;
       }
+
+      /* .segmented-control :deep(button)::after {
+        content: '';
+        position: absolute;
+        top: 3px;
+        left: 0;
+        width: 32px;
+        height: 32px;
+        background-image: url(/src/assets/images/vanilla_gui/item/bucket.png);
+        background-size: 32px 32px;
+        background-repeat: no-repeat;
+        image-rendering: pixelated;
+        background-position: center;
+      } */
     }
 
     .list {
@@ -292,30 +308,35 @@ querySchematics()
   box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.5);
   position: relative;
   margin-right: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  overflow-x: scroll;
 
   .name {
     padding-top: 15px;
     padding-left: 10px;
     font-size: var(--title-font-size-medium);
     color: #333;
-    user-select: none;
+  }
 
-    .author {
-      font-size: var(--title-font-size-small);
-      color: #444;
-      padding-left: 5px;
-    }
+  .author {
+    font-size: var(--title-font-size-small);
+    color: #444;
+    padding-left: 5px;
+  }
+
+  .author-mobil {
+    display: none;
   }
 
   .tags {
     display: flex;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
     gap: 30px;
     padding: 10px;
     margin-left: 8px;
-    position: absolute;
-    bottom: 0;
-    left: 0;
+    height: 30px;
   }
 }
 
@@ -415,5 +436,21 @@ querySchematics()
   background-size: 32px;
   background-position: center;
   image-rendering: pixelated;
+}
+
+@media screen and (max-width: 500px) {
+  .schematic {
+    min-height: 130px;
+    background-size: 130px 130px;
+
+    .author {
+      display: none;
+    }
+
+    .author-mobil {
+      display: block;
+      padding-left: 15px;
+    }
+  }
 }
 </style>

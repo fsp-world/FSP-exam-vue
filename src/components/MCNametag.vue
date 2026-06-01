@@ -24,6 +24,7 @@
   background-position: left;
   background-repeat: no-repeat;
   image-rendering: pixelated;
+  white-space: nowrap;
 }
 
 .tag::before {
