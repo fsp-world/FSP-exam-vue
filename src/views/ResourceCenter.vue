@@ -137,6 +137,7 @@ querySchematics()
             <div class="name">{{ item.name }} <span class="author">{{ item.uploader }}</span></div>
             <div class="author author-mobil">{{ item.uploader }}</div>
             <div class="tags">
+              <img v-show="!item.isPublic" class="lock" src="/src/assets/images/rainbow_pixel_gui/locked.png">
               <MCNameTag>{{ item.gameVersion }}</MCNameTag>
               <MCNameTag v-show="tag !== ''" :key="index" v-for="(tag, index) in item.tags">{{ tag }}
               </MCNameTag>
@@ -383,6 +384,12 @@ querySchematics()
     padding: 10px;
     margin-left: 8px;
     height: 30px;
+  }
+
+  .lock {
+    width: 22px;
+    margin-right: -15px;
+    user-select: none;
   }
 }
 

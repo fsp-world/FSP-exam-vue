@@ -161,6 +161,7 @@ const download = () => {
         <tr>
           <td class="label">投影权限</td>
           <td class="value">
+            <img v-show="!schematicDetail.isPublic" class="lock" src="/src/assets/images/rainbow_pixel_gui/locked.png">
             {{ schematicDetail.isPublic ? '公开' : '私密' }}
           </td>
         </tr>
@@ -232,6 +233,13 @@ const download = () => {
   flex-wrap: wrap;
   gap: 30px;
   padding: 10px;
+}
+
+.lock {
+  display: inline;
+  width: 20px;
+  position: relative;
+  bottom: -8px;
 }
 
 .no-in-mobil {
