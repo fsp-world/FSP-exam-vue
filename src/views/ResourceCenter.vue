@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
-import type { SchematicBrief, GetSchematicParams, SchematicsResponse } from '@/types/schematic';
+import type { SchematicBrief, GetSchematicParams, SchematicsResponse, GetSchematicBySearchParams } from '@/types/schematic';
 
 import { schematicTypes } from '@/types/schematic';
 
@@ -13,7 +13,7 @@ import MCSegmentedControl from '@/components/MCSegmentedControl.vue';
 import MCDialog from '@/components/MCDialog.vue';
 import MCNameTag from '@/components/MCNameTag.vue';
 
-import { getSchematicsByTypeAPI } from '@/apis/schematic';
+import { getSchematicsByTypeAPI, getSchematicsBySearchAPI } from '@/apis/schematic';
 import { openAlert } from '@/utils/TsAlert';
 
 import { useUserStore } from '@/stores/user';
@@ -27,6 +27,7 @@ const { avatar } = storeToRefs(store);
 const schematicList = ref<SchematicBrief[]>([]);
 const selectedValue = ref('redstone')
 const fetchingData = ref(true)
+const searchText = ref('')
 
 const isUploadSchematicVisible = ref(false)
 const isSchematicDetailVisible = ref(false)
@@ -55,8 +56,34 @@ const querySchematics = (type?: string) => {
   });
 }
 
+
+const searchSchematics = () => {
+  fetchingData.value = true
+  const text = searchText.value
+  if (text) {
+    const getSchematicsParams: GetSchematicBySearchParams = {
+      text: text,
+      page: 1,
+      per_page: 10
+    }
+    getSchematicsBySearchAPI(getSchematicsParams).then((res: SchematicsResponse) => {
+      if (res.data.code === 0) {
+        schematicList.value = res.data.data.items;
+      } else {
+        openAlert(res.data.desc, 'warn-card');
+      }
+      fetchingData.value = false
+    }).catch((error) => {
+      console.error('获取投影列表失败:', error);
+    });
+  }
+  else {
+    querySchematics(selectedValue.value)
+  }
+}
+
+
 const changeViewList = (value: any) => {
-  schematicList.value = [];
   querySchematics(value)
 };
 
@@ -82,17 +109,21 @@ querySchematics()
   </MCDialog>
   <StrippedBirchLogBackground>
     <div class="main">
-      <div class="nav">
+      <nav class="nav">
         <div class="title">资源中心</div>
         <MCRouterLink :length="'short'" to="/" class="back">
           返回
         </MCRouterLink>
-      </div>
+      </nav>
       <div class="content">
         <div class="top scroll-hidden">
           <MCButton :length="'medium'" class="upload-schematic-button" @click="isUploadSchematicVisible = true">
             上传投影
           </MCButton>
+          <div class="search">
+            <img class="search-icon" src="/src/assets/images/rainbow_pixel_gui/search.png" alt="搜索">
+            <input v-model="searchText" @keyup.enter="searchSchematics" type="search" class="search-input" />
+          </div>
           <MCSegmentedControl :data="schematicTypes" v-model="selectedValue" @change="changeViewList"
             class="segmented-control">
           </MCSegmentedControl>
@@ -256,25 +287,11 @@ querySchematics()
       .upload-schematic-button {
         min-width: 120px;
       }
+    }
 
-      .segmented-control {
-        display: flex;
-        gap: 10px;
-      }
-
-      /* .segmented-control :deep(button)::after {
-        content: '';
-        position: absolute;
-        top: 3px;
-        left: 0;
-        width: 32px;
-        height: 32px;
-        background-image: url(/src/assets/images/vanilla_gui/item/bucket.png);
-        background-size: 32px 32px;
-        background-repeat: no-repeat;
-        image-rendering: pixelated;
-        background-position: center;
-      } */
+    .segmented-control {
+      display: flex;
+      gap: 10px;
     }
 
     .list {
@@ -288,6 +305,34 @@ querySchematics()
     }
   }
 }
+
+.search {
+  position: relative;
+  border-bottom: #555 2px solid;
+  min-width: 100px;
+  display: flex;
+  gap: 8px;
+
+  .search-icon {
+    width: 25px;
+    height: 25px;
+    image-rendering: pixelated;
+    position: relative;
+    bottom: -5px;
+    left: 0;
+  }
+
+  .search-input {
+    background: transparent;
+    font-size: var(--title-font-size-small);
+  }
+
+  .search-input:focus {
+    outline: none
+  }
+}
+
+
 
 .no-results {
   position: absolute;
