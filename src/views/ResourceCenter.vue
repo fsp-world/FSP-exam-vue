@@ -62,6 +62,7 @@ const searchSchematics = () => {
   const text = searchText.value
   if (text) {
     const getSchematicsParams: GetSchematicBySearchParams = {
+      type: selectedValue.value,
       text: text,
       page: 1,
       per_page: 10
@@ -122,7 +123,7 @@ querySchematics()
           </MCButton>
           <div class="search">
             <img class="search-icon" src="/src/assets/images/rainbow_pixel_gui/search.png" alt="搜索">
-            <input v-model="searchText" @keyup.enter="searchSchematics" type="search" class="search-input" />
+            <input v-model="searchText" @keydown.enter.prevent="searchSchematics" type="search" class="search-input" />
           </div>
           <MCSegmentedControl :data="schematicTypes" v-model="selectedValue" @change="changeViewList"
             class="segmented-control">

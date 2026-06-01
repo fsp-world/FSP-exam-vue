@@ -12,10 +12,8 @@ export interface GetSchematicParams {
   per_page: number; // 每页几项
 }
 
-export interface GetSchematicBySearchParams {
+export interface GetSchematicBySearchParams extends GetSchematicParams{
   text: string;
-  page: number;
-  per_page: number;
 }
 
 export interface UploadSchematicFormData {
