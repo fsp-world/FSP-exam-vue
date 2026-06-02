@@ -11,6 +11,9 @@ const findPasswordForm = ref({
 });
 
 const sendFindPassword = () => {
+  if (findPasswordForm.value.userQQ == "" || findPasswordForm.value.username == "") {
+    openAlert("请输入用户名和QQ")
+  }
   findPassword(findPasswordForm.value)
     .then((res) => {
       openAlert(res.data.desc);

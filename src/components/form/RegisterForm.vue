@@ -17,11 +17,11 @@ const registerForm = ref({
   username: '',
   userQQ: '',
   password: '',
-  repassword: '',
+  passwordAgain: '',
 });
 
 const sendRegister = () => {
-  if (registerForm.value.password === registerForm.value.repassword) {
+  if (registerForm.value.password === registerForm.value.passwordAgain) {
     if (!checkPassword(registerForm.value.password)) {
       openAlert('密码必须包含至少一个大写字母、一个小写字母、一个数字和一个特殊字符，且长度为8-16个字符');
       return;
@@ -31,7 +31,7 @@ const sendRegister = () => {
         username: registerForm.value.username,
         userQQ: registerForm.value.userQQ,
         password: registerForm.value.password,
-        repassword: registerForm.value.repassword,
+        passwordAgain: registerForm.value.passwordAgain,
       })
       .then((res: any) => {
         if (res.data.code === 0) {
@@ -69,9 +69,9 @@ const sendRegister = () => {
     <input type="text" placeholder="用户名" v-model="registerForm.username" />
     <input type="text" placeholder="QQ号" v-model="registerForm.userQQ" />
     <input type="password" placeholder="密码" v-model="registerForm.password" />
-    <input type="password" placeholder="确认密码" v-model="registerForm.repassword" />
+    <input type="password" placeholder="确认密码" v-model="registerForm.passwordAgain" />
     <p>密码必须包含至少一个大写字母、一个小写字母、一个数字和一个特殊字符，且长度为8-16个字符。</p>
-    <p v-if="registerForm.repassword && registerForm.password !== registerForm.repassword"
+    <p v-if="registerForm.passwordAgain && registerForm.password !== registerForm.passwordAgain"
       style="color: red; font-size: 12px">
       两次输入的密码不一致。
     </p>
