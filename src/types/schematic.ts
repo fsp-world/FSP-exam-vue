@@ -24,6 +24,7 @@ export interface GetSchematicBySearchParams extends GetSchematicParams{
 }
 
 export interface UploadSchematicFormData {
+  id?: string;
   name: string;
   originalAuthor: string;
   desc: string;

@@ -9,7 +9,7 @@ import MCButton from '@/components/MCButton.vue';
 import { useUserStore } from '@/stores/user';
 import { storeToRefs } from 'pinia';
 import { openAlert } from '@/utils/TsAlert';
-import { uploadSchematic as uploadSchematicAPI } from '@/apis/schematic';
+import { uploadSchematicAPI, updateSchematicAPI } from '@/apis/schematic';
 
 
 interface Props {
@@ -20,6 +20,7 @@ interface Props {
 
 interface Emits {
   (e: 'update:isModalVisible', value: boolean): void
+  (e: 'refresh'): void
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -38,13 +39,14 @@ const getDefaultSchematic = (): UploadSchematicFormData => {
 
     const public_ = props.originData.isPublic ? 'true' : 'false'
     return {
+      id: String(props.originData.id),
       name: props.originData.name,
       originalAuthor: props.originData.originalAuthor,
       isPublic: public_,
       type: String(props.originData.type),
       desc: props.originData.description,
       gameVersion: props.originData.gameVersion,
-      uploadFileName: props.originData.name,
+      uploadFileName: '',
       uploadFile: null,
       tags: props.originData.tags.join(' '),
       backupLink: props.originData.backupLink,
@@ -93,30 +95,30 @@ const handleFileSelect = (event: any) => {
 };
 
 const checkFormData = (): boolean => {
-  if (!schematic.value.uploadFile) {
-    openAlert('请选择投影文件')
-    return false
+  if (props.mode === 'new') {
+    if (!schematic.value.uploadFile) {
+      openAlert('请选择投影文件')
+      return false
+    }
+    if (!schematic.value.uploadFileName.trim()) {
+      openAlert('投影文件名不能为空')
+      return false
+    }
+
+    if (!schematic.value.uploadFileName.endsWith('.litematic')) {
+      openAlert('投影文件后缀名不符')
+      return false
+    }
+    const invalidChars = /[\\/:*?"<>|]/;
+    if (invalidChars.test(schematic.value.uploadFileName)) {
+      openAlert('投影文件名不能包含以下字符: \\ / : * ? " < > |');
+      return false;
+    }
   }
 
   if (!schematic.value.name.trim()) {
     openAlert('投影名称不能为空')
     return false
-  }
-
-  if (!schematic.value.uploadFileName.trim()) {
-    openAlert('投影文件名不能为空')
-    return false
-  }
-
-  if (!schematic.value.uploadFileName.endsWith('.litematic')) {
-    openAlert('投影文件后缀名不符')
-    return false
-  }
-
-  const invalidChars = /[\\/:*?"<>|]/;
-  if (invalidChars.test(schematic.value.uploadFileName)) {
-    openAlert('投影文件名不能包含以下字符: \\ / : * ? " < > |');
-    return false;
   }
 
   if (schematic.value.name.length > 25) {
@@ -126,11 +128,6 @@ const checkFormData = (): boolean => {
 
   if (!schematic.value.gameVersion.trim()) {
     openAlert('兼容版本不能为空')
-    return false
-  }
-
-  if (!schematic.value.type.trim()) {
-    openAlert('类型不能为空')
     return false
   }
 
@@ -158,25 +155,26 @@ const cancel = () => {
 }
 
 const uploadSchematic = () => {
-  if (!checkFormData()) {
-    return
-  }
+  if (!checkFormData()) return
 
-  uploadSchematicAPI(schematic.value).then((res) => {
+  const apiCall = props.mode === 'update' ? updateSchematicAPI : uploadSchematicAPI;
+
+  apiCall(schematic.value).then((res) => {
     if (res.data.code === 0) {
       openAlert(res.data.desc);
-      cancel()
+      emit('refresh')
+      cancel();
     } else {
       openAlert(res.data.desc, 'warn-card');
     }
-  })
+  });
 }
 
 </script>
 <template>
   <form>
     <table class="table">
-      <caption class="title">上传投影</caption>
+      <caption class="title">{{ props.mode === 'update' ? '编辑' : '上传' }}投影</caption>
       <tbody>
         <tr>
           <td class="label required">文件选择</td>
@@ -211,7 +209,7 @@ const uploadSchematic = () => {
           <td class="label required">投影权限</td>
           <td class="permission">
             <label>公开</label><input v-model="schematic.isPublic" value="true" name="isPublic" type="radio">
-            <label>私密</label><input checked v-model="schematic.isPublic" value="false" name="isPublic" type="radio">
+            <label>私密</label><input v-model="schematic.isPublic" value="false" name="isPublic" type="radio">
           </td>
         </tr>
         <tr>

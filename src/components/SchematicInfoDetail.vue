@@ -113,7 +113,9 @@ const isEditSchematicVisible = ref(false)
 <template>
   <div class="info">
     <MCDialog :style="'card'" v-model:isModalVisible="isEditSchematicVisible">
-      <UploadSchematicForm v-model:isModalVisible="isEditSchematicVisible"></UploadSchematicForm>
+      <UploadSchematicForm :mode="'update'" :origin-data="schematicDetail"
+        v-model:isModalVisible="isEditSchematicVisible" @refresh="querySchematicDetail(props.sid)">
+      </UploadSchematicForm>
     </MCDialog>
     <div class="close" alt="关闭" @click="emit('update:isModalVisible', false)"></div>
     <div class="title">投影信息</div>
