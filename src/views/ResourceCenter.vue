@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
-import type { SchematicBrief, GetSchematicParams, SchematicsResponse, GetSchematicBySearchParams } from '@/types/schematic';
+import type { SchematicBrief, GetSchematicParams, SchematicsResponse, GetSchematicBySearchParams, SchematicType } from '@/types/schematic';
 
 import { schematicTypes } from '@/types/schematic';
 
@@ -25,7 +25,7 @@ const store = useUserStore();
 const { avatar } = storeToRefs(store);
 
 const schematicList = ref<SchematicBrief[]>([]);
-const selectedValue = ref('REDSTONE')
+const selectedValue = ref<SchematicType>(1)
 const fetchingData = ref(true)
 const searchText = ref('')
 
@@ -38,11 +38,9 @@ const getSchematicsParams: GetSchematicParams = {
   per_page: 10
 }
 
-const querySchematics = (type?: string) => {
+const querySchematics = (type: number) => {
   fetchingData.value = true
-  if (type) {
-    getSchematicsParams.type = type;
-  }
+  getSchematicsParams.type = type;
 
   getSchematicsByTypeAPI(getSchematicsParams).then((res: SchematicsResponse) => {
     if (res.data.code === 0) {
@@ -96,7 +94,7 @@ const showSchematicDetail = (id: number) => {
 }
 const querySchematicId = ref(0)
 
-querySchematics()
+querySchematics(1)
 
 </script>
 <template>

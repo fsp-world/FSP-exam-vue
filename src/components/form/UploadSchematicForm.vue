@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 
-import type { UploadSchematicFormData } from '@/types/schematic';
+import type { SchematicDetail, UploadSchematicFormData } from '@/types/schematic';
 import { schematicTypes } from '@/types/schematic';
 
 import MCButton from '@/components/MCButton.vue';
@@ -14,6 +14,8 @@ import { uploadSchematic as uploadSchematicAPI } from '@/apis/schematic';
 
 interface Props {
   isModalVisible: boolean
+  mode?: 'new' | 'update'
+  originData?: SchematicDetail
 }
 
 interface Emits {
@@ -22,6 +24,7 @@ interface Emits {
 
 const props = withDefaults(defineProps<Props>(), {
   isModalVisible: false,
+  mode: 'new'
 })
 
 const emit = defineEmits<Emits>()
@@ -30,18 +33,36 @@ const store = useUserStore();
 const { username } = storeToRefs(store);
 const fileInputRef = ref<HTMLInputElement | null>(null);
 
-const getDefaultSchematic = (): UploadSchematicFormData => ({
-  name: '',
-  originalAuthor: '',
-  isPublic: 'false',
-  type: '',
-  desc: '',
-  gameVersion: '',
-  uploadFileName: '',
-  uploadFile: null,
-  tags: '',
-  backupLink: '',
-})
+const getDefaultSchematic = (): UploadSchematicFormData => {
+  if (props.originData && props.mode === 'update') {
+
+    const public_ = props.originData.isPublic ? 'true' : 'false'
+    return {
+      name: props.originData.name,
+      originalAuthor: props.originData.originalAuthor,
+      isPublic: public_,
+      type: String(props.originData.type),
+      desc: props.originData.description,
+      gameVersion: props.originData.gameVersion,
+      uploadFileName: props.originData.name,
+      uploadFile: null,
+      tags: props.originData.tags.join(' '),
+      backupLink: props.originData.backupLink,
+    }
+  }
+  return {
+    name: '',
+    originalAuthor: '',
+    isPublic: 'false',
+    type: '0',
+    desc: '',
+    gameVersion: '',
+    uploadFileName: '',
+    uploadFile: null,
+    tags: '',
+    backupLink: '',
+  }
+}
 
 const schematic = ref<UploadSchematicFormData>(getDefaultSchematic())
 

@@ -1,13 +1,20 @@
 import type { FetchResponse, PaginateData } from ".";
 
 export const schematicTypes = [
-  { label: '其他', data: 'OTHER', code: 0 },
-  { label: '红石', data: 'REDSTONE', code: 1 },
-  { label: '建筑', data: 'ARCHITECTURE', code: 2 },
+  { data: 0, label: '其他' },
+  { data: 1, label: '红石' },
+  { data: 2, label: '建筑' },
 ]
+// 提取出数字类型（用于函数参数约束或接口定义）
+export type SchematicType = typeof schematicTypes[number]['data']; // 0 | 1 | 2
+
+export function getSchematicTypeItem(data: number) {
+  const item = schematicTypes.find(item => item.data === data);
+  return item
+}
 
 export interface GetSchematicParams {
-  type: string;
+  type: number;
   page: number; // 页码
   per_page: number; // 每页几项
 }
@@ -32,7 +39,7 @@ export interface UploadSchematicFormData {
 export interface SchematicBrief {
   id: number
   name: string;
-  type: number | string;
+  type: number;
   uploader: string;
   originalAuthor: string;
   uploadDate: string;

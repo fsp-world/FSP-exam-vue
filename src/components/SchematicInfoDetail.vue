@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import type { SchematicDetailResponse, SchematicDetail } from '@/types/schematic';
-import { schematicTypes } from '@/types/schematic';
+import { SchematicDetailResponse, SchematicDetail } from '@/types/schematic';
+import { getSchematicTypeItem } from '@/types/schematic';
 import { downloadSchematicAPI, getSchematicDetailAPI } from '@/apis/schematic';
 import { openAlert } from '@/utils/TsAlert';
 import { dateFormatYYYYMMDDHHmm } from '@/utils/date';
@@ -10,6 +10,8 @@ import { storeToRefs } from 'pinia';
 
 import MCButton from '@/components/MCButton.vue';
 import MCNameTag from '@/components/MCNameTag.vue';
+import MCDialog from './MCDialog.vue';
+import UploadSchematicForm from './form/UploadSchematicForm.vue';
 
 const store = useUserStore();
 const { username } = storeToRefs(store);
@@ -32,7 +34,7 @@ const emit = defineEmits<Emits>()
 const GetSchematicDetailDefault = (): SchematicDetail => ({
   id: 0,
   name: '',
-  type: '',
+  type: 0,
   uploader: '',
   originalAuthor: '',
   uploadDate: '',
@@ -45,11 +47,6 @@ const GetSchematicDetailDefault = (): SchematicDetail => ({
   fileSizeKB: '',
   backupLink: '',
 })
-
-type SchematicCode = typeof schematicTypes[number]['code'];
-const schematicTypeMap = Object.fromEntries(
-  schematicTypes.map(item => [item.code, item.label])
-) as Record<SchematicCode, string>;
 
 const schematicDetail = ref<SchematicDetail>(GetSchematicDetailDefault())
 
@@ -64,6 +61,8 @@ const querySchematicDetail = (id: number) => {
     console.error('获取投影详情失败:', error);
   });
 }
+
+
 
 querySchematicDetail(props.sid)
 
@@ -106,12 +105,16 @@ const download = () => {
     console.error('下载失败:', error);
     openAlert('下载失败，请稍后再试', 'warn-card');
   });
-
 }
+
+const isEditSchematicVisible = ref(false)
 
 </script>
 <template>
   <div class="info">
+    <MCDialog :style="'card'" v-model:isModalVisible="isEditSchematicVisible">
+      <UploadSchematicForm v-model:isModalVisible="isEditSchematicVisible"></UploadSchematicForm>
+    </MCDialog>
     <div class="close" alt="关闭" @click="emit('update:isModalVisible', false)"></div>
     <div class="title">投影信息</div>
     <table class="table y-scroll">
@@ -119,10 +122,10 @@ const download = () => {
         <tr>
           <td class="label">
             <span class="no-in-mobil">投影类型</span>
-            <span class="mobil">{{ schematicTypeMap[schematicDetail.type as number] ?? '未知' }}类型</span>
+            <span class="mobil">{{ getSchematicTypeItem(schematicDetail.type)?.label ?? '未知' }}类型</span>
           </td>
           <td class="value">
-            <span class="no-in-mobil">{{ schematicTypeMap[schematicDetail.type as number] ?? '未知类型' }} | 兼容版本&nbsp;{{
+            <span class="no-in-mobil">{{ getSchematicTypeItem(schematicDetail.type)?.label ?? '未知类型' }} | 兼容版本&nbsp;{{
               schematicDetail.gameVersion }}</span>
             <span class="mobil">{{ schematicDetail.gameVersion }}</span>
           </td>
@@ -190,7 +193,8 @@ const download = () => {
       <MCButton :disabled="schematicDetail.uploader != username && !schematicDetail.isPublic" :length="'medium'"
         @click="download">下载<span>({{
           schematicDetail.fileSizeKB }} KB)</span></MCButton>
-      <MCButton :disabled="schematicDetail.uploader != username" :length="'medium'">编辑</MCButton>
+      <MCButton :disabled="schematicDetail.uploader != username" :length="'medium'"
+        @click="isEditSchematicVisible = true">编辑</MCButton>
     </div>
   </div>
 </template>
