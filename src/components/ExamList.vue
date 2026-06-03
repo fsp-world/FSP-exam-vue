@@ -10,7 +10,7 @@
               res.state ? (res.state === 1 ? '已通过' : '已拒绝') : '审核中'
             }}）
           </p>
-          <p>{{ dateFormatMMDDHHMM(res.responseTime) }}</p>
+          <p>{{ dateFormatMMDDHHmm(res.responseTime) }}</p>
         </div>
         <MCButton v-if="res.state === 1 || res.state === 2" class="button" @click="handleClick(res)">查看成绩</MCButton>
       </li>
@@ -23,7 +23,7 @@
 import { ref } from 'vue';
 import { getResponses } from '@/apis/query';
 import type { IQueryResponse } from '@/types';
-import { dateFormatMMDDHHMM } from '@/utils/date';
+import { dateFormatMMDDHHmm } from '@/utils/date';
 import MCButton from './MCButton.vue';
 import ShowScore from './ShowScore.vue';
 
@@ -106,17 +106,21 @@ const handleClick = (res: IQueryResponse) => {
 .list li:hover {
   background-color: rgba(0, 0, 0, 0.5);
 }
+
 @media (max-width: 800px) {
   .list {
     width: 100%;
   }
+
   .list li {
     flex-wrap: wrap;
   }
+
   .list li .info {
     width: 100%;
     display: block;
   }
+
   .list li button {
     width: 100%;
     height: 60px;

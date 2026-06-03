@@ -25,7 +25,7 @@ const store = useUserStore();
 const { avatar } = storeToRefs(store);
 
 const schematicList = ref<SchematicBrief[]>([]);
-const selectedValue = ref('redstone')
+const selectedValue = ref('REDSTONE')
 const fetchingData = ref(true)
 const searchText = ref('')
 

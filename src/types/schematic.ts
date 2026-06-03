@@ -1,9 +1,9 @@
 import type { FetchResponse, PaginateData } from ".";
 
 export const schematicTypes = [
-  { label: '其他', data: 'other', code: 0 },
-  { label: '红石', data: 'redstone', code: 1 },
-  { label: '建筑', data: 'architecture', code: 2 },
+  { label: '其他', data: 'OTHER', code: 0 },
+  { label: '红石', data: 'REDSTONE', code: 1 },
+  { label: '建筑', data: 'ARCHITECTURE', code: 2 },
 ]
 
 export interface GetSchematicParams {

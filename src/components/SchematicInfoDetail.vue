@@ -4,7 +4,7 @@ import type { SchematicDetailResponse, SchematicDetail } from '@/types/schematic
 import { schematicTypes } from '@/types/schematic';
 import { downloadSchematicAPI, getSchematicDetailAPI } from '@/apis/schematic';
 import { openAlert } from '@/utils/TsAlert';
-import { dateFormatYYYYMMDDHH } from '@/utils/date';
+import { dateFormatYYYYMMDDHHmm } from '@/utils/date';
 import { useUserStore } from '@/stores/user';
 import { storeToRefs } from 'pinia';
 
@@ -112,6 +112,7 @@ const download = () => {
 </script>
 <template>
   <div class="info">
+    <div class="close" alt="关闭" @click="emit('update:isModalVisible', false)"></div>
     <div class="title">投影信息</div>
     <table class="table y-scroll">
       <tbody>
@@ -155,7 +156,7 @@ const download = () => {
         <tr>
           <td class="label">更新日期</td>
           <td class="value">
-            {{ dateFormatYYYYMMDDHH(schematicDetail.updateDate) }}
+            {{ dateFormatYYYYMMDDHHmm(schematicDetail.updateDate) }}
           </td>
         </tr>
         <tr>
@@ -189,7 +190,7 @@ const download = () => {
       <MCButton :disabled="schematicDetail.uploader != username && !schematicDetail.isPublic" :length="'medium'"
         @click="download">下载<span>({{
           schematicDetail.fileSizeKB }} KB)</span></MCButton>
-      <MCButton :length="'medium'" @click="emit('update:isModalVisible', false)">关闭</MCButton>
+      <MCButton :disabled="schematicDetail.uploader != username" :length="'medium'">编辑</MCButton>
     </div>
   </div>
 </template>
@@ -203,6 +204,23 @@ const download = () => {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  position: relative;
+
+  .close {
+    width: 40px;
+    height: 40px;
+    background-image: url("/src/assets/images/vanilla_gui/reject.png");
+    image-rendering: pixelated;
+    background-repeat: no-repeat;
+    background-size: cover;
+    position: absolute;
+    top: 60px;
+    right: 60px;
+  }
+
+  .close:hover {
+    background-image: url("/src/assets/images/vanilla_gui/reject_highlighted.png");
+  }
 }
 
 .title {
