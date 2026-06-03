@@ -106,11 +106,13 @@ onUnmounted(() => {
 
 </script>
 <template>
-  <div class="bg" v-if="isModalVisible">
-    <div ref="modalRef" tabindex="-1" :class="modalClassList" :style="{ '--ratioX': resizeX, '--ratioY': resizeY }">
-      <slot></slot>
+  <Teleport to="body">
+    <div class="bg" v-if="isModalVisible">
+      <div ref="modalRef" tabindex="-1" :class="modalClassList" :style="{ '--ratioX': resizeX, '--ratioY': resizeY }">
+        <slot></slot>
+      </div>
     </div>
-  </div>
+  </Teleport>
 </template>
 
 <style scoped>
