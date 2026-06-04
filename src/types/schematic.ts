@@ -13,14 +13,12 @@ export function getSchematicTypeItem(data: number) {
   return item
 }
 
-export interface GetSchematicParams {
-  type: number;
-  page: number; // 页码
-  per_page: number; // 每页几项
-}
-
-export interface GetSchematicBySearchParams extends GetSchematicParams{
+export interface GetSchematicsParams {
+  method: 'type' | 'search';
   text: string;
+  type: number;
+  page: number;
+  per_page: number;
 }
 
 export interface UploadSchematicFormData {

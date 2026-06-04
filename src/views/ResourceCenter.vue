@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import { ref } from 'vue'
-import type { SchematicBrief, GetSchematicParams, SchematicsResponse, GetSchematicBySearchParams, SchematicType } from '@/types/schematic';
+import { ref, reactive } from 'vue'
+import type { SchematicBrief, GetSchematicsParams, SchematicsResponse, SchematicType } from '@/types/schematic';
 
 import { schematicTypes } from '@/types/schematic';
 
@@ -32,73 +32,79 @@ const searchText = ref('')
 const isUploadSchematicVisible = ref(false)
 const isSchematicDetailVisible = ref(false)
 
-const getSchematicsParams: GetSchematicParams = {
-  type: selectedValue.value,
+const pagination = reactive({
   page: 1,
-  per_page: 10
+  pages: 0,
+  total: 0,
+  hasNext: false,
+  hasPrev: false,
+})
+
+const getSchematicsParams: GetSchematicsParams = {
+  method: 'type',
+  text: '',
+  type: 1,
+  page: 1,
+  per_page: 3
 }
 
-const querySchematics = (type: number) => {
-  fetchingData.value = true
-  getSchematicsParams.type = type;
+const querySchematics = (queryMethod: 'type' | 'search') => {
+  if (queryMethod === 'search') {
+    if (searchText.value.trim() == '') {
+      queryMethod = 'type'
+    } else {
+      getSchematicsParams.text = searchText.value.trim()
+    }
+  }
 
-  getSchematicsByTypeAPI(getSchematicsParams).then((res: SchematicsResponse) => {
+  fetchingData.value = true
+
+  if (selectedValue.value !== getSchematicsParams.type || queryMethod !== getSchematicsParams.method) {
+    getSchematicsParams.type = selectedValue.value
+    getSchematicsParams.method = queryMethod
+    getSchematicsParams.page = 1
+    pagination.page = 1
+    pagination.pages = 0
+    pagination.total = 0
+    pagination.hasNext = false
+    pagination.hasPrev = false
+  } else {
+    getSchematicsParams.page = pagination.page
+  }
+
+  const apiCall = queryMethod === 'type' ? getSchematicsByTypeAPI : getSchematicsBySearchAPI;
+
+  apiCall(getSchematicsParams).then((res: SchematicsResponse) => {
     if (res.data.code === 0) {
-      schematicList.value = res.data.data.items;
+      const { items, page, pages, total, has_next, has_prev } = res.data.data
+      schematicList.value = items
+      pagination.page = page
+      pagination.pages = pages
+      pagination.total = total
+      pagination.hasNext = has_next
+      pagination.hasPrev = has_prev
     } else {
       openAlert(res.data.desc, 'warn-card');
     }
-    fetchingData.value = false
   }).catch((error) => {
     console.error('获取投影列表失败:', error);
-  });
+    openAlert('获取投影列表失败', 'warn-card')
+  }).finally(() => {
+    fetchingData.value = false
+  })
 }
 
-
-const searchSchematics = () => {
-  fetchingData.value = true
-  const text = searchText.value
-  if (text) {
-    const getSchematicsParams: GetSchematicBySearchParams = {
-      type: selectedValue.value,
-      text: text,
-      page: 1,
-      per_page: 10
-    }
-    getSchematicsBySearchAPI(getSchematicsParams).then((res: SchematicsResponse) => {
-      if (res.data.code === 0) {
-        schematicList.value = res.data.data.items;
-      } else {
-        openAlert(res.data.desc, 'warn-card');
-      }
-      fetchingData.value = false
-    }).catch((error) => {
-      console.error('获取投影列表失败:', error);
-    });
-  }
-  else {
-    querySchematics(selectedValue.value)
-  }
-}
-
-
-const changeViewList = (value: any) => {
-  querySchematics(value)
-};
-
-
-
+const querySchematicId = ref(0)
 const showSchematicDetail = (id: number) => {
   querySchematicId.value = id
   isSchematicDetailVisible.value = true
 }
-const querySchematicId = ref(0)
-
-querySchematics(1)
 
 const handleDeleteSchematic = (sid: number) => {
   schematicList.value = schematicList.value.filter(item => item.id !== sid);
 }
+
+querySchematics('type')
 
 </script>
 <template>
@@ -126,9 +132,10 @@ const handleDeleteSchematic = (sid: number) => {
           </MCButton>
           <div class="search">
             <img class="search-icon" src="/src/assets/images/rainbow_pixel_gui/search.png" alt="搜索">
-            <input v-model="searchText" @keydown.enter.prevent="searchSchematics" type="search" class="search-input" />
+            <input v-model="searchText" @keydown.enter.prevent="querySchematics('search')" type="search"
+              class="search-input" />
           </div>
-          <MCSegmentedControl :data="schematicTypes" v-model="selectedValue" @change="changeViewList"
+          <MCSegmentedControl :data="schematicTypes" v-model="selectedValue" @change="querySchematics('type')"
             class="segmented-control">
           </MCSegmentedControl>
         </div>
@@ -148,10 +155,14 @@ const handleDeleteSchematic = (sid: number) => {
             </div>
           </li>
         </TransitionGroup>
-        <div v-show="schematicList.length > 0" class="paginate">
-          <div class="last"></div>
-          <div class="text">第{{ getSchematicsParams.page }}页</div>
-          <div class="next"></div>
+        <div v-show="pagination.pages > 0" class="paginate">
+          <div class="last" :class="{ disabled: !pagination.hasPrev || fetchingData }"
+            @click="pagination.hasPrev && !fetchingData && (pagination.page--, querySchematics(getSchematicsParams.method))">
+          </div>
+          <div class="text">第 {{ pagination.page }} / {{ pagination.pages }} 页</div>
+          <div class="next" :class="{ disabled: !pagination.hasNext || fetchingData }"
+            @click="pagination.hasNext && !fetchingData && (pagination.page++, querySchematics(getSchematicsParams.method))">
+          </div>
         </div>
         <img class="avatar" :src="avatar"></img>
         <div class="shelf"></div>
@@ -440,6 +451,11 @@ const handleDeleteSchematic = (sid: number) => {
 
   .next:hover {
     background-image: url(/src/assets/images/rainbow_pixel_gui/select_highlighted.png);
+  }
+
+  .disabled {
+    display: none;
+
   }
 }
 
