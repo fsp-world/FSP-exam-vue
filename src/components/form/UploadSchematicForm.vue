@@ -9,7 +9,7 @@ import MCButton from '@/components/MCButton.vue';
 import { useUserStore } from '@/stores/user';
 import { storeToRefs } from 'pinia';
 import { openAlert } from '@/utils/TsAlert';
-import { uploadSchematicAPI, updateSchematicAPI } from '@/apis/schematic';
+import { uploadSchematicAPI, updateSchematicAPI, deleteSchematicAPI } from '@/apis/schematic';
 
 
 interface Props {
@@ -21,6 +21,7 @@ interface Props {
 interface Emits {
   (e: 'update:isModalVisible', value: boolean): void
   (e: 'refresh'): void
+  (e: 'delete'): void
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -170,6 +171,20 @@ const uploadSchematic = () => {
   });
 }
 
+const deleteSchematic = () => {
+  const confirmDelete = confirm('确定要删除这个投影吗，你将失去它，很久，很久...');
+  if (confirmDelete && schematic.value.id) {
+    deleteSchematicAPI(Number(schematic.value.id)).then((res) => {
+      if (res.data.code === 0) {
+        openAlert(res.data.desc);
+        emit('delete')
+        cancel();
+      } else {
+        openAlert(res.data.desc, 'warn-card');
+      }
+    });
+  }
+}
 </script>
 <template>
   <form>
@@ -239,6 +254,8 @@ const uploadSchematic = () => {
       </tbody>
     </table>
     <div class="buttons">
+      <MCButton v-if="props.mode === 'update'" :length="'medium'" @click="deleteSchematic"><span
+          style="color: red;">删除</span></MCButton>
       <MCButton :length="'medium'" @click="cancel">取消</MCButton>
       <MCButton :length="'medium'" @click="uploadSchematic">上传</MCButton>
     </div>

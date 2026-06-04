@@ -23,6 +23,7 @@ interface Props {
 
 interface Emits {
   (e: 'update:isModalVisible', value: boolean): void
+  (e: 'delete:sid', value: number): void
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -50,10 +51,19 @@ const GetSchematicDetailDefault = (): SchematicDetail => ({
 
 const schematicDetail = ref<SchematicDetail>(GetSchematicDetailDefault())
 
+const downloadAble = ref(false)
+
+const deletedSchematic = (id: number) => {
+  downloadAble.value = false
+  emit('delete:sid', props.sid)
+}
+
 const querySchematicDetail = (id: number) => {
+  downloadAble.value = false
   getSchematicDetailAPI(id).then((res: SchematicDetailResponse) => {
     if (res.data.code === 0) {
-      schematicDetail.value = res.data.data
+      schematicDetail.value = res.data.data;
+      downloadAble.value = true
     } else {
       openAlert(res.data.desc, 'warn-card');
     }
@@ -62,19 +72,21 @@ const querySchematicDetail = (id: number) => {
   });
 }
 
-
-
 querySchematicDetail(props.sid)
 
 const download = () => {
   openAlert('开始下载...')
-  downloadSchematicAPI(props.sid).then((res) => {
+  downloadSchematicAPI(props.sid).then(async (res) => {
+    const contentType = res.headers['content-type'] || '';
 
-    if (res.headers['content-type']?.includes('application/json')) {
-      const text = res.data.text();
-      const errorData = JSON.parse(text);
-      openAlert(errorData.desc || '下载失败', 'warn-card');
-      return;
+    if (contentType.includes('application/json')) {
+      const text = await res.data.text();
+      const jsonError = JSON.parse(text);
+
+      if (jsonError.code === 1) {
+        openAlert(jsonError.desc, 'warn-card');
+        return;
+      }
     }
 
     let fileName = `${schematicDetail.value.name}.litematic`;
@@ -114,7 +126,8 @@ const isEditSchematicVisible = ref(false)
   <div class="info">
     <MCDialog :style="'card'" v-model:isModalVisible="isEditSchematicVisible">
       <UploadSchematicForm :mode="'update'" :origin-data="schematicDetail"
-        v-model:isModalVisible="isEditSchematicVisible" @refresh="querySchematicDetail(props.sid)">
+        v-model:isModalVisible="isEditSchematicVisible" @refresh="querySchematicDetail(props.sid)"
+        @delete="deletedSchematic(props.sid)">
       </UploadSchematicForm>
     </MCDialog>
     <div class="close" alt="关闭" @click="emit('update:isModalVisible', false)"></div>
@@ -192,11 +205,11 @@ const isEditSchematicVisible = ref(false)
       </tbody>
     </table>
     <div class="buttons">
-      <MCButton :disabled="schematicDetail.uploader != username && !schematicDetail.isPublic" :length="'medium'"
-        @click="download">下载<span>({{
-          schematicDetail.fileSizeKB }} KB)</span></MCButton>
-      <MCButton :disabled="schematicDetail.uploader != username" :length="'medium'"
-        @click="isEditSchematicVisible = true">编辑</MCButton>
+      <MCButton v-show="downloadAble" :disabled="!downloadAble" :length="'medium'" @click="download">下载<span>({{
+        schematicDetail.fileSizeKB }} KB)</span></MCButton>
+      <MCButton v-show="downloadAble" :disabled="(schematicDetail.uploader != username) || !downloadAble"
+        :length="'medium'" @click="isEditSchematicVisible = true">编辑</MCButton>
+      <MCButton :disabled="true" v-show="!downloadAble"><span style="color: red;">已删除</span></MCButton>
     </div>
   </div>
 </template>

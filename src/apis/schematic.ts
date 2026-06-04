@@ -26,6 +26,7 @@ export const getSchematicsByTypeAPI = (params: GetSchematicParams) => request.ge
 export const getSchematicDetailAPI = (id: number) => request.get('/schematic/query_detail', { params: {id: id}})
 export const getSchematicsBySearchAPI = (params: GetSchematicBySearchParams) => request.get('/schematic/search', {params: params});
 export const downloadSchematicAPI = (id: number) => request.get('/schematic/download', { params: {id: id}, responseType: 'blob' });
+export const deleteSchematicAPI = (id: number) => request.get('/schematic/delete', { params: {id: id} });
 export const uploadSchematicAPI = async (data: UploadSchematicFormData) => {
   const formData = buildSchematicFormData(data);
   return await request.post('/schematic/upload', formData);

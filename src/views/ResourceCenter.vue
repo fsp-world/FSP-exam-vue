@@ -96,6 +96,10 @@ const querySchematicId = ref(0)
 
 querySchematics(1)
 
+const handleDeleteSchematic = (sid: number) => {
+  schematicList.value = schematicList.value.filter(item => item.id !== sid);
+}
+
 </script>
 <template>
   <MCDialog :style="'card'" v-model:isModalVisible="isUploadSchematicVisible">
@@ -103,7 +107,8 @@ querySchematics(1)
   </MCDialog>
   <MCDialog class="detail" :style="'book'" :resizeX="1.3" :resizeY="1.3"
     v-model:isModalVisible="isSchematicDetailVisible">
-    <SchematicInfoDetail :sid="querySchematicId" v-model:isModalVisible="isSchematicDetailVisible">
+    <SchematicInfoDetail :sid="querySchematicId" @delete:sid="handleDeleteSchematic"
+      v-model:isModalVisible="isSchematicDetailVisible">
     </SchematicInfoDetail>
   </MCDialog>
   <StrippedBirchLogBackground>
