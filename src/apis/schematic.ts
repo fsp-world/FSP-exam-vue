@@ -1,5 +1,5 @@
 import request from '@/utils/requers';
-import type { GetSchematicParams, UploadSchematicFormData, GetSchematicBySearchParams } from '@/types/schematic';
+import type { GetSchematicsParams, UploadSchematicFormData } from '@/types/schematic';
 
 const buildSchematicFormData = (data: UploadSchematicFormData): FormData => {
   const formData = new FormData();
@@ -22,9 +22,9 @@ const buildSchematicFormData = (data: UploadSchematicFormData): FormData => {
   return formData;
 };
 
-export const getSchematicsByTypeAPI = (params: GetSchematicParams) => request.get('/schematic/query_by_type', {params: params});
+export const getSchematicsByTypeAPI = (params: GetSchematicsParams) => request.get('/schematic/query_by_type', {params: params});
 export const getSchematicDetailAPI = (id: number) => request.get('/schematic/query_detail', { params: {id: id}})
-export const getSchematicsBySearchAPI = (params: GetSchematicBySearchParams) => request.get('/schematic/search', {params: params});
+export const getSchematicsBySearchAPI = (params: GetSchematicsParams) => request.get('/schematic/search', {params: params});
 export const downloadSchematicAPI = (id: number) => request.get('/schematic/download', { params: {id: id}, responseType: 'blob' });
 export const deleteSchematicAPI = (id: number) => request.get('/schematic/delete', { params: {id: id} });
 export const uploadSchematicAPI = async (data: UploadSchematicFormData) => {

@@ -6,3 +6,4 @@ export const setUserAvatar = (uuid: string) =>
   request.post('/user/setAvatar', {
     uuid: uuid,
   });
+export const getPlayerChainOfTrust  = (uuid: string) => request.get('/user/getChainOfTrust', { params: {uuid: uuid} });

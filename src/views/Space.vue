@@ -7,7 +7,11 @@ import { openAlert } from '@/utils/TsAlert';
 import { useUserStore } from '@/stores/user';
 import MCRouterLink from '@/components/MCRouterLink.vue';
 import MCButton from '@/components/MCButton.vue';
+import MCDialog from '@/components/MCDialog.vue';
+import PlayerChainOfTrust from '@/components/PlayerChainOfTrust.vue';
 import { storeToRefs } from 'pinia';
+
+const displayChainOfTrustPanel = ref(false)
 
 const userStore = useUserStore();
 const {
@@ -67,9 +71,18 @@ const reqActivation = () => {
     openAlert(res.data.desc);
   });
 };
+
+const queryUUID = ref('')
+const queryChainOfTrust = (uuid: string) => {
+  queryUUID.value = uuid
+  displayChainOfTrustPanel.value = true
+}
 </script>
 
 <template>
+  <MCDialog :style="'card'" v-model:is-modal-visible="displayChainOfTrustPanel">
+    <PlayerChainOfTrust :uuid="queryUUID" v-model:is-modal-visible="displayChainOfTrustPanel"></PlayerChainOfTrust>
+  </MCDialog>
   <div class="view-result">
     <div class="translucent-bg"></div>
     <div class="translucent-content">
@@ -92,12 +105,11 @@ const reqActivation = () => {
         <div class="white-list y-scroll">
           <p class="title">授权的游戏账户</p>
           <ul>
-            <li class="player" v-for="(item, index) in userWhiteList" v-bind:key="index">
-              <img class="avatar" :src="item.avatarUrl" alt="User Avatar" />
+            <li class="player" v-for="(item, index) in userWhiteList" :key="index">
+              <img title="点击查看信任链" @click="queryChainOfTrust(item.uuid)" class="avatar" :src="item.avatarUrl"
+                alt="User Avatar" />
               <p class="name">{{ item.name }}</p>
-              <MCButton class="button" v-if="item.uuid !== avatarUUID" @click="editAvatar(item.uuid)"
-                >设置为头像</MCButton
-              >
+              <MCButton class="button" v-if="item.uuid !== avatarUUID" @click="editAvatar(item.uuid)">设置为头像</MCButton>
             </li>
           </ul>
         </div>
@@ -128,6 +140,7 @@ const reqActivation = () => {
   gap: 30px;
   overflow-y: hidden;
 }
+
 @media (max-width: 600px) {
   .main {
     gap: 10px;
@@ -144,17 +157,20 @@ const reqActivation = () => {
   padding: 20px;
   border-radius: 8px;
   background-color: rgba(0, 0, 0, 0.3);
+
   .avatar {
     margin-right: 20px;
     border-radius: 10px;
     overflow: hidden;
     image-rendering: pixelated;
+    user-select: none;
   }
 
   .avatar img {
     width: 100px;
     height: auto;
   }
+
   .user-details h2 {
     margin-top: 0;
   }
@@ -174,23 +190,30 @@ const reqActivation = () => {
   padding: 20px;
   border-radius: 8px;
   background-color: rgba(0, 0, 0, 0.3);
+
   .title {
     text-align: center;
     font-size: 20px;
     padding-bottom: 10px;
+    user-select: none;
   }
+
   .player {
     display: flex;
     justify-content: space-between;
     --hei: 50px;
     padding: 5px 0;
     height: 55px;
+
     .avatar {
       image-rendering: pixelated;
       border-radius: 5px;
       height: var(--hei);
       border: 3px solid #000;
+      user-select: none;
+      cursor: pointer;
     }
+
     .name {
       width: 100%;
       font-size: 20px;
@@ -198,10 +221,16 @@ const reqActivation = () => {
       padding: 0 10px;
       text-align: left;
     }
+
     .button {
       width: 200px;
       font-size: 16px;
     }
+  }
+
+  .player:hover {
+    background-color: rgba(0, 0, 0, 0.3);
+    border-radius: 5px;
   }
 }
 
