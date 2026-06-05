@@ -1,5 +1,8 @@
 <script setup lang="ts">
 import { onMounted, ref, computed } from 'vue'
+import img1 from '@/assets/images/rainbow_pixel_gui/button.png'
+import img2 from '@/assets/images/rainbow_pixel_gui/button_highlighted.png'
+import img3 from '@/assets/images/rainbow_pixel_gui/button_disabled.png'
 
 // 根据不同的length，会使用canvas生成不同长度的按钮图片，避免使用CSS拉伸导致的模糊问题
 interface Props {
@@ -17,9 +20,9 @@ const props = withDefaults(defineProps<Props>(), {
 async function generateButtonImages(length: 'short' | 'medium' | 'long') {
   // 加载三张原始图片
   const [normalImg, highlightedImg, disabledImg] = await Promise.all([
-    loadImage('/src/assets/images/rainbow_pixel_gui/button.png'),
-    loadImage('/src/assets/images/rainbow_pixel_gui/button_highlighted.png'),
-    loadImage('/src/assets/images/rainbow_pixel_gui/button_disabled.png')
+    loadImage(img1),
+    loadImage(img2),
+    loadImage(img3)
   ])
 
   // 根据长度类型确定目标尺寸
