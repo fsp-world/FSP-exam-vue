@@ -118,7 +118,11 @@ function getCutParams(length: 'short' | 'medium' | 'long'): [number, number, num
 }
 
 
-const buttonImages = ref(<Record<string, any>>{})
+const buttonImages = ref({
+  normal: '',
+  highlighted: '',
+  disabled: ''
+})
 const isHovered = ref(false)
 
 onMounted(async () => {
@@ -139,10 +143,8 @@ const currentBackgroundImage = computed(() => {
 })
 
 const buttonStyle = computed(() => {
-  const zoomRatio = 2
-  return {
-    backgroundImage: `url("${currentBackgroundImage.value}")`,
-  }
+  const image = currentBackgroundImage.value
+  return image ? { backgroundImage: `url("${image}")` } : {}
 })
 
 const buttonClassList = computed(() => ({
