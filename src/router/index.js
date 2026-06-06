@@ -135,50 +135,6 @@ const router = createRouter({
         },
       ],
     },
-    // {
-    //   path: '/admin',
-    //   name: 'Admin',
-    //   redirect: { name: 'User' },
-    //   component: () => import('@/views/Admin.vue'),
-    //   meta: { requiresAuth: true, requiresAdmin: true },
-    //   children: [
-    //     {
-    //       path: 'user',
-    //       name: 'User',
-    //       component: () => import('@/components/admin/User.vue'),
-    //     },
-    //     {
-    //       path: 'whitelist',
-    //       name: 'Whitelist',
-    //       component: () => import('@/components/admin/Whitelist.vue'),
-    //     },
-    //     {
-    //       path: 'exam',
-    //       name: 'Exam',
-    //       component: () => import('@/components/admin/Exam.vue'),
-    //     },
-    //     {
-    //       path: 'guarantee_mgmt',
-    //       name: 'GuaranteeMgmt',
-    //       component: () => import('@/components/admin/GuaranteeMgmt.vue'),
-    //     },
-    //     {
-    //       path: 'response',
-    //       name: 'Response',
-    //       component: () => import('@/components/admin/Response.vue'),
-    //     },
-    //     {
-    //       path: 'slot',
-    //       name: 'Slot',
-    //       component: () => import('@/components/admin/Slot.vue'),
-    //     },
-    //     {
-    //       path: 'config',
-    //       name: 'Config',
-    //       component: () => import('@/components/admin/Config.vue'),
-    //     },
-    //   ],
-    // },
     {
       path: '/error',
       name: 'Error',
