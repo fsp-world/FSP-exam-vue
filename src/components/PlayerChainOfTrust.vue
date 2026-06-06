@@ -69,10 +69,7 @@ queryChainOfTrust(props.uuid)
 </script>
 <template>
   <div class="main">
-    <!-- <ul>
-      <li v-for="item in chain"> {{ item }}</li>
-    </ul> -->
-    <p>白名单用户 {{ playerName }} 的信任链</p>
+    <p class="title">白名单用户 {{ playerName }} 的信任链</p>
     <ul>
       <li :key="index" v-for="(item, index) in chain" :style="{ '--indent': (index + 1) * 50 + 'px' }"
         style="padding-left: var(--indent);">
@@ -85,6 +82,10 @@ queryChainOfTrust(props.uuid)
 
 </template>
 <style scoped>
+.title {
+  user-select: none;
+}
+
 p {
   text-align: center;
   font-size: var(--text-font-size-large);
@@ -107,11 +108,11 @@ li {
 }
 
 .avatar {
-
   image-rendering: pixelated;
   border-radius: 5px;
   height: var(--hei);
   border: 3px solid #000;
+  user-select: none;
 }
 
 .main {

@@ -21,59 +21,63 @@ const logout = () => {
 </script>
 
 <template>
-  <div class="exam-index">
-    <img class="logo" src="../assets/images/logo.png" />
-    <div class="menu">
-      <MCRouterLink v-if="!playPermission" to="/guarantee" class="minecraft-button"> 熟人担保 </MCRouterLink>
-      <MCRouterLink v-if="!playPermission" to="/prepareForTheExam" class="minecraft-button"> 参加考试 </MCRouterLink>
-      <MCRouterLink v-if="playPermission" to="/" class="minecraft-button">
-        信息查询（建设中）
-      </MCRouterLink>
-      <MCRouterLink v-if="playPermission" to="/resourceCenter" class="minecraft-button">
-        资源中心
-      </MCRouterLink>
-      <div class="sub-menu">
-        <MCRouterLink :length="'medium'" to="https://www.fsp.ink" class="minecraft-button"> 文档中心 </MCRouterLink>
-        <MCRouterLink :length="'medium'" to="/space" class="minecraft-button"> 个人中心 </MCRouterLink>
-        <button class="minecraft-button avatar">
-          <RouterLink :to="!isLogin ? '/auth' : '/space'">
-            <img :title="!isLogin ? '' : '点我进入个人中心'" class="avatar-img" :src="avatar" alt="头像" width="100%" />
-            <span class="avatat-hover">{{ !isLogin ? '未登录' : username }}</span>
-          </RouterLink>
-          <a v-show="isLogin" class="logout" @click="logout">退出登录</a>
-        </button>
+  <div class="bg">
+    <div class="main">
+      <img class="logo" src="../assets/images/logo.png" />
+      <div class="menu">
+        <MCRouterLink v-if="!playPermission" to="/guarantee" class="minecraft-button">熟人担保</MCRouterLink>
+        <MCRouterLink v-if="!playPermission" to="/prepareForTheExam" class="minecraft-button">参加考试</MCRouterLink>
+        <MCRouterLink v-if="playPermission" to="/" class="minecraft-button" :disabled="true">信息查询</MCRouterLink>
+        <MCRouterLink v-if="playPermission" to="/resourceCenter" class="minecraft-button">资源中心</MCRouterLink>
+        <div class="sub-menu">
+          <MCRouterLink :length="'medium'" to="https://www.fsp.ink" class="minecraft-button"> 文档中心 </MCRouterLink>
+          <MCRouterLink :length="'medium'" to="/space" class="minecraft-button"> 个人中心 </MCRouterLink>
+          <button class="minecraft-button avatar">
+            <RouterLink :to="!isLogin ? '/auth' : '/space'">
+              <img :title="!isLogin ? '' : '点我进入个人中心'" class="avatar-img" :src="avatar" alt="头像" width="100%" />
+              <span class="avatat-hover">{{ !isLogin ? '未登录' : username }}</span>
+            </RouterLink>
+            <a v-show="isLogin" class="logout" @click="logout">退出登录</a>
+          </button>
+        </div>
       </div>
+
     </div>
+
   </div>
 </template>
 
 <style scoped>
-.exam-index {
-  width: 100%;
+.bg {
+  width: 100vw;
   height: 100vh;
-  position: absolute;
+  position: fixed;
   background-image: var(--bg-img);
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
   z-index: -1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
-.exam-index .logo {
-  display: block;
+.main {
+  margin-bottom: 5%;
+}
+
+.logo {
   margin: 0 auto;
-  margin-top: 7%;
+  width: 100vw;
+  max-width: 800px;
   user-select: none;
   -webkit-user-drag: none;
-  max-width: 800px;
 }
 
-.exam-index .menu {
-  max-width: 700px;
+.menu {
+  --gap: 10px;
   display: flex;
-  margin: 0 auto;
-  gap: 10px;
-  justify-content: center;
+  gap: var(--gap);
   flex-wrap: wrap;
   padding: 30px;
 
@@ -86,13 +90,9 @@ const logout = () => {
   .sub-menu {
     display: flex;
     justify-content: center;
-    gap: 10px;
+    gap: var(--gap);
     width: 100%;
     position: relative;
-
-    button {
-      width: 50%;
-    }
   }
 
   .avatar {
@@ -159,56 +159,17 @@ const logout = () => {
 
 
 
-@media screen and (max-width: 1000px) {
-  .exam-index {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    overflow: hidden;
-  }
-
-  .exam-index .menu {
-    padding-bottom: 15%;
-
-    button {
-      height: 60px;
-    }
-
+@media screen and (max-width: 950px) {
+  .menu {
     .avatar {
       display: none;
     }
-  }
-
-  .exam-index .logo {
-    padding-top: 7%;
-    width: 100vw;
-    max-width: 800px;
   }
 }
 
 @media screen and (max-width: 700px) {
-  .exam-index {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    overflow: hidden;
-  }
-
-  .exam-index .menu {
-    padding-bottom: 30%;
-
-    button {
-      height: 60px;
-    }
-
-    .avatar {
-      display: none;
-    }
-  }
-
-  .exam-index .logo {
-    padding-top: 30%;
-    width: 100vw;
+  .logo {
+    margin-bottom: 20%;
   }
 }
 </style>

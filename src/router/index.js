@@ -135,50 +135,6 @@ const router = createRouter({
         },
       ],
     },
-    // {
-    //   path: '/admin',
-    //   name: 'Admin',
-    //   redirect: { name: 'User' },
-    //   component: () => import('@/views/Admin.vue'),
-    //   meta: { requiresAuth: true, requiresAdmin: true },
-    //   children: [
-    //     {
-    //       path: 'user',
-    //       name: 'User',
-    //       component: () => import('@/components/admin/User.vue'),
-    //     },
-    //     {
-    //       path: 'whitelist',
-    //       name: 'Whitelist',
-    //       component: () => import('@/components/admin/Whitelist.vue'),
-    //     },
-    //     {
-    //       path: 'exam',
-    //       name: 'Exam',
-    //       component: () => import('@/components/admin/Exam.vue'),
-    //     },
-    //     {
-    //       path: 'guarantee_mgmt',
-    //       name: 'GuaranteeMgmt',
-    //       component: () => import('@/components/admin/GuaranteeMgmt.vue'),
-    //     },
-    //     {
-    //       path: 'response',
-    //       name: 'Response',
-    //       component: () => import('@/components/admin/Response.vue'),
-    //     },
-    //     {
-    //       path: 'slot',
-    //       name: 'Slot',
-    //       component: () => import('@/components/admin/Slot.vue'),
-    //     },
-    //     {
-    //       path: 'config',
-    //       name: 'Config',
-    //       component: () => import('@/components/admin/Config.vue'),
-    //     },
-    //   ],
-    // },
     {
       path: '/error',
       name: 'Error',
@@ -191,34 +147,26 @@ const router = createRouter({
 router.beforeEach((to, from) => {
   const user = useUserStore();
 
-  // 如果用户已登录且尝试访问 Auth 页面，重定向到 Space 页面
   if (to.name === 'Auth' && user.isLogin) {
     return { name: 'Space' };
   }
 
-  // 检查是否需要认证
-  if (to.matched.some((record) => record.meta.requiresAuth)) {
-    if (!user.isLogin) {
-      // 如果未登录，重定向到登录页面，并携带重定向路径
-      return {
-        name: 'Auth',
-        query: { redirect: to.fullPath },
-      };
-    }
-
-    // 检查是否需要管理员权限
-    if (to.matched.some((record) => record.meta.requiresAdmin)) {
-      if (!user.isAdmin) {
-        // 如果不是管理员，重定向到错误页面
-        return {
-          name: 'Error',
-          query: { redirect: to.fullPath, message: '你不是管理员！' },
-        };
-      }
-    }
+  const requiresAuth = to.matched.some((record) => record.meta.requiresAuth);
+  if (requiresAuth && !user.isLogin) {
+    return {
+      name: 'Auth',
+      query: { redirect: to.fullPath },
+    };
   }
 
-  // 默认情况下，允许导航
+  const requiresAdmin = to.matched.some((record) => record.meta.requiresAdmin);
+  if (requiresAdmin && !user.isAdmin) {
+    return {
+      name: 'Error',
+      query: { redirect: to.fullPath, message: '你不是管理员！' },
+    };
+  }
+
   return true;
 });
 
