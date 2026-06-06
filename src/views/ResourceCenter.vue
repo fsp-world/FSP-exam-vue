@@ -45,7 +45,7 @@ const getSchematicsParams: GetSchematicsParams = {
   text: '',
   type: 1,
   page: 1,
-  per_page: 3
+  per_page: 10
 }
 
 const querySchematics = (queryMethod: 'type' | 'search') => {
