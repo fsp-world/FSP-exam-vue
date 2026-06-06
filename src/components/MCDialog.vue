@@ -23,6 +23,10 @@ interface Emits {
   (e: 'update:isModalVisible', value: boolean): void
 }
 
+defineOptions({
+  inheritAttrs: false
+})
+
 const props = withDefaults(defineProps<Props>(), {
   isModalVisible: false,
   style: 'book',
@@ -108,7 +112,8 @@ onUnmounted(() => {
 <template>
   <Teleport to="body">
     <div class="bg" v-if="isModalVisible">
-      <div ref="modalRef" tabindex="-1" :class="modalClassList" :style="{ '--ratioX': resizeX, '--ratioY': resizeY }">
+      <div v-bind="$attrs" ref="modalRef" tabindex="-1" :class="modalClassList"
+        :style="{ '--ratioX': resizeX, '--ratioY': resizeY }">
         <slot></slot>
       </div>
     </div>
