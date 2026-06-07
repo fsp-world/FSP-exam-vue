@@ -40,6 +40,9 @@ jobs:
           username: ${{ secrets.SERVER_USER }}
           # port: ${{ secrets.SERVER_PORT }}   # 如果没有定义 SERVER_PORT，可以写 22 或者删除这一行
           key: ${{ secrets.SERVER_SSH_KEY }}
+          script: |
+            ls -ld /opt/www/exam
+            ls -la /opt/www/exam/
           source: "dist/*"          # 上传 dist 目录下的所有文件
           target: "/opt/web/exam"   # 目标目录，注意与 Nginx root 一致
           strip_components: 1       # 去掉上传路径中的 dist/ 这一层目录
