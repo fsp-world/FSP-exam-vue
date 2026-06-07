@@ -45,15 +45,16 @@ jobs:
           remote_port: ${{ secrets.SERVER_PORT || 22 }}
 
       # 6. 刷新阿里云 CDN 目录缓存（方式一：目录刷新）
-      - name: Purge Aliyun CDN Cache (Directory)
-        uses: aliyun/aliyun-cli@v1
+      - name: Setup Aliyun CLI
+        uses: jerray/setup-aliyun-cli-action@v1.0.2  # 1. 安装CLI工具
         with:
-          aliyun-cli-version: 'latest'
-          args: |
-            cdn RefreshObjectCaches \
-              --object-path "${{ env.CDN_REFRESH_URL }}" \
-              --object-type Directory \
-              --region cn-hangzhou
-        env:
-          ALIYUN_ACCESS_KEY_ID: ${{ secrets.ALIYUN_ACCESS_KEY_ID }}
-          ALIYUN_ACCESS_KEY_SECRET: ${{ secrets.ALIYUN_ACCESS_KEY_SECRET }}
+          access-key-id: ${{ secrets.ALIYUN_ACCESS_KEY_ID }}
+          access-key-secret: ${{ secrets.ALIYUN_ACCESS_KEY_SECRET }}
+          region: cn-hangzhou
+      
+      - name: Purge Aliyun CDN Cache
+        run: |   # 2. 执行刷新命令
+          aliyun cdn RefreshObjectCaches \
+            --object-path "${{ env.CDN_REFRESH_URL }}" \
+            --object-type Directory \
+            --region cn-hangzhou
