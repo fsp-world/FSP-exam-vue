@@ -16,49 +16,38 @@ export const computStatus = (status: number): string => {
 };
 
 interface SeasonConfig {
-  startDate: Date;
+  startDate: string;
   label: string;
 }
 
 const SEASONS: SeasonConfig[] = [
-  { startDate: new Date('2021-05-08'), label: '一期成员' },
-  { startDate: new Date('2024-07-05'), label: '二期成员' },
+  { startDate: '2021-05-08', label: '一期成员' },
+  { startDate: '2024-07-05', label: '二期成员' },
 ];
 
-// 去除日期的时间部分
-const normalizeDate = (date: Date): number => {
-  const d = new Date(date);
-  d.setHours(0, 0, 0, 0);
-  return d.getTime();
-};
-
-export const getUserJoinSeason = (joinTime: Date | string | null | undefined): string => {
-  if (!joinTime) {
-    throw new Error('joinTime is required');
-  }
-  let joinTimestamp: number;
-
-  try {
-    if (typeof joinTime === 'string') {
-      const parsedDate = new Date(joinTime);
-      if (isNaN(parsedDate.getTime())) {
-        throw new Error(`Invalid date string: ${joinTime}`);
-      }
-      joinTimestamp = normalizeDate(parsedDate);
-    } else {
-      if (isNaN(joinTime.getTime())) {
-        throw new Error('Invalid Date object provided');
-      }
-      joinTimestamp = normalizeDate(joinTime);
-    }
-  } catch (error) {
-    throw new Error(`Failed to parse joinTime: ${error instanceof Error ? error.message : error}`);
+/**
+ * 获取用户所属的期数
+ * @param joinTime 用户的加入时间 (Date 对象)
+ */
+export const getUserJoinSeason = (joinTime: Date | string): string => {
+  let validDate: Date;
+  if (typeof joinTime === 'string') {
+    validDate = new Date(joinTime);
+  } else {
+    validDate = joinTime;
   }
 
-  for (const season of SEASONS) {
-    const seasonStart = normalizeDate(season.startDate);
-    if (joinTimestamp >= seasonStart) {
-      return season.label;
+  // 校验日期是否有效
+  if (!validDate || isNaN(validDate.getTime())) {
+    throw new Error('Invalid joinTime provided');
+  }
+  // 提取本地日期的 YYYY-MM-DD 字符串，彻底规避时区转换问题
+  const joinDateStr = validDate.toLocaleDateString('en-CA'); // 'en-CA' 会输出 YYYY-MM-DD 格式
+
+  // 倒序遍历，找到第一个小于等于加入时间的赛季
+  for (let i = SEASONS.length - 1; i >= 0; i--) {
+    if (joinDateStr >= SEASONS[i].startDate) {
+      return SEASONS[i].label;
     }
   }
 
