@@ -56,6 +56,6 @@ jobs:
       - name: Purge Aliyun CDN Cache
         run: |   # 2. 执行刷新命令
           aliyun cdn RefreshObjectCaches \
-            --object-path "${{ env.CDN_REFRESH_URL }}" \
-            --object-type Directory \
+            --ObjectPath "${{ secrets.CDN_REFRESH_URL }}" \
+            --ObjectType Directory \
             --region cn-hangzhou
