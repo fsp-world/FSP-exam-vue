@@ -70,7 +70,7 @@ const selectedUser = ref<IUser>({
 // 保存修改
 const saveUser = async () => {
   if (selectedUser.value.addtime) {
-    selectedUser.value.addtime = new Date(selectedUser.value.addtime).toString();
+    selectedUser.value.addtime = new Date(selectedUser.value.addtime).toISOString();
   }
   await updateUser(selectedUser.value);
   showModal.value = false;
