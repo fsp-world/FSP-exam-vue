@@ -43,3 +43,17 @@ jobs:
           remote_user: ${{ secrets.SERVER_USER }}
           remote_key: ${{ secrets.SERVER_SSH_KEY }}
           remote_port: ${{ secrets.SERVER_PORT || 22 }}
+
+      # 6. 刷新阿里云 CDN 目录缓存（方式一：目录刷新）
+      - name: Purge Aliyun CDN Cache (Directory)
+        uses: aliyun/aliyun-cli@v1
+        with:
+          aliyun-cli-version: 'latest'
+          args: |
+            cdn RefreshObjectCaches \
+              --object-path "${{ env.CDN_REFRESH_URL }}" \
+              --object-type Directory \
+              --region cn-hangzhou
+        env:
+          ALIYUN_ACCESS_KEY_ID: ${{ secrets.ALIYUN_ACCESS_KEY_ID }}
+          ALIYUN_ACCESS_KEY_SECRET: ${{ secrets.ALIYUN_ACCESS_KEY_SECRET }}
