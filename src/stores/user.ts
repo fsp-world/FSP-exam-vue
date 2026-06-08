@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia';
+import type { User } from '@/types';
 import {
   login as loginReq,
   logout as logoutReq,
@@ -9,13 +10,9 @@ import {
 import { getUserInfo, setUserAvatar } from '@/apis/user';
 import { getProfilePic } from '@/apis/mj';
 import { computStatus, getUserJoinSeason } from '@/utils/statusUtil';
-import { dateFormatYYYYMMDDHH } from '@/utils/date';
-// 你可以任意命名 `defineStore()` 的返回值，但最好使用 store 的名字，同时以 `use` 开头且以 `Store` 结尾。
-// (比如 `useUserStore`，`useCartStore`，`useProductStore`)
-// 第一个参数是你的应用中 Store 的唯一 ID。
+import { dateFormatYYYYMMDD } from '@/utils/date';
 export const useUserStore = defineStore('user', {
-  // 其他配置...
-  state: () => ({
+  state: (): User => ({
     // 所有这些属性都将自动推断出它们的类型
     isLogin: false,
     id: 0,
@@ -24,7 +21,7 @@ export const useUserStore = defineStore('user', {
     avatar: '',
     avatarUUID: '',
     userQQ: '',
-    role: '',
+    role: 'user',
     addtime: '',
     status: 0,
     playPermission: false,
@@ -34,7 +31,7 @@ export const useUserStore = defineStore('user', {
       return computStatus(state.status);
     },
     dateToLocal: (state) => {
-      return dateFormatYYYYMMDDHH(state.addtime);
+      return dateFormatYYYYMMDD(state.addtime);
     },
     getJoinSeason: (state) => {
       return getUserJoinSeason(state.addtime);
@@ -157,6 +154,13 @@ export const useUserStore = defineStore('user', {
   persist: {
     key: 'user',
     storage: localStorage,
-    paths: ['username', 'avatarUUID', 'avatar', 'isLogin', 'isAdmin', 'addtime'] // 只持久化部分字段
+    paths: [
+      'username',
+      'avatarUUID',
+      'avatar',
+      'isLogin',
+      'isAdmin',
+      'addtime',
+    ], // 只持久化部分字段
   },
 });

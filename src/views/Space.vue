@@ -2,7 +2,7 @@
 import { getProfilePic } from '@/apis/mj';
 import { getUserWhitelist } from '@/apis/user';
 import { sendActivation } from '@/apis/auth';
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 import { openAlert } from '@/utils/TsAlert';
 import { useUserStore } from '@/stores/user';
 import MCRouterLink from '@/components/MCRouterLink.vue';
@@ -10,6 +10,7 @@ import MCButton from '@/components/MCButton.vue';
 import MCDialog from '@/components/MCDialog.vue';
 import PlayerChainOfTrust from '@/components/PlayerChainOfTrust.vue';
 import { storeToRefs } from 'pinia';
+import type { RoleType } from '@/types';
 
 const displayChainOfTrustPanel = ref(false)
 
@@ -77,6 +78,16 @@ const queryChainOfTrust = (uuid: string) => {
   queryUUID.value = uuid
   displayChainOfTrustPanel.value = true
 }
+
+const roleMap: Record<RoleType, string> = {
+  admin: '管理员',
+  user: '用户'
+}
+
+const TextRole = computed(() => {
+  return roleMap[role.value] || '未知'
+
+})
 </script>
 
 <template>
@@ -96,9 +107,9 @@ const queryChainOfTrust = (uuid: string) => {
           </div>
           <div class="user-details">
             <h2>{{ username }}</h2>
-            <p>用户QQ: {{ userQQ }}</p>
-            <p>角色: {{ role }} {{ getJoinSeason }}</p>
-            <p>注册日期: {{ dateToLocal }}</p>
+            <p>绑定QQ: {{ userQQ }}</p>
+            <p>角色: {{ TextRole }} ({{ getJoinSeason }})</p>
+            <p>加入日期: {{ dateToLocal }}</p>
             <p>账号状态: {{ getStatus }}</p>
           </div>
         </div>
@@ -137,17 +148,12 @@ const queryChainOfTrust = (uuid: string) => {
   display: flex;
   flex-direction: column;
   flex-wrap: nowrap;
-  gap: 30px;
+  gap: 20px;
   overflow-y: hidden;
 }
 
-@media (max-width: 600px) {
-  .main {
-    gap: 10px;
-  }
-}
-
 .user-info {
+  margin-top: 10px;
   width: calc(100% - 40px);
   max-width: 440px;
   height: 120px;
