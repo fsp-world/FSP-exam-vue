@@ -1,6 +1,15 @@
 # Changelog
 
-<!-- ## [0.11.2] (Developing) -->
+## [0.11.2] (Developing)
+
+### Features
+
+- 添加 GitHub action 的 deploy.yml，以实现自动部署 master 分支的代码
+
+### Bug Fixes
+
+- 修复玩家入服期数的计算问题
+- 修复管理员修改用户注册时间时，未格式化时间就发送给后端的问题
 
 ## [0.11.1] (2026-06-06)
 
