@@ -11,6 +11,9 @@ import MCDialog from '@/components/MCDialog.vue';
 import PlayerChainOfTrust from '@/components/PlayerChainOfTrust.vue';
 import { storeToRefs } from 'pinia';
 import type { RoleType } from '@/types';
+import { useRouter } from 'vue-router';
+
+const router = useRouter();
 
 const displayChainOfTrustPanel = ref(false)
 
@@ -88,53 +91,73 @@ const TextRole = computed(() => {
   return roleMap[role.value] || '未知'
 
 })
+
+const logout = () => {
+  userStore.logout().then((res) => {
+    openAlert({
+      title: 'logout' + Date(),
+      type: 'info-card',
+      message: '成功退出登录',
+      age: 3000,
+      flag: true,
+    });
+    router.push('/');
+  });
+};
 </script>
 
 <template>
-  <MCDialog :style="'card'" v-model:is-modal-visible="displayChainOfTrustPanel">
-    <PlayerChainOfTrust :uuid="queryUUID" v-model:is-modal-visible="displayChainOfTrustPanel"></PlayerChainOfTrust>
-  </MCDialog>
-  <div class="view-result">
+  <div class="space">
+    <MCDialog :style="'card'" v-model:is-modal-visible="displayChainOfTrustPanel">
+      <PlayerChainOfTrust :uuid="queryUUID" v-model:is-modal-visible="displayChainOfTrustPanel"></PlayerChainOfTrust>
+    </MCDialog>
     <div class="translucent-bg"></div>
     <div class="translucent-content">
       <div class="title">
         <p>个人空间</p>
       </div>
       <div class="main">
-        <div class="user-info">
-          <div class="avatar">
-            <img :src="avatar" alt="User Avatar" />
+        <Transition name="stagger" appear>
+          <div class="user-info" :style="{ transitionDelay: '0s' }">
+            <div class="avatar hover-scale">
+              <img :src="avatar" alt="User Avatar" />
+            </div>
+            <div class="user-details">
+              <h2>{{ username }}</h2>
+              <p>绑定QQ: {{ userQQ }}</p>
+              <p>角色: {{ TextRole }} ({{ getJoinSeason }})</p>
+              <p>加入日期: {{ dateToLocal }}</p>
+              <p>账号状态: {{ getStatus }}</p>
+            </div>
           </div>
-          <div class="user-details">
-            <h2>{{ username }}</h2>
-            <p>绑定QQ: {{ userQQ }}</p>
-            <p>角色: {{ TextRole }} ({{ getJoinSeason }})</p>
-            <p>加入日期: {{ dateToLocal }}</p>
-            <p>账号状态: {{ getStatus }}</p>
+        </Transition>
+        <Transition name="stagger" appear>
+          <div class="white-list y-scroll" :style="{ transitionDelay: '0.1s' }">
+            <p class="title">授权的游戏账户</p>
+            <ul>
+              <li class="player" v-for="(item, index) in userWhiteList" :key="index">
+                <img title="点击查看信任链" @click="queryChainOfTrust(item.uuid)" class="avatar" :src="item.avatarUrl"
+                  alt="User Avatar" />
+                <p class="name">{{ item.name }}</p>
+                <MCButton class="button" v-if="item.uuid !== avatarUUID" @click="editAvatar(item.uuid)">设置为头像</MCButton>
+              </li>
+            </ul>
           </div>
-        </div>
-        <div class="white-list y-scroll">
-          <p class="title">授权的游戏账户</p>
-          <ul>
-            <li class="player" v-for="(item, index) in userWhiteList" :key="index">
-              <img title="点击查看信任链" @click="queryChainOfTrust(item.uuid)" class="avatar" :src="item.avatarUrl"
-                alt="User Avatar" />
-              <p class="name">{{ item.name }}</p>
-              <MCButton class="button" v-if="item.uuid !== avatarUUID" @click="editAvatar(item.uuid)">设置为头像</MCButton>
-            </li>
-          </ul>
-        </div>
-        <div class="menu y-scroll">
-          <MCRouterLink class="button" v-if="playPermission" to="https://www.fsp.ink/docs/join/">
-            游玩指南
-          </MCRouterLink>
-          <MCRouterLink class="button" v-if="playPermission" to="/guarantee"> 熟人担保 </MCRouterLink>
-          <MCRouterLink class="button" v-if="playPermission" to="/prepareForTheExam"> 参加考试 </MCRouterLink>
-          <MCRouterLink class="button" to="/Query/Guarantee"> 担保查询 </MCRouterLink>
-          <MCRouterLink class="button" to="/Query/Examination"> 考试查询 </MCRouterLink>
-          <MCRouterLink class="button" v-if="isAdmin" to="/admin"> 网站管理 </MCRouterLink>
-          <MCButton class="button" v-if="status === 0" @click="reqActivation"> 激活账户 </MCButton>
-        </div>
+        </Transition>
+        <Transition name="stagger" appear>
+          <div class="menu y-scroll" :style="{ transitionDelay: '0.2s' }">
+            <MCRouterLink class="button" v-if="playPermission" to="https://www.fsp.ink/docs/join/">
+              游玩指南
+            </MCRouterLink>
+            <MCRouterLink class="button" v-if="playPermission" to="/guarantee"> 熟人担保 </MCRouterLink>
+            <MCRouterLink class="button" v-if="playPermission" to="/prepareForTheExam"> 参加考试 </MCRouterLink>
+            <MCRouterLink class="button" to="/Query/Guarantee"> 担保查询 </MCRouterLink>
+            <MCRouterLink class="button" to="/Query/Examination"> 考试查询 </MCRouterLink>
+            <MCRouterLink class="button" v-if="isAdmin" to="/admin"> 网站管理 </MCRouterLink>
+            <MCButton class="button" v-if="status === 0" @click="reqActivation"> 激活账户 </MCButton>
+            <MCButton class="button" @click="logout"> 退出登录 </MCButton>
+          </div>
+        </Transition>
       </div>
       <div class="end">
         <MCRouterLink to="/" class="button">返回</MCRouterLink>
@@ -144,6 +167,23 @@ const TextRole = computed(() => {
 </template>
 
 <style scoped>
+.hover-scale {
+  transition: transform 0.4s ease;
+}
+
+.hover-scale:hover {
+  transform: scale(1.1);
+}
+
+.stagger-enter-active {
+  transition: all 0.5s ease;
+}
+
+.stagger-enter-from {
+  opacity: 0;
+  transform: translateY(20px);
+}
+
 .main {
   display: flex;
   flex-direction: column;
@@ -170,6 +210,7 @@ const TextRole = computed(() => {
     overflow: hidden;
     image-rendering: pixelated;
     user-select: none;
+    box-shadow: 3px 3px 10px black;
   }
 
   .avatar img {
