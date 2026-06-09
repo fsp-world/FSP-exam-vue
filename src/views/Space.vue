@@ -2,7 +2,7 @@
 import { getProfilePic } from '@/apis/mj';
 import { getUserWhitelist } from '@/apis/user';
 import { sendActivation } from '@/apis/auth';
-import { ref, computed } from 'vue';
+import { ref } from 'vue';
 import { openAlert } from '@/utils/TsAlert';
 import { useUserStore } from '@/stores/user';
 import MCRouterLink from '@/components/MCRouterLink.vue';
@@ -10,7 +10,6 @@ import MCButton from '@/components/MCButton.vue';
 import MCDialog from '@/components/MCDialog.vue';
 import PlayerChainOfTrust from '@/components/PlayerChainOfTrust.vue';
 import { storeToRefs } from 'pinia';
-import type { RoleType } from '@/types';
 import { useRouter } from 'vue-router';
 
 const router = useRouter();
@@ -22,7 +21,6 @@ const {
   avatar,
   username,
   userQQ,
-  role,
   avatarUUID,
   getStatus,
   dateToLocal,
@@ -30,6 +28,7 @@ const {
   status,
   getJoinSeason,
   playPermission,
+  roleText
 } = storeToRefs(userStore);
 
 userStore.syncUserInfo();
@@ -60,7 +59,7 @@ getUserWhitelist().then((res: any) => {
   }
 });
 
-const editAvatar = (uuid: string) => {
+const setAvatar = (uuid: string) => {
   userStore.setAvatar(uuid).then((res: any) => {
     if (res.data.code === 0) {
       openAlert('头像修改成功');
@@ -81,16 +80,6 @@ const queryChainOfTrust = (uuid: string) => {
   queryUUID.value = uuid
   displayChainOfTrustPanel.value = true
 }
-
-const roleMap: Record<RoleType, string> = {
-  admin: '管理员',
-  user: '用户'
-}
-
-const TextRole = computed(() => {
-  return roleMap[role.value] || '未知'
-
-})
 
 const logout = () => {
   userStore.logout().then((res) => {
@@ -123,9 +112,9 @@ const logout = () => {
               <img :src="avatar" alt="User Avatar" />
             </div>
             <div class="user-details">
-              <h2>{{ username }}</h2>
+              <div class="username">{{ username }}</div>
               <p>绑定QQ: {{ userQQ }}</p>
-              <p>角色: {{ TextRole }} ({{ getJoinSeason }})</p>
+              <p>角色: {{ roleText }} ({{ getJoinSeason }})</p>
               <p>加入日期: {{ dateToLocal }}</p>
               <p>账号状态: {{ getStatus }}</p>
             </div>
@@ -139,7 +128,7 @@ const logout = () => {
                 <img title="点击查看信任链" @click="queryChainOfTrust(item.uuid)" class="avatar" :src="item.avatarUrl"
                   alt="User Avatar" />
                 <p class="name">{{ item.name }}</p>
-                <MCButton class="button" v-if="item.uuid !== avatarUUID" @click="editAvatar(item.uuid)">设置为头像</MCButton>
+                <MCButton class="button" v-if="item.uuid !== avatarUUID" @click="setAvatar(item.uuid)">设置为头像</MCButton>
               </li>
             </ul>
           </div>
@@ -167,14 +156,6 @@ const logout = () => {
 </template>
 
 <style scoped>
-.hover-scale {
-  transition: transform 0.4s ease;
-}
-
-.hover-scale:hover {
-  transform: scale(1.1);
-}
-
 .stagger-enter-active {
   transition: all 0.5s ease;
 }
@@ -204,6 +185,11 @@ const logout = () => {
   border-radius: 8px;
   background-color: rgba(0, 0, 0, 0.3);
 
+  .username {
+    font-size: var(--title-font-size-medium);
+    padding-bottom: 5px;
+  }
+
   .avatar {
     margin-right: 20px;
     border-radius: 10px;
@@ -216,6 +202,14 @@ const logout = () => {
   .avatar img {
     width: 100px;
     height: auto;
+  }
+
+  .hover-scale {
+    transition: transform 0.4s ease;
+  }
+
+  .hover-scale:hover {
+    transform: scale(1.1);
   }
 
   .user-details h2 {

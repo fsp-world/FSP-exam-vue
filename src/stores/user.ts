@@ -36,6 +36,13 @@ export const useUserStore = defineStore('user', {
     getJoinSeason: (state) => {
       return getUserJoinSeason(state.addtime);
     },
+    roleText: (state) => {
+      const roleMap = {
+        admin: '管理员',
+        user: '用户',
+      };
+      return roleMap[state.role] || '未知角色';
+    },
   },
   actions: {
     async login(data: any) {
