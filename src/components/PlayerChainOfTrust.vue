@@ -77,19 +77,25 @@ queryChainOfTrust(props.uuid)
         <div class="name">{{ item.applicant.username }}</div>
       </li>
     </ul>
-    <MCButton class="button" @click="emit('update:isModalVisible', false)">关闭</MCButton>
+    <MCButton :length="'medium'" class="button" @click="emit('update:isModalVisible', false)">关闭</MCButton>
   </div>
 
 </template>
 <style scoped>
-.title {
-  user-select: none;
+.main {
+  display: flex;
+  height: 100%;
+  min-height: 500px;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
-p {
+.title {
+  user-select: none;
   text-align: center;
   font-size: var(--text-font-size-large);
 }
+
 
 ul {
   margin: 0 auto;
@@ -105,24 +111,19 @@ li {
     font-size: var(--text-font-size-medium);
     line-height: var(--hei);
   }
-}
 
-.avatar {
-  image-rendering: pixelated;
-  border-radius: 5px;
-  height: var(--hei);
-  border: 3px solid #000;
-  user-select: none;
-}
-
-.main {
-  display: flex;
-  height: 100%;
-  flex-direction: column;
-  justify-content: space-between;
+  .avatar {
+    image-rendering: pixelated;
+    border-radius: 5px;
+    height: var(--hei);
+    border: 3px solid #000;
+    user-select: none;
+  }
 }
 
 .button {
   width: 100%;
+  max-width: 250px;
+  margin: 0 auto;
 }
 </style>

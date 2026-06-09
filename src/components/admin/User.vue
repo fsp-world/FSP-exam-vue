@@ -4,7 +4,7 @@ import { getUsers, updateUser } from '@/apis/admin';
 import MCButton from '@/components/MCButton.vue';
 import { computStatus } from '@/utils/statusUtil';
 import { dateFormatYYYYMMDDHH } from '@/utils/date';
-import { IUser } from '@/types';
+import type { User, UserUpdate } from '@/types';
 
 // 用户数据
 const data = ref({
@@ -35,7 +35,7 @@ const loadUsers = async () => {
 const searchData = computed(() => {
   const { status, keyword } = queryForm;
 
-  return data.value.list.filter((item: IUser) => {
+  return data.value.list.filter((item: User) => {
     return (filterStatus(status, item.status as number)) &&
       (item.username.includes(keyword) || item.userQQ.includes(keyword));
   })
@@ -48,7 +48,7 @@ const filterStatus = (a: number | string, b: number) => {
 }
 
 // 修改用户信息
-const editUser = (user: IUser) => {
+const editUser = (user: UserUpdate) => {
   selectedUser.value = { ...user };
   selectedUser.value.password = '';
   selectedUser.value.addtime = '';
@@ -57,20 +57,21 @@ const editUser = (user: IUser) => {
 
 // 模态框相关
 const showModal = ref(false);
-const selectedUser = ref<IUser>({
-  id: undefined,
+const selectedUser = ref<UserUpdate>({
+  id: 0,
   username: '',
   userQQ: '',
   password: '',
+  passwordAgain: '',
   addtime: '',
-  role: undefined,
+  role: 'user',
   status: 0,
 });
 
 // 保存修改
 const saveUser = async () => {
   if (selectedUser.value.addtime) {
-    selectedUser.value.addtime = new Date(selectedUser.value.addtime).toString();
+    selectedUser.value.addtime = new Date(selectedUser.value.addtime).toISOString();
   }
   await updateUser(selectedUser.value);
   showModal.value = false;
