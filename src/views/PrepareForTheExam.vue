@@ -46,7 +46,7 @@ const selectedSurvey = ref<SurveySlot | null>(null)
 
 
 const choiceSurvey = () => {
-  examineeInfo.value.sid = selectedSurvey.value?.id;
+  examineeInfo.value.sid = selectedSurvey.value?.mountedSID;
   examineeInfo.value.slot_name = selectedSurvey.value?.slotName;
 };
 
