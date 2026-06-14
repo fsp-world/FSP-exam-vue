@@ -13,6 +13,7 @@ const selectedConfigItem = ref<ConfigItem>({
   key: '',
   value: '',
   type: ConfigItemType.STR,
+  description: '',
 });
 
 const getConfig_ = () => {
@@ -37,6 +38,7 @@ const editItem = (key: string) => {
     key: '',
     value: '',
     type: ConfigItemType.STR,
+    description: '',
   };
   getConfig(key).then((res: { data: { value: ConfigItem } }) => {
     selectedConfigItem.value = res.data.value;
@@ -62,6 +64,7 @@ const add = () => {
     key: '',
     value: '',
     type: ConfigItemType.STR,
+    description: '',
   };
   showModal.value = true;
   isAdd.value = true;
@@ -100,14 +103,13 @@ const searchComputed = computed(() => {
     <el-select size="large" style="width: 240px" v-model="searchType" placeholder="筛选类型">
       <el-option v-for="i in ConfigItemType" :value="i">{{ i }}</el-option>
     </el-select>
-    <el-button
-      size="large"
-      @click="
-        searchType = '';
-        searchData = '';
-      "
-    >
-      <el-icon><Close /></el-icon>
+    <el-button size="large" @click="
+      searchType = '';
+    searchData = '';
+    ">
+      <el-icon>
+        <Close />
+      </el-icon>
     </el-button>
 
     <el-button-group size="large">
@@ -139,6 +141,7 @@ const searchComputed = computed(() => {
         &nbsp;&nbsp;key: {{ selectedConfigItem.key }}<br />
         &nbsp;&nbsp;value: {{ selectedConfigItem.value }}<br />
         &nbsp;&nbsp;type: {{ selectedConfigItem.type }}<br />
+        &nbsp;&nbsp;desc: {{ selectedConfigItem.description }}<br />
         }
       </p>
       <form @submit.prevent="save">
@@ -156,6 +159,10 @@ const searchComputed = computed(() => {
             <option v-for="i in ConfigItemType" :value="i">{{ i }}</option>
           </select>
         </div>
+        <div class="form-group">
+          <label>Description</label>
+          <input v-model="selectedConfigItem.description" type="text" required placeholder="description" />
+        </div>
         <div class="form-actions">
           <button type="button" @click="showModal = false">取消</button>
           <button type="submit">保存</button>
@@ -169,6 +176,7 @@ const searchComputed = computed(() => {
 h1 {
   font-size: 30px;
 }
+
 .filter {
   padding: 20px 0;
   display: flex;
@@ -187,28 +195,34 @@ h1 {
   align-items: center;
   z-index: 10000;
 }
+
 .modal-content {
   background-color: white;
   padding: 20px;
   border-radius: 10px;
   width: 400px;
 }
+
 .form-group {
   margin-bottom: 15px;
 }
+
 .form-group label {
   display: block;
   margin-bottom: 5px;
 }
+
 .form-group input {
   border: 1px solid #ccc;
 }
+
 .form-group input,
 .form-group select {
   width: 100%;
   padding: 8px;
   box-sizing: border-box;
 }
+
 .form-actions {
   display: flex;
   justify-content: end;

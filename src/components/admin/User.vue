@@ -4,7 +4,7 @@ import { getUsers, updateUser } from '@/apis/admin';
 import MCButton from '@/components/MCButton.vue';
 import { computStatus } from '@/utils/statusUtil';
 import { dateFormatYYYYMMDDHH } from '@/utils/date';
-import { IUser } from '@/types';
+import type { User, UserUpdate } from '@/types';
 
 // 用户数据
 const data = ref({
@@ -34,8 +34,8 @@ const loadUsers = async () => {
 // 搜索
 const searchData = computed(() => {
   const { status, keyword } = queryForm;
-  
-  return data.value.list.filter((item: IUser) => {
+
+  return data.value.list.filter((item: User) => {
     return (filterStatus(status, item.status as number)) &&
       (item.username.includes(keyword) || item.userQQ.includes(keyword));
   })
@@ -48,7 +48,7 @@ const filterStatus = (a: number | string, b: number) => {
 }
 
 // 修改用户信息
-const editUser = (user: IUser) => {
+const editUser = (user: UserUpdate) => {
   selectedUser.value = { ...user };
   selectedUser.value.password = '';
   selectedUser.value.addtime = '';
@@ -57,20 +57,21 @@ const editUser = (user: IUser) => {
 
 // 模态框相关
 const showModal = ref(false);
-const selectedUser = ref<IUser>({
-  id: undefined,
+const selectedUser = ref<UserUpdate>({
+  id: 0,
   username: '',
   userQQ: '',
   password: '',
+  passwordAgain: '',
   addtime: '',
-  role: undefined,
+  role: 'user',
   status: 0,
 });
 
 // 保存修改
 const saveUser = async () => {
   if (selectedUser.value.addtime) {
-    selectedUser.value.addtime = new Date(selectedUser.value.addtime).toString();
+    selectedUser.value.addtime = new Date(selectedUser.value.addtime).toISOString();
   }
   await updateUser(selectedUser.value);
   showModal.value = false;
@@ -119,9 +120,9 @@ onMounted(() => {
     </div>
 
     <!-- 表格模块 -->
-    <el-table ref="tableRef" v-loading="loading" :data="searchData" style="min-width: 100%; font-size: 1em;" stripe border>
-       <!-- @selection-change="onSelectionChange" -->
-      <!-- <el-table-column type="selection" label="#" width="30" fixed="left" /> -->
+    <el-table ref="tableRef" v-loading="loading" :data="searchData" style="min-width: 100%; font-size: 1em;" stripe
+      border>
+
       <el-table-column label="#" prop="id" width="30" />
       <el-table-column label="用户名" prop="username" />
       <!-- <el-table-column label="头像" width="100" #default="scope">
@@ -136,7 +137,7 @@ onMounted(() => {
         <span>{{ computStatus(scope.row.status) }}</span>
       </el-table-column>
       <el-table-column label="操作" #default="scope" fixed="right" width="90">
-        <MCButton class="button" @click="editUser(scope.row)">修改</MCButton>
+        <MCButton :length="'short'" class="button" @click="editUser(scope.row)">修改</MCButton>
       </el-table-column>
     </el-table>
 
@@ -144,8 +145,7 @@ onMounted(() => {
     <!-- 分页模块 -->
     <template #footer>
       <el-pagination :pager-count="5" background v-model:current-page="data.page" v-model:page-size="data.size"
-        :page-sizes="[10, 20, 30, 40, 50]" layout="total, sizes, prev, pager, next, jumper"
-        :total="data.total"
+        :page-sizes="[10, 20, 30, 40, 50]" layout="total, sizes, prev, pager, next, jumper" :total="data.total"
         @change="loadUsers" />
     </template>
 
@@ -249,15 +249,18 @@ table th {
   border: 1px solid #000000;
   border-collapse: collapse;
 }
+
 table {
   width: 100%;
   margin-bottom: 20px;
 }
+
 td,
 th {
   padding: 10px;
   text-align: center;
 }
+
 .action {
   .button {
     width: 100%;
@@ -265,10 +268,12 @@ th {
     margin: 0px auto;
   }
 }
+
 @media (max-width: 1200px) {
   .table {
     max-width: 90vw;
     overflow-x: auto;
+
     .avatar,
     .name,
     .qq,
@@ -280,11 +285,13 @@ th {
     }
   }
 }
+
 .avatar {
   width: 50px;
   height: 50px;
   border-radius: 50%;
 }
+
 button {
   margin: 5px;
   padding: 5px 10px;
@@ -293,13 +300,16 @@ button {
   background-color: #ccc;
   cursor: pointer;
 }
+
 button:hover {
   background-color: #888;
 }
+
 button:disabled {
   background-color: #ddd;
   cursor: not-allowed;
 }
+
 .pagination {
   display: flex;
   justify-content: center;
@@ -307,6 +317,7 @@ button:disabled {
   gap: 10px;
   margin-top: 20px;
 }
+
 .modal {
   position: fixed;
   top: 0;
@@ -319,28 +330,34 @@ button:disabled {
   align-items: center;
   z-index: 100;
 }
+
 .modal-content {
   background-color: white;
   padding: 20px;
   border-radius: 10px;
   width: 400px;
 }
+
 .form-group {
   margin-bottom: 15px;
 }
+
 .form-group label {
   display: block;
   margin-bottom: 5px;
 }
+
 .form-group input {
   border: 1px solid #ccc;
 }
+
 .form-group input,
 .form-group select {
   width: 100%;
   padding: 8px;
   box-sizing: border-box;
 }
+
 .form-actions {
   display: flex;
   justify-content: end;

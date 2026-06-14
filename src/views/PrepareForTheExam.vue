@@ -1,7 +1,10 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
+
 import MCButton from '@/components/MCButton.vue';
-import MCRouterLink from '@/components/MCRouterLink.vue';
+import MCRouterLink from '@/components/MCRouterLink.vue'
+import MCSegmentedControl from '@/components/MCSegmentedControl.vue';
+
 import ConfirmPlayer from '@/components/ConfirmPlayer.vue';
 import { getSlotsAPI, startSurvey, checkSurvey } from '@/apis/survey';
 import { openAlert } from '@/utils/TsAlert';
@@ -9,6 +12,18 @@ import { useRouter } from 'vue-router';
 import type { SurveySlot } from '@/types';
 
 const router = useRouter();
+
+interface SurveyList {
+  label: string,
+  data: SurveySlot
+}
+
+interface ExamineeInfo {
+  playerName: string;
+  playerUUID: string;
+  sid?: number;
+  slot_name?: string;
+}
 
 const checkSurvey_ = () => {
   checkSurvey().then((res) => {
@@ -18,12 +33,7 @@ const checkSurvey_ = () => {
     }
   });
 };
-interface ExamineeInfo {
-  playerName: string;
-  playerUUID: string;
-  sid?: number;
-  slot_name?: string;
-}
+
 const examineeInfo = ref<ExamineeInfo>({
   playerName: '',
   playerUUID: 'none',
@@ -31,11 +41,13 @@ const examineeInfo = ref<ExamineeInfo>({
 });
 
 const check = ref(false);
-const surveyList = ref<SurveySlot[]>([]);
+const surveyList = ref<SurveyList[]>([]);
+const selectedSurvey = ref<SurveySlot | null>(null)
 
-const choiceSurvey = (sid: number, sName: string) => {
-  examineeInfo.value.sid = sid;
-  examineeInfo.value.slot_name = sName;
+
+const choiceSurvey = () => {
+  examineeInfo.value.sid = selectedSurvey.value?.mountedSID;
+  examineeInfo.value.slot_name = selectedSurvey.value?.slotName;
 };
 
 // 已确认
@@ -67,7 +79,10 @@ onMounted(() => {
   checkSurvey_();
   // 获取可选的考试
   getSlotsAPI().then((res) => {
-    surveyList.value = res.data.list;
+    surveyList.value = res.data.list.map((slot: SurveySlot) => ({
+      label: slot.slotName,
+      data: slot
+    }));
   });
 });
 </script>
@@ -83,27 +98,17 @@ onMounted(() => {
       <div class="main">
         <div>
           <div class="sub-title">
-            <h1>我们会通过一些题目来确认您大致的游戏水平</h1>
+            我们会通过一些题目来确认您大致的游戏水平
           </div>
-          <form class="examineeInfo">
+          <form class="examinee-info">
             <input type="text" v-model="examineeInfo.playerName" placeholder="您的游戏昵称" />
-            <p>系统会根据您的选择生成定制的试题</p>
-            <ul class="option-list">
-              <MCButton
-                class="option"
-                :class="{
-                  selected: examineeInfo.sid == item.mountedSID,
-                }"
-                v-for="(item, index) in surveyList"
-                v-bind:key="index"
-                @click="choiceSurvey(item.mountedSID, item.slotName)"
-              >
-                {{ item.slotName }}类
-              </MCButton>
-              <p v-if="surveyList.length === 0" style="font-size: 30px; text-align: center; margin: 0 auto">
-                暂无可用的问卷
-              </p>
-            </ul>
+            <p class="tips">系统会根据您的选择生成定制的试题</p>
+            <MCSegmentedControl :button-length="'medium'" :data="surveyList" v-model="selectedSurvey"
+              @change="choiceSurvey" class="option-list">
+            </MCSegmentedControl>
+            <p v-if="surveyList.length === 0" class="no-survey-available">
+              暂无可用的问卷
+            </p>
           </form>
         </div>
       </div>
@@ -115,48 +120,47 @@ onMounted(() => {
   </div>
 </template>
 <style scoped>
-.prepare-exam-page .main .sub-title {
+.sub-title {
   text-align: center;
   user-select: none;
+  font-size: var(--title-font-size-medium);
+  padding: 10px;
 }
-.examineeInfo {
+
+.examinee-info {
   padding: 10px;
   margin: 0 10px 10px 10px;
 }
 
-.examineeInfo p {
+.tips {
   text-align: center;
   line-height: 40px;
   font-size: 20px;
   user-select: none;
 }
 
-.examineeInfo .option-list {
+.no-survey-available {
+  font-size: var(--title-font-size-medium);
+  text-align: center;
+}
+
+.examinee-info .option-list {
+  margin-top: 10px;
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
   gap: 10px;
-  user-select: none;
   height: 200px;
   max-width: 800px;
 }
 
-.examineeInfo .option-list .option {
-  font-size: 25px;
-  flex: 1 1 calc(25% - 10px); /* 每个元素的基础宽度为 25%，减去间距 */
-  box-sizing: border-box; /* 确保 padding 和 border 不会影响宽度 */
-  height: 70px;
-  text-align: center;
-  font-family: 'mc-font';
-  color: #fff;
+.examinee-info .option-list :deep(button) {
+  min-width: 320px;
+  height: 60px;
 }
 
-.examineeInfo .option-list .selected {
-  background-image: url(../assets/images/rainbow_pixel_gui/button_highlighted.png);
-  image-rendering: pixelated;
-}
 @media screen and (max-width: 750px) {
-  .examineeInfo {
+  .examinee-info {
     padding: 10px;
     margin: 0 0px 10px 0px;
   }

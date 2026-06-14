@@ -110,18 +110,33 @@ export interface IQuestion {
   answer?: string[]; // 用于用户作答，选择题内容是选择的选项的id，填空题和主观题数组第一个元素的值是用户输入
 }
 
-export type roleType = 'admin' | 'user';
+export type RoleType = 'admin' | 'user';
 
-export type statusType = 0 | 1 | 2 | 3 | 4;
+export type StatusType = 0 | 1 | 2 | 3 | 4;
 
-export interface IUser {
-  id?: number;
+export interface UserUpdate {
+  id: number;
   username: string;
   userQQ: string;
-  role?: roleType;
-  password?: string;
-  status?: statusType;
-  addtime?: string;
+  role: RoleType;
+  status: StatusType;
+  addtime: string;
+  password: string;
+  passwordAgain: string;
+}
+
+export interface User {
+  id: number;
+  username: string;
+  userQQ: string;
+  role: RoleType;
+  status: StatusType;
+  addtime: string;
+  isLogin: boolean;
+  isAdmin: boolean;
+  playPermission: boolean;
+  avatarUUID: string;
+  avatar: string;
 }
 
 export enum ConfigItemType {
@@ -135,4 +150,23 @@ export interface ConfigItem {
   key: string;
   value: string;
   type: ConfigItemType;
+  description: string;
+}
+
+export interface FetchResponse<T = any> {
+  data: {
+    code: number;
+    desc: string;
+    data: T;
+  };
+}
+
+export interface PaginateData<T = any> {
+  items: T[];
+  total: number;
+  page: number;
+  pages: number;
+  per_page: number;
+  has_next: boolean;
+  has_prev: boolean;
 }

@@ -20,6 +20,8 @@ const surveyName = ref('');
 const confirm = ref(false);
 const timeRemaining = ref('');
 
+const ableToSubmit = ref(false)
+
 let intervalId = null; // 定时器 ID
 let deadline = null;
 
@@ -47,8 +49,9 @@ const updateTimeRemaining = () => {
   if (remainingTimeMs <= 0) {
     clearInterval(intervalId); // 清除定时器
     timeRemaining.value = '00时 00分 00秒'; // 时间已到
-    openAlert('时间已到！');
-    complete();
+    ableToSubmit.value = false
+    openAlert('时间已到！未提交自动作废');
+    // complete(); // 截至了后端那边应该会拒收
   } else {
     timeRemaining.value = formatRemainingTime(remainingTimeMs); // 更新剩余时间
   }
@@ -66,6 +69,7 @@ const start = () => {
     } else {
       questions.value = res.data.questions;
       surveyName.value = res.data.name;
+      ableToSubmit.value = true
 
       // 获取截止时间并启动计时器
       deadline = new Date(res.data.ddl); // 设置截止时间
@@ -107,6 +111,9 @@ const complete = () => {
       score.value = res.data.score;
       isDone.value = true;
     }
+    if (res.data.code === 1) {
+      openAlert(res.data.desc);
+    }
   });
 };
 
@@ -134,17 +141,14 @@ onMounted(() => {
         <p class="time">剩余时间：{{ timeRemaining }}</p>
       </div>
       <ul class="question-list">
-        <li
-          class="question"
-          v-for="(question, questionIndex) in questions"
-          :key="questionIndex"
-          :id="'question' + (questionIndex + 1)"
-        >
+        <li class="question" v-for="(question, questionIndex) in questions" :key="questionIndex"
+          :id="'question' + (questionIndex + 1)">
           <QuestionCard :index="questionIndex" :mode="'view'" v-model="questions[questionIndex]"></QuestionCard>
         </li>
       </ul>
       <div class="submit">
-        <MCButton class="minecraft-button" @click="submitPaper()">交卷</MCButton>
+        <MCButton :disabled="!ableToSubmit" :length="'medium'" class="minecraft-button" @click="submitPaper()">交卷
+        </MCButton>
       </div>
       <br />
       <br />
