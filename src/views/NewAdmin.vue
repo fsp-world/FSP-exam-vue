@@ -7,8 +7,18 @@ const userStore = useUserStore();
 const router = useRouter();
 const route = useRoute();
 
+// 路由变化时关闭移动菜单
+watch(() => route.path, () => {
+  mobileMenuOpen.value = false;
+});
+
 // ==================== 侧边栏 ====================
 const isCollapse = ref(false);
+const mobileMenuOpen = ref(false);
+
+const closeMobileMenu = () => {
+  mobileMenuOpen.value = false;
+};
 
 interface MenuItem {
   index: string;
@@ -107,10 +117,23 @@ const appVersion = __APP_VERSION__;
 
 <template>
   <div class="flex h-screen overflow-hidden">
+    <!-- ========== 移动端遮罩层 ========== -->
+    <Transition name="overlay-fade">
+      <div
+        v-show="mobileMenuOpen"
+        class="fixed inset-0 bg-black/50 z-40 md:hidden"
+        @click="closeMobileMenu"
+      />
+    </Transition>
+
     <!-- ========== 侧边栏 ========== -->
     <aside
-      class="shrink-0 flex flex-col transition-all duration-300"
-      :class="isCollapse ? 'w-16' : 'w-55'"
+      class="shrink-0 flex flex-col transition-all duration-300 z-50
+             max-md:fixed max-md:inset-y-0 max-md:left-0 max-md:shadow-2xl"
+      :class="[
+        isCollapse ? 'w-16' : 'w-55',
+        mobileMenuOpen ? 'max-md:translate-x-0' : 'max-md:-translate-x-full'
+      ]"
       style="background-color: #28365c"
     >
       <!-- Logo -->
@@ -118,6 +141,7 @@ const appVersion = __APP_VERSION__;
         to="/"
         class="flex items-center justify-center h-15 shrink-0 gap-2"
         style="background-color: #5768b7"
+        @click="closeMobileMenu"
       >
         <img src="../assets/images/icon-s.png" width="30" alt="logo" />
         <span
@@ -163,6 +187,7 @@ const appVersion = __APP_VERSION__;
               :to="child.index"
               class="flex items-center h-10 pl-14 pr-4 text-sm text-white/70 hover:text-[#5268bc] hover:bg-[#172853] transition-colors duration-200"
               :class="{ 'text-[#5268bc] bg-[#172853]': isActiveMenu(child.index) }"
+              @click="closeMobileMenu"
             >
               {{ child.title }}
             </router-link>
@@ -176,9 +201,18 @@ const appVersion = __APP_VERSION__;
       <!-- 头部 -->
       <header class="flex items-center justify-between h-15 px-4 bg-white shadow-md z-10 shrink-0">
         <div class="flex items-center gap-3">
+          <!-- 移动端汉堡菜单 -->
+          <button
+            class="md:hidden flex items-center justify-center w-9 h-9 rounded hover:bg-gray-100 transition-colors text-gray-500"
+            @click="mobileMenuOpen = !mobileMenuOpen"
+          >
+            <svg v-if="mobileMenuOpen" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            <svg v-else class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+          </button>
+
           <!-- 折叠按钮 -->
           <button
-            class="flex items-center justify-center w-9 h-9 rounded hover:bg-gray-100 transition-colors text-gray-500"
+            class="hidden md:flex items-center justify-center w-9 h-9 rounded hover:bg-gray-100 transition-colors text-gray-500"
             @click="isCollapse = !isCollapse"
           >
             <svg v-if="isCollapse" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
@@ -265,6 +299,16 @@ const appVersion = __APP_VERSION__;
 .dropdown-fade-leave-to {
   opacity: 0;
   transform: translateY(-8px);
+}
+
+/* 移动端遮罩过渡 */
+.overlay-fade-enter-active,
+.overlay-fade-leave-active {
+  transition: opacity 0.3s ease;
+}
+.overlay-fade-enter-from,
+.overlay-fade-leave-to {
+  opacity: 0;
 }
 
 /* 主内容区 overflow 修正 */
