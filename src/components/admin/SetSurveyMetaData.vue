@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue';
 import { addSurvey, modSurveyMetaData } from '@/apis/admin';
-
+import MCButton from '@/components/MCButton.vue';
 import { openAlert } from '@/utils/TsAlert';
 
 interface Props {
@@ -9,12 +9,8 @@ interface Props {
   mode: 'add' | 'set';
 }
 
-const props = withDefaults(defineProps<Props>(), {
-  mode: 'add',
-});
-
+const props = withDefaults(defineProps<Props>(), { mode: 'add' });
 const emit = defineEmits(['onEdit']);
-
 const toggleForm = defineModel();
 
 const formData = ref({
@@ -22,9 +18,8 @@ const formData = ref({
   name: '',
   description: '',
 });
-const cancel = () => {
-  toggleForm.value = false;
-};
+
+const cancel = () => { toggleForm.value = false; };
 
 const handleResponse = (res: any) => {
   if (res.data.code === 0) {
@@ -44,75 +39,37 @@ const submitMetaData = () => {
   }
 };
 
-watch(
-  () => toggleForm.value,
-  () => {
-    formData.value.name = '';
-    formData.value.description = '';
-  },
-);
+watch(() => toggleForm.value, () => {
+  formData.value.name = '';
+  formData.value.description = '';
+});
 </script>
+
 <template>
-  <div class="form" v-if="toggleForm">
-    <p>设置问卷信息</p>
-    <input required v-model="formData.name" type="text" class="input-name" placeholder="问卷名称" />
-    <input required v-model="formData.description" type="text" class="input-description" placeholder="问卷描述" />
-    <div class="menu">
-      <button type="button" class="cancel" @click="cancel">取消</button>
-      <button type="button" class="submit" @click="submitMetaData">提交</button>
-    </div>
-  </div>
+  <Teleport to="body">
+    <Transition name="modal-fade">
+      <div v-if="toggleForm" class="fixed inset-0 bg-black/50 flex justify-center items-center z-50" @click.self="cancel">
+        <div class="bg-white rounded-xl shadow-2xl p-6 w-[400px] max-w-[95vw]">
+          <p class="text-center text-xl md:text-2xl font-bold mb-5 select-none">设置问卷信息</p>
+          <input v-model="formData.name" required type="text" placeholder="问卷名称" class="w-full px-3 py-2 mb-3 border border-gray-300 rounded outline-none focus:border-[#5268bc] text-base" />
+          <input v-model="formData.description" required type="text" placeholder="问卷描述" class="w-full px-3 py-2 mb-5 border border-gray-300 rounded outline-none focus:border-[#5268bc] text-base" />
+          <div class="flex gap-3">
+            <MCButton length="short" disabled-style @click="cancel">取消</MCButton>
+            <MCButton length="short" @click="submitMetaData">提交</MCButton>
+          </div>
+        </div>
+      </div>
+    </Transition>
+  </Teleport>
 </template>
-<style scoped>
-.form {
-  position: fixed;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-  width: 400px;
-  height: 260px;
-  background-color: #eee;
-  border-radius: 5px;
-  box-shadow: 10px 10px 5px #888888;
-  z-index: 100;
-  padding: 30px 10px;
-  p {
-    text-align: center;
-    font-size: 26px;
-    font-weight: bold;
-    padding: 20px;
-    user-select: none;
-  }
-  input {
-    font-size: 20px;
-    border: 1px solid #ccc;
-    border-radius: 3px;
-    padding: 5px;
-    margin-bottom: 8px;
-    width: calc(100% - 10px);
-  }
-  .menu {
-    display: flex;
-    gap: 10px;
-    .cancel,
-    .submit {
-      flex: 1;
-      font-size: 20px;
-      border-radius: 5px;
-      text-align: center;
-      line-height: 2em;
-      background-color: #ccc;
-      user-select: none;
-    }
-    .cancel:hover,
-    .submit:hover {
-      background-color: #888;
-    }
-  }
-}
-@media (max-width: 800px) {
-  .form {
-    width: calc(100% - 30px);
-  }
-}
+
+<style>
+.modal-fade-enter-active,
+.modal-fade-leave-active { transition: opacity 0.2s ease; }
+.modal-fade-enter-from,
+.modal-fade-leave-to { opacity: 0; }
+.modal-fade-enter-active > div,
+.modal-fade-leave-active > div { transition: transform 0.2s ease, opacity 0.2s ease; }
+.modal-fade-enter-from > div,
+.modal-fade-leave-to > div { transform: scale(0.95); opacity: 0; }
 </style>

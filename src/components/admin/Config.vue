@@ -3,6 +3,8 @@ import { type ConfigItem, ConfigItemType } from '@/types';
 import { ref, computed } from 'vue';
 import { getConfig, getConfigs, setConfig, deleteConfig } from '@/apis/admin';
 import { openAlert } from '@/utils/TsAlert';
+import BaseTable from './BaseTable.vue';
+import MCButton from '@/components/MCButton.vue';
 
 const data = ref<ConfigItem[]>([]);
 const searchData = ref('');
@@ -15,6 +17,12 @@ const selectedConfigItem = ref<ConfigItem>({
   type: ConfigItemType.STR,
   description: '',
 });
+
+const columnMap = new Map([
+  ['key', { title: '键' }],
+  ['value', { title: '值' }],
+  ['type', { title: '类型' }],
+] as const);
 
 const getConfig_ = () => {
   getConfigs().then((res: { data: { list: ConfigItem[] } }) => {
@@ -97,135 +105,135 @@ const searchComputed = computed(() => {
 </script>
 
 <template>
-  <h1>配置管理</h1>
-  <div class="filter">
-    <el-input type="search" size="large" style="width: 240px" v-model="searchData" placeholder="搜索" />
-    <el-select size="large" style="width: 240px" v-model="searchType" placeholder="筛选类型">
-      <el-option v-for="i in ConfigItemType" :value="i">{{ i }}</el-option>
-    </el-select>
-    <el-button size="large" @click="
-      searchType = '';
-    searchData = '';
-    ">
-      <el-icon>
-        <Close />
-      </el-icon>
-    </el-button>
+  <h1 class="text-3xl mb-4">配置管理</h1>
 
-    <el-button-group size="large">
-      <el-button @click="add">新增</el-button>
-      <el-button @click="getConfig_">刷新</el-button>
-    </el-button-group>
-  </div>
-  <div class="table">
-    <el-table :data="searchComputed" style="width: 90%; font-size: 16px">
-      <el-table-column fixed prop="key" label="键" width="250" />
-      <el-table-column prop="value" label="值" width="400" />
-      <el-table-column prop="type" label="类型" width="60" />
-      <el-table-column fixed="right" label="操作" min-width="120">
-        <template #default="scope">
-          <el-button size="large" link type="primary" @click="editItem(scope.row.key)">修改</el-button>
-          <el-button size="large" link type="danger" @click="deleteItem(scope.row.key)">删除</el-button>
-        </template>
-      </el-table-column>
-    </el-table>
-  </div>
+  <!-- 筛选工具栏 -->
+  <div class="flex flex-wrap items-center gap-3 py-5">
+    <input
+      type="search"
+      v-model="searchData"
+      placeholder="搜索"
+      class="w-60 h-10 px-3 border border-gray-300 rounded outline-none focus:border-[#5268bc] text-base"
+    />
+    <select
+      v-model="searchType"
+      class="w-60 h-10 px-3 border border-gray-300 rounded outline-none focus:border-[#5268bc] text-base bg-white"
+    >
+      <option value="">筛选类型</option>
+      <option v-for="i in ConfigItemType" :key="i" :value="i">{{ i }}</option>
+    </select>
+    <button
+      class="flex items-center justify-center w-10 h-10 rounded border border-gray-300 hover:bg-gray-100 transition-colors"
+      @click="searchType = ''; searchData = ''"
+    >
+      <svg class="w-4 h-4 text-gray-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
 
-  <!-- 模态框 -->
-  <div v-if="showModal" class="modal">
-    <div class="modal-content">
-      <h2>修改配置项</h2>
-      <p>data:</p>
-      <p style="padding-bottom: 10px">
-        {<br />
-        &nbsp;&nbsp;key: {{ selectedConfigItem.key }}<br />
-        &nbsp;&nbsp;value: {{ selectedConfigItem.value }}<br />
-        &nbsp;&nbsp;type: {{ selectedConfigItem.type }}<br />
-        &nbsp;&nbsp;desc: {{ selectedConfigItem.description }}<br />
-        }
-      </p>
-      <form @submit.prevent="save">
-        <div class="form-group">
-          <label>Key</label>
-          <input v-model="selectedConfigItem.key" type="text" required placeholder="key" :disabled="!isAdd" />
-        </div>
-        <div class="form-group">
-          <label>Value</label>
-          <input v-model="selectedConfigItem.value" type="text" required placeholder="value" />
-        </div>
-        <div class="form-group">
-          <label>Type</label>
-          <select v-model="selectedConfigItem.type" required placeholder="type">
-            <option v-for="i in ConfigItemType" :value="i">{{ i }}</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label>Description</label>
-          <input v-model="selectedConfigItem.description" type="text" required placeholder="description" />
-        </div>
-        <div class="form-actions">
-          <button type="button" @click="showModal = false">取消</button>
-          <button type="submit">保存</button>
-        </div>
-      </form>
+    <div class="flex gap-px">
+      <MCButton length="medium" @click="add">新增</MCButton>
+      <MCButton length="medium" @click="getConfig_">刷新</MCButton>
     </div>
   </div>
+
+  <!-- 数据表格 -->
+  <BaseTable
+    :table-props="{ columnMap, stripe: true, bordered: true }"
+    :data="searchComputed"
+    actions-width="220px"
+  >
+    <template #actions="{ row }">
+      <MCButton length="short" @click="editItem(row.key)">修改</MCButton>
+      <MCButton length="short" disabled-style @click="deleteItem(row.key)">删除</MCButton>
+    </template>
+  </BaseTable>
+
+  <!-- 模态框 -->
+  <Teleport to="body">
+    <Transition name="modal-fade">
+      <div
+        v-if="showModal"
+        class="fixed inset-0 bg-black/50 flex justify-center items-center z-50"
+        @click.self="showModal = false"
+      >
+        <div class="bg-white rounded-xl p-6 w-[420px] max-w-[90vw] shadow-2xl">
+          <h2 class="text-xl font-bold mb-4">修改配置项</h2>
+          <p class="text-sm text-gray-500 mb-1">data:</p>
+          <pre class="text-sm bg-gray-50 p-3 rounded mb-4 overflow-x-auto">{
+  key: {{ selectedConfigItem.key }}
+  value: {{ selectedConfigItem.value }}
+  type: {{ selectedConfigItem.type }}
+  desc: {{ selectedConfigItem.description }}
+}</pre>
+
+          <form @submit.prevent="save" class="flex flex-col gap-4">
+            <div>
+              <label class="block mb-1 text-sm font-medium">Key</label>
+              <input
+                v-model="selectedConfigItem.key"
+                type="text"
+                required
+                placeholder="key"
+                :disabled="!isAdd"
+                class="w-full px-3 py-2 border border-gray-300 rounded outline-none focus:border-[#5268bc] disabled:bg-gray-100 disabled:text-gray-400"
+              />
+            </div>
+            <div>
+              <label class="block mb-1 text-sm font-medium">Value</label>
+              <input
+                v-model="selectedConfigItem.value"
+                type="text"
+                required
+                placeholder="value"
+                class="w-full px-3 py-2 border border-gray-300 rounded outline-none focus:border-[#5268bc]"
+              />
+            </div>
+            <div>
+              <label class="block mb-1 text-sm font-medium">Type</label>
+              <select
+                v-model="selectedConfigItem.type"
+                required
+                class="w-full px-3 py-2 border border-gray-300 rounded outline-none focus:border-[#5268bc] bg-white"
+              >
+                <option v-for="i in ConfigItemType" :key="i" :value="i">{{ i }}</option>
+              </select>
+            </div>
+            <div>
+              <label class="block mb-1 text-sm font-medium">Description</label>
+              <input
+                v-model="selectedConfigItem.description"
+                type="text"
+                required
+                placeholder="description"
+                class="w-full px-3 py-2 border border-gray-300 rounded outline-none focus:border-[#5268bc]"
+              />
+            </div>
+            <div class="flex justify-end gap-3 pt-2">
+              <MCButton length="short" disabled-style @click="showModal = false">取消</MCButton>
+              <MCButton length="short" @click="save">保存</MCButton>
+            </div>
+          </form>
+        </div>
+      </div>
+    </Transition>
+  </Teleport>
 </template>
 
-<style scoped>
-h1 {
-  font-size: 30px;
+<style>
+.modal-fade-enter-active,
+.modal-fade-leave-active {
+  transition: opacity 0.2s ease;
 }
-
-.filter {
-  padding: 20px 0;
-  display: flex;
-  gap: 10px;
+.modal-fade-enter-active .bg-white,
+.modal-fade-leave-active .bg-white {
+  transition: transform 0.2s ease, opacity 0.2s ease;
 }
-
-.modal {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 10000;
+.modal-fade-enter-from,
+.modal-fade-leave-to {
+  opacity: 0;
 }
-
-.modal-content {
-  background-color: white;
-  padding: 20px;
-  border-radius: 10px;
-  width: 400px;
-}
-
-.form-group {
-  margin-bottom: 15px;
-}
-
-.form-group label {
-  display: block;
-  margin-bottom: 5px;
-}
-
-.form-group input {
-  border: 1px solid #ccc;
-}
-
-.form-group input,
-.form-group select {
-  width: 100%;
-  padding: 8px;
-  box-sizing: border-box;
-}
-
-.form-actions {
-  display: flex;
-  justify-content: end;
-  gap: 10px;
+.modal-fade-enter-from .bg-white,
+.modal-fade-leave-to .bg-white {
+  transform: scale(0.95);
+  opacity: 0;
 }
 </style>

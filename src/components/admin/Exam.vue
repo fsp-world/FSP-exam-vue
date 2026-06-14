@@ -7,6 +7,7 @@ import { selectSingleFile } from '@/utils/file';
 // @ts-ignore: Allow importing JS component into TS file.
 import EditExam from './EditExam.vue';
 import SetSurveyMetaData from './SetSurveyMetaData.vue';
+import MCButton from '@/components/MCButton.vue';
 import type { ISurvey } from '@/types';
 
 const toggleSetSurveyMetaData = ref(false);
@@ -24,9 +25,7 @@ const current_survey_editable = ref(false);
 const attachEditableToSurveys = (surveys: ISurvey[]) => {
   for (let survey of surveys) {
     survey.editable = !(survey.notCompletedCount > 0 || survey.notReviewedCount > 0);
-    // status 代表问卷是否被挂载，被挂载的问卷不能编辑
     survey.editable = survey.status === 0 ? survey.editable : false;
-    // console.log(survey.editable);
   }
   return surveys;
 };
@@ -54,9 +53,8 @@ const editSurvey = (survey: ISurvey) => {
 const deleteSurvey = (id: number) => {
   const confirmDelete = confirm('确定要删除这个问卷吗，问卷中的题目会被一并删除！请三思！');
   if (confirmDelete) {
-    const confirmText = '确认删除问卷';
     const confirmInput = prompt('请输入：确认删除问卷');
-    if (confirmText === confirmInput) {
+    if (confirmInput === '确认删除问卷') {
       delSurvey(id).then((res) => {
         if (res.data.code === 0) {
           _getSurveys();
@@ -81,7 +79,7 @@ const importSurvey = (): void => {
       openAlert(importRes.msg);
       _getSurveys();
     } catch (error) {
-      console.error('这不是一个有效的JSON文件:', error);
+      console.error('不是一个有效的JSON文件:', error);
       openAlert('导入失败：不是有效的JSON文件');
     }
   });
@@ -101,108 +99,44 @@ onMounted(() => {
   ></EditExam>
   <SetSurveyMetaData :mode="'set'" v-model="toggleSetSurveyMetaData" @on-edit="_getSurveys"></SetSurveyMetaData>
 
-  <div v-if="!flag" class="main">
-    <h1 style="user-select: none">问卷管理</h1>
-    <p>注意：已发布的问卷无法编辑或删除！存在未完成或未批改的答卷的问卷也无法编辑或删除！</p>
-    <p>注意：删除题目只是逻辑删除，被逻辑删除的题目仅在批卷时可见</p>
-    <p>
-      注意：建议只在题目不严谨，需要完善的情况下使用“编辑题目”功能，其他情况请使用新建题目，尽量不要删除题目。因为系统只会保存用户的答题卡，不会保存源题目，改变题目原有的内容可能在阅卷时产生困扰。
-    </p>
-    <hr />
-    <ul class="survey-list">
-      <li class="survey" v-if="surveysData.list.length === 0">暂无数据</li>
-      <li class="survey" v-for="i in surveysData.list" :key="i.id">
-        <p class="name">
-          {{ i.name }}
-        </p>
-        <p class="desc">
+  <div v-if="!flag" class="h-full overflow-y-auto">
+    <h1 class="text-3xl mb-4 select-none">问卷管理</h1>
+    <div class="text-sm text-gray-500 space-y-1 mb-4">
+      <p>注意：已发布的问卷无法编辑或删除！存在未完成或未批改的答卷的问卷也无法编辑或删除！</p>
+      <p>注意：删除题目只是逻辑删除，被逻辑删除的题目仅在批卷时可见</p>
+      <p>注意：建议只在题目不严谨，需要完善的情况下使用"编辑题目"功能，其他情况请使用新建题目，尽量不要删除题目。因为系统只会保存用户的答题卡，不会保存源题目，改变题目原有的内容可能在阅卷时产生困扰。</p>
+    </div>
+    <hr class="border-gray-200 mb-5" />
+
+    <div class="space-y-3">
+      <p v-if="surveysData.list.length === 0" class="text-center text-gray-400 py-8">暂无数据</p>
+      <div
+        v-for="i in surveysData.list"
+        :key="i.id"
+        class="border border-gray-200 rounded-lg p-4 bg-gray-50/40"
+      >
+        <p class="text-xl font-bold mb-1">{{ i.name }}</p>
+        <p class="text-lg text-gray-600 leading-relaxed mb-3">
           问卷描述：{{ i.description }}，答题中的问卷：{{ i.notCompletedCount }}，未批改的问卷：{{ i.notReviewedCount }}
         </p>
-        <div class="bot">
-          <div v-show="i.status === 1" class="button mount">已发布</div>
-          <div v-show="i.status === 0" class="button umount">未发布</div>
-          <button type="button" class="button hover edit" @click="editSurvey(i)">查看问卷</button>
-          <button type="button" class="button hover edit" @click="exportSurvey(i.id)">导出问卷</button>
-          <button type="button" class="button hover del" @click="deleteSurvey(i.id)" :disabled="!i.editable">
-            删除问卷
-          </button>
+        <div class="flex flex-wrap gap-2">
+          <span v-show="i.status === 1" class="inline-flex items-center gap-1 px-2.5 py-1 text-sm font-medium rounded bg-green-100 text-green-700 select-none">
+            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+            已发布
+          </span>
+          <span v-show="i.status === 0" class="inline-flex items-center gap-1 px-2.5 py-1 text-sm font-medium rounded bg-amber-100 text-amber-700 select-none">
+            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 15h2v2h-2zm0-10h2v8h-2z"/></svg>
+            未发布
+          </span>
+          <MCButton length="medium" @click="editSurvey(i)">查看问卷</MCButton>
+          <MCButton length="medium" @click="exportSurvey(i.id)">导出问卷</MCButton>
+          <MCButton length="medium" :disabled="!i.editable" @click="deleteSurvey(i.id)">删除问卷</MCButton>
         </div>
-      </li>
-      <li class="buttons">
-        <button type="button" class="survey hover add" @click="toggleSetSurveyMetaData = true">新建问卷</button>
-        <button type="button" class="survey hover add" @click="importSurvey()">导入问卷</button>
-      </li>
-    </ul>
+      </div>
+      <div class="flex gap-3 pt-2">
+        <MCButton length="medium" @click="toggleSetSurveyMetaData = true">新建问卷</MCButton>
+        <MCButton length="medium" @click="importSurvey()">导入问卷</MCButton>
+      </div>
+    </div>
   </div>
 </template>
-
-<style scoped>
-.button {
-  font-size: 16px;
-  padding: 5px 8px;
-  border-radius: 5px;
-  background-color: #ccc;
-  user-select: none;
-}
-.main {
-  height: 100%;
-  overflow-y: auto;
-}
-.survey-list {
-  width: 100%;
-}
-.survey {
-  position: relative;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  padding: 16px;
-  margin-top: 10px;
-  background-color: #dcdbdb69;
-  .name {
-    font-size: 24px;
-    font-weight: bold;
-  }
-  .desc {
-    font-size: 18px;
-    line-height: 1.5em;
-  }
-
-  .bot {
-    padding-top: 5px;
-    display: flex;
-    gap: 8px;
-  }
-  .mount {
-    background-color: #ccffcc;
-    border: 1px solid #ddd;
-  }
-  .umount {
-    background-color: #ccc;
-    border: 1px solid #ddd;
-  }
-  .edit {
-    border: 1px solid #ddd;
-  }
-  .del {
-    border: 1px solid #ddd;
-  }
-  .del:hover {
-    background-color: red;
-  }
-}
-.buttons {
-  display: flex;
-  gap: 10px;
-}
-.hover:hover {
-  background-color: #bbb;
-}
-.add {
-  width: 100%;
-  height: 60px;
-  font-size: 24px;
-  font-weight: bold;
-  text-align: center;
-  user-select: none;
-}
-</style>

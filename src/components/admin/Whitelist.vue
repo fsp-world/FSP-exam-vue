@@ -1,149 +1,110 @@
-<script setup>
+<script setup lang="ts">
 import { ref, onMounted } from 'vue';
 import { getWhitelist } from '@/apis/admin';
 import { dateFormatYYYYMMDDHH } from '@/utils/date';
-
-// 白名单数据
-const wlData = ref({
-  list: [],
-  page: 1,
-  size: 10,
-  total: 0,
-});
+import type { IPagination } from '@/types';
+import BaseTable from './BaseTable.vue';
+import MCButton from '@/components/MCButton.vue';
 
 // 加载状态
 const isLoading = ref(false);
-const isError = ref(false);
+const isError = ref('');
 
-// 加载白名单数据
-const getWL = async (page = 1, size = 10) => {
+const sourceMap: Record<number, string> = {
+  0: '考试',
+  1: '担保',
+  2: '其他',
+};
+
+// 列定义
+const columnMap = new Map([
+  ['id', { title: '#', width: '60px' }],
+  ['username', { title: '用户名' }],
+  ['name', { title: 'MC NAME' }],
+  ['uuid', { title: 'UUID', width: '340px' }],
+  ['source', { title: '审核方式', width: '100px' }],
+  ['auditor_name', { title: '审核人', width: '130px' }],
+  ['created_at', { title: '添加时间', width: '170px' }],
+]);
+
+const fetchWhitelist = async (params: IPagination) => {
   isLoading.value = true;
-  isError.value = false;
-
+  isError.value = '';
   try {
-    const res = await getWhitelist({ page, size });
-    wlData.value = res.data;
-
-    const sourceMap = {
-      0: '考试',
-      1: '担保',
-      2: '其他',
-      unknown: '未知',
-    };
-
-    wlData.value.list = wlData.value.list.map((item) => ({
-      ...item,
-      sourceText: sourceMap[item.source] || sourceMap.unknown,
-    }));
-  } catch (error) {
-    isError.value = true;
-    console.error('加载白名单数据失败:', error);
+    const res = await getWhitelist(params);
+    return res;
+  } catch (e: any) {
+    isError.value = e?.message || '加载失败，请稍后重试。';
+    throw e;
   } finally {
     isLoading.value = false;
   }
 };
 
-// 初始化加载数据
-onMounted(() => {
-  getWL();
-});
+// 编辑白名单
+const showModal = ref(false);
+const editData = ref<Record<string, any>>({});
+
+const editItem = (row: Record<string, any>) => {
+  editData.value = { ...row };
+  showModal.value = true;
+};
 </script>
 
 <template>
-  <h1>白名单管理</h1>
-  <!-- 加载状态 -->
-  <div v-if="isLoading" class="loading">加载中...</div>
+  <h1 class="text-3xl mb-5">白名单管理</h1>
 
-  <!-- 错误提示 -->
-  <div v-if="isError" class="error">加载失败，请稍后重试。</div>
+  <BaseTable
+    :table-props="{ columnMap, stripe: true, bordered: true }"
+    :fetch-data="fetchWhitelist"
+    :loading="isLoading"
+    :error="isError"
+    actions-width="110px"
+  >
+    <template #source="{ value }">
+      {{ sourceMap[value] ?? '未知' }}
+    </template>
+    <template #created_at="{ value }">
+      <span class="whitespace-nowrap">{{ dateFormatYYYYMMDDHH(value) }}</span>
+    </template>
+    <template #uuid="{ value }">
+      <span class="text-sm">{{ value }}</span>
+    </template>
+    <template #actions="{ row }">
+      <MCButton length="short" @click="editItem(row)">修改</MCButton>
+    </template>
+  </BaseTable>
 
-  <!-- 数据表格 -->
-  <table v-if="!isLoading && !isError">
-    <thead>
-      <tr>
-        <th>#</th>
-        <th>用户名</th>
-        <th>MC NAME</th>
-        <th>UUID</th>
-        <th>审核方式</th>
-        <th>审核人</th>
-        <th>添加时间</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr v-for="(item, index) of wlData.list" :key="index">
-        <td>{{ item.id }}</td>
-        <td>{{ item.username }}</td>
-        <td>{{ item.name }}</td>
-        <td class="uuid">{{ item.uuid }}</td>
-        <td>{{ item.sourceText }}</td>
-        <td>{{ item.auditor_name }}</td>
-        <td>{{ dateFormatYYYYMMDDHH(item.created_at) }}</td>
-      </tr>
-    </tbody>
-  </table>
-
-  <!-- 分页 -->
-  <div v-if="!isLoading && !isError" class="pagination">
-    <button type="button" @click="getWL(wlData.page - 1, wlData.size)" :disabled="wlData.page === 1">上一页</button>
-    <span>第 {{ wlData.page }} 页 / 共 {{ Math.ceil(wlData.total / wlData.size) }} 页</span>
-    <button
-      type="button"
-      @click="getWL(wlData.page + 1, wlData.size)"
-      :disabled="wlData.page * wlData.size >= wlData.total"
-    >
-      下一页
-    </button>
-  </div>
+  <!-- 修改模态框 -->
+  <Teleport to="body">
+    <Transition name="modal-fade">
+      <div
+        v-if="showModal"
+        class="fixed inset-0 bg-black/50 flex justify-center items-center z-50"
+        @click.self="showModal = false"
+      >
+        <div class="bg-white rounded-xl p-6 w-[420px] max-w-[90vw] shadow-2xl">
+          <h2 class="text-xl font-bold mb-4">修改白名单</h2>
+          <div class="flex flex-col gap-4">
+            <div>
+              <label class="block mb-1 text-sm font-medium">用户名</label>
+              <input v-model="editData.username" type="text" class="w-full px-3 py-2 border border-gray-300 rounded outline-none focus:border-[#5268bc]" />
+            </div>
+            <div>
+              <label class="block mb-1 text-sm font-medium">MC NAME</label>
+              <input v-model="editData.name" type="text" class="w-full px-3 py-2 border border-gray-300 rounded outline-none focus:border-[#5268bc]" />
+            </div>
+            <div>
+              <label class="block mb-1 text-sm font-medium">UUID</label>
+              <input v-model="editData.uuid" type="text" class="w-full px-3 py-2 border border-gray-300 rounded font-mono outline-none focus:border-[#5268bc]" />
+            </div>
+            <div class="flex justify-end gap-3 pt-2">
+              <MCButton length="short" disabled-style @click="showModal = false">取消</MCButton>
+              <MCButton length="short" @click="showModal = false">保存</MCButton>
+            </div>
+          </div>
+        </div>
+      </div>
+    </Transition>
+  </Teleport>
 </template>
-
-<style scoped>
-table,
-table td,
-table th {
-  border: 1px solid #000000;
-  border-collapse: collapse;
-}
-table {
-  width: 100%;
-  margin-bottom: 20px;
-}
-td,
-th {
-  padding: 10px;
-  text-align: center;
-}
-.uuid {
-  font-family: monospace; /* 使 UUID 显示更整齐 */
-}
-.loading,
-.error {
-  text-align: center;
-  padding: 20px;
-  font-size: 18px;
-}
-.error {
-  color: red;
-}
-.pagination {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 10px;
-  margin-top: 20px;
-}
-button {
-  padding: 5px 10px;
-  font-size: 14px;
-  border-radius: 5px;
-  background-color: #ccc;
-  cursor: pointer;
-}
-button:hover {
-  background-color: #888;
-}
-button:disabled {
-  background-color: #ddd;
-  cursor: not-allowed;
-}
-</style>
