@@ -45,7 +45,7 @@ const menuData: MenuItem[] = [
     icon: 'user',
     title: '用户管理',
     children: [
-      { index: '/admin/user', title: '用户管理' },
+      { index: '/admin/user', title: '用户列表' },
       { index: '/admin/whitelist', title: '白名管理' },
       { index: '/admin/guarantee_mgmt', title: '担保管理' },
     ],
@@ -207,10 +207,11 @@ const appVersion = __APP_VERSION__;
           </div>
 
           <!-- 子菜单项 -->
-          <div
-            v-show="openedSubMenu === menu.index && !isCollapse"
-            class="overflow-hidden"
-          >
+          <Transition name="submenu-slide">
+            <div
+              v-show="openedSubMenu === menu.index && !isCollapse"
+              class="overflow-hidden"
+            >
             <router-link
               v-for="child in menu.children"
               :key="child.index"
@@ -222,6 +223,7 @@ const appVersion = __APP_VERSION__;
               {{ child.title }}
             </router-link>
           </div>
+          </Transition>
         </div>
       </div>
     </aside>
@@ -342,6 +344,22 @@ const appVersion = __APP_VERSION__;
 .overlay-fade-enter-from,
 .overlay-fade-leave-to {
   opacity: 0;
+}
+
+/* 子菜单展开/收起动画 */
+.submenu-slide-enter-active,
+.submenu-slide-leave-active {
+  transition: max-height 0.4s ease, opacity 0.4s ease;
+}
+.submenu-slide-enter-from,
+.submenu-slide-leave-to {
+  max-height: 0;
+  opacity: 0;
+}
+.submenu-slide-enter-to,
+.submenu-slide-leave-from {
+  max-height: 500px;
+  opacity: 1;
 }
 
 /* 主内容区 overflow 修正 */

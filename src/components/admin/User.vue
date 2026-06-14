@@ -70,11 +70,11 @@ onMounted(() => {
     <div class="flex flex-wrap items-center justify-between gap-4 px-5 py-4 border-b border-gray-200">
       <h1 class="text-2xl font-bold">用户管理</h1>
       <nav class="flex items-center gap-1.5 text-sm text-gray-500">
-        <router-link to="/admin" class="hover:text-[#5268bc] transition-colors">管理首页</router-link>
+        <router-link to="/admin" class="hover:text-[#5268bc] transition-colors">后台首页</router-link>
         <span>/</span>
-        <router-link to="/admin/user" class="hover:text-[#5268bc] transition-colors">会员管理</router-link>
+        <router-link to="/admin/user" class="hover:text-[#5268bc] transition-colors">用户管理</router-link>
         <span>/</span>
-        <span class="text-gray-700">会员列表</span>
+        <span class="text-gray-700">用户列表</span>
       </nav>
     </div>
 
@@ -110,7 +110,8 @@ onMounted(() => {
     </div>
 
     <!-- 表格 -->
-    <BaseTable
+    <div class="p-5">
+      <BaseTable
       :table-props="{ columnMap, stripe: true, bordered: true }"
       :fetch-data="fetchUsers"
       :loading="loading"
@@ -129,6 +130,7 @@ onMounted(() => {
         >修改</MCButton>
       </template>
     </BaseTable>
+    </div>
   </div>
 
   <!-- 修改用户模态框 -->

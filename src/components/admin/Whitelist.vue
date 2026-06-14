@@ -52,9 +52,20 @@ const editItem = (row: Record<string, any>) => {
 </script>
 
 <template>
-  <h1 class="text-3xl mb-5">白名单管理</h1>
+  <div class="bg-white rounded-lg shadow-sm">
+    <div class="flex flex-wrap items-center justify-between gap-4 px-5 py-4 border-b border-gray-200">
+      <h1 class="text-2xl font-bold">白名单管理</h1>
+      <nav class="flex items-center gap-1.5 text-sm text-gray-500">
+        <router-link to="/admin" class="hover:text-[#5268bc] transition-colors">后台首页</router-link>
+        <span>/</span>
+        <router-link to="/admin/user" class="hover:text-[#5268bc] transition-colors">用户管理</router-link>
+        <span>/</span>
+        <span class="text-gray-700">白名管理</span>
+      </nav>
+    </div>
 
-  <BaseTable
+    <div class="p-5">
+      <BaseTable
     :table-props="{ columnMap, stripe: true, bordered: true }"
     :fetch-data="fetchWhitelist"
     :loading="isLoading"
@@ -74,6 +85,8 @@ const editItem = (row: Record<string, any>) => {
       <MCButton length="short" @click="editItem(row)">修改</MCButton>
     </template>
   </BaseTable>
+    </div>
+  </div>
 
   <!-- 修改模态框 -->
   <Teleport to="body">

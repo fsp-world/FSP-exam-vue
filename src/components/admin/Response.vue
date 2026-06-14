@@ -92,37 +92,48 @@ onMounted(async () => {
 
 <template>
   <div class="h-full overflow-y-auto">
-    <h1 class="text-3xl mb-2">答卷管理</h1>
-    <p class="text-sm text-gray-500 mb-5">注意：已过期的答卷自动设置为已完成和已拒绝</p>
+    <div class="bg-white rounded-lg shadow-sm">
+      <div class="flex flex-wrap items-center justify-between gap-4 px-5 py-4 border-b border-gray-200">
+        <h1 class="text-2xl font-bold">答卷管理</h1>
+        <nav class="flex items-center gap-1.5 text-sm text-gray-500">
+          <router-link to="/admin" class="hover:text-[#5268bc] transition-colors">后台首页</router-link>
+          <span>/</span>
+          <router-link to="/admin/exam" class="hover:text-[#5268bc] transition-colors">试卷管理</router-link>
+          <span>/</span>
+          <span class="text-gray-700">答卷管理</span>
+        </nav>
+      </div>
 
-    <BaseTable
-      :table-props="{ columnMap, stripe: true, bordered: true }"
-      :fetch-data="fetchResponses"
-      :loading="loading"
-      actions-width="340px"
-    >
-      <template #isCompleted="{ value }">
-        <span :class="value ? 'text-green-600' : 'text-red-500'">{{ value ? '已完成' : '未完成' }}</span>
-      </template>
-      <template #isReviewed="{ value }">
-        <span :class="reviewedColor(value)">{{ reviewedStatus(value) }}</span>
-      </template>
-      <template #reviewer_name="{ value, row }">
-        {{ row.isReviewed ? value : '/' }}
-      </template>
-      <template #createTime="{ value }">
-        <span class="whitespace-nowrap">{{ dateFormatYYYYMMDDHH(value) }}</span>
-      </template>
-      <template #responseTime="{ value }">
-        <span class="whitespace-nowrap">{{ value ? dateFormatYYYYMMDDHH(value) : '未交卷' }}</span>
-      </template>
-      <template #actions="{ row }">
-        <MCButton v-if="!row.isReviewed" length="short" @click="reviewed(row.id, true)">通过</MCButton>
-        <MCButton v-if="!row.isReviewed" length="short" disabled-style @click="reviewed(row.id, false)">拒绝</MCButton>
-        <MCButton length="short" @click="openDetail(row.id)">详情</MCButton>
-      </template>
-    </BaseTable>
+      <div class="p-5">
+        <p class="text-sm text-gray-500 mb-5">注意：已过期的答卷自动设置为已完成和已拒绝</p>
 
-    <ResponseDetail v-if="visibility" v-model:visibility="visibility" :data="detailData" />
+        <BaseTable :table-props="{ columnMap, stripe: true, bordered: true }" :fetch-data="fetchResponses"
+          :loading="loading" actions-width="340px">
+          <template #isCompleted="{ value }">
+            <span :class="value ? 'text-green-600' : 'text-red-500'">{{ value ? '已完成' : '未完成' }}</span>
+          </template>
+          <template #isReviewed="{ value }">
+            <span :class="reviewedColor(value)">{{ reviewedStatus(value) }}</span>
+          </template>
+          <template #reviewer_name="{ value, row }">
+            {{ row.isReviewed ? value : '/' }}
+          </template>
+          <template #createTime="{ value }">
+            <span class="whitespace-nowrap">{{ dateFormatYYYYMMDDHH(value) }}</span>
+          </template>
+          <template #responseTime="{ value }">
+            <span class="whitespace-nowrap">{{ value ? dateFormatYYYYMMDDHH(value) : '未交卷' }}</span>
+          </template>
+          <template #actions="{ row }">
+            <MCButton v-if="!row.isReviewed" length="short" @click="reviewed(row.id, true)">通过</MCButton>
+            <MCButton v-if="!row.isReviewed" length="short" disabled-style @click="reviewed(row.id, false)">拒绝
+            </MCButton>
+            <MCButton length="short" @click="openDetail(row.id)">详情</MCButton>
+          </template>
+        </BaseTable>
+
+        <ResponseDetail v-if="visibility" v-model:visibility="visibility" :data="detailData" />
+      </div>
+    </div>
   </div>
 </template>

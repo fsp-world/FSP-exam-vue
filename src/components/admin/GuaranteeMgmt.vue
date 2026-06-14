@@ -42,8 +42,20 @@ const fetchGuaranteeData = async (params: IPagination) => {
 </script>
 
 <template>
-  <h1 class="text-3xl mb-5">担保管理</h1>
-  <BaseTable
+  <div class="bg-white rounded-lg shadow-sm">
+    <div class="flex flex-wrap items-center justify-between gap-4 px-5 py-4 border-b border-gray-200">
+      <h1 class="text-2xl font-bold">担保管理</h1>
+      <nav class="flex items-center gap-1.5 text-sm text-gray-500">
+        <router-link to="/admin" class="hover:text-[#5268bc] transition-colors">后台首页</router-link>
+        <span>/</span>
+        <router-link to="/admin/user" class="hover:text-[#5268bc] transition-colors">用户管理</router-link>
+        <span>/</span>
+        <span class="text-gray-700">担保管理</span>
+      </nav>
+    </div>
+
+    <div class="p-5">
+      <BaseTable
     :table-props="{ columnMap, stripe: true, bordered: true }"
     :fetch-data="fetchGuaranteeData"
     :loading="loading"
@@ -56,4 +68,6 @@ const fetchGuaranteeData = async (params: IPagination) => {
       <span class="whitespace-nowrap">{{ dateFormatYYYYMMDDHH(value) }}</span>
     </template>
   </BaseTable>
+    </div>
+  </div>
 </template>

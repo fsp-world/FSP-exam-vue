@@ -50,31 +50,42 @@ getSurveyIds();
 </script>
 
 <template>
-  <h1 class="text-3xl mb-2">问卷发布</h1>
-  <p class="text-sm text-gray-500 mb-5">插槽名就是用户可选的问卷类型的名称，这里有几个插槽，用户就有几种选择</p>
+  <div class="bg-white rounded-lg shadow-sm">
+    <div class="flex flex-wrap items-center justify-between gap-4 px-5 py-4 border-b border-gray-200">
+      <h1 class="text-2xl font-bold">问卷发布</h1>
+      <nav class="flex items-center gap-1.5 text-sm text-gray-500">
+        <router-link to="/admin" class="hover:text-[#5268bc] transition-colors">后台首页</router-link>
+        <span>/</span>
+        <router-link to="/admin/exam" class="hover:text-[#5268bc] transition-colors">试卷管理</router-link>
+        <span>/</span>
+        <span class="text-gray-700">试卷发布</span>
+      </nav>
+    </div>
 
-  <h3 class="text-xl font-bold mb-2">问卷列表</h3>
-  <ul class="space-y-1 mb-5 text-sm">
-    <li v-for="s in surveys" :key="s.id">
-      问卷id：{{ s.id }}，问卷名称：{{ s.name }}，问卷描述：{{ s.description }}，问卷发布：{{ s.status ? '已发布' : '未发布' }}
-    </li>
-  </ul>
+    <div class="p-5">
+      <p class="text-sm text-gray-500 mb-5">插槽名就是用户可选的问卷类型的名称，这里有几个插槽，用户就有几种选择</p>
 
-  <h3 class="text-xl font-bold mb-3">插槽列表</h3>
-  <BaseTable
-    :table-props="{ columnMap, stripe: true, bordered: true }"
-    :data="slots"
-    actions-width="110px"
-  >
-    <template #mountedSID="{ row, value }">
-      <select :value="value" class="w-full px-2 py-1 border border-gray-300 rounded bg-white outline-none text-sm" @change="handleChange({ ...row, mountedSID: Number(($event.target as HTMLSelectElement).value) } as unknown as SurveySlot)">
-        <option v-for="i in surveys" :key="i.id" :value="i.id">{{ i.name }}</option>
-      </select>
-    </template>
-    <template #actions="{ row }">
-      <MCButton length="short" disabled-style @click="delSlot(row as unknown as SurveySlot)">删除</MCButton>
-    </template>
-  </BaseTable>
+      <h3 class="text-xl font-bold mb-2">问卷列表</h3>
+      <ul class="space-y-1 mb-5 text-sm">
+        <li v-for="s in surveys" :key="s.id">
+          问卷id：{{ s.id }}，问卷名称：{{ s.name }}，问卷描述：{{ s.description }}，问卷发布：{{ s.status ? '已发布' : '未发布' }}
+        </li>
+      </ul>
 
-  <MCButton length="medium" @click="addSlot">新建插槽</MCButton>
+      <h3 class="text-xl font-bold mb-3">插槽列表</h3>
+      <BaseTable :table-props="{ columnMap, stripe: true, bordered: true }" :data="slots" actions-width="110px">
+        <template #mountedSID="{ row, value }">
+          <select :value="value" class="w-full px-2 py-1 border border-gray-300 rounded bg-white outline-none text-sm"
+            @change="handleChange({ ...row, mountedSID: Number(($event.target as HTMLSelectElement).value) } as unknown as SurveySlot)">
+            <option v-for="i in surveys" :key="i.id" :value="i.id">{{ i.name }}</option>
+          </select>
+        </template>
+        <template #actions="{ row }">
+          <MCButton length="short" disabled-style @click="delSlot(row as unknown as SurveySlot)">删除</MCButton>
+        </template>
+      </BaseTable>
+
+      <MCButton length="medium" @click="addSlot">新建插槽</MCButton>
+    </div>
+  </div>
 </template>

@@ -105,10 +105,18 @@ const searchComputed = computed(() => {
 </script>
 
 <template>
-  <h1 class="text-3xl mb-4">配置管理</h1>
+  <div class="bg-white rounded-lg shadow-sm">
+    <div class="flex flex-wrap items-center justify-between gap-4 px-5 py-4 border-b border-gray-200">
+      <h1 class="text-2xl font-bold">配置管理</h1>
+      <nav class="flex items-center gap-1.5 text-sm text-gray-500">
+        <router-link to="/admin" class="hover:text-[#5268bc] transition-colors">管理首页</router-link>
+        <span>/</span>
+        <span class="text-gray-700">系统配置</span>
+      </nav>
+    </div>
 
-  <!-- 筛选工具栏 -->
-  <div class="flex flex-wrap items-center gap-3 py-5">
+    <div class="p-5">
+      <div class="flex flex-wrap items-center gap-3 py-0 mb-5">
     <input
       type="search"
       v-model="searchData"
@@ -146,6 +154,8 @@ const searchComputed = computed(() => {
       <MCButton length="short" disabled-style @click="deleteItem(row.key)">删除</MCButton>
     </template>
   </BaseTable>
+    </div>
+  </div>
 
   <!-- 模态框 -->
   <Teleport to="body">
