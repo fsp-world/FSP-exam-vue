@@ -91,6 +91,10 @@ const toggleSubMenu = (index: string) => {
 
 const isActiveMenu = (path: string) => route.path === path;
 
+const isMenuGroupActive = (menu: MenuItem) => {
+  return menu.children?.some((child) => child.index === route.path) ?? false;
+};
+
 // ==================== 用户下拉菜单 ====================
 const showUserDropdown = ref(false);
 const dropdownStyle = ref<Record<string, string>>({});
@@ -181,7 +185,7 @@ const appVersion = __APP_VERSION__;
           <!-- 子菜单标题 -->
           <div
             class="flex items-center h-12 px-4 cursor-pointer select-none transition-colors duration-200 text-white/80 hover:text-[#5268bc] hover:bg-[#172853]"
-            :class="{ 'text-[#5268bc] bg-[#172853]': openedSubMenu === menu.index }"
+            :class="{ 'text-[#5268bc] bg-[#172853]': openedSubMenu === menu.index || isMenuGroupActive(menu) }"
             @click="toggleSubMenu(menu.index)"
           >
             <!-- 图标 -->
