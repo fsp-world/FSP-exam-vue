@@ -1,451 +1,274 @@
 <script lang="ts" setup>
-import { Fold, Expand, Search, Lock, User, Setting, Bell, SwitchButton } from '@element-plus/icons-vue';
-import { ref, computed } from 'vue';
-import { ElMessageBox } from 'element-plus';
-import { useRouter } from 'vue-router';
+import { ref, watch } from 'vue';
+import { useRouter, useRoute } from 'vue-router';
 import { useUserStore } from '@/stores/user';
 
 const userStore = useUserStore();
-
-// 路由
 const router = useRouter();
+const route = useRoute();
 
-// 头部搜索框
-const keyword = ref('');
+// ==================== 侧边栏 ====================
+const isCollapse = ref(false);
 
-// 头像下拉菜单点击事件
-const onCommand = async (command: string) => {
+interface MenuItem {
+  index: string;
+  icon: string;
+  title: string;
+  children?: { index: string; title: string }[];
+}
+
+const menuData: MenuItem[] = [
+  {
+    index: '1',
+    icon: 'monitor',
+    title: '系统管理',
+    children: [{ index: '/admin/config', title: '系统配置' }],
+  },
+  {
+    index: '2',
+    icon: 'user',
+    title: '用户管理',
+    children: [
+      { index: '/admin/user', title: '用户管理' },
+      { index: '/admin/whitelist', title: '白名管理' },
+      { index: '/admin/guarantee_mgmt', title: '担保管理' },
+    ],
+  },
+  {
+    index: '3',
+    icon: 'box',
+    title: '试卷管理',
+    children: [
+      { index: '/admin/exam', title: '试卷列表' },
+      { index: '/admin/slot', title: '试卷发布' },
+      { index: '/admin/response', title: '答卷管理' },
+    ],
+  },
+];
+
+// 当前展开的子菜单
+const openedSubMenu = ref('');
+// 初始化时根据当前路由展开对应子菜单
+const initOpenedMenu = () => {
+  for (const menu of menuData) {
+    if (menu.children?.some((child) => child.index === route.path)) {
+      openedSubMenu.value = menu.index;
+      return;
+    }
+  }
+};
+initOpenedMenu();
+
+const toggleSubMenu = (index: string) => {
+  openedSubMenu.value = openedSubMenu.value === index ? '' : index;
+};
+
+const isActiveMenu = (path: string) => route.path === path;
+
+// ==================== 用户下拉菜单 ====================
+const showUserDropdown = ref(false);
+
+const toggleUserDropdown = () => {
+  showUserDropdown.value = !showUserDropdown.value;
+};
+
+const closeUserDropdown = () => {
+  showUserDropdown.value = false;
+};
+
+const onUserMenuClick = async (command: string) => {
+  showUserDropdown.value = false;
   if (command === 'logout') {
-    try {
-      const res = await ElMessageBox.confirm('您确定要退出当前登陆吗？', '提示', { type: 'warning' });
-      if (res) {
-        localStorage.removeItem('gx-token');
-        router.replace('/login');
-      }
-    } catch (error) {
-      console.log(error);
+    const confirmed = window.confirm('您确定要退出当前登陆吗？');
+    if (confirmed) {
+      localStorage.removeItem('gx-token');
+      router.replace('/login');
     }
   } else {
     router.push(command);
   }
 };
 
-// 系统通知默认显示消息选项
-const noticeType = ref('msg');
-
-// 系统通知
-const noticeData = ref([
-  {
-    id: 1,
-    readed: true,
-    hidden: false,
-    type: 'msg',
-    name: '郑曦月',
-    content: '审批请求已发送，请查收',
-    avatar: 'https://img2.baidu.com/it/u=1316245042,2395535024&fm=253&fmt=auto&app=120&f=JPEG?w=500&h=500',
-    createTime: '今天 12:30:01',
-  },
-  {
-    id: 2,
-    readed: false,
-    hidden: false,
-    type: 'msg',
-    name: '郑曦月',
-    content: '审批请求已发送，请查收',
-    avatar: 'https://img2.baidu.com/it/u=1316245042,2395535024&fm=253&fmt=auto&app=120&f=JPEG?w=500&h=500',
-    createTime: '今天 12:30:01',
-  },
-  {
-    id: 3,
-    readed: false,
-    hidden: false,
-    type: 'msg',
-    name: '郑曦月',
-    content: '审批请求已发送，请查收',
-    avatar: 'https://img2.baidu.com/it/u=1316245042,2395535024&fm=253&fmt=auto&app=120&f=JPEG?w=500&h=500',
-    createTime: '今天 12:30:01',
-  },
-  {
-    id: 4,
-    readed: false,
-    hidden: false,
-    type: 'notice',
-    name: '龚贤',
-    content: '明天放假不用上课',
-    avatar: 'https://img2.baidu.com/it/u=1316245042,2395535024&fm=253&fmt=auto&app=120&f=JPEG?w=500&h=500',
-    createTime: '今天 11:30:01',
-  },
-]);
-
-// 通知类型数据
-const filterNotice = (type: string) => {
-  return noticeData.value.filter((subItem) => subItem.type === type && !subItem.hidden);
-};
-
-// 清空消息
-const clearNotice = (type: string) => {
-  noticeData.value.map((item) => {
-    if (item.type === type) {
-      item.hidden = true;
-    }
-    return item;
-  });
-};
-
-// 设置全部已读
-const setAllReaded = (type: string) => {
-  noticeData.value.map((item) => {
-    if (item.type === type) {
-      item.readed = true;
-    }
-    return item;
-  });
-};
-
-// 统计所有的未读总数
-const countUnreaded = computed(() => {
-  let sum = 0;
-  for (const item of noticeData.value) {
-    if (!item.hidden && !item.readed) sum += 1;
+// 点击外部关闭下拉菜单
+const userDropdownRef = ref<HTMLElement>();
+const handleClickOutside = (e: MouseEvent) => {
+  if (userDropdownRef.value && !userDropdownRef.value.contains(e.target as Node)) {
+    showUserDropdown.value = false;
   }
-  return sum;
+};
+if (typeof document !== 'undefined') {
+  document.addEventListener('click', handleClickOutside);
+}
 
-  // return noticeData.value.reduce((sum, item) => {
-  //   return sum + (item.readed ? 0 : 1);
-  // }, 0)
-});
-
-// 菜单收缩
-const isCollapse = ref(false);
-
+// ==================== 常量 ====================
 const appName = __APP_NAME__;
 const appVersion = __APP_VERSION__;
 </script>
 
 <template>
-  <el-container style="height: 100vh">
-    <el-aside width="auto">
-      <router-link to="/" class="logo">
-        <!-- <el-icon :size="30" color="rgba(255,255,255,.7)">
-          <ShoppingBag />
-        </el-icon> -->
-        <img src="../assets/images/icon-s.png" width="30px">
-        <span v-show="!isCollapse">{{ appName }} {{ appVersion }}</span>
+  <div class="flex h-screen overflow-hidden">
+    <!-- ========== 侧边栏 ========== -->
+    <aside
+      class="shrink-0 flex flex-col transition-all duration-300"
+      :class="isCollapse ? 'w-16' : 'w-55'"
+      style="background-color: #28365c"
+    >
+      <!-- Logo -->
+      <router-link
+        to="/"
+        class="flex items-center justify-center h-15 shrink-0 gap-2"
+        style="background-color: #5768b7"
+      >
+        <img src="../assets/images/icon-s.png" width="30" alt="logo" />
+        <span
+          v-show="!isCollapse"
+          class="text-white text-base whitespace-nowrap overflow-hidden"
+        >{{ appName }} {{ appVersion }}</span>
       </router-link>
 
-      <el-scrollbar style="height: calc(100vh - 60px)">
-        <el-menu :default-active="$route.path" router :collapse="isCollapse" unique-opened class="my-menu">
-          <el-sub-menu index="1">
-            <template #title>
-              <el-icon>
-                <Monitor />
-              </el-icon>
-              <span>系统管理</span>
-            </template>
-            <el-menu-item index="/admin/config">系统配置</el-menu-item>
-          </el-sub-menu>
+      <!-- 菜单区域 -->
+      <div class="flex-1 overflow-y-auto overflow-x-hidden py-2">
+        <div v-for="menu in menuData" :key="menu.index">
+          <!-- 子菜单标题 -->
+          <div
+            class="flex items-center h-12 px-4 cursor-pointer select-none transition-colors duration-200 text-white/80 hover:text-[#5268bc] hover:bg-[#172853]"
+            :class="{ 'text-[#5268bc] bg-[#172853]': openedSubMenu === menu.index }"
+            @click="toggleSubMenu(menu.index)"
+          >
+            <!-- 图标 -->
+            <svg v-if="menu.icon === 'monitor'" class="w-5 h-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+            <svg v-else-if="menu.icon === 'user'" class="w-5 h-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            <svg v-else-if="menu.icon === 'box'" class="w-5 h-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
+            <span
+              v-show="!isCollapse"
+              class="ml-3 flex-1 whitespace-nowrap overflow-hidden text-sm"
+            >{{ menu.title }}</span>
+            <!-- 展开箭头 -->
+            <svg
+              v-show="!isCollapse"
+              class="w-4 h-4 shrink-0 transition-transform duration-200"
+              :class="{ 'rotate-90': openedSubMenu === menu.index }"
+              viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            ><polyline points="9 18 15 12 9 6"/></svg>
+          </div>
 
-          <el-sub-menu index="2">
-            <template #title>
-              <el-icon>
-                <User />
-              </el-icon>
-              <span>用户管理</span>
-            </template>
-            <el-menu-item index="/admin/user">用户管理</el-menu-item>
-            <el-menu-item index="/admin/whitelist">白名管理</el-menu-item>
-            <el-menu-item index="/admin/guarantee_mgmt">担保管理</el-menu-item>
-          </el-sub-menu>
-
-          <el-sub-menu index="3">
-            <template #title>
-              <el-icon>
-                <Box />
-              </el-icon>
-              <span>试卷管理</span>
-            </template>
-            <el-menu-item index="/admin/exam">试卷列表</el-menu-item>
-            <el-menu-item index="/admin/slot">试卷发布</el-menu-item>
-            <el-menu-item index="/admin/response">答卷管理</el-menu-item>
-          </el-sub-menu>
-        </el-menu>
-      </el-scrollbar>
-    </el-aside>
-    <el-container>
-      <el-header>
-        <el-form inline size="default">
-          <el-form-item>
-            <el-button :icon="Fold" @click="isCollapse = !isCollapse" />
-          </el-form-item>
-          <!-- <el-form-item>
-            <el-input v-model.trim="keyword" placeholder="请搜索" :suffix-icon="Search" />
-          </el-form-item> -->
-        </el-form>
-
-        <div class="right-menu">
-          <el-menu router mode="horizontal" default-active="/admin" :ellipsis="false">
-            <el-menu-item index="/admin"> 管理首页 </el-menu-item>
-            <!-- <el-menu-item index="/admin/help">
-              帮助文档
-            </el-menu-item> -->
-
-            <!-- <el-dropdown trigger="click">
-              <el-menu-item style="height:100%;">
-                <el-badge :show-zero="false" :value="countUnreaded" :offset="[4, 15]">
-                  <span>系统通知</span>
-                </el-badge>
-              </el-menu-item>
-
-              <template #dropdown>
-                <el-tabs v-model="noticeType" class="my-tabs" stretch>
-                  <el-tab-pane :label="`消息(${filterNotice('msg').length})`" name="msg">
-
-                    <p v-if="filterNotice('msg').length === 0" class="nodata">暂无消息数据</p>
-
-                    <template v-else>
-
-                      <el-scrollbar height="200px">
-                        <div class="notice-list">
-                          <div :class="['notice-list-item', { readed: item.readed }]"
-                            v-for="item in filterNotice('msg')" :key="item.id">
-                            <el-avatar :size="36" :src="item.avatar" />
-                            <p>
-                              <b>{{ item.name }}</b>的私信 <br>
-                              {{ item.content }} <br>
-                              <small>{{ item.createTime }}</small>
-                            </p>
-                          </div>
-                        </div>
-                      </el-scrollbar>
-
-                      <el-row justify="space-around" align="middle" style="margin-top: 20px;">
-                        <el-button type="primary" link @click="setAllReaded('msg')">全部已读</el-button>
-                        <el-divider direction="vertical" />
-                        <el-link type="primary" href="/admin">查看更多</el-link>
-                        <el-divider direction="vertical" />
-                        <el-button type="primary" @click="clearNotice('msg')" link>清空</el-button>
-                      </el-row>
-
-                    </template>
-
-                  </el-tab-pane>
-                  <el-tab-pane :label="`通知(${filterNotice('notice').length})`" name="notice">
-                    <p v-if="filterNotice('notice').length === 0" class="nodata">暂无通知数据</p>
-
-                    <template v-else>
-                      <el-scrollbar height="200px">
-                        <div class="notice-list">
-                          <div :class="['notice-list-item', { readed: item.readed }]"
-                            v-for="item in filterNotice('notice')" :key="item.id">
-                            <el-avatar :size="36" :src="item.avatar" />
-                            <p>
-                              <b>{{ item.name }}</b>的通知<br>
-                              {{ item.content }} <br>
-                              <small>{{ item.createTime }}</small>
-                            </p>
-                          </div>
-                        </div>
-                      </el-scrollbar>
-
-                      <el-row justify="space-around" align="middle" style="margin-top: 20px;">
-                        <el-button type="primary" link @click="setAllReaded('notice')">全部已读</el-button>
-                        <el-divider direction="vertical" />
-                        <el-link type="primary" href="/admin">查看更多</el-link>
-                        <el-divider direction="vertical" />
-                        <el-button type="primary" link @click="clearNotice('notice')">清空</el-button>
-                      </el-row>
-
-                    </template>
-
-                  </el-tab-pane>
-                  <el-tab-pane :label="`代办(${filterNotice('todo').length})`" name="todo">
-                    <p v-if="filterNotice('todo').length === 0" class="nodata">暂无通知数据</p>
-
-                    <template v-else>
-                      <el-scrollbar height="200px">
-                        <div class="notice-list">
-                          <div :class="['notice-list-item', { readed: item.readed }]"
-                            v-for="item in filterNotice('todo')" :key="item.id">
-                            <el-avatar :size="36" :src="item.avatar" />
-                            <p>
-                              <b>{{ item.name }}</b>的代办<br>
-                              {{ item.content }} <br>
-                              <small>{{ item.createTime }}</small>
-                            </p>
-                          </div>
-                        </div>
-                      </el-scrollbar>
-
-                      <el-row justify="space-around" align="middle" style="margin-top: 20px;">
-                        <el-button type="primary" link @click="setAllReaded('todo')">全部已读</el-button>
-                        <el-divider direction="vertical" />
-                        <el-link type="primary" href="#/admin/notice">查看更多</el-link>
-                        <el-divider direction="vertical" />
-                        <el-button type="primary" link @click="clearNotice('todo')">清空</el-button>
-                      </el-row>
-
-                    </template>
-
-                  </el-tab-pane>
-                </el-tabs>
-
-              </template>
-            </el-dropdown> -->
-          </el-menu>
-
-          <el-dropdown trigger="click" @command="onCommand">
-            <p class="el-dropdown-link">
-              <el-avatar shape="square" :size="36" :src="userStore.avatar || ''" style="image-rendering: pixelated" />
-              <span>{{ userStore.username }}</span>
-              <el-icon class="el-icon--right">
-                <arrow-down />
-              </el-icon>
-            </p>
-            <template #dropdown>
-              <el-dropdown-menu style="width: 120px">
-                <el-dropdown-item command="/space" :icon="User">个人信息</el-dropdown-item>
-                <el-dropdown-item command="/admin" :icon="Setting">系统设置</el-dropdown-item>
-                <el-dropdown-item command="/admin" :icon="Bell">系统通知</el-dropdown-item>
-                <el-dropdown-item command="/admin" :icon="Lock">修改密码</el-dropdown-item>
-                <el-dropdown-item command="logout" :icon="SwitchButton" divided>安全退出</el-dropdown-item>
-              </el-dropdown-menu>
-            </template>
-          </el-dropdown>
+          <!-- 子菜单项 -->
+          <div
+            v-show="openedSubMenu === menu.index && !isCollapse"
+            class="overflow-hidden"
+          >
+            <router-link
+              v-for="child in menu.children"
+              :key="child.index"
+              :to="child.index"
+              class="flex items-center h-10 pl-14 pr-4 text-sm text-white/70 hover:text-[#5268bc] hover:bg-[#172853] transition-colors duration-200"
+              :class="{ 'text-[#5268bc] bg-[#172853]': isActiveMenu(child.index) }"
+            >
+              {{ child.title }}
+            </router-link>
+          </div>
         </div>
-      </el-header>
+      </div>
+    </aside>
 
-      <el-scrollbar style="height: calc(100vh - 60px)">
-        <el-main><router-view /></el-main>
-      </el-scrollbar>
-    </el-container>
-  </el-container>
+    <!-- ========== 右侧主体 ========== -->
+    <div class="flex flex-col flex-1 min-w-0">
+      <!-- 头部 -->
+      <header class="flex items-center justify-between h-15 px-4 bg-white shadow-md z-10 shrink-0">
+        <div class="flex items-center gap-3">
+          <!-- 折叠按钮 -->
+          <button
+            class="flex items-center justify-center w-9 h-9 rounded hover:bg-gray-100 transition-colors text-gray-500"
+            @click="isCollapse = !isCollapse"
+          >
+            <svg v-if="isCollapse" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+            <svg v-else class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+          </button>
+        </div>
+
+        <!-- 右侧菜单 -->
+        <div class="flex items-center gap-4">
+          <router-link
+            to="/admin"
+            class="text-sm text-gray-600 hover:text-[#5268bc] transition-colors px-3 py-2"
+            :class="{ 'text-[#5268bc] border-b-2 border-[#5268bc]': route.path === '/admin' }"
+          >
+            管理首页
+          </router-link>
+
+          <!-- 用户下拉 -->
+          <div ref="userDropdownRef" class="relative">
+            <button
+              class="flex items-center gap-2 cursor-pointer outline-none hover:opacity-80 transition-opacity"
+              @click.stop="toggleUserDropdown"
+            >
+              <img
+                :src="userStore.avatar || ''"
+                class="w-9 h-9 rounded object-cover"
+                style="image-rendering: pixelated"
+                alt="avatar"
+              />
+              <span class="text-sm text-gray-700 hidden sm:inline">{{ userStore.username }}</span>
+              <svg class="w-4 h-4 text-gray-400 transition-transform duration-200" :class="{ 'rotate-180': showUserDropdown }" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+            </button>
+
+            <!-- 下拉菜单 -->
+            <Transition name="dropdown-fade">
+              <div
+                v-show="showUserDropdown"
+                class="absolute right-0 top-full mt-2 w-36 bg-white rounded-lg shadow-lg border border-gray-100 py-1 z-50"
+              >
+                <button class="flex items-center gap-2 w-full px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 transition-colors" @click="onUserMenuClick('/space')">
+                  <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                  个人信息
+                </button>
+                <button class="flex items-center gap-2 w-full px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 transition-colors" @click="onUserMenuClick('/admin')">
+                  <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+                  系统设置
+                </button>
+                <button class="flex items-center gap-2 w-full px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 transition-colors" @click="onUserMenuClick('/admin')">
+                  <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+                  系统通知
+                </button>
+                <button class="flex items-center gap-2 w-full px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 transition-colors" @click="onUserMenuClick('/admin')">
+                  <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                  修改密码
+                </button>
+                <div class="border-t border-gray-100 my-1"></div>
+                <button class="flex items-center gap-2 w-full px-4 py-2.5 text-sm text-red-500 hover:bg-red-50 transition-colors" @click="onUserMenuClick('logout')">
+                  <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+                  安全退出
+                </button>
+              </div>
+            </Transition>
+          </div>
+        </div>
+      </header>
+
+      <!-- 主体内容 -->
+      <div class="flex-1 overflow-y-auto bg-gray-50">
+        <main class="p-5">
+          <router-view />
+        </main>
+      </div>
+    </div>
+  </div>
 </template>
 
 <style>
+/* 下拉菜单过渡动画 */
+.dropdown-fade-enter-active,
+.dropdown-fade-leave-active {
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+.dropdown-fade-enter-from,
+.dropdown-fade-leave-to {
+  opacity: 0;
+  transform: translateY(-8px);
+}
+
+/* 主内容区 overflow 修正 */
 .el-main {
   overflow: visible;
-}
-
-/* 1. 菜单展开和伸缩时（迷你菜单）的样式 */
-.my-menu {
-  border-right: none;
-  background-color: transparent;
-
-  .el-sub-menu__title {
-    color: rgba(255, 255, 255, 0.8);
-
-    &:hover {
-      color: #5268bc;
-      background-color: #172853;
-    }
-  }
-}
-
-/* 2. 菜单展开时的样式 */
-/* 104行代码的意思 没有收起来时的状态的 */
-.my-menu:not(.el-menu--collapse) {
-  width: 220px;
-
-  .el-menu-item {
-    color: rgba(255, 255, 255, 0.8);
-  }
-
-  .el-menu {
-    background-color: transparent;
-  }
-
-  .el-sub-menu__title,
-  .el-menu-item {
-    &:hover,
-    &.is-active {
-      color: #5268bc;
-      background-color: #172853;
-    }
-  }
-}
-</style>
-
-<style scoped>
-.my-tabs {
-  padding: 20px;
-  width: 300px;
-}
-
-.el-aside {
-  background-color: #28365c;
-
-  .logo {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 60px;
-    background-color: #5768b7;
-
-    span {
-      color: rgba(255, 255, 255, 0.9);
-      font-size: 16px;
-      margin-left: 8px;
-    }
-  }
-}
-
-.el-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background-color: #fff;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
-  z-index: 999;
-
-  .el-form--inline .el-form-item {
-    margin-right: 15px;
-    margin-bottom: 0;
-  }
-
-  .el-menu--horizontal.el-menu {
-    border-bottom: none;
-  }
-
-  .right-menu {
-    display: flex;
-
-    .el-dropdown-link {
-      display: flex;
-      align-items: center;
-      cursor: pointer;
-      outline: none;
-      margin-left: 10px;
-
-      span {
-        margin-left: 8px;
-      }
-    }
-  }
-}
-
-/* 系统通知样式部分 */
-.nodata {
-  line-height: 100px;
-  text-align: center;
-}
-
-.notice-list {
-  .notice-list-item {
-    /* 已读状态 */
-    /* & 表示notice-list-item和readed是同级关系，没有&就是父和后代的关系 */
-    &.readed {
-      opacity: 0.4;
-      user-select: none;
-    }
-
-    display: flex;
-    padding-bottom: 5px;
-    border-bottom: 1px solid #f0f0f0;
-    margin-bottom: 10px;
-
-    p {
-      margin-left: 12px;
-    }
-  }
 }
 </style>
