@@ -30,12 +30,18 @@ interface MenuItem {
 const menuData: MenuItem[] = [
   {
     index: '1',
+    icon: 'dashboard',
+    title: '仪表盘',
+    children: [{ index: '/admin/dashboard', title: '仪表盘' }],
+  },
+  {
+    index: '2',
     icon: 'monitor',
     title: '系统管理',
     children: [{ index: '/admin/config', title: '系统配置' }],
   },
   {
-    index: '2',
+    index: '3',
     icon: 'user',
     title: '用户管理',
     children: [
@@ -45,7 +51,7 @@ const menuData: MenuItem[] = [
     ],
   },
   {
-    index: '3',
+    index: '4',
     icon: 'box',
     title: '试卷管理',
     children: [
@@ -68,6 +74,16 @@ const initOpenedMenu = () => {
   }
 };
 initOpenedMenu();
+
+// 路由变化时自动展开对应菜单
+watch(() => route.path, () => {
+  for (const menu of menuData) {
+    if (menu.children?.some((child) => child.index === route.path)) {
+      openedSubMenu.value = menu.index;
+      return;
+    }
+  }
+});
 
 const toggleSubMenu = (index: string) => {
   openedSubMenu.value = openedSubMenu.value === index ? '' : index;
@@ -160,7 +176,8 @@ const appVersion = __APP_VERSION__;
             @click="toggleSubMenu(menu.index)"
           >
             <!-- 图标 -->
-            <svg v-if="menu.icon === 'monitor'" class="w-5 h-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+            <svg v-if="menu.icon === 'dashboard'" class="w-5 h-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg>
+            <svg v-else-if="menu.icon === 'monitor'" class="w-5 h-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
             <svg v-else-if="menu.icon === 'user'" class="w-5 h-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
             <svg v-else-if="menu.icon === 'box'" class="w-5 h-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
             <span
