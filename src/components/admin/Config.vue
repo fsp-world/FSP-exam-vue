@@ -18,15 +18,21 @@ const selectedConfigItem = ref<ConfigItem>({
   description: '',
 });
 
+const maskValue = (val: string) => {
+  if (!val || val.length <= 6) return val;
+  return val.slice(0, 3) + '*****' + val.slice(-3);
+};
+
 const columnMap = new Map([
-  ['key', { title: '键' }],
-  ['value', { title: '值' }],
-  ['type', { title: '类型' }],
+  ['key', { title: '键', width: '200px' }],
+  ['value', { title: '值', width: '240px', callback: maskValue }],
+  ['type', { title: '类型', width: '60px' }],
+  ['desc', { title: '描述' }],
 ] as const);
 
 const getConfig_ = () => {
-  getConfigs().then((res: { data: { list: ConfigItem[] } }) => {
-    data.value = res.data.list;
+  getConfigs().then((res: { data: { code: number; desc: string; data: { items: ConfigItem[] } } }) => {
+    data.value = res.data.data?.items ?? [];
   });
 };
 getConfig_();
@@ -48,8 +54,9 @@ const editItem = (key: string) => {
     type: ConfigItemType.STR,
     description: '',
   };
-  getConfig(key).then((res: { data: { value: ConfigItem } }) => {
-    selectedConfigItem.value = res.data.value;
+  getConfig(key).then((res: { data: { code: number; desc: string; data: ConfigItem | { items: ConfigItem[] } } }) => {
+    const d = res.data.data;
+    selectedConfigItem.value = (d as { items: ConfigItem[] }).items?.[0] ?? (d as ConfigItem);
   });
   showModal.value = true;
   isAdd.value = false;
@@ -165,7 +172,7 @@ const searchComputed = computed(() => {
         class="fixed inset-0 bg-black/50 flex justify-center items-center z-50"
         @click.self="showModal = false"
       >
-        <div class="bg-white rounded-xl p-6 w-[420px] max-w-[90vw] shadow-2xl">
+        <div class="bg-white rounded-xl p-6 w-105 max-w-[90vw] shadow-2xl">
           <h2 class="text-xl font-bold mb-4">修改配置项</h2>
           <p class="text-sm text-gray-500 mb-1">data:</p>
           <pre class="text-sm bg-gray-50 p-3 rounded mb-4 overflow-x-auto">{

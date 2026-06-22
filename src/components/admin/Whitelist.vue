@@ -20,11 +20,11 @@ const sourceMap: Record<number, string> = {
 const columnMap = new Map([
   ['id', { title: '#', width: '60px' }],
   ['username', { title: '用户名' }],
-  ['name', { title: 'MC NAME' }],
-  ['uuid', { title: 'UUID', width: '340px' }],
-  ['source', { title: '审核方式', width: '100px' }],
-  ['auditor_name', { title: '审核人', width: '130px' }],
-  ['created_at', { title: '添加时间', width: '170px' }],
+  ['playerName', { title: 'MC NAME' }],
+  ['playerUUID', { title: 'UUID', width: '340px' }],
+  ['source', { title: '审核方式', width: '100px', callback: (v: number) => sourceMap[v] ?? '未知' }],
+  ['auditorName', { title: '审核人', width: '130px' }],
+  ['authorizationDate', { title: '添加时间', width: '170px' }],
 ]);
 
 const fetchWhitelist = async (params: IPagination) => {
@@ -64,13 +64,10 @@ const fetchWhitelist = async (params: IPagination) => {
     :error="isError"
     actions-width="110px"
   >
-    <template #source="{ value }">
-      {{ sourceMap[value] ?? '未知' }}
-    </template>
-    <template #created_at="{ value }">
+    <template #authorizationDate="{ value }">
       <span class="whitespace-nowrap">{{ dateFormatYYYYMMDDHH(value) }}</span>
     </template>
-    <template #uuid="{ value }">
+    <template #playerUUID="{ value }">
       <span class="text-sm">{{ value }}</span>
     </template>
   </BaseTable>

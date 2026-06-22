@@ -2,6 +2,7 @@
 import { ref, reactive, onMounted, computed } from 'vue';
 import { getUsers, updateUser } from '@/apis/admin';
 import { computStatus } from '@/utils/statusUtil';
+import { openAlert } from '@/utils/TsAlert';
 import { dateFormatYYYYMMDDHH } from '@/utils/date';
 import type { User, UserUpdate, IPagination } from '@/types';
 import BaseTable from './BaseTable.vue';
@@ -42,6 +43,7 @@ const editUser = (user: UserUpdate) => {
 
 // 模态框
 const showModal = ref(false);
+const tableKey = ref(0);
 const selectedUser = ref<UserUpdate>({
   id: 0, username: '', userQQ: '', password: '', passwordAgain: '',
   addtime: '', role: 'user', status: 0,
@@ -51,12 +53,12 @@ const saveUser = async () => {
   if (selectedUser.value.addtime) {
     selectedUser.value.addtime = new Date(selectedUser.value.addtime).toISOString();
   }
-  await updateUser(selectedUser.value);
-  showModal.value = false;
-  loading.value = true;
-  // 刷新当前页
-  const res = await getUsers({ page: 1, size: 10 });
-  loading.value = false;
+  const res = await updateUser(selectedUser.value);
+  openAlert(res.data.desc);
+  if (res.data.code === 0) {
+    showModal.value = false;
+    tableKey.value++;
+  }
 };
 
 onMounted(() => {
@@ -112,6 +114,7 @@ onMounted(() => {
     <!-- 表格 -->
     <div class="p-5">
       <BaseTable
+      :key="tableKey"
       :table-props="{ columnMap, stripe: true, bordered: true }"
       :fetch-data="fetchUsers"
       :loading="loading"

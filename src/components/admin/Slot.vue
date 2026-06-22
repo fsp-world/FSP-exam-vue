@@ -32,7 +32,7 @@ const delSlot = (slot: SurveySlot) => {
 };
 
 const getSurveyIds = () => {
-  getSurveys().then((res: any) => { surveys.value = res.data.list; });
+  getSurveys().then((res: any) => { surveys.value = res.data.data; });
 };
 
 const handleChange = (item: SurveySlot) => {

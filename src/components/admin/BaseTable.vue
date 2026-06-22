@@ -75,11 +75,12 @@ const loadData = (page = 1, size = 10) => {
     .fetchData({ page, size })
     .then((response) => {
       if (response.data.code === 0) {
-        pagedData.value.list = response.data.list;
-        pagedData.value.size = response.data.size;
-        pagedData.value.page = response.data.page;
-        pagedData.value.total = response.data.total;
-        pagedData.value.totalPages = Math.ceil(response.data.total / response.data.size);
+        const d = response.data.data;
+        pagedData.value.list = d.items;
+        pagedData.value.size = d.per_page ?? d.perPage;
+        pagedData.value.page = d.page;
+        pagedData.value.total = d.total;
+        pagedData.value.totalPages = d.pages ?? Math.ceil((d.total ?? 0) / (d.per_page ?? d.perPage ?? 10));
       }
     })
     .catch((error) => {

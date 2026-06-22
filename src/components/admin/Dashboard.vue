@@ -40,7 +40,7 @@ sysInfo().then((res) => {
   <div class="max-w-5xl mx-auto space-y-6">
     <!-- 顶部大卡片行 -->
     <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
-      <div class="flex items-center gap-5 p-6 rounded-xl shadow-sm bg-gradient-to-br from-blue-400 to-blue-500 text-white">
+      <div class="flex items-center gap-5 p-6 rounded-xl shadow-sm bg-linear-to-br from-blue-400 to-blue-500 text-white">
         <div class="w-16 h-16 flex items-center justify-center rounded-full bg-white/20 shrink-0">
           <svg class="w-8 h-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
         </div>
@@ -49,7 +49,7 @@ sysInfo().then((res) => {
           <p class="text-4xl font-bold mt-1">{{ userCount }}</p>
         </div>
       </div>
-      <div class="flex items-center gap-5 p-6 rounded-xl shadow-sm bg-gradient-to-br from-emerald-400 to-emerald-500 text-white">
+      <div class="flex items-center gap-5 p-6 rounded-xl shadow-sm bg-linear-to-br from-emerald-400 to-emerald-500 text-white">
         <div class="w-16 h-16 flex items-center justify-center rounded-full bg-white/20 shrink-0">
           <svg class="w-8 h-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
         </div>
@@ -118,7 +118,7 @@ sysInfo().then((res) => {
           <div
             class="w-9 h-9 rounded-full flex items-center justify-center text-white text-sm font-bold shrink-0"
             :class="[
-              'bg-gradient-to-br',
+              'bg-linear-to-br',
               index % 4 === 0 ? 'from-cyan-400 to-blue-500' :
               index % 4 === 1 ? 'from-amber-400 to-orange-500' :
               index % 4 === 2 ? 'from-purple-400 to-pink-500' :

@@ -35,8 +35,8 @@ provide('attachEditableToSurveys', attachEditableToSurveys);
 const _getSurveys = async () => {
   try {
     const res = await getSurveys();
-    res.data.list = attachEditableToSurveys(res.data.list);
-    surveysData.value = res.data;
+    const list = attachEditableToSurveys(res.data.data);
+    surveysData.value = { code: res.data.code, desc: res.data.desc, list };
   } catch (error) {
     openAlert('获取问卷列表失败！');
   }
