@@ -4,7 +4,7 @@ import { ref } from 'vue';
 
 const userCount = ref(0);
 const userWhiteListCount = ref(0);
-const onlinePlayers = ref<{ player: string; server: string }[]>([]);
+const onlinePlayers = ref<{ playerName: string; playerUuid: string; currentServer: string }[]>([]);
 
 const banWlCount = ref(0);
 const banCount = ref(0);
@@ -112,7 +112,7 @@ sysInfo().then((res) => {
         </li>
         <li
           v-for="(p, index) in onlinePlayers"
-          :key="p.player"
+          :key="p.playerName"
           class="flex items-center gap-4 px-6 py-3 hover:bg-gray-50/50 transition-colors"
         >
           <div
@@ -124,12 +124,13 @@ sysInfo().then((res) => {
               index % 4 === 2 ? 'from-purple-400 to-pink-500' :
               'from-emerald-400 to-teal-500'
             ]"
+            :title="p.playerUuid"
           >
-            {{ p.player.charAt(0).toUpperCase() }}
+            {{ p.playerName.charAt(0).toUpperCase() }}
           </div>
           <div class="min-w-0">
-            <p class="text-sm font-medium text-gray-700 truncate">{{ p.player }}</p>
-            <p class="text-xs text-gray-400">{{ p.server }}</p>
+            <p class="text-sm font-medium text-gray-700 truncate">{{ p.playerName }}</p>
+            <p class="text-xs text-gray-400">{{ p.currentServer }}</p>
           </div>
           <div class="ml-auto flex items-center gap-1.5">
             <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
