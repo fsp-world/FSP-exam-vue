@@ -102,7 +102,8 @@ export const getGuaranteeAPI = (data: IPagination) =>
 // config
 export const getConfig = (data: string = '') =>
   request.get('/admin/config/get', { params: { key: data } });
-export const getConfigs = () => request.get('/admin/config/get');
+export const getConfigs = (data: IPagination) =>
+  request.get('/admin/config/get', { params: data });
 export const setConfig = (data: ConfigItem) =>
   request.post('/admin/config/set', JSON.stringify(data));
 export const deleteConfig = (data: string) =>

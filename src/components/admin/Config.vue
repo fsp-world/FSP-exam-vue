@@ -1,16 +1,14 @@
 <script setup lang="ts">
-import { type ConfigItem, ConfigItemType } from '@/types';
-import { ref, computed } from 'vue';
+import { type ConfigItem, type IPagination, ConfigItemType } from '@/types';
+import { ref } from 'vue';
 import { getConfig, getConfigs, setConfig, deleteConfig } from '@/apis/admin';
 import { openAlert } from '@/utils/TsAlert';
 import BaseTable from './BaseTable.vue';
 import MCButton from '@/components/MCButton.vue';
 
-const data = ref<ConfigItem[]>([]);
-const searchData = ref('');
-const searchType = ref('');
 const showModal = ref(false);
 const isAdd = ref(false);
+const tableKey = ref(0);
 const selectedConfigItem = ref<ConfigItem>({
   key: '',
   value: '',
@@ -30,12 +28,10 @@ const columnMap = new Map([
   ['desc', { title: '描述' }],
 ] as const);
 
-const getConfig_ = () => {
-  getConfigs().then((res: { data: { code: number; desc: string; data: { items: ConfigItem[] } } }) => {
-    data.value = res.data.data?.items ?? [];
-  });
+// 服务端分页加载
+const fetchConfigs = async (params: IPagination) => {
+  return getConfigs(params);
 };
-getConfig_();
 
 const checkConfigKey = (key: string): boolean => {
   const ALLOWED_CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ_';
@@ -68,7 +64,7 @@ const deleteItem = (key: string) => {
     deleteConfig(key).then((res) => {
       openAlert(res.data.desc);
       if (res.data.code === 0) {
-        getConfig_();
+        tableKey.value++;
       }
     });
   }
@@ -98,17 +94,8 @@ const save = async () => {
     openAlert('失败!');
   }
   showModal.value = false;
-  getConfig_();
+  tableKey.value++;
 };
-
-const searchComputed = computed(() => {
-  return data.value.filter((item: ConfigItem) => {
-    return (
-      (!searchData.value || item.key.includes(searchData.value) || item.value.includes(searchData.value)) &&
-      (!searchType.value || item.type === searchType.value)
-    );
-  });
-});
 </script>
 
 <template>
@@ -124,36 +111,17 @@ const searchComputed = computed(() => {
 
     <div class="p-5">
       <div class="flex flex-wrap items-center gap-3 py-0 mb-5">
-    <input
-      type="search"
-      v-model="searchData"
-      placeholder="搜索"
-      class="w-60 h-10 px-3 border border-gray-300 rounded outline-none focus:border-[#5268bc] text-base"
-    />
-    <select
-      v-model="searchType"
-      class="w-60 h-10 px-3 border border-gray-300 rounded outline-none focus:border-[#5268bc] text-base bg-white"
-    >
-      <option value="">筛选类型</option>
-      <option v-for="i in ConfigItemType" :key="i" :value="i">{{ i }}</option>
-    </select>
-    <button
-      class="flex items-center justify-center w-10 h-10 rounded border border-gray-300 hover:bg-gray-100 transition-colors"
-      @click="searchType = ''; searchData = ''"
-    >
-      <svg class="w-4 h-4 text-gray-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-    </button>
-
     <div class="flex gap-px">
       <MCButton length="medium" @click="add">新增</MCButton>
-      <MCButton length="medium" @click="getConfig_">刷新</MCButton>
+      <MCButton length="medium" @click="tableKey++">刷新</MCButton>
     </div>
   </div>
 
   <!-- 数据表格 -->
   <BaseTable
+    :key="tableKey"
     :table-props="{ columnMap, stripe: true, bordered: true }"
-    :data="searchComputed"
+    :fetch-data="fetchConfigs"
     actions-width="220px"
   >
     <template #actions="{ row }">
