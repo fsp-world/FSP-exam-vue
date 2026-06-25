@@ -145,6 +145,11 @@ const router = createRouter({
       name: 'Error',
       component: () => import('@/views/Error.vue'),
     },
+    {
+      path: '/statuslog',
+      name: 'StatusLog',
+      component: () => import('@/views/StatusLog.vue'),
+    },
   ],
 });
 

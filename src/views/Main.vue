@@ -30,6 +30,12 @@ const logout = () => {
         <MCRouterLink v-if="playPermission" to="/" class="minecraft-button" :disabled="true">信息查询</MCRouterLink>
         <MCRouterLink v-if="playPermission" to="/resourceCenter" class="minecraft-button">资源中心</MCRouterLink>
         <div class="sub-menu">
+          <button class="minecraft-button avatar" style="left: 0; right: auto; margin-left: -10px; margin-right: 0; transform: translate(-100%, 0);">
+            <RouterLink to="/statuslog">
+              <img title="在线人数统计" class="avatar-img" src="../assets/images/vanilla_gui/block/oak_sign.png" alt="统计" width="100%" style="border: none; border-radius: 0;" />
+              <span class="avatat-hover">在线统计</span>
+            </RouterLink>
+          </button>
           <MCRouterLink :length="'medium'" to="https://www.fsp.ink" class="minecraft-button"> 文档中心 </MCRouterLink>
           <MCRouterLink :length="'medium'" to="/space" class="minecraft-button"> 个人中心 </MCRouterLink>
           <button class="minecraft-button avatar">
