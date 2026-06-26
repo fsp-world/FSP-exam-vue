@@ -177,7 +177,7 @@ const logout = () => {
   margin-top: 10px;
   width: calc(100% - 40px);
   max-width: 440px;
-  height: 120px;
+  height: 150px;
   display: flex;
   align-items: center;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
@@ -277,7 +277,7 @@ const logout = () => {
 
 .menu {
   width: 100%;
-  max-width: 480px;
+  max-width: 440px;
   min-height: 150px;
   display: flex;
   flex-direction: column;
@@ -293,7 +293,7 @@ const logout = () => {
     border: none;
     border-radius: 4px;
     cursor: pointer;
-    font-size: 20px;
+    font-size: var(--button-font-size-medium);
   }
 
   .button:hover {

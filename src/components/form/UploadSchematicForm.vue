@@ -291,12 +291,16 @@ const deleteSchematic = () => {
     padding: 5px;
     border-radius: 3px;
     width: 100%;
+    background-color: #fff;
+    margin: 3px;
   }
 
   select {
     padding: 5px;
     border-radius: 3px;
-    width: calc(100% + 10px);
+    width: 100%;
+    background-color: #fff;
+    margin: 3px;
   }
 
   .permission {
@@ -304,7 +308,8 @@ const deleteSchematic = () => {
     gap: 5px;
     height: var(--hei);
     line-height: var(--hei);
-    width: 200px
+    width: 200px;
+    padding-left: 5px;
   }
 
   .desc {
@@ -313,6 +318,8 @@ const deleteSchematic = () => {
     width: 100%;
     height: 100px;
     resize: none;
+    background-color: #fff;
+    margin: 3px;
   }
 
   .required::after {

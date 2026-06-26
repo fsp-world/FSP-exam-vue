@@ -96,21 +96,19 @@ onMounted(() => {
         <p>参加考试</p>
       </div>
       <div class="main">
-        <div>
+        <form class="examinee-info">
           <div class="sub-title">
             我们会通过一些题目来确认您大致的游戏水平
           </div>
-          <form class="examinee-info">
-            <input type="text" v-model="examineeInfo.playerName" placeholder="您的游戏昵称" />
-            <p class="tips">系统会根据您的选择生成定制的试题</p>
-            <MCSegmentedControl :button-length="'medium'" :data="surveyList" v-model="selectedSurvey"
-              @change="choiceSurvey" class="option-list">
-            </MCSegmentedControl>
-            <p v-if="surveyList.length === 0" class="no-survey-available">
-              暂无可用的问卷
-            </p>
-          </form>
-        </div>
+          <input type="text" v-model="examineeInfo.playerName" placeholder="您的游戏昵称" />
+          <p class="tips">系统会根据您的选择生成定制的试题</p>
+          <MCSegmentedControl :button-length="'medium'" :data="surveyList" v-model="selectedSurvey"
+            @change="choiceSurvey" class="option-list">
+          </MCSegmentedControl>
+          <p v-if="surveyList.length === 0" class="no-survey-available">
+            暂无可用的问卷
+          </p>
+        </form>
       </div>
       <div class="end">
         <MCRouterLink to="/" class="button">返回</MCRouterLink>
@@ -129,13 +127,15 @@ onMounted(() => {
 
 .examinee-info {
   padding: 10px;
-  margin: 0 10px 10px 10px;
+  max-width: 700px;
+  display: flex;
+  flex-direction: column;
 }
 
 .tips {
   text-align: center;
   line-height: 40px;
-  font-size: 20px;
+  font-size: var(--title-font-size-small);
   user-select: none;
 }
 
@@ -145,18 +145,19 @@ onMounted(() => {
 }
 
 .examinee-info .option-list {
-  margin-top: 10px;
+  margin: 10px auto;
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
   gap: 10px;
   height: 200px;
-  max-width: 800px;
+  max-width: 550px;
+  /* background-color: aqua; */
 }
 
 .examinee-info .option-list :deep(button) {
-  min-width: 320px;
-  height: 60px;
+  min-width: 225px;
+  height: 50px;
 }
 
 @media screen and (max-width: 750px) {

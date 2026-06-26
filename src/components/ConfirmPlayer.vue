@@ -64,7 +64,7 @@ watch(
 </script>
 
 <template>
-  <div class="dialog info-card" :class="{ 'dialog-show': show, 'dialog-close': !show }">
+  <div class="info-card dialog-bg" :class="{ 'dialog-show': show, 'dialog-close': !show }">
     <div class="userinfo">
       <img class="player-pic" :src="imgUrl" />
       <div class="name-and-uuid">
@@ -73,33 +73,29 @@ watch(
       </div>
     </div>
     <div class="buttons">
-      <MCButton class="minecraft-button button confirm-btn" type="button" @click="isNotMe">我打错了</MCButton>
-      <MCButton class="minecraft-button button confirm-btn" type="button" @click="confirm">确认无误</MCButton>
+      <MCButton :length="'medium'" class="confirm-btn" @click="isNotMe">我打错了</MCButton>
+      <MCButton :length="'medium'" class="confirm-btn" @click="confirm">确认无误</MCButton>
     </div>
   </div>
 </template>
 
 <style scoped>
-.dialog {
-  width: 700px;
-  height: 150px;
-  display: block;
+.dialog-bg {
+  background-image: url(../assets/images/vanilla_gui/demo_background.png);
   position: fixed;
   image-rendering: pixelated;
-  font-family: 'mc-font';
-  font-size: 23px;
   background-position: center;
   background-repeat: no-repeat;
   background-size: 100% 100%;
-  border-radius: 5px;
   z-index: 100;
+  border-radius: 5px;
   left: 50%;
   transform: translate(-50%, 0);
-  text-align: center;
   transition:
     opacity 0.3s ease-in-out,
     bottom 0.3s ease-in-out;
 }
+
 .dialog-show {
   bottom: 150px;
   opacity: 1;
@@ -111,10 +107,13 @@ watch(
   opacity: 0;
   visibility: hidden;
 }
+
 .info-card {
   color: #313131;
-  background-image: url(../assets/images/vanilla_gui/demo_background.png);
-  padding: 30px;
+  width: 100%;
+  max-width: 550px;
+  height: 150px;
+  padding: 20px;
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
@@ -122,48 +121,59 @@ watch(
 
 .userinfo {
   display: flex;
+
   .player-pic {
     --hei: 70px;
     width: var(--hei);
     height: var(--hei);
     image-rendering: pixelated;
+    border-radius: 5px;
   }
+
   .name-and-uuid {
     text-align: left;
     padding-left: 20px;
+
     .player-name {
       font-size: 30px;
+      font-size: var(--text-font-size-large);
     }
+
     .player-uuid {
-      font-size: 24px;
+      font-size: var(--text-font-size-medium);
       line-height: 1.5em;
       text-align: center;
     }
   }
 }
+
 .buttons {
+  padding-top: 10px;
   display: flex;
   gap: 10px;
+  width: 100%;
+
   .confirm-btn {
-    width: 200px;
-    height: 50px;
-    font-size: 24px;
+    width: 100%;
+    height: 40px;
+    font-size: var(--button-font-size-medium);
   }
 }
 
-@media (max-width: 760px) {
-  .dialog {
-    width: 92%;
-    height: 120px;
+@media (max-width: 500px) {
+  .dialog-bg {
+    max-width: calc(100% - 10px);
   }
+
   .userinfo {
-    margin-bottom: 10px;
     span {
       display: none;
     }
+
     .player-name {
       line-height: 70px;
     }
+
     .player-uuid {
       display: none;
     }
