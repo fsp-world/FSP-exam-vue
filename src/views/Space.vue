@@ -285,7 +285,7 @@ const logout = () => {
 
   .button {
     width: 100%;
-    height: 50px;
+    min-height: 50px;
   }
 
   .logout {

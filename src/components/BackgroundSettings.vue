@@ -4,8 +4,9 @@ import { useUserStore } from '@/stores/user';
 import { storeToRefs } from 'pinia';
 import { openAlert } from '@/utils/TsAlert';
 import { compressionFile } from '@/utils/imageCompression';
-import request from '@/utils/requers';
 import MCButton from '@/components/MCButton.vue';
+
+const getCode = (res: any) => res?.data?.code ?? res?.code;
 
 const props = defineProps<{
   isModalVisible: boolean;
@@ -21,18 +22,17 @@ const { background } = storeToRefs(userStore);
 const bgFileInput = ref<HTMLInputElement | null>(null);
 const uploading = ref(false);
 
-const defaultBgUrl = '/src/assets/images/bg.jpg';
+const defaultBgUrl = '/src/assets/images/default-bg-1.jpg';
 
 const presetBackgrounds = [
   { name: '默认', url: defaultBgUrl },
-  { name: '樱花', url: '/src/assets/images/bg_sakura.jpg' },
-  { name: '夜晚', url: '/src/assets/images/bg_night.jpg' },
-  { name: '下界', url: '/src/assets/images/bg_nether.jpg' },
+  { name: '草地', url: '/src/assets/images/default-bg-2.jpeg' },
 ];
 
 const setPresetBg = (url: string) => {
   userStore.setBackground(url).then((res: any) => {
-    if (res.data.code === 0) {
+    const code = getCode(res);
+    if (code === 0) {
       openAlert('背景修改成功');
       emit('update:is-modal-visible', false);
     } else {
@@ -48,20 +48,18 @@ const handleBgFileUpload = async (e: Event) => {
 
   uploading.value = true;
   try {
+    // 压缩图片
     const compressedFile = await compressionFile(file as File, 'image/jpeg');
-    const formData = new FormData();
-    formData.append('file', compressedFile);
+    // 转 base64 data URL
+    const dataUrl = await fileToDataURL(compressedFile);
 
-    const res = await request.post('/user/uploadBackground', formData, {
-      headers: { 'Content-Type': 'multipart/form-data' },
-    });
-
-    if (res.data.code === 0) {
-      await userStore.setBackground(res.data.data.url);
+    const res = await userStore.setBackground(dataUrl);
+    const code = getCode(res);
+    if (code === 0) {
       openAlert('自定义背景设置成功');
       emit('update:is-modal-visible', false);
     } else {
-      openAlert('上传失败：' + res.data.desc);
+      openAlert('背景修改失败！');
     }
   } catch (error) {
     console.error(error);
@@ -72,14 +70,16 @@ const handleBgFileUpload = async (e: Event) => {
   }
 };
 
-const resetBackground = () => {
-  userStore.setBackground(defaultBgUrl).then((res: any) => {
-    if (res.data.code === 0) {
-      openAlert('已恢复默认背景');
-      emit('update:is-modal-visible', false);
-    }
+const fileToDataURL = (file: Blob): Promise<string> => {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onloadend = () => resolve(reader.result as string);
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
   });
 };
+
+
 </script>
 
 <template>
@@ -95,16 +95,13 @@ const resetBackground = () => {
         </div>
       </div>
     </div>
-    <div class="bg-upload">
-      <p class="bg-section-label">自定义上传</p>
-      <input ref="bgFileInput" type="file" accept="image/*" style="display: none" @change="handleBgFileUpload" />
-      <MCButton :disabled="uploading" @click="bgFileInput?.click()">
-        {{ uploading ? '上传中...' : '选择图片上传' }}
-      </MCButton>
-    </div>
+
     <div class="bg-actions">
-      <MCButton @click="resetBackground">恢复默认</MCButton>
-      <MCButton @click="emit('update:is-modal-visible', false)">取消</MCButton>
+      <input ref="bgFileInput" type="file" accept="image/*" style="display: none" @change="handleBgFileUpload" />
+      <MCButton :length="'medium'" :disabled="uploading" @click="bgFileInput?.click()">
+        {{ uploading ? '上传中...' : '自定义背景' }}
+      </MCButton>
+      <MCButton :length="'medium'" @click="emit('update:is-modal-visible', false)">取消</MCButton>
     </div>
   </div>
 </template>
@@ -112,11 +109,16 @@ const resetBackground = () => {
 <style scoped>
 .bg-settings {
   padding: 10px;
-  color: #fff;
+  /* color: #fff; */
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 400px;
 }
 
 .bg-settings-title {
   font-size: var(--title-font-size-medium);
+  user-select: none;
   text-align: center;
   padding-bottom: 16px;
 }
@@ -125,6 +127,8 @@ const resetBackground = () => {
   font-size: var(--text-font-size-medium);
   padding-bottom: 8px;
   opacity: 0.8;
+  user-select: none;
+  text-align: center;
 }
 
 .bg-preset-list {
@@ -132,10 +136,11 @@ const resetBackground = () => {
   gap: 10px;
   flex-wrap: wrap;
   padding-bottom: 16px;
+  justify-content: center;
 }
 
 .bg-preset-item {
-  width: 100px;
+  width: 114px;
   cursor: pointer;
   text-align: center;
   border-radius: 6px;
@@ -161,13 +166,15 @@ const resetBackground = () => {
   margin-bottom: 4px;
 }
 
-.bg-upload {
-  padding-bottom: 16px;
-}
 
 .bg-actions {
+  margin-top: 30px;
   display: flex;
   gap: 10px;
   justify-content: center;
+
+  button {
+    width: 100%;
+  }
 }
 </style>

@@ -11,7 +11,7 @@
 - 新增 `/dashboard/usersInfo` 与 `/dashboard/sysInfo` API 接口封装
 - 新增用户设置页面
   - 修改用户名功能
-  - 切换背景图的功能
+  - 切换背景图的功能，提供多种预设和自定义背景图功能
 
 ### Refactor
 
