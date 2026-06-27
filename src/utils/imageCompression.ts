@@ -7,6 +7,7 @@ const fileToDataURL = (file: Blob): Promise<any> => {
     reader.readAsDataURL(file);
   });
 };
+
 const dataURLToImage = (dataURL: string): Promise<HTMLImageElement> => {
   return new Promise((resolve) => {
     const img = new Image();
@@ -14,10 +15,22 @@ const dataURLToImage = (dataURL: string): Promise<HTMLImageElement> => {
     img.src = dataURL;
   });
 };
-const canvastoFile = (canvas: HTMLCanvasElement, type: string, quality: number): Promise<Blob | null> => {
-  return new Promise((resolve) => canvas.toBlob((blob) => resolve(blob), type, quality));
+
+const canvastoFile = (
+  canvas: HTMLCanvasElement,
+  type: string,
+  quality: number,
+): Promise<Blob | null> => {
+  return new Promise((resolve) =>
+    canvas.toBlob((blob) => resolve(blob), type, quality),
+  );
 };
-export const compressionFile = async (file: File, type: string = 'image/jpeg', quality: number = 0.5) => {
+
+export const compressionFile = async (
+  file: File,
+  type: string = 'image/jpeg',
+  quality: number = 0.5,
+) => {
   const fileName = file.name;
   const canvas = document.createElement('canvas');
   const context = canvas.getContext('2d') as CanvasRenderingContext2D;

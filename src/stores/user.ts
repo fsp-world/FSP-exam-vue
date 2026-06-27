@@ -7,7 +7,7 @@ import {
   register as registerReq,
 } from '@/apis/auth';
 
-import { getUserInfo, setUserAvatar } from '@/apis/user';
+import { getUserInfo, setUserAvatar, setUserBackground } from '@/apis/user';
 import { getProfilePic } from '@/apis/mj';
 import { computStatus, getUserJoinSeason } from '@/utils/statusUtil';
 import { dateFormatYYYYMMDD } from '@/utils/date';
@@ -25,6 +25,7 @@ export const useUserStore = defineStore('user', {
     addtime: '',
     status: 0,
     playPermission: false,
+    background: '',
   }),
   getters: {
     getStatus: (state) => {
@@ -42,6 +43,9 @@ export const useUserStore = defineStore('user', {
         user: '用户',
       };
       return roleMap[state.role] || '未知角色';
+    },
+    bgImg: (state) => {
+      return state.background || undefined;
     },
   },
   actions: {
@@ -137,6 +141,26 @@ export const useUserStore = defineStore('user', {
         return { code: 1, desc: '错误' };
       }
     },
+    async setBackground(bgUrl: string) {
+      try {
+        let res = await setUserBackground(bgUrl);
+        if (res.data.code === 0) {
+          this.background = bgUrl;
+          if (bgUrl) {
+            document.documentElement.style.setProperty(
+              '--bg-img',
+              `url('${bgUrl}')`,
+            );
+          } else {
+            document.documentElement.style.removeProperty('--bg-img');
+          }
+        }
+        return res;
+      } catch (error) {
+        console.error(error);
+        return { code: 1, desc: '错误' };
+      }
+    },
     async syncUserInfo() {
       try {
         let { data } = await getUserInfo();
@@ -168,6 +192,7 @@ export const useUserStore = defineStore('user', {
       'isLogin',
       'isAdmin',
       'addtime',
+      'background',
     ], // 只持久化部分字段
   },
 });

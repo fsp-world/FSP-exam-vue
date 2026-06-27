@@ -141,6 +141,7 @@ export interface User {
   playPermission: boolean;
   avatarUUID: string;
   avatar: string;
+  background: string;
 }
 
 export enum ConfigItemType {

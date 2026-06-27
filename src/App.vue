@@ -6,7 +6,12 @@ import { useUserStore } from '@/stores/user';
 
 onMounted(() => {
   const store = useUserStore();
-  store.checkLogin();
+  store.checkLogin().then(() => {
+    // 同步用户自定义背景
+    if (store.background) {
+      document.documentElement.style.setProperty('--bg-img', `url('${store.background}')`);
+    }
+  });
 });
 </script>
 

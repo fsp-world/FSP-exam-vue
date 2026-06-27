@@ -9,17 +9,19 @@
   - 统计指标卡片：白名单拦截次数、封禁数、白名单封禁数、未审核答卷、待通过担保、试卷总数、题目总数、投影总数
   - 在线玩家列表：实时展示在线玩家名称与所在服务器，含空状态提示
 - 新增 `/dashboard/usersInfo` 与 `/dashboard/sysInfo` API 接口封装
+- 新增切换背景图的功能
+- 新增用户设置页面
 
 ### Refactor
 
 - 将管理后台页面全面迁移至 TailwindCSS
-  - Admin 主页面、Dashboard、Exam、User、Whitelist、Response、ResponseDetail、EditExam、EditQuestion、Slot、GuaranteeMgmt、SetSurveyMetaData、Config、BaseTable 等组件
+  - 重构 Admin 主页面、Dashboard、Exam、User、Whitelist、Response、ResponseDetail、EditExam、EditQuestion、Slot、GuaranteeMgmt、SetSurveyMetaData、Config、BaseTable 等组件
   - 移除旧的 NewAdmin.vue 页面
 
 ### Chore
 
-- 将 CSS 框架从传统方案迁移为 TailwindCSS
-- 移除 `main.js` 中旧 CSS 框架的全局引入
+- 将 CSS 框架从 Element-plus 迁移为 TailwindCSS [更换后台框架Element-plus -> TailwindCSS · Issue #6](https://github.com/tangsu99/fsp-exam-vue/issues/6)
+- 移除 `main.js` 中对 Element-plus 的全局引入
 
 ## [0.11.3] (2026-06-10)
 
