@@ -9,20 +9,17 @@ import MCRouterLink from '@/components/MCRouterLink.vue';
 import MCButton from '@/components/MCButton.vue';
 import MCDialog from '@/components/MCDialog.vue';
 import PlayerChainOfTrust from '@/components/PlayerChainOfTrust.vue';
-import BackgroundSettings from '@/components/BackgroundSettings.vue';
 import { storeToRefs } from 'pinia';
 import { useRouter } from 'vue-router';
 
 const router = useRouter();
 
 const displayChainOfTrustPanel = ref(false)
-const displayBgPanel = ref(false)
 
 const userStore = useUserStore();
 const {
   avatar,
   username,
-  userQQ,
   avatarUUID,
   getStatus,
   dateToLocal,
@@ -102,9 +99,6 @@ const logout = () => {
     <MCDialog :style="'card'" v-model:is-modal-visible="displayChainOfTrustPanel">
       <PlayerChainOfTrust :uuid="queryUUID" v-model:is-modal-visible="displayChainOfTrustPanel"></PlayerChainOfTrust>
     </MCDialog>
-    <MCDialog :style="'card'" v-model:is-modal-visible="displayBgPanel">
-      <BackgroundSettings v-model:is-modal-visible="displayBgPanel" />
-    </MCDialog>
     <div class="translucent-bg"></div>
     <div class="translucent-content">
       <div class="title">
@@ -118,10 +112,9 @@ const logout = () => {
             </div>
             <div class="user-details">
               <div class="username">{{ username }}</div>
-              <p>绑定QQ: {{ userQQ }}</p>
-              <p>角色: {{ roleText }} ({{ getJoinSeason }})</p>
-              <p>加入日期: {{ dateToLocal }}</p>
               <p>账号状态: {{ getStatus }}</p>
+              <p>用户角色: {{ roleText }} ({{ getJoinSeason }})</p>
+              <p>加入日期: {{ dateToLocal }}</p>
             </div>
           </div>
         </Transition>
@@ -149,7 +142,7 @@ const logout = () => {
             <MCRouterLink class="button" to="/Query/Examination"> 考试查询 </MCRouterLink>
             <MCRouterLink class="button" v-if="isAdmin" to="/admin"> 网站管理 </MCRouterLink>
             <MCButton class="button" v-if="status === 0" @click="reqActivation"> 激活账户 </MCButton>
-            <MCButton class="button" @click="displayBgPanel = true"> 自定义背景 </MCButton>
+            <MCRouterLink class="button" to="/user-settings"> 用户设置 </MCRouterLink>
             <MCButton class="button" @click="logout"> 退出登录 </MCButton>
           </div>
         </Transition>
