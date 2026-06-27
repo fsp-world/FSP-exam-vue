@@ -148,35 +148,21 @@ const appVersion = __APP_VERSION__;
   <div class="flex h-screen overflow-hidden">
     <!-- ========== 移动端遮罩层 ========== -->
     <Transition name="overlay-fade">
-      <div
-        v-show="mobileMenuOpen"
-        class="fixed inset-0 bg-black/50 z-40 md:hidden"
-        @click="closeMobileMenu"
-      />
+      <div v-show="mobileMenuOpen" class="fixed inset-0 bg-black/50 z-40 md:hidden" @click="closeMobileMenu" />
     </Transition>
 
     <!-- ========== 侧边栏 ========== -->
-    <aside
-      class="shrink-0 flex flex-col transition-all duration-300 z-50
-             max-md:fixed max-md:inset-y-0 max-md:left-0 max-md:shadow-2xl"
-      :class="[
-        isCollapse ? 'w-16' : 'w-55',
-        mobileMenuOpen ? 'max-md:translate-x-0' : 'max-md:-translate-x-full'
-      ]"
-      style="background-color: #28365c"
-    >
+    <aside class="shrink-0 flex flex-col transition-all duration-300 z-50
+             max-md:fixed max-md:inset-y-0 max-md:left-0 max-md:shadow-2xl" :class="[
+              isCollapse ? 'w-16' : 'w-55',
+              mobileMenuOpen ? 'max-md:translate-x-0' : 'max-md:-translate-x-full'
+            ]" style="background-color: #28365c">
       <!-- Logo -->
-      <router-link
-        to="/"
-        class="flex items-center justify-center h-15 shrink-0 gap-2"
-        style="background-color: #5768b7"
-        @click="closeMobileMenu"
-      >
+      <router-link to="/" class="flex items-center justify-center h-15 shrink-0 gap-2" style="background-color: #5768b7"
+        @click="closeMobileMenu">
         <img src="../assets/images/icon-s.png" width="30" alt="logo" />
-        <span
-          v-show="!isCollapse"
-          class="text-white text-base whitespace-nowrap overflow-hidden"
-        >{{ appName }} {{ appVersion }}</span>
+        <span v-show="!isCollapse" class="text-white text-base whitespace-nowrap overflow-hidden">{{ appName }} {{
+          appVersion }}</span>
       </router-link>
 
       <!-- 菜单区域 -->
@@ -186,43 +172,52 @@ const appVersion = __APP_VERSION__;
           <div
             class="flex items-center h-12 px-4 cursor-pointer select-none transition-colors duration-200 text-white/80 hover:text-[#5268bc] hover:bg-[#172853]"
             :class="{ 'text-[#5268bc] bg-[#172853]': openedSubMenu === menu.index || isMenuGroupActive(menu) }"
-            @click="toggleSubMenu(menu.index)"
-          >
+            @click="toggleSubMenu(menu.index)">
             <!-- 图标 -->
-            <svg v-if="menu.icon === 'dashboard'" class="w-5 h-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg>
-            <svg v-else-if="menu.icon === 'monitor'" class="w-5 h-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
-            <svg v-else-if="menu.icon === 'user'" class="w-5 h-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-            <svg v-else-if="menu.icon === 'box'" class="w-5 h-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
-            <span
-              v-show="!isCollapse"
-              class="ml-3 flex-1 whitespace-nowrap overflow-hidden text-sm"
-            >{{ menu.title }}</span>
+            <svg v-if="menu.icon === 'dashboard'" class="w-5 h-5 shrink-0" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2">
+              <rect x="3" y="3" width="7" height="9" rx="1" />
+              <rect x="14" y="3" width="7" height="5" rx="1" />
+              <rect x="14" y="12" width="7" height="9" rx="1" />
+              <rect x="3" y="16" width="7" height="5" rx="1" />
+            </svg>
+            <svg v-else-if="menu.icon === 'monitor'" class="w-5 h-5 shrink-0" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2">
+              <rect x="2" y="3" width="20" height="14" rx="2" />
+              <line x1="8" y1="21" x2="16" y2="21" />
+              <line x1="12" y1="17" x2="12" y2="21" />
+            </svg>
+            <svg v-else-if="menu.icon === 'user'" class="w-5 h-5 shrink-0" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+              <circle cx="12" cy="7" r="4" />
+            </svg>
+            <svg v-else-if="menu.icon === 'box'" class="w-5 h-5 shrink-0" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2">
+              <path
+                d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" />
+              <polyline points="3.27 6.96 12 12.01 20.73 6.96" />
+              <line x1="12" y1="22.08" x2="12" y2="12" />
+            </svg>
+            <span v-show="!isCollapse" class="ml-3 flex-1 whitespace-nowrap overflow-hidden text-sm">{{ menu.title
+              }}</span>
             <!-- 展开箭头 -->
-            <svg
-              v-show="!isCollapse"
-              class="w-4 h-4 shrink-0 transition-transform duration-200"
-              :class="{ 'rotate-90': openedSubMenu === menu.index }"
-              viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-            ><polyline points="9 18 15 12 9 6"/></svg>
+            <svg v-show="!isCollapse" class="w-4 h-4 shrink-0 transition-transform duration-200"
+              :class="{ 'rotate-90': openedSubMenu === menu.index }" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2">
+              <polyline points="9 18 15 12 9 6" />
+            </svg>
           </div>
 
           <!-- 子菜单项 -->
           <Transition name="submenu-slide">
-            <div
-              v-show="openedSubMenu === menu.index && !isCollapse"
-              class="overflow-hidden"
-            >
-            <router-link
-              v-for="child in menu.children"
-              :key="child.index"
-              :to="child.index"
-              class="flex items-center h-10 pl-14 pr-4 text-sm text-white/70 hover:text-[#5268bc] hover:bg-[#172853] transition-colors duration-200"
-              :class="{ 'text-[#5268bc] bg-[#172853]': isActiveMenu(child.index) }"
-              @click="closeMobileMenu"
-            >
-              {{ child.title }}
-            </router-link>
-          </div>
+            <div v-show="openedSubMenu === menu.index && !isCollapse" class="overflow-hidden">
+              <router-link v-for="child in menu.children" :key="child.index" :to="child.index"
+                class="flex items-center h-10 pl-14 pr-4 text-sm text-white/70 hover:text-[#5268bc] hover:bg-[#172853] transition-colors duration-200"
+                :class="{ 'text-[#5268bc] bg-[#172853]': isActiveMenu(child.index) }" @click="closeMobileMenu">
+                {{ child.title }}
+              </router-link>
+            </div>
           </Transition>
         </div>
       </div>
@@ -236,79 +231,85 @@ const appVersion = __APP_VERSION__;
           <!-- 移动端汉堡菜单 -->
           <button
             class="md:hidden flex items-center justify-center w-9 h-9 rounded hover:bg-gray-100 transition-colors text-gray-500"
-            @click="mobileMenuOpen = !mobileMenuOpen"
-          >
-            <svg v-if="mobileMenuOpen" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-            <svg v-else class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+            @click="mobileMenuOpen = !mobileMenuOpen">
+            <svg v-if="mobileMenuOpen" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="2">
+              <line x1="18" y1="6" x2="6" y2="18" />
+              <line x1="6" y1="6" x2="18" y2="18" />
+            </svg>
+            <svg v-else class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="3" y1="6" x2="21" y2="6" />
+              <line x1="3" y1="12" x2="21" y2="12" />
+              <line x1="3" y1="18" x2="21" y2="18" />
+            </svg>
           </button>
 
           <!-- 折叠按钮 -->
           <button
             class="hidden md:flex items-center justify-center w-9 h-9 rounded hover:bg-gray-100 transition-colors text-gray-500"
-            @click="isCollapse = !isCollapse"
-          >
-            <svg v-if="isCollapse" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
-            <svg v-else class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+            @click="isCollapse = !isCollapse">
+            <svg v-if="isCollapse" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="2">
+              <polyline points="15 18 9 12 15 6" />
+            </svg>
+            <svg v-else class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="9 18 15 12 9 6" />
+            </svg>
           </button>
         </div>
 
         <!-- 右侧菜单 -->
         <div class="flex items-center gap-4">
-          <router-link
-            to="/admin"
-            class="text-sm text-gray-600 hover:text-[#5268bc] transition-colors px-3 py-2"
-            :class="{ 'text-[#5268bc] border-b-2 border-[#5268bc]': route.path === '/admin' }"
-          >
-            管理首页
-          </router-link>
-
           <!-- 用户下拉 -->
           <div ref="userDropdownRef" class="relative">
-            <button
-              class="flex items-center gap-2 cursor-pointer outline-none hover:opacity-80 transition-opacity"
-              @click.stop="toggleUserDropdown"
-            >
-              <img
-                :src="userStore.avatar || ''"
-                class="w-9 h-9 rounded object-cover"
-                style="image-rendering: pixelated"
-                alt="avatar"
-              />
+            <button class="flex items-center gap-2 cursor-pointer outline-none hover:opacity-80 transition-opacity"
+              @click.stop="toggleUserDropdown">
+              <img :src="userStore.avatar || ''" class="w-9 h-9 rounded object-cover" style="image-rendering: pixelated"
+                alt="avatar" />
               <span class="text-sm text-gray-700 hidden sm:inline">{{ userStore.username }}</span>
-              <svg class="w-4 h-4 text-gray-400 transition-transform duration-200" :class="{ 'rotate-180': showUserDropdown }" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+              <svg class="w-4 h-4 text-gray-400 transition-transform duration-200"
+                :class="{ 'rotate-180': showUserDropdown }" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="2">
+                <polyline points="6 9 12 15 18 9" />
+              </svg>
             </button>
 
             <!-- 下拉菜单（Teleport 到 body 避免被表格遮挡） -->
             <Teleport to="body">
               <Transition name="dropdown-fade">
-                <div
-                  v-show="showUserDropdown"
-                  :style="dropdownStyle"
-                  class="w-36 bg-white rounded-lg shadow-lg border border-gray-100 py-1 z-[9999]"
-                >
-                <button class="flex items-center gap-2 w-full px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 transition-colors" @click="onUserMenuClick('/space')">
-                  <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-                  个人信息
-                </button>
-                <button class="flex items-center gap-2 w-full px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 transition-colors" @click="onUserMenuClick('/admin/config')">
-                  <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
-                  系统设置
-                </button>
-                <button class="flex items-center gap-2 w-full px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 transition-colors" @click="onUserMenuClick('/admin')">
-                  <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
-                  系统通知
-                </button>
-                <button class="flex items-center gap-2 w-full px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 transition-colors" @click="onUserMenuClick('/admin')">
-                  <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-                  修改密码
-                </button>
-                <div class="border-t border-gray-100 my-1"></div>
-                <button class="flex items-center gap-2 w-full px-4 py-2.5 text-sm text-red-500 hover:bg-red-50 transition-colors" @click="onUserMenuClick('logout')">
-                  <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
-                  安全退出
-                </button>
-              </div>
-            </Transition>
+                <div v-show="showUserDropdown" :style="dropdownStyle"
+                  class="w-36 bg-white rounded-lg shadow-lg border border-gray-100 py-1 z-[9999]">
+                  <button
+                    class="flex items-center gap-2 w-full px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
+                    @click="onUserMenuClick('/')">
+                    <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                      <circle cx="12" cy="7" r="4" />
+                    </svg>
+                    返回主页
+                  </button>
+                  <button
+                    class="flex items-center gap-2 w-full px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
+                    @click="onUserMenuClick('/admin')">
+                    <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                      <circle cx="12" cy="7" r="4" />
+                    </svg>
+                    管理首页
+                  </button>
+                  <div class="border-t border-gray-100 my-1"></div>
+                  <button
+                    class="flex items-center gap-2 w-full px-4 py-2.5 text-sm text-red-500 hover:bg-red-50 transition-colors"
+                    @click="onUserMenuClick('logout')">
+                    <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                      <polyline points="16 17 21 12 16 7" />
+                      <line x1="21" y1="12" x2="9" y2="12" />
+                    </svg>
+                    安全退出
+                  </button>
+                </div>
+              </Transition>
             </Teleport>
           </div>
         </div>
@@ -330,6 +331,7 @@ const appVersion = __APP_VERSION__;
 .dropdown-fade-leave-active {
   transition: opacity 0.2s ease, transform 0.2s ease;
 }
+
 .dropdown-fade-enter-from,
 .dropdown-fade-leave-to {
   opacity: 0;
@@ -341,6 +343,7 @@ const appVersion = __APP_VERSION__;
 .overlay-fade-leave-active {
   transition: opacity 0.3s ease;
 }
+
 .overlay-fade-enter-from,
 .overlay-fade-leave-to {
   opacity: 0;
@@ -351,11 +354,13 @@ const appVersion = __APP_VERSION__;
 .submenu-slide-leave-active {
   transition: max-height 0.4s ease, opacity 0.4s ease;
 }
+
 .submenu-slide-enter-from,
 .submenu-slide-leave-to {
   max-height: 0;
   opacity: 0;
 }
+
 .submenu-slide-enter-to,
 .submenu-slide-leave-from {
   max-height: 500px;
