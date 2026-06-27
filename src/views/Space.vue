@@ -136,14 +136,14 @@ const logout = () => {
             <MCRouterLink class="button" v-if="playPermission" to="https://www.fsp.ink/docs/join/">
               游玩指南
             </MCRouterLink>
-            <MCRouterLink class="button" v-if="playPermission" to="/guarantee"> 熟人担保 </MCRouterLink>
-            <MCRouterLink class="button" v-if="playPermission" to="/prepareForTheExam"> 参加考试 </MCRouterLink>
+            <MCRouterLink class="button" to="/guarantee" v-if="playPermission"> 熟人担保 </MCRouterLink>
+            <MCRouterLink class="button" to="/prepareForTheExam" v-if="playPermission"> 参加考试 </MCRouterLink>
             <MCRouterLink class="button" to="/Query/Guarantee"> 担保查询 </MCRouterLink>
             <MCRouterLink class="button" to="/Query/Examination"> 考试查询 </MCRouterLink>
-            <MCRouterLink class="button" v-if="isAdmin" to="/admin"> 网站管理 </MCRouterLink>
+            <MCRouterLink class="button" to="/admin" v-if="isAdmin"> 网站管理 </MCRouterLink>
             <MCButton class="button" v-if="status === 0" @click="reqActivation"> 激活账户 </MCButton>
             <MCRouterLink class="button" to="/user-settings"> 用户设置 </MCRouterLink>
-            <MCButton class="button" @click="logout"> 退出登录 </MCButton>
+            <MCButton class="button logout" @click="logout"> 退出登录 </MCButton>
           </div>
         </Transition>
       </div>
@@ -286,17 +286,11 @@ const logout = () => {
   .button {
     width: 100%;
     height: 50px;
-    background-color: #4fc08d;
-    color: white;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: var(--button-font-size-medium);
   }
 
-  .button:hover {
-    background-color: #42b883;
+  .logout {
+    color: red;
+    margin-top: 20px;
   }
 }
 </style>
