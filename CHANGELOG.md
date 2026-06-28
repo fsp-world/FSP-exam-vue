@@ -23,8 +23,12 @@
 
 ### Chore
 
-- 将 CSS 框架从 Element-plus 迁移为 TailwindCSS [更换后台框架Element-plus -> TailwindCSS · Issue #6](https://github.com/tangsu99/fsp-exam-vue/issues/6)
+- 将 CSS 框架从 Element-plus 迁移为 TailwindCSS (#6)
 - 移除 `main.js` 中对 Element-plus 的全局引入
+
+### Bug Fixes
+
+- 修复了开始考试之后, 更改 URL 地址可以访问其他问卷的问题 (#5)
 
 ## [0.11.3] (2026-06-10)
 
