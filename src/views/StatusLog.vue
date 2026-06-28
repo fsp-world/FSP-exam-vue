@@ -73,6 +73,10 @@ const option = ref<EChartsOption>({
   yAxis: {
     type: 'value',
     name: '在线人数',
+    minInterval: 1,
+    axisLabel: {
+      formatter: (value: number) => (Number.isInteger(value) ? value.toString() : ''),
+    },
   },
   series: [
     {
