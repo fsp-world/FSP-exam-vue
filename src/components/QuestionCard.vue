@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { defineProps, onMounted, watchEffect } from 'vue';
+import { onMounted, watchEffect } from 'vue';
 import { getStringQuestionType, IOption, IQuestion } from '@/types';
 import { QuestionType } from '@/utils/enum';
 
@@ -62,13 +62,9 @@ onMounted(() => {
       <span class="text"> {{ question.title }}</span>
       <span class="score">({{ question.score }}分)</span>
       <span v-if="mode === 'review'">
-        <select
-          :value="question.userGetScore"
-          :disabled="archived"
-          @change="
-            (e: Event) => emit('scoreChange', { questionId: question.id, score: (e.target as HTMLSelectElement).value })
-          "
-        >
+        <select :value="question.userGetScore" :disabled="archived" @change="
+          (e: Event) => emit('scoreChange', { questionId: question.id, score: (e.target as HTMLSelectElement).value })
+        ">
           <option v-for="i in 10" :value="i">{{ i }}分</option>
         </select>
       </span>
@@ -80,34 +76,21 @@ onMounted(() => {
       </li>
     </ul>
     <!-- 选择题 -->
-    <ul
-      class="option-list"
-      v-if="question.type === QuestionType.SingleChoice || question.type === QuestionType.MultipleChoice"
-    >
-      <li
-        v-for="(option, optionIndex) in question.options"
-        :key="optionIndex"
-        :class="{ selected: option.isSelected }"
-        @click="selectOption(option)"
-      >
+    <ul class="option-list"
+      v-if="question.type === QuestionType.SingleChoice || question.type === QuestionType.MultipleChoice">
+      <li v-for="(option, optionIndex) in question.options" :key="optionIndex" :class="{ selected: option.isSelected }"
+        @click="selectOption(option)">
         <div v-if="option.isCorrect" class="correct-option"></div>
         {{ ['A.', 'B.', 'C.', 'D.'][optionIndex] }}{{ option.text }}
       </li>
     </ul>
     <!-- 填空题 -->
     <div v-if="question.type === QuestionType.FillInTheBlanks">
-      <input
-        v-if="mode === 'view'"
-        type="txet"
-        required
-        class="input-text"
-        placeholder="请在此作答，前后不要有多余符号"
-        @input="
-          (e: Event) => {
-            question.answer = [(e.target as HTMLSelectElement).value];
-          }
-        "
-      />
+      <input v-if="mode === 'view'" type="txet" required class="input-text" placeholder="请在此作答，前后不要有多余符号" @input="
+        (e: Event) => {
+          question.answer = [(e.target as HTMLSelectElement).value];
+        }
+      " />
       <div v-if="mode === 'admin-view' || mode === 'review'">
         <p>标准答案：</p>
         <input type="txet" class="input-text" :placeholder="question.options[0].text" disabled />
@@ -118,21 +101,13 @@ onMounted(() => {
       </div>
     </div>
     <!-- 主观题 -->
-    <div
-      v-if="question.type === QuestionType.Subjective"
-      :class="{ resize: question.type === QuestionType.Subjective }"
-    >
-      <textarea
-        v-if="mode === 'view'"
-        required
-        class="input-textarea"
-        placeholder="请在此处作答"
-        @input="
-          (e: Event) => {
-            question.answer = [(e.target as HTMLSelectElement).value];
-          }
-        "
-      ></textarea>
+    <div v-if="question.type === QuestionType.Subjective"
+      :class="{ resize: question.type === QuestionType.Subjective }">
+      <textarea v-if="mode === 'view'" required class="input-textarea" placeholder="请在此处作答" @input="
+        (e: Event) => {
+          question.answer = [(e.target as HTMLSelectElement).value];
+        }
+      "></textarea>
       <div v-if="mode === 'admin-view' || mode === 'review'">
         <p>参考答案：</p>
         <textarea class="input-textarea" disabled>
@@ -152,6 +127,7 @@ onMounted(() => {
 .question {
   position: relative;
 }
+
 .title {
   margin-bottom: 10px;
 }
@@ -175,6 +151,10 @@ onMounted(() => {
   color: #444;
 }
 
+.title select {
+  border: 1px solid #000;
+}
+
 .option-list li {
   position: relative;
   padding: 5px;
@@ -184,6 +164,7 @@ onMounted(() => {
   border-radius: 5px;
   user-select: none;
   border: 1px solid #ffffff00;
+
   .correct-option {
     position: absolute;
     top: 6px;
@@ -253,6 +234,7 @@ onMounted(() => {
 .input-textarea::placeholder {
   color: #444;
 }
+
 .resize::before {
   content: '';
   background: url(../assets/images/rainbow_pixel_gui/up-down-icon-1.png);

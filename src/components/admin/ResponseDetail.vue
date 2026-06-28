@@ -1,8 +1,10 @@
 <template>
   <Teleport to="body">
     <Transition name="modal-fade">
-      <div class="fixed inset-0 bg-black/50 flex justify-center items-start md:items-center z-50 pt-5 md:pt-0" @click.self="emit('update:visibility', false)">
-        <div class="bg-white rounded-xl shadow-2xl w-full md:w-[70vw] max-h-[95vh] md:max-h-[90vh] flex flex-col mx-4 md:mx-0 relative">
+      <div class="fixed inset-0 bg-black/50 flex justify-center items-start md:items-center z-50 pt-5 md:pt-0"
+        @click.self="emit('update:visibility', false)">
+        <div
+          class="bg-white shadow-2xl w-full md:w-[70vw] max-h-[95vh] md:max-h-[90vh] flex flex-col mx-4 md:mx-0 relative">
 
           <!-- 关闭按钮 -->
           <ModalCloseButton @click="emit('update:visibility', false)" />
@@ -22,18 +24,10 @@
 
             <h1 class="text-2xl md:text-3xl font-bold mb-4">答题卡</h1>
             <div class="space-y-5">
-              <div
-                v-for="(question, questionIndex) in props.data.questions"
-                :key="question.id"
-                :id="'question' + (Number(questionIndex) + 1)"
-              >
-                <QuestionCard
-                  :index="Number(questionIndex)"
-                  :mode="'review'"
-                  v-model="props.data.questions[questionIndex]"
-                  :archived="archived"
-                  @scoreChange="handleScoreChange"
-                />
+              <div v-for="(question, questionIndex) in props.data.questions" :key="question.id"
+                :id="'question' + (Number(questionIndex) + 1)">
+                <QuestionCard :index="Number(questionIndex)" :mode="'review'"
+                  v-model="props.data.questions[questionIndex]" :archived="archived" @scoreChange="handleScoreChange" />
               </div>
             </div>
 
@@ -71,11 +65,23 @@ const handleScoreChange = (payload: { questionId: number; score: number }) => {
 
 <style>
 .modal-fade-enter-active,
-.modal-fade-leave-active { transition: opacity 0.2s ease; }
+.modal-fade-leave-active {
+  transition: opacity 0.2s ease;
+}
+
 .modal-fade-enter-from,
-.modal-fade-leave-to { opacity: 0; }
-.modal-fade-enter-active > div,
-.modal-fade-leave-active > div { transition: transform 0.2s ease, opacity 0.2s ease; }
-.modal-fade-enter-from > div,
-.modal-fade-leave-to > div { transform: scale(0.95); opacity: 0; }
+.modal-fade-leave-to {
+  opacity: 0;
+}
+
+.modal-fade-enter-active>div,
+.modal-fade-leave-active>div {
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.modal-fade-enter-from>div,
+.modal-fade-leave-to>div {
+  transform: scale(0.95);
+  opacity: 0;
+}
 </style>
