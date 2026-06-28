@@ -1,6 +1,8 @@
 # Changelog
 
-## [0.11.4] (Developing)
+## [0.11.5] (Developing)
+
+## [0.11.4] (2026-06-29)
 
 ### Features
 
