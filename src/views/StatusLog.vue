@@ -13,6 +13,7 @@ import {
 import { CanvasRenderer } from 'echarts/renderers';
 import type { EChartsOption } from 'echarts';
 import request from '@/utils/requers';
+import { dateFormatHHmm } from '@/utils/date';
 
 use([
   TitleComponent,
@@ -114,10 +115,11 @@ const fetchData = async () => {
       }
 
       total.value = d.total ?? 0;
-      // ECharts 直接使用原始数据，自动处理标签间距
+      // 使用 dateUtils 格式化时间标签
+      const formattedDates = dates.map((date: string) => dateFormatHHmm(date));
       option.value = {
         ...option.value,
-        xAxis: { ...option.value.xAxis, data: dates },
+        xAxis: { ...option.value.xAxis, data: formattedDates },
         series: [{ ...(option.value as any).series?.[0], data: counts }],
       } as EChartsOption;
     } else {
@@ -165,47 +167,33 @@ onMounted(() => {
           <!-- 开始时间 -->
           <div class="flex flex-col gap-1">
             <label class="text-sm text-gray-500">开始时间（选填）</label>
-            <input
-              v-model="startTime"
-              type="datetime-local"
-              placeholder="默认当天"
-              class="h-10 px-3 border border-gray-300 rounded outline-none focus:border-[#5268bc] text-sm"
-            />
+            <input v-model="startTime" type="datetime-local" placeholder="默认当天"
+              class="h-10 px-3 border border-gray-300 rounded outline-none focus:border-[#5268bc] text-sm" />
           </div>
 
           <!-- 结束时间 -->
           <div class="flex flex-col gap-1">
             <label class="text-sm text-gray-500">结束时间（选填）</label>
-            <input
-              v-model="endTime"
-              type="datetime-local"
-              placeholder="默认当天"
-              class="h-10 px-3 border border-gray-300 rounded outline-none focus:border-[#5268bc] text-sm"
-            />
+            <input v-model="endTime" type="datetime-local" placeholder="默认当天"
+              class="h-10 px-3 border border-gray-300 rounded outline-none focus:border-[#5268bc] text-sm" />
           </div>
 
           <!-- 查询按钮 -->
           <button
             class="h-10 px-6 bg-[#5268bc] text-white rounded hover:bg-[#4255a0] transition-colors text-sm font-medium disabled:opacity-50"
-            :disabled="loading"
-            @click="autoExpanded = true; fetchData()"
-          >
+            :disabled="loading" @click="autoExpanded = true; fetchData()">
             {{ loading ? '查询中...' : '查询' }}
           </button>
 
           <!-- 快捷范围 -->
           <div class="flex gap-2">
-            <button
-              v-for="r in [
-                { label: '最近1小时', h: 1 },
-                { label: '最近6小时', h: 6 },
-                { label: '最近24小时', h: 24 },
-                { label: '最近7天', h: 24 * 7 },
-              ]"
-              :key="r.h"
-              class="h-10 px-3 text-sm border border-gray-300 rounded hover:bg-gray-100 transition-colors"
-              @click="setQuickRange(r.h)"
-            >{{ r.label }}</button>
+            <button v-for="r in [
+              { label: '最近1小时', h: 1 },
+              { label: '最近6小时', h: 6 },
+              { label: '最近24小时', h: 24 },
+              { label: '最近7天', h: 24 * 7 },
+            ]" :key="r.h" class="h-10 px-3 text-sm border border-gray-300 rounded hover:bg-gray-100 transition-colors"
+              @click="setQuickRange(r.h)">{{ r.label }}</button>
           </div>
         </div>
       </div>
@@ -230,13 +218,7 @@ onMounted(() => {
           <div v-if="total === 0 && errorMsg === ''" class="flex items-center justify-center h-80 text-gray-400">
             暂无数据，请选择时间范围后点击查询
           </div>
-          <v-chart
-            v-else
-            class="w-full"
-            style="height: 360px"
-            :option="option"
-            autoresize
-          />
+          <v-chart v-else class="w-full" style="height: 360px" :option="option" autoresize />
         </template>
       </div>
     </div>
