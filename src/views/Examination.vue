@@ -106,7 +106,13 @@ const checkDone = async () => {
 
 const complete = () => {
   confirm.value = false;
-  completeSurvey(questions.value).then((res) => {
+
+  const submitData = {
+    surveyId: Number(String(route.params.sid)),
+    answers: questions.value
+  }
+
+  completeSurvey(submitData).then((res) => {
     if (res.data.code === 0) {
       score.value = res.data.score;
       isDone.value = true;
