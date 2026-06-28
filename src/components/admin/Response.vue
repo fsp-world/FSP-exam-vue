@@ -106,9 +106,8 @@ onMounted(async () => {
 
       <div class="p-5">
         <p class="text-sm text-gray-500 mb-5">注意：已过期的答卷自动设置为已完成和已拒绝</p>
-
         <BaseTable :table-props="{ columnMap, stripe: true, bordered: true }" :fetch-data="fetchResponses"
-          :loading="loading" actions-width="340px">
+          :loading="loading" actions-width="80px">
           <template #isCompleted="{ value }">
             <span :class="value ? 'text-green-600' : 'text-red-500'">{{ value ? '已完成' : '未完成' }}</span>
           </template>
@@ -125,15 +124,36 @@ onMounted(async () => {
             <span class="whitespace-nowrap">{{ value ? dateFormatYYYYMMDDHH(value) : '未交卷' }}</span>
           </template>
           <template #actions="{ row }">
-            <MCButton v-if="!row.isReviewed" length="short" @click="reviewed(row.id, true)">通过</MCButton>
-            <MCButton v-if="!row.isReviewed" length="short" disabled-style @click="reviewed(row.id, false)">拒绝
-            </MCButton>
-            <MCButton length="short" @click="openDetail(row.id)">详情</MCButton>
+            <div class="action-btns">
+              <MCButton length="short" @click="openDetail(row.id)">详情</MCButton>
+              <template v-if="!row.isReviewed">
+                <MCButton length="short" class="btn-pass" @click="reviewed(row.id, true)">通过</MCButton>
+                <MCButton length="short" class="btn-reject" @click="reviewed(row.id, false)">拒绝</MCButton>
+              </template>
+            </div>
           </template>
         </BaseTable>
-
         <ResponseDetail v-if="visibility" v-model:visibility="visibility" :data="detailData" />
       </div>
     </div>
   </div>
 </template>
+
+<style scoped>
+.action-btns {
+  display: flex;
+  gap: 4px;
+}
+
+@media (max-width: 768px) {
+  .action-btns {
+    flex-direction: column;
+    gap: 2px;
+
+    button {
+      width: 60px;
+      height: 30px;
+    }
+  }
+}
+</style>
