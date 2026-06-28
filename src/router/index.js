@@ -152,9 +152,9 @@ const router = createRouter({
       component: () => import('@/views/Error.vue'),
     },
     {
-      path: '/statuslog',
-      name: 'StatusLog',
-      component: () => import('@/views/StatusLog.vue'),
+      path: '/online-stats',
+      name: 'OnlineStats',
+      component: () => import('@/views/OnlineStats.vue'),
     },
   ],
 });

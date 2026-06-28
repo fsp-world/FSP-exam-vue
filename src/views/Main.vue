@@ -27,7 +27,7 @@ const logout = () => {
       <div class="menu pc">
         <MCRouterLink v-if="!playPermission" to="/guarantee" class="minecraft-button">熟人担保</MCRouterLink>
         <MCRouterLink v-if="!playPermission" to="/prepareForTheExam" class="minecraft-button">参加考试</MCRouterLink>
-        <MCRouterLink v-if="playPermission" to="/statuslog" class="minecraft-button">在线统计</MCRouterLink>
+        <MCRouterLink v-if="playPermission" to="/online-stats" class="minecraft-button">在线统计</MCRouterLink>
         <MCRouterLink v-if="playPermission" to="/resourceCenter" class="minecraft-button">资源中心</MCRouterLink>
         <div class="sub-menu">
           <MCRouterLink :length="'medium'" to="https://www.fsp.ink" class="minecraft-button"> 文档中心 </MCRouterLink>
@@ -46,7 +46,7 @@ const logout = () => {
         </MCRouterLink>
         <MCRouterLink :length="'medium'" v-if="!playPermission" to="/prepareForTheExam" class="minecraft-button">参加考试
         </MCRouterLink>
-        <MCRouterLink :length="'medium'" v-if="playPermission" to="/statuslog" class="minecraft-button">在线统计
+        <MCRouterLink :length="'medium'" v-if="playPermission" to="/online-stats" class="minecraft-button">在线统计
         </MCRouterLink>
         <MCRouterLink :length="'medium'" v-if="playPermission" to="/resourceCenter" class="minecraft-button">资源中心
         </MCRouterLink>
