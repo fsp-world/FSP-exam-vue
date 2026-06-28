@@ -100,7 +100,7 @@ onMounted(() => {
           <div class="sub-title">
             我们会通过一些题目来确认您大致的游戏水平
           </div>
-          <input type="text" v-model="examineeInfo.playerName" placeholder="您的游戏昵称" />
+          <input class="minecraft-input" type="text" v-model="examineeInfo.playerName" placeholder="您的游戏昵称" />
           <p class="tips">系统会根据您的选择生成定制的试题</p>
           <MCSegmentedControl :button-length="'medium'" :data="surveyList" v-model="selectedSurvey"
             @change="choiceSurvey" class="option-list">
@@ -111,7 +111,7 @@ onMounted(() => {
         </form>
       </div>
       <div class="end">
-        <MCRouterLink to="/" class="button">返回</MCRouterLink>
+        <MCRouterLink to="/space" class="button">返回</MCRouterLink>
         <MCButton class="button" @click="startExam"> 开始</MCButton>
       </div>
     </div>

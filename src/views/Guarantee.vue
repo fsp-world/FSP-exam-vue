@@ -75,14 +75,14 @@ const startCheck = () => {
       <div class="main">
         <div class="form">
           <p class="text">该玩家在网站上同意您的请求后您将获得白名单</p>
-          <input :disabled="checkUser || checkGuarantor" type="text" placeholder="对方的游戏昵称"
+          <input class="minecraft-input" :disabled="checkUser || checkGuarantor" type="text" placeholder="对方的游戏昵称"
             v-model="guarantorInfo.playerName" />
-          <input :disabled="checkUser || checkGuarantor" type="text" placeholder="您的游戏昵称"
+          <input class="minecraft-input" :disabled="checkUser || checkGuarantor" type="text" placeholder="您的游戏昵称"
             v-model="userInfo.playerName" />
         </div>
       </div>
       <div class="end">
-        <MCRouterLink :length="'medium'" to="/" class="button">返回</MCRouterLink>
+        <MCRouterLink :length="'medium'" to="/space" class="button">返回</MCRouterLink>
         <MCButton :length="'medium'" :disabled="checkUser || checkGuarantor" class="button" @click="startCheck">提交
         </MCButton>
       </div>

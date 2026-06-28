@@ -6,12 +6,37 @@ import MCButton from '@/components/MCButton.vue';
 import MCRouterLink from '@/components/MCRouterLink.vue';
 import MCDialog from '@/components/MCDialog.vue';
 import BackgroundSettings from '@/components/BackgroundSettings.vue';
+import { setUsername } from '@/apis/user';
+import { openAlert } from '@/utils/TsAlert';
 
 const userStore = useUserStore();
 const { username, userQQ } = storeToRefs(userStore);
 
 const displayBgPanel = ref(false);
 const newUsername = ref('');
+
+const saving = ref(false);
+
+const handleSaveUsername = async () => {
+  const trimmed = newUsername.value.trim();
+  if (!trimmed || saving.value) return;
+  saving.value = true;
+  try {
+    const res = await setUsername(trimmed);
+    const data = res.data;
+    if (data.code === 0) {
+      openAlert(data.desc);
+      userStore.setUsernameAction(trimmed);
+      newUsername.value = '';
+    } else {
+      openAlert(data.desc);
+    }
+  } catch (err: any) {
+    openAlert(err?.response?.data?.desc || '用户名修改失败');
+  } finally {
+    saving.value = false;
+  }
+};
 </script>
 
 <template>
@@ -41,7 +66,8 @@ const newUsername = ref('');
               <input v-model="newUsername" class="field-input" type="text" placeholder="请输入新用户名（最多16字）"
                 maxlength="16" />
             </div>
-            <MCButton class="save-btn" :disabled="!newUsername.trim()">保存</MCButton>
+            <MCButton class="save-btn" :disabled="!newUsername.trim() || saving" @click="handleSaveUsername">保存修改
+            </MCButton>
           </div>
         </Transition>
         <Transition name="stagger" appear>
@@ -115,6 +141,7 @@ const newUsername = ref('');
 .field-input {
   display: block;
   width: 100%;
+  height: 40px;
   font-size: var(--text-font-size-medium);
   color: #fff;
   padding: 10px 12px;
@@ -133,9 +160,10 @@ const newUsername = ref('');
 }
 
 .save-btn {
+  margin-top: 30px;
   width: 100%;
   height: 40px;
-  font-size: var(--button-font-size-medium) !important;
+  font-size: var(--button-font-size-small);
 }
 
 .settings-card .settings-item {

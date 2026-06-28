@@ -141,6 +141,9 @@ export const useUserStore = defineStore('user', {
         return { code: 1, desc: '错误' };
       }
     },
+    setUsernameAction(newUsername: string) {
+      this.username = newUsername;
+    },
     async setBackground(bgUrl: string) {
       try {
         let res = await setUserBackground(bgUrl);
