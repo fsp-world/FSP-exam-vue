@@ -106,7 +106,13 @@ const checkDone = async () => {
 
 const complete = () => {
   confirm.value = false;
-  completeSurvey(questions.value).then((res) => {
+
+  const submitData = {
+    surveyId: Number(String(route.params.sid)),
+    answers: questions.value
+  }
+
+  completeSurvey(submitData).then((res) => {
     if (res.data.code === 0) {
       score.value = res.data.score;
       isDone.value = true;
@@ -156,10 +162,10 @@ onMounted(() => {
   </QuestionBackground>
   <InfoDialog :show="confirm" dialogType="warn-card">
     <p style="margin-top: 20px">还有未完成题目！确认提交？</p>
-    <p style="display: flex; justify-content: flex-end; padding-right: 30px; margin-top: 10px">
-      <MCButton class="btn" @click="confirm = false">取消</MCButton>
-      <MCButton class="btn" @click="complete()">确认</MCButton>
-    </p>
+    <div class="confirm-buttons">
+      <MCButton :length="'medium'" class="btn" @click="confirm = false">取消</MCButton>
+      <MCButton :length="'medium'" class="btn" @click="complete()">确认</MCButton>
+    </div>
   </InfoDialog>
   <PaperDone v-if="isDone" :score="score"></PaperDone>
   <QuestionMap v-else :questions="questions"></QuestionMap>
@@ -220,9 +226,12 @@ onMounted(() => {
   position: relative;
 }
 
-.btn {
-  border-radius: 5px;
-  padding: 12px 20px;
-  margin: 0px 10px;
+.confirm-buttons {
+  margin: 0 auto;
+  padding-top: 5px;
+  display: flex;
+  justify-content: center;
+  gap: 5px;
+  max-width: calc(100% - 30px);
 }
 </style>

@@ -1,150 +1,68 @@
-<template>
-  <div class="box">
-    <h1>答卷管理</h1>
-    <div class="tips">
-      <p>注意：已过期的答卷自动设置为已完成和已拒绝</p>
-    </div>
-    <div class="table-box">
-      <table>
-        <thead>
-          <tr>
-            <th class="id">#</th>
-            <th class="is-done">完成</th>
-            <th class="status">审核状态</th>
-            <th class="status">审核人</th>
-            <th class="survey-name">试卷名称</th>
-            <th class="survey-id">试卷ID</th>
-            <th class="score">分数</th>
-            <th class="user">用户名</th>
-            <th class="player-name">玩家名</th>
-            <th class="add-time">开考日期</th>
-            <th class="done-time">交卷日期</th>
-            <th class="action">操作</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="item in responsesData.list" :key="item.id">
-            <td>{{ item.id }}</td>
-            <td :style="item.isCompleted ? { color: 'green' } : { color: 'red' }">
-              {{ item.isCompleted ? '已完成' : '未完成' }}
-            </td>
-            <td :style="getCellStyle(item.isReviewed)">
-              {{ reviewedComput(item.isReviewed) }}
-            </td>
-            <td>{{ item.isReviewed ? item.reviewer_name : '/' }}</td>
-            <td>{{ item.survey }}</td>
-            <td>{{ item.surveyId }}</td>
-            <td>{{ item.score }}</td>
-            <td>{{ item.username }}</td>
-            <td>{{ item.playername }}</td>
-            <td>{{ dateFormatYYYYMMDDHH(item.createTime) }}</td>
-            <td>{{ item.responseTime ? dateFormatYYYYMMDDHH(item.responseTime) : '未交卷' }}</td>
-            <td class="action">
-              <MCButton v-if="!item.isReviewed" class="button" @click="reviewed(item.id, true)">通过</MCButton>
-              <MCButton v-if="!item.isReviewed" class="button" @click="reviewed(item.id, false)">拒绝</MCButton>
-              <MCButton class="button" @click="detail(item)">详情</MCButton>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-    <!-- 分页 -->
-    <div class="pagination">
-      <button
-        type="button"
-        @click="loadPagination(responsesData.page - 1, responsesData.size)"
-        :disabled="responsesData.page === 1"
-      >
-        上一页
-      </button>
-      <span>第 {{ responsesData.page }} 页 / 共 {{ responsesData.totalPages }} 页</span>
-      <button
-        type="button"
-        @click="loadPagination(responsesData.page + 1, responsesData.size)"
-        :disabled="responsesData.page * responsesData.size >= responsesData.total"
-      >
-        下一页
-      </button>
-      <button
-        type="button"
-        @click="loadPagination(responsesData.totalPages, responsesData.size)"
-        :disabled="responsesData.page === responsesData.totalPages"
-      >
-        最后一页
-      </button>
-    </div>
-
-    <ResponseDetail v-if="visibility" v-model:visibility="visibility" :data="detailData"></ResponseDetail>
-  </div>
-</template>
-
 <script setup lang="ts">
 import { getResponses, reviewedResponse, responseDetail } from '@/apis/admin';
-import type { IResponse } from '@/types';
-import { ref, watch, onMounted, computed } from 'vue';
+import type { IResponse, IPagination } from '@/types';
+import { ref, watch, onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
-import MCButton from '@/components/MCButton.vue';
 import ResponseDetail from '@/components/admin/ResponseDetail.vue';
 import { dateFormatYYYYMMDDHH } from '@/utils/date';
 import { openAlert } from '@/utils/TsAlert';
+import BaseTable from './BaseTable.vue';
+import MCButton from '@/components/MCButton.vue';
 
 const route = useRoute();
 const router = useRouter();
 
-const getCellStyle = (isReviewed: number) => {
-  if (isReviewed === 1) {
-    return { color: 'green' };
-  } else if (isReviewed === 2) {
-    return { color: 'red' };
-  } else {
-    return { color: 'grey' };
-  }
-};
-
-const visibility = ref<boolean>(false);
-
-interface IData {
-  list: IResponse[];
-  page: number;
-  size: number;
-  total: number;
-  totalPages: number;
-}
-// 答卷详情数据
+const loading = ref(false);
+const visibility = ref(false);
 const detailData = ref();
-// 答卷分页数据
-const responsesData = ref<IData>({
-  list: [],
-  page: 1,
-  size: 10,
-  total: 0,
-  totalPages: 0,
-});
-// 分页加载答卷分页数据
-const loadPagination = async (page = 1, size = 10) => {
-  const res = await getResponses({ page, size });
-  if (res.data.code === 0) {
-    responsesData.value = res.data;
-    responsesData.value.totalPages = Math.ceil(res.data.total / res.data.size);
+
+const reviewedStatus = (key: number) => {
+  switch (key) {
+    case 0: return '待审核';
+    case 1: return '已通过';
+    case 2: return '已拒绝';
+    case 3: return '已超时'
+    default: return '未知';
   }
 };
 
-// 通过
-const reviewed = (id: number, pass: boolean) => {
-  const text: string = pass ? '确定通过吗？' : '确定拒绝吗？';
-  const userConfirmed = confirm(text);
-  if (userConfirmed) {
-    reviewedResponse({ response: id, status: pass ? 1 : 2 }).then((res) => {
-      openAlert(res.data.desc);
-      if (res.data.code === 0) {
-        loadPagination(responsesData.value.page, responsesData.value.size);
-      }
-    });
-  }
+const reviewedColor = (key: number) => {
+  if (key === 1) return 'text-green-600';
+  if (key === 2) return 'text-red-500';
+  return 'text-gray-400';
 };
-// 获取答卷详情
-const detail = (item: IResponse) => {
-  openDetail(item.id);
+
+const columnMap = new Map([
+  ['id', { title: '#', width: '60px' }],
+  ['isCompleted', { title: '完成', width: '80px' }],
+  ['isReviewed', { title: '审核状态', width: '80px' }],
+  ['reviewerName', { title: '审核人', width: '100px' }],
+  ['surveyName', { title: '试卷名称' }],
+  ['surveyId', { title: '试卷ID', width: '80px' }],
+  ['score', { title: '分数', width: '60px' }],
+  ['userName', { title: '用户名', width: '100px' }],
+  ['playerName', { title: '玩家名', width: '100px' }],
+  ['createTime', { title: '开考日期', width: '170px' }],
+  ['responseTime', { title: '交卷日期', width: '170px' }],
+]);
+
+const fetchResponses = async (params: IPagination) => {
+  loading.value = true;
+  const res = await getResponses(params);
+  loading.value = false;
+  return res;
+};
+
+const reviewed = (id: number, pass: boolean) => {
+  const text = pass ? '确定通过吗？' : '确定拒绝吗？';
+  if (!confirm(text)) return;
+  reviewedResponse({ response: id, status: pass ? 1 : 2 }).then((res) => {
+    openAlert(res.data.desc);
+    if (res.data.code === 0) {
+      loading.value = true;
+      getResponses({ page: 1, size: 10 }).then(() => (loading.value = false));
+    }
+  });
 };
 
 const openDetail = (id: number) => {
@@ -155,127 +73,88 @@ const openDetail = (id: number) => {
   });
 };
 
-// 退出答卷详情预览重新获取
 watch(visibility, (newValue) => {
-  if (newValue == false) {
-    loadPagination(responsesData.value.page, responsesData.value.size);
+  if (!newValue) {
+    loading.value = true;
+    getResponses({ page: 1, size: 10 }).then(() => (loading.value = false));
   }
 });
-// 初始化加载数据
-onMounted(() => {
-  loadPagination().then(() => {
-    let id = parseInt(route.query.id as string);
-    if (id) {
-      openDetail(id);
-      let newQuery = JSON.parse(JSON.stringify(route.query));
-      delete newQuery.id;
-      router.replace({ query: newQuery });
-    }
-  });
-});
 
-const reviewedComput = computed(() => {
-  return (key: number) => {
-    switch (key) {
-      case 0:
-        return '待审核';
-      case 1:
-        return '已通过';
-      case 2:
-        return '已拒绝';
-      default:
-        return '未知';
-    }
-  };
+onMounted(async () => {
+  const id = parseInt(route.query.id as string);
+  if (id) {
+    openDetail(id);
+    const newQuery = { ...route.query };
+    delete newQuery.id;
+    router.replace({ query: newQuery });
+  }
 });
 </script>
 
+<template>
+  <div class="h-full overflow-y-auto">
+    <div class="bg-white rounded-lg shadow-sm">
+      <div class="flex flex-wrap items-center justify-between gap-4 px-5 py-4 border-b border-gray-200">
+        <h1 class="text-2xl font-bold">答卷管理</h1>
+        <nav class="flex items-center gap-1.5 text-sm text-gray-500">
+          <router-link to="/admin" class="hover:text-[#5268bc] transition-colors">后台首页</router-link>
+          <span>/</span>
+          <router-link to="/admin/exam" class="hover:text-[#5268bc] transition-colors">试卷管理</router-link>
+          <span>/</span>
+          <span class="text-gray-700">答卷管理</span>
+        </nav>
+      </div>
+
+      <div class="p-5">
+        <p class="text-sm text-gray-500 mb-5">注意：已过期的答卷自动设置为已完成和已拒绝</p>
+        <BaseTable :table-props="{ columnMap, stripe: true, bordered: true }" :fetch-data="fetchResponses"
+          :loading="loading" actions-width="80px">
+          <template #isCompleted="{ value }">
+            <span :class="value ? 'text-green-600' : 'text-red-500'">{{ value ? '已完成' : '未完成' }}</span>
+          </template>
+          <template #isReviewed="{ value }">
+            <span :class="reviewedColor(value)">{{ reviewedStatus(value) }}</span>
+          </template>
+          <template #reviewer_name="{ value, row }">
+            {{ row.isReviewed ? value : '/' }}
+          </template>
+          <template #createTime="{ value }">
+            <span class="whitespace-nowrap">{{ dateFormatYYYYMMDDHH(value) }}</span>
+          </template>
+          <template #responseTime="{ value }">
+            <span class="whitespace-nowrap">{{ value ? dateFormatYYYYMMDDHH(value) : '未交卷' }}</span>
+          </template>
+          <template #actions="{ row }">
+            <div class="action-btns">
+              <MCButton length="short" @click="openDetail(row.id)">详情</MCButton>
+              <template v-if="!row.isReviewed">
+                <MCButton length="short" class="btn-pass" @click="reviewed(row.id, true)">通过</MCButton>
+                <MCButton length="short" class="btn-reject" @click="reviewed(row.id, false)">拒绝</MCButton>
+              </template>
+            </div>
+          </template>
+        </BaseTable>
+        <ResponseDetail v-if="visibility" v-model:visibility="visibility" :data="detailData" />
+      </div>
+    </div>
+  </div>
+</template>
+
 <style scoped>
-.box {
-  height: 100%;
-  overflow-y: auto;
-}
-.tips {
-  ul {
-    /* 必须 padding-left: ; */
-    padding-left: 20px;
-    padding-bottom: 10px;
-  }
-  li {
-    list-style-type: disc;
-    display: list-item;
-    padding: 5px;
-    font-size: 20px;
-  }
+.action-btns {
+  display: flex;
+  gap: 4px;
 }
 
-.table-box {
-  max-width: 1600px;
-  overflow-x: auto;
-}
-table,
-table td,
-table th {
-  border: 1px solid #000000;
-}
-table {
-  width: 100%;
-}
-td,
-th {
-  padding: 5px;
-  text-align: center;
-}
-.is-done,
-.status,
-.survey-name,
-.survey-id,
-.score,
-.user,
-.player-name {
-  min-width: 75px;
-}
+@media (max-width: 768px) {
+  .action-btns {
+    flex-direction: column;
+    gap: 2px;
 
-.add-time,
-.done-time {
-  min-width: 150px;
-}
-.action {
-  min-width: 200px;
-  display: flex;
-  justify-content: center;
-  gap: 6px;
-  .button {
-    font-size: 20px;
-    padding: 5px;
-    width: 100%;
-  }
-}
-@media (max-width: 1200px) {
-  .table {
-    max-width: 90vw;
-  }
-}
-.pagination {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 10px;
-  margin-top: 20px;
-  button {
-    margin: 5px;
-    padding: 5px 10px;
-    font-size: 14px;
-    border-radius: 5px;
-    background-color: #ccc;
-    cursor: pointer;
-  }
-  button:hover {
-    background-color: #888;
-  }
-  button:disabled {
-    background-color: #ddd;
-    cursor: not-allowed;
+    button {
+      width: 60px;
+      height: 30px;
+    }
   }
 }
 </style>

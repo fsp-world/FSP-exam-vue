@@ -1,149 +1,76 @@
-<script setup>
+<script setup lang="ts">
 import { ref, onMounted } from 'vue';
 import { getWhitelist } from '@/apis/admin';
 import { dateFormatYYYYMMDDHH } from '@/utils/date';
-
-// 白名单数据
-const wlData = ref({
-  list: [],
-  page: 1,
-  size: 10,
-  total: 0,
-});
+import type { IPagination } from '@/types';
+import BaseTable from './BaseTable.vue';
+import MCButton from '@/components/MCButton.vue';
 
 // 加载状态
 const isLoading = ref(false);
-const isError = ref(false);
+const isError = ref('');
 
-// 加载白名单数据
-const getWL = async (page = 1, size = 10) => {
+const sourceMap: Record<number, string> = {
+  0: '考试',
+  1: '担保',
+  2: '其他',
+};
+
+// 列定义
+const columnMap = new Map([
+  ['id', { title: '#', width: '60px' }],
+  ['username', { title: '用户名' }],
+  ['playerName', { title: 'MC NAME' }],
+  ['playerUUID', { title: 'UUID', width: '340px' }],
+  ['source', { title: '审核方式', width: '100px', callback: (v: number) => sourceMap[v] ?? '未知' }],
+  ['auditorName', { title: '审核人', width: '130px' }],
+  ['authorizationDate', { title: '添加时间', width: '170px' }],
+]);
+
+const fetchWhitelist = async (params: IPagination) => {
   isLoading.value = true;
-  isError.value = false;
-
+  isError.value = '';
   try {
-    const res = await getWhitelist({ page, size });
-    wlData.value = res.data;
-
-    const sourceMap = {
-      0: '考试',
-      1: '担保',
-      2: '其他',
-      unknown: '未知',
-    };
-
-    wlData.value.list = wlData.value.list.map((item) => ({
-      ...item,
-      sourceText: sourceMap[item.source] || sourceMap.unknown,
-    }));
-  } catch (error) {
-    isError.value = true;
-    console.error('加载白名单数据失败:', error);
+    const res = await getWhitelist(params);
+    return res;
+  } catch (e: any) {
+    isError.value = e?.message || '加载失败，请稍后重试。';
+    throw e;
   } finally {
     isLoading.value = false;
   }
 };
 
-// 初始化加载数据
-onMounted(() => {
-  getWL();
-});
 </script>
 
 <template>
-  <h1>白名单管理</h1>
-  <!-- 加载状态 -->
-  <div v-if="isLoading" class="loading">加载中...</div>
+  <div class="bg-white rounded-lg shadow-sm">
+    <div class="flex flex-wrap items-center justify-between gap-4 px-5 py-4 border-b border-gray-200">
+      <h1 class="text-2xl font-bold">白名单管理</h1>
+      <nav class="flex items-center gap-1.5 text-sm text-gray-500">
+        <router-link to="/admin" class="hover:text-[#5268bc] transition-colors">后台首页</router-link>
+        <span>/</span>
+        <router-link to="/admin/user" class="hover:text-[#5268bc] transition-colors">用户管理</router-link>
+        <span>/</span>
+        <span class="text-gray-700">白名管理</span>
+      </nav>
+    </div>
 
-  <!-- 错误提示 -->
-  <div v-if="isError" class="error">加载失败，请稍后重试。</div>
-
-  <!-- 数据表格 -->
-  <table v-if="!isLoading && !isError">
-    <thead>
-      <tr>
-        <th>#</th>
-        <th>用户名</th>
-        <th>MC NAME</th>
-        <th>UUID</th>
-        <th>审核方式</th>
-        <th>审核人</th>
-        <th>添加时间</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr v-for="(item, index) of wlData.list" :key="index">
-        <td>{{ item.id }}</td>
-        <td>{{ item.username }}</td>
-        <td>{{ item.name }}</td>
-        <td class="uuid">{{ item.uuid }}</td>
-        <td>{{ item.sourceText }}</td>
-        <td>{{ item.auditor_name }}</td>
-        <td>{{ dateFormatYYYYMMDDHH(item.created_at) }}</td>
-      </tr>
-    </tbody>
-  </table>
-
-  <!-- 分页 -->
-  <div v-if="!isLoading && !isError" class="pagination">
-    <button type="button" @click="getWL(wlData.page - 1, wlData.size)" :disabled="wlData.page === 1">上一页</button>
-    <span>第 {{ wlData.page }} 页 / 共 {{ Math.ceil(wlData.total / wlData.size) }} 页</span>
-    <button
-      type="button"
-      @click="getWL(wlData.page + 1, wlData.size)"
-      :disabled="wlData.page * wlData.size >= wlData.total"
-    >
-      下一页
-    </button>
+    <div class="p-5">
+      <BaseTable
+    :table-props="{ columnMap, stripe: true, bordered: true }"
+    :fetch-data="fetchWhitelist"
+    :loading="isLoading"
+    :error="isError"
+    actions-width="110px"
+  >
+    <template #authorizationDate="{ value }">
+      <span class="whitespace-nowrap">{{ dateFormatYYYYMMDDHH(value) }}</span>
+    </template>
+    <template #playerUUID="{ value }">
+      <span class="text-sm">{{ value }}</span>
+    </template>
+  </BaseTable>
+    </div>
   </div>
 </template>
-
-<style scoped>
-table,
-table td,
-table th {
-  border: 1px solid #000000;
-  border-collapse: collapse;
-}
-table {
-  width: 100%;
-  margin-bottom: 20px;
-}
-td,
-th {
-  padding: 10px;
-  text-align: center;
-}
-.uuid {
-  font-family: monospace; /* 使 UUID 显示更整齐 */
-}
-.loading,
-.error {
-  text-align: center;
-  padding: 20px;
-  font-size: 18px;
-}
-.error {
-  color: red;
-}
-.pagination {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 10px;
-  margin-top: 20px;
-}
-button {
-  padding: 5px 10px;
-  font-size: 14px;
-  border-radius: 5px;
-  background-color: #ccc;
-  cursor: pointer;
-}
-button:hover {
-  background-color: #888;
-}
-button:disabled {
-  background-color: #ddd;
-  cursor: not-allowed;
-}
-</style>

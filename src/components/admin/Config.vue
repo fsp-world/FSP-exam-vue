@@ -1,14 +1,14 @@
 <script setup lang="ts">
-import { type ConfigItem, ConfigItemType } from '@/types';
-import { ref, computed } from 'vue';
+import { type ConfigItem, type IPagination, ConfigItemType } from '@/types';
+import { ref } from 'vue';
 import { getConfig, getConfigs, setConfig, deleteConfig } from '@/apis/admin';
 import { openAlert } from '@/utils/TsAlert';
+import BaseTable from './BaseTable.vue';
+import MCButton from '@/components/MCButton.vue';
 
-const data = ref<ConfigItem[]>([]);
-const searchData = ref('');
-const searchType = ref('');
 const showModal = ref(false);
 const isAdd = ref(false);
+const tableKey = ref(0);
 const selectedConfigItem = ref<ConfigItem>({
   key: '',
   value: '',
@@ -16,12 +16,22 @@ const selectedConfigItem = ref<ConfigItem>({
   description: '',
 });
 
-const getConfig_ = () => {
-  getConfigs().then((res: { data: { list: ConfigItem[] } }) => {
-    data.value = res.data.list;
-  });
+const maskValue = (val: string) => {
+  if (!val || val.length <= 6) return val;
+  return val.slice(0, 3) + '*****' + val.slice(-3);
 };
-getConfig_();
+
+const columnMap = new Map([
+  ['key', { title: '键', width: '200px' }],
+  ['value', { title: '值', width: '240px', callback: maskValue }],
+  ['type', { title: '类型', width: '60px' }],
+  ['desc', { title: '描述' }],
+] as const);
+
+// 服务端分页加载
+const fetchConfigs = async (params: IPagination) => {
+  return getConfigs(params);
+};
 
 const checkConfigKey = (key: string): boolean => {
   const ALLOWED_CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ_';
@@ -40,8 +50,9 @@ const editItem = (key: string) => {
     type: ConfigItemType.STR,
     description: '',
   };
-  getConfig(key).then((res: { data: { value: ConfigItem } }) => {
-    selectedConfigItem.value = res.data.value;
+  getConfig(key).then((res: { data: { code: number; desc: string; data: ConfigItem | { items: ConfigItem[] } } }) => {
+    const d = res.data.data;
+    selectedConfigItem.value = (d as { items: ConfigItem[] }).items?.[0] ?? (d as ConfigItem);
   });
   showModal.value = true;
   isAdd.value = false;
@@ -53,7 +64,7 @@ const deleteItem = (key: string) => {
     deleteConfig(key).then((res) => {
       openAlert(res.data.desc);
       if (res.data.code === 0) {
-        getConfig_();
+        tableKey.value++;
       }
     });
   }
@@ -83,149 +94,131 @@ const save = async () => {
     openAlert('失败!');
   }
   showModal.value = false;
-  getConfig_();
+  tableKey.value++;
 };
-
-const searchComputed = computed(() => {
-  return data.value.filter((item: ConfigItem) => {
-    return (
-      (!searchData.value || item.key.includes(searchData.value) || item.value.includes(searchData.value)) &&
-      (!searchType.value || item.type === searchType.value)
-    );
-  });
-});
 </script>
 
 <template>
-  <h1>配置管理</h1>
-  <div class="filter">
-    <el-input type="search" size="large" style="width: 240px" v-model="searchData" placeholder="搜索" />
-    <el-select size="large" style="width: 240px" v-model="searchType" placeholder="筛选类型">
-      <el-option v-for="i in ConfigItemType" :value="i">{{ i }}</el-option>
-    </el-select>
-    <el-button size="large" @click="
-      searchType = '';
-    searchData = '';
-    ">
-      <el-icon>
-        <Close />
-      </el-icon>
-    </el-button>
+  <div class="bg-white rounded-lg shadow-sm">
+    <div class="flex flex-wrap items-center justify-between gap-4 px-5 py-4 border-b border-gray-200">
+      <h1 class="text-2xl font-bold">配置管理</h1>
+      <nav class="flex items-center gap-1.5 text-sm text-gray-500">
+        <router-link to="/admin" class="hover:text-[#5268bc] transition-colors">管理首页</router-link>
+        <span>/</span>
+        <span class="text-gray-700">系统配置</span>
+      </nav>
+    </div>
 
-    <el-button-group size="large">
-      <el-button @click="add">新增</el-button>
-      <el-button @click="getConfig_">刷新</el-button>
-    </el-button-group>
+    <div class="p-5">
+      <div class="flex flex-wrap items-center gap-3 py-0 mb-5">
+    <div class="flex gap-px">
+      <MCButton length="medium" @click="add">新增</MCButton>
+      <MCButton length="medium" @click="tableKey++">刷新</MCButton>
+    </div>
   </div>
-  <div class="table">
-    <el-table :data="searchComputed" style="width: 90%; font-size: 16px">
-      <el-table-column fixed prop="key" label="键" width="250" />
-      <el-table-column prop="value" label="值" width="400" />
-      <el-table-column prop="type" label="类型" width="60" />
-      <el-table-column fixed="right" label="操作" min-width="120">
-        <template #default="scope">
-          <el-button size="large" link type="primary" @click="editItem(scope.row.key)">修改</el-button>
-          <el-button size="large" link type="danger" @click="deleteItem(scope.row.key)">删除</el-button>
-        </template>
-      </el-table-column>
-    </el-table>
+
+  <!-- 数据表格 -->
+  <BaseTable
+    :key="tableKey"
+    :table-props="{ columnMap, stripe: true, bordered: true }"
+    :fetch-data="fetchConfigs"
+    actions-width="220px"
+  >
+    <template #actions="{ row }">
+      <MCButton length="short" @click="editItem(row.key)">修改</MCButton>
+      <MCButton length="short" disabled-style @click="deleteItem(row.key)">删除</MCButton>
+    </template>
+  </BaseTable>
+    </div>
   </div>
 
   <!-- 模态框 -->
-  <div v-if="showModal" class="modal">
-    <div class="modal-content">
-      <h2>修改配置项</h2>
-      <p>data:</p>
-      <p style="padding-bottom: 10px">
-        {<br />
-        &nbsp;&nbsp;key: {{ selectedConfigItem.key }}<br />
-        &nbsp;&nbsp;value: {{ selectedConfigItem.value }}<br />
-        &nbsp;&nbsp;type: {{ selectedConfigItem.type }}<br />
-        &nbsp;&nbsp;desc: {{ selectedConfigItem.description }}<br />
-        }
-      </p>
-      <form @submit.prevent="save">
-        <div class="form-group">
-          <label>Key</label>
-          <input v-model="selectedConfigItem.key" type="text" required placeholder="key" :disabled="!isAdd" />
+  <Teleport to="body">
+    <Transition name="modal-fade">
+      <div
+        v-if="showModal"
+        class="fixed inset-0 bg-black/50 flex justify-center items-center z-50"
+        @click.self="showModal = false"
+      >
+        <div class="bg-white rounded-xl p-6 w-105 max-w-[90vw] shadow-2xl">
+          <h2 class="text-xl font-bold mb-4">修改配置项</h2>
+          <p class="text-sm text-gray-500 mb-1">data:</p>
+          <pre class="text-sm bg-gray-50 p-3 rounded mb-4 overflow-x-auto">{
+  key: {{ selectedConfigItem.key }}
+  value: {{ selectedConfigItem.value }}
+  type: {{ selectedConfigItem.type }}
+  desc: {{ selectedConfigItem.description }}
+}</pre>
+
+          <form @submit.prevent="save" class="flex flex-col gap-4">
+            <div>
+              <label class="block mb-1 text-sm font-medium">Key</label>
+              <input
+                v-model="selectedConfigItem.key"
+                type="text"
+                required
+                placeholder="key"
+                :disabled="!isAdd"
+                class="w-full px-3 py-2 border border-gray-300 rounded outline-none focus:border-[#5268bc] disabled:bg-gray-100 disabled:text-gray-400"
+              />
+            </div>
+            <div>
+              <label class="block mb-1 text-sm font-medium">Value</label>
+              <input
+                v-model="selectedConfigItem.value"
+                type="text"
+                required
+                placeholder="value"
+                class="w-full px-3 py-2 border border-gray-300 rounded outline-none focus:border-[#5268bc]"
+              />
+            </div>
+            <div>
+              <label class="block mb-1 text-sm font-medium">Type</label>
+              <select
+                v-model="selectedConfigItem.type"
+                required
+                class="w-full px-3 py-2 border border-gray-300 rounded outline-none focus:border-[#5268bc] bg-white"
+              >
+                <option v-for="i in ConfigItemType" :key="i" :value="i">{{ i }}</option>
+              </select>
+            </div>
+            <div>
+              <label class="block mb-1 text-sm font-medium">Description</label>
+              <input
+                v-model="selectedConfigItem.description"
+                type="text"
+                required
+                placeholder="description"
+                class="w-full px-3 py-2 border border-gray-300 rounded outline-none focus:border-[#5268bc]"
+              />
+            </div>
+            <div class="flex justify-end gap-3 pt-2">
+              <MCButton length="short" disabled-style @click="showModal = false">取消</MCButton>
+              <MCButton length="short" @click="save">保存</MCButton>
+            </div>
+          </form>
         </div>
-        <div class="form-group">
-          <label>Value</label>
-          <input v-model="selectedConfigItem.value" type="text" required placeholder="value" />
-        </div>
-        <div class="form-group">
-          <label>Type</label>
-          <select v-model="selectedConfigItem.type" required placeholder="type">
-            <option v-for="i in ConfigItemType" :value="i">{{ i }}</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label>Description</label>
-          <input v-model="selectedConfigItem.description" type="text" required placeholder="description" />
-        </div>
-        <div class="form-actions">
-          <button type="button" @click="showModal = false">取消</button>
-          <button type="submit">保存</button>
-        </div>
-      </form>
-    </div>
-  </div>
+      </div>
+    </Transition>
+  </Teleport>
 </template>
 
-<style scoped>
-h1 {
-  font-size: 30px;
+<style>
+.modal-fade-enter-active,
+.modal-fade-leave-active {
+  transition: opacity 0.2s ease;
 }
-
-.filter {
-  padding: 20px 0;
-  display: flex;
-  gap: 10px;
+.modal-fade-enter-active .bg-white,
+.modal-fade-leave-active .bg-white {
+  transition: transform 0.2s ease, opacity 0.2s ease;
 }
-
-.modal {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 10000;
+.modal-fade-enter-from,
+.modal-fade-leave-to {
+  opacity: 0;
 }
-
-.modal-content {
-  background-color: white;
-  padding: 20px;
-  border-radius: 10px;
-  width: 400px;
-}
-
-.form-group {
-  margin-bottom: 15px;
-}
-
-.form-group label {
-  display: block;
-  margin-bottom: 5px;
-}
-
-.form-group input {
-  border: 1px solid #ccc;
-}
-
-.form-group input,
-.form-group select {
-  width: 100%;
-  padding: 8px;
-  box-sizing: border-box;
-}
-
-.form-actions {
-  display: flex;
-  justify-content: end;
-  gap: 10px;
+.modal-fade-enter-from .bg-white,
+.modal-fade-leave-to .bg-white {
+  transform: scale(0.95);
+  opacity: 0;
 }
 </style>

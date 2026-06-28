@@ -263,7 +263,7 @@ querySchematics('type')
 
   .nav .title {
     width: 160px;
-    height: 100px;
+    height: 160px;
     background-image: url(/src/assets/images/vanilla_gui/block/oak_sign.png);
     background-size: 160px 160px;
     background-repeat: no-repeat;
@@ -393,11 +393,10 @@ querySchematics('type')
 
   .tags {
     display: flex;
-    flex-wrap: nowrap;
+    flex-wrap: wrap;
     gap: 30px;
     padding: 10px;
     margin-left: 8px;
-    height: 30px;
   }
 
   .lock {

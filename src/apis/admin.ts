@@ -20,6 +20,8 @@ export const addUser = (data: User) =>
   request.post('/admin/user', JSON.stringify(data));
 export const updateUser = (data: UserUpdate) =>
   request.put('/admin/user', JSON.stringify(data));
+export const deleteUser = (id: number) =>
+  request.delete('/admin/user', { data: JSON.stringify({ id }) });
 
 // whitelist
 export const getWhitelist = (data: IPagination) =>
@@ -39,28 +41,28 @@ export const getSurvey = async (id: number) => {
 };
 
 export const addSurvey = (data: NewSurvey) =>
-  request.post('/admin/addSurvey', JSON.stringify(data));
+  request.post('/admin/survey/add', JSON.stringify(data));
 export const addSurveyAPI = (data: NewSurvey) =>
-  request.post('/admin/addSurvey', JSON.stringify(data));
-export const delSurvey = (data: number) =>
-  request.post('/admin/delSurvey', JSON.stringify(data));
+  request.post('/admin/survey/add', JSON.stringify(data));
+export const delSurvey = (id: number) =>
+  request.post('/admin/survey/delete', JSON.stringify({ id }));
 export const modSurveyMetaData = (data: ISurvey) =>
-  request.post('/admin/modSurvey', JSON.stringify(data));
+  request.post('/admin/survey/update', JSON.stringify(data));
 
 // question
 export const addQuestionAPI = (data: IQuestion[]) =>
-  request.post('/admin/addQuestion', JSON.stringify(data));
+  request.post('/admin/question/add', JSON.stringify(data));
 export const editQuestionAPI = (data: IQuestion) =>
-  request.post('/admin/editQuestion', JSON.stringify(data));
-export const delQuestionAPI = (data: number) =>
-  request.post('/admin/delQuestion', JSON.stringify(data));
+  request.post('/admin/question/edit', JSON.stringify(data));
+export const delQuestionAPI = (id: number) =>
+  request.post('/admin/question/delete', JSON.stringify({ id }));
 export const sortQuestionsAPI = (
   data: Array<{ id: number; display_order: number }>,
-) => request.post('/admin/sortSurveyQuestions', JSON.stringify(data));
+) => request.post('/admin/question/sort', JSON.stringify(data));
 export const migrationQuestionAPI = (data: {
   target_sid: number;
   qid: number;
-}) => request.post('/admin/migrationQuestion', JSON.stringify(data));
+}) => request.post('/admin/question/migration', JSON.stringify(data));
 
 // response
 export const getResponses = (data: IPagination) =>
@@ -87,11 +89,11 @@ export const detailScore = (data: {
 
 // slot
 export const addSlotAPI = (data: SurveySlot) =>
-  request.post('/admin/add_slot', JSON.stringify(data));
+  request.post('/admin/slot/add', JSON.stringify(data));
 export const setSlotAPI = (data: SurveySlot) =>
-  request.post('/admin/set_slot', JSON.stringify(data));
+  request.post('/admin/slot/set', JSON.stringify(data));
 export const delSlotAPI = (data: SurveySlot) =>
-  request.post('/admin/del_slot', JSON.stringify(data));
+  request.post('/admin/slot/delete', JSON.stringify(data));
 
 // guarantee
 export const getGuaranteeAPI = (data: IPagination) =>
@@ -99,8 +101,9 @@ export const getGuaranteeAPI = (data: IPagination) =>
 
 // config
 export const getConfig = (data: string = '') =>
-  request.get('/admin/config/query', { params: { key: data } });
-export const getConfigs = () => request.get('/admin/config/query');
+  request.get('/admin/config/get', { params: { key: data } });
+export const getConfigs = (data: IPagination) =>
+  request.get('/admin/config/get', { params: data });
 export const setConfig = (data: ConfigItem) =>
   request.post('/admin/config/set', JSON.stringify(data));
 export const deleteConfig = (data: string) =>

@@ -3,12 +3,11 @@
     <div class="box">
       <h1 class="title">提交成功</h1>
       <p class="text">
-        您的客观题得分为: <span class="score">{{ props.score }}</span
-        >分
+        您的客观题得分为: <span class="score">{{ props.score }}</span>分
       </p>
       <p class="text">主观题请等待人工审核</p>
       <p class="text">结果请在个人中心查看</p>
-      <MCRouterLink to="/space" class="confirm-btn">确认</MCRouterLink>
+      <MCRouterLink :length="'medium'" to="/space" class="confirm-btn">确认</MCRouterLink>
     </div>
   </div>
 </template>
@@ -71,40 +70,37 @@ onMounted(() => {
   justify-content: center;
   align-items: center;
   z-index: 10;
+
   .box {
     background-color: #eeeeee;
     background-image: url(/src/assets/images/vanilla_gui/demo_background.png);
     background-repeat: no-repeat;
-    background-size: cover;
-    width: 410px;
-    height: 260px;
+    background-size: 100% 100%;
+    width: 100%;
+    max-width: 410px;
+    height: 280px;
     border-radius: 8px;
     padding: 20px;
+
     .title {
-      font-size: 40px;
+      font-size: var(--title-font-size-large);
       text-align: center;
       margin: 10px 0;
     }
+
     .text {
-      font-size: 24px;
+      font-size: var(--text-font-size-large);
       text-align: center;
       line-height: 1.5em;
       width: 305px;
       margin: 0 auto;
     }
+
     .confirm-btn {
-      font-size: 20px;
+      font-size: var(--button-font-size-medium);
       width: 200px;
-      height: 50px;
       margin: 10px auto;
-    }
-  }
-}
-@media (max-width: 500px) {
-  .paper-done {
-    .box {
-      width: 85vw;
-      height: 232px;
+      display: block;
     }
   }
 }

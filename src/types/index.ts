@@ -1,12 +1,16 @@
 // 定义列映射项的类型
 type ColumnMapItem = {
   title: string;
+  width?: string;
+  align?: 'left' | 'center' | 'right';
   callback?: (value: any, row?: any) => any; // 可选的回调函数
 };
 
 export interface BaseTableProps {
   caption?: string;
   columnMap: Map<string, ColumnMapItem>;
+  stripe?: boolean;
+  bordered?: boolean;
 }
 
 export interface IPagination {
@@ -137,6 +141,7 @@ export interface User {
   playPermission: boolean;
   avatarUUID: string;
   avatar: string;
+  background: string;
 }
 
 export enum ConfigItemType {

@@ -24,10 +24,10 @@ const logout = () => {
   <div class="bg">
     <div class="main">
       <img class="logo" src="../assets/images/logo.png" />
-      <div class="menu">
+      <div class="menu pc">
         <MCRouterLink v-if="!playPermission" to="/guarantee" class="minecraft-button">熟人担保</MCRouterLink>
         <MCRouterLink v-if="!playPermission" to="/prepareForTheExam" class="minecraft-button">参加考试</MCRouterLink>
-        <MCRouterLink v-if="playPermission" to="/" class="minecraft-button" :disabled="true">信息查询</MCRouterLink>
+        <MCRouterLink v-if="playPermission" to="/online-stats" class="minecraft-button">在线统计</MCRouterLink>
         <MCRouterLink v-if="playPermission" to="/resourceCenter" class="minecraft-button">资源中心</MCRouterLink>
         <div class="sub-menu">
           <MCRouterLink :length="'medium'" to="https://www.fsp.ink" class="minecraft-button"> 文档中心 </MCRouterLink>
@@ -41,7 +41,27 @@ const logout = () => {
           </button>
         </div>
       </div>
-
+      <div class="menu mobile">
+        <MCRouterLink :length="'medium'" v-if="!playPermission" to="/guarantee" class="minecraft-button">熟人担保
+        </MCRouterLink>
+        <MCRouterLink :length="'medium'" v-if="!playPermission" to="/prepareForTheExam" class="minecraft-button">参加考试
+        </MCRouterLink>
+        <MCRouterLink :length="'medium'" v-if="playPermission" to="/online-stats" class="minecraft-button">在线统计
+        </MCRouterLink>
+        <MCRouterLink :length="'medium'" v-if="playPermission" to="/resourceCenter" class="minecraft-button">资源中心
+        </MCRouterLink>
+        <div class="sub-menu">
+          <MCRouterLink :length="'short'" to="https://www.fsp.ink" class="minecraft-button"> 文档中心 </MCRouterLink>
+          <MCRouterLink :length="'short'" to="/space" class="minecraft-button"> 个人中心 </MCRouterLink>
+          <button class="minecraft-button avatar">
+            <RouterLink :to="!isLogin ? '/auth' : '/space'">
+              <img :title="!isLogin ? '' : '点我进入个人中心'" class="avatar-img" :src="avatar" alt="头像" width="100%" />
+              <span class="avatat-hover">{{ !isLogin ? '未登录' : username }}</span>
+            </RouterLink>
+            <a v-show="isLogin" class="logout" @click="logout">退出登录</a>
+          </button>
+        </div>
+      </div>
     </div>
 
   </div>
@@ -124,6 +144,8 @@ const logout = () => {
     }
   }
 
+
+
   .avatar:hover .avatat-hover,
   .avatar:hover .logout {
     display: inline-block;
@@ -157,6 +179,13 @@ const logout = () => {
   }
 }
 
+.pc {
+  display: flex;
+}
+
+.mobile {
+  display: none;
+}
 
 
 @media screen and (max-width: 950px) {
@@ -170,6 +199,17 @@ const logout = () => {
 @media screen and (max-width: 700px) {
   .logo {
     margin-bottom: 20%;
+  }
+}
+
+@media screen and (max-width: 550px) {
+
+  .pc {
+    display: none;
+  }
+
+  .mobile {
+    display: flex;
   }
 }
 </style>

@@ -20,7 +20,6 @@ const userStore = useUserStore();
 const {
   avatar,
   username,
-  userQQ,
   avatarUUID,
   getStatus,
   dateToLocal,
@@ -28,7 +27,7 @@ const {
   status,
   getJoinSeason,
   playPermission,
-  roleText
+  roleText,
 } = storeToRefs(userStore);
 
 userStore.syncUserInfo();
@@ -113,10 +112,9 @@ const logout = () => {
             </div>
             <div class="user-details">
               <div class="username">{{ username }}</div>
-              <p>绑定QQ: {{ userQQ }}</p>
-              <p>角色: {{ roleText }} ({{ getJoinSeason }})</p>
-              <p>加入日期: {{ dateToLocal }}</p>
               <p>账号状态: {{ getStatus }}</p>
+              <p>用户角色: {{ roleText }} ({{ getJoinSeason }})</p>
+              <p>加入日期: {{ dateToLocal }}</p>
             </div>
           </div>
         </Transition>
@@ -138,13 +136,14 @@ const logout = () => {
             <MCRouterLink class="button" v-if="playPermission" to="https://www.fsp.ink/docs/join/">
               游玩指南
             </MCRouterLink>
-            <MCRouterLink class="button" v-if="playPermission" to="/guarantee"> 熟人担保 </MCRouterLink>
-            <MCRouterLink class="button" v-if="playPermission" to="/prepareForTheExam"> 参加考试 </MCRouterLink>
+            <MCRouterLink class="button" to="/guarantee" v-if="playPermission"> 熟人担保 </MCRouterLink>
+            <MCRouterLink class="button" to="/prepareForTheExam" v-if="playPermission"> 参加考试 </MCRouterLink>
             <MCRouterLink class="button" to="/Query/Guarantee"> 担保查询 </MCRouterLink>
             <MCRouterLink class="button" to="/Query/Examination"> 考试查询 </MCRouterLink>
-            <MCRouterLink class="button" v-if="isAdmin" to="/admin"> 网站管理 </MCRouterLink>
+            <MCRouterLink class="button" to="/admin" v-if="isAdmin"> 网站管理 </MCRouterLink>
             <MCButton class="button" v-if="status === 0" @click="reqActivation"> 激活账户 </MCButton>
-            <MCButton class="button" @click="logout"> 退出登录 </MCButton>
+            <MCRouterLink class="button" to="/user-settings"> 用户设置 </MCRouterLink>
+            <MCButton class="button logout" @click="logout"> 退出登录 </MCButton>
           </div>
         </Transition>
       </div>
@@ -166,18 +165,20 @@ const logout = () => {
 }
 
 .main {
+  --gap: 20px;
   display: flex;
   flex-direction: column;
   flex-wrap: nowrap;
-  gap: 20px;
+  gap: var(--gap);
   overflow-y: hidden;
+
 }
 
 .user-info {
-  margin-top: 10px;
-  width: calc(100% - 40px);
+  margin-top: calc(var(--gap) / 2);
+  width: calc(100% - var(--gap) * 2);
   max-width: 440px;
-  height: 120px;
+  min-height: 150px;
   display: flex;
   align-items: center;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
@@ -228,13 +229,13 @@ const logout = () => {
   max-height: 270px;
   overflow-y: auto;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  padding: 20px;
+  padding: 10px;
   border-radius: 8px;
   background-color: rgba(0, 0, 0, 0.3);
 
   .title {
     text-align: center;
-    font-size: 20px;
+    font-size: var(--title-font-size-small);
     padding-bottom: 10px;
     user-select: none;
   }
@@ -243,8 +244,8 @@ const logout = () => {
     display: flex;
     justify-content: space-between;
     --hei: 50px;
-    padding: 5px 0;
-    height: 55px;
+    padding: 5px;
+    height: 60px;
 
     .avatar {
       image-rendering: pixelated;
@@ -277,7 +278,7 @@ const logout = () => {
 
 .menu {
   width: 100%;
-  max-width: 480px;
+  max-width: 440px;
   min-height: 150px;
   display: flex;
   flex-direction: column;
@@ -286,18 +287,24 @@ const logout = () => {
 
   .button {
     width: 100%;
-    height: 50px;
-    background-color: #4fc08d;
-    color: white;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 20px;
+    min-height: 50px;
   }
 
-  .button:hover {
-    background-color: #42b883;
+  .logout {
+    color: red;
+    margin-top: 20px;
+  }
+}
+
+@media screen and (max-width: 700px) {
+  .main {
+    --gap: 10px;
+  }
+
+  .user-info,
+  .white-list {
+    margin-top: calc(var(--gap) / 2);
+    width: calc(100% - var(--gap));
   }
 }
 </style>

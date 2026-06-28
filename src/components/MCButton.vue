@@ -183,6 +183,7 @@ const buttonClassList = computed(() => ({
 }
 
 .mc-button {
+  display: block;
   --button-height: 40px;
   user-select: none;
   font-family: 'mc-font';

@@ -69,6 +69,12 @@ const router = createRouter({
       meta: { requiresAuth: true },
     },
     {
+      path: '/user-settings',
+      name: 'UserSettings',
+      component: () => import('@/views/UserSettings.vue'),
+      meta: { requiresAuth: true },
+    },
+    {
       path: '/auth',
       name: 'Auth',
       redirect: { name: 'Login' },
@@ -94,10 +100,15 @@ const router = createRouter({
     {
       path: '/admin',
       name: 'Admin',
-      component: () => import('@/views/NewAdmin.vue'),
+      component: () => import('@/views/Admin.vue'),
       meta: { requiresAuth: true, requiresAdmin: true },
-      redirect: '/admin/user', // TODO: 临时，还没想好首屏放什么
+      redirect: '/admin/dashboard', // TODO: 临时，还没想好首屏放什么
       children: [
+        {
+          path: 'dashboard',
+          name: 'Dashboard',
+          component: () => import('@/components/admin/Dashboard.vue'),
+        },
         {
           path: 'user',
           name: 'User',
@@ -139,6 +150,11 @@ const router = createRouter({
       path: '/error',
       name: 'Error',
       component: () => import('@/views/Error.vue'),
+    },
+    {
+      path: '/online-stats',
+      name: 'OnlineStats',
+      component: () => import('@/views/OnlineStats.vue'),
     },
   ],
 });

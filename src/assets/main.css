@@ -1,5 +1,7 @@
+@import 'tailwindcss';
+
 :root {
-  --bg-img: url('/src/assets/images/bg.jpg');
+  --bg-img: url('/src/assets/images/default-bg-1.jpg');
   --button-disabled: url('/src/assets/images/rainbow_pixel_gui/button_disabled.png');
 
   --button-font-size-large: 30px;
@@ -13,6 +15,7 @@
   --text-font-size-large: 24px;
   --text-font-size-medium: 16px;
   --text-font-size-small: 12px;
+  --love-color: #66ccff;
 }
 
 @font-face {
@@ -20,25 +23,26 @@
   src: url('./font/mc-font2.ttf');
 }
 
-body,
-div,
-ul,
-li,
-img,
-p,
-a,
-form,
-input,
-textarea,
-button {
-  display: block;
-  margin: 0;
-  border: 0;
-  padding: 0;
-  list-style: none;
-  text-decoration: none;
-  cursor: default;
-  font-family: 'mc-font';
+@layer base {
+  body,
+  div,
+  ul,
+  li,
+  img,
+  p,
+  a,
+  form,
+  input,
+  textarea,
+  button {
+    margin: 0;
+    border: 0;
+    padding: 0;
+    list-style: none;
+    text-decoration: none;
+    cursor: default;
+    font-family: 'mc-font';
+  }
 }
 
 input::-webkit-outer-spin-button,
@@ -112,7 +116,7 @@ input[type='number'] {
   min-height: 75px;
   max-height: 75px;
   background-color: rgba(0, 0, 0, 0.3);
-  font-size: 40px;
+  font-size: var(--title-font-size-large);
   display: flex;
 }
 
@@ -134,20 +138,18 @@ input[type='number'] {
   padding: 10px;
 }
 
-.translucent-content .main input,
-.minecraft-input {
+.translucent-content .main .minecraft-input {
   width: calc(100% - 20px);
-  max-width: 800px;
-  height: 70px;
+  max-width: 600px;
+  height: 50px;
   background-image: var(--button-disabled);
   image-rendering: pixelated;
   border-radius: 5px;
   background-repeat: no-repeat;
   background-position: center;
   background-size: 100% 100%;
-  font-family: 'mc-font';
-  font-size: 25px;
-  padding-left: 20px;
+  font-size: var(--text-font-size-medium);
+  padding-left: 15px;
   color: #fff;
   margin: 10px auto;
 }
@@ -155,7 +157,7 @@ input[type='number'] {
 .translucent-content .end {
   background-color: rgba(0, 0, 0, 0.3);
   display: flex;
-  gap: 30px;
+  gap: 15px;
   justify-content: center;
   align-items: center;
   max-height: 75px;
@@ -164,7 +166,8 @@ input[type='number'] {
 }
 
 .translucent-content .end .button {
-  width: 400px;
-  font-size: 30px;
-  height: 70px;
+  width: 100%;
+  max-width: 300px;
+  height: 50px;
+  font-size: var(--button-font-size-medium);
 }

@@ -60,7 +60,7 @@ const complete = () => {
   }
 };
 
-type AttachEditableToSurveys = (surveys: ISurvey[]) => SurveysDataType;
+type AttachEditableToSurveys = (surveys: ISurvey[]) => ISurvey[];
 const attachEditableToSurveys = inject<AttachEditableToSurveys>('attachEditableToSurveys');
 if (!attachEditableToSurveys) {
   throw new Error('attachEditableToSurveys must be provided by parent component');
@@ -76,9 +76,8 @@ const selectedSurvey = (index: number) => {
 const _getSurveys = async () => {
   try {
     const res = await getSurveys();
-    res.data.list = attachEditableToSurveys(res.data.list);
-    surveysData.value = res.data;
-    surveysData.value.list = surveysData.value.list.filter((item) => item.id !== sid);
+    const list = attachEditableToSurveys(res.data.data) as SurveyType[];
+    surveysData.value = { code: res.data.code, desc: res.data.desc, list: list.filter((item: SurveyType) => item.id !== sid) };
   } catch (error) {
     openAlert('获取问卷列表失败！');
     console.log(error);

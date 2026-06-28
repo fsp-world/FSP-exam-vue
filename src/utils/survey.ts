@@ -29,7 +29,7 @@ const addSurvey = async (jsonData: Survey): Promise<any> => {
     };
     const res = await addSurveyAPI(addSurveyData);
     if (res.data.code === 0) {
-      return { success: true, msg: '问卷创建成功！', surveyId: res.data.surveyId };
+      return { success: true, msg: '问卷创建成功！', surveyId: res.data.data.surveyId };
     }
     return { success: false, msg: res.data.desc || '问卷创建失败！' };
   } catch (error) {
