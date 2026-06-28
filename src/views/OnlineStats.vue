@@ -10,10 +10,12 @@ import {
   GridComponent,
   DataZoomComponent,
 } from 'echarts/components';
+import StrippedBirchLogBackground from '@/components/background/StrippedBirchLogBackground.vue';
+import MCButton from '@/components/MCButton.vue';
 import { CanvasRenderer } from 'echarts/renderers';
 import type { EChartsOption } from 'echarts';
 import request from '@/utils/requers';
-import { dateFormatHHmm } from '@/utils/date';
+import { dateFormatDDHHmm } from '@/utils/date';
 
 use([
   TitleComponent,
@@ -120,7 +122,7 @@ const fetchData = async () => {
 
       total.value = d.total ?? 0;
       // 使用 dateUtils 格式化时间标签
-      const formattedDates = dates.map((date: string) => dateFormatHHmm(date));
+      const formattedDates = dates.map((date: string) => dateFormatDDHHmm(date));
       option.value = {
         ...option.value,
         xAxis: { ...option.value.xAxis, data: formattedDates },
@@ -152,79 +154,144 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="min-h-screen bg-gray-50 p-6">
-    <div class="max-w-5xl mx-auto">
-      <!-- 头部 -->
-      <div class="mb-6">
-        <nav class="flex items-center gap-1.5 text-sm text-gray-500 mb-2">
-          <router-link to="/" class="hover:text-[#5268bc] transition-colors">首页</router-link>
-          <span>/</span>
-          <span class="text-gray-700">在线统计</span>
-        </nav>
-        <h1 class="text-2xl font-bold text-gray-800">在线人数统计</h1>
-        <p class="text-sm text-gray-500 mt-1">实时监控服务器在线人数变化趋势</p>
-      </div>
-
-      <!-- 筛选栏 -->
-      <div class="bg-white rounded-lg shadow-sm p-5 mb-6">
-        <div class="flex flex-wrap items-end gap-4">
-          <!-- 开始时间 -->
-          <div class="flex flex-col gap-1">
-            <label class="text-sm text-gray-500">开始时间（选填）</label>
-            <input v-model="startTime" type="datetime-local" placeholder="默认当天"
-              class="h-10 px-3 border border-gray-300 rounded outline-none focus:border-[#5268bc] text-sm" />
-          </div>
-
-          <!-- 结束时间 -->
-          <div class="flex flex-col gap-1">
-            <label class="text-sm text-gray-500">结束时间（选填）</label>
-            <input v-model="endTime" type="datetime-local" placeholder="默认当天"
-              class="h-10 px-3 border border-gray-300 rounded outline-none focus:border-[#5268bc] text-sm" />
-          </div>
-
-          <!-- 查询按钮 -->
-          <button
-            class="h-10 px-6 bg-[#5268bc] text-white rounded hover:bg-[#4255a0] transition-colors text-sm font-medium disabled:opacity-50"
-            :disabled="loading" @click="autoExpanded = true; fetchData()">
-            {{ loading ? '查询中...' : '查询' }}
-          </button>
-
-          <!-- 快捷范围 -->
-          <div class="flex gap-2">
-            <button v-for="r in [
-              { label: '最近1小时', h: 1 },
-              { label: '最近6小时', h: 6 },
-              { label: '最近24小时', h: 24 },
-              { label: '最近7天', h: 24 * 7 },
-            ]" :key="r.h" class="h-10 px-3 text-sm border border-gray-300 rounded hover:bg-gray-100 transition-colors"
-              @click="setQuickRange(r.h)">{{ r.label }}</button>
-          </div>
-        </div>
-      </div>
-
-      <!-- 图表区域 -->
-      <div class="bg-white rounded-lg shadow-sm p-5">
-        <!-- 加载/错误状态 -->
-        <div v-if="loading" class="flex items-center justify-center h-80 text-gray-400">
-          加载中...
-        </div>
-        <div v-else-if="errorMsg" class="flex items-center justify-center h-80 text-red-500">
-          {{ errorMsg }}
-        </div>
-
-        <!-- 图表 -->
-        <template v-else>
-          <div class="flex items-center justify-between mb-3">
-            <div class="text-sm text-gray-500">
-              统计区间内数据条数：<span class="text-[#5268bc] font-bold text-lg">{{ total }}</span>
+  <StrippedBirchLogBackground>
+    <div class="main">
+      <nav class="nav">
+        <div class="title">在线统计</div>
+        <MCRouterLink :length="'short'" to="/" class="back">
+          返回
+        </MCRouterLink>
+      </nav>
+      <div class="content">
+        <!-- 筛选栏 -->
+        <div class="bg-white/50 rounded-lg shadow-sm p-5 mb-6">
+          <div class="flex flex-wrap items-end gap-4">
+            <div class="flex flex-col gap-1">
+              <label class="text-sm text-gray-500">开始时间</label>
+              <input v-model="startTime" type="datetime-local" placeholder="默认当天"
+                class="h-10 px-3 border border-gray-300 rounded outline-none focus:border-[#5268bc] text-sm" />
+            </div>
+            <div class="flex flex-col gap-1">
+              <label class="text-sm text-gray-500">结束时间</label>
+              <input v-model="endTime" type="datetime-local" placeholder="默认当天"
+                class="h-10 px-3 border border-gray-300 rounded outline-none focus:border-[#5268bc] text-sm" />
+            </div>
+            <MCButton class="!w-[120px]" :length="'short'" :disabled="loading"
+              @click="autoExpanded = true; fetchData()"> {{ loading ? '查询中...' :
+                '查询' }}</MCButton>
+            <div class="flex gap-2 overflow-x-auto">
+              <MCButton :length="'short'" class="!w-[120px] shrink-0" v-for="r in [
+                { label: '最近1小时', h: 1 },
+                { label: '最近24小时', h: 24 },
+                { label: '最近7天', h: 24 * 7 },
+              ]" :key="r.h" @click="setQuickRange(r.h)">{{ r.label }}</MCButton>
             </div>
           </div>
-          <div v-if="total === 0 && errorMsg === ''" class="flex items-center justify-center h-80 text-gray-400">
-            暂无数据，请选择时间范围后点击查询
+        </div>
+
+        <!-- 图表区域 -->
+        <div class="bg-white/50 rounded-lg shadow-sm p-5">
+          <!-- 加载/错误状态 -->
+          <div v-if="loading" class="flex items-center justify-center h-80 text-gray-400">
+            加载中...
           </div>
-          <v-chart v-else class="w-full" style="height: 360px" :option="option" autoresize />
-        </template>
+          <div v-else-if="errorMsg" class="flex items-center justify-center h-80 text-red-500">
+            {{ errorMsg }}
+          </div>
+
+          <!-- 图表 -->
+          <template v-else>
+            <div class="flex items-center justify-between mb-3">
+              <div class="text-sm text-gray-500">
+                统计区间内数据条数：<span class="text-[#5268bc] font-bold text-lg">{{ total }}</span>
+              </div>
+            </div>
+            <div v-if="total === 0 && errorMsg === ''" class="flex items-center justify-center h-80 text-gray-400">
+              暂无数据，请选择时间范围后点击查询
+            </div>
+            <v-chart v-else class="w-full" style="height: 360px" :option="option" autoresize />
+          </template>
+        </div>
       </div>
     </div>
-  </div>
+  </StrippedBirchLogBackground>
 </template>
+<style scoped>
+@keyframes titleIn {
+  0% {
+    transform: translateY(-100px);
+    opacity: 0;
+  }
+
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes titleOut {
+  0% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+
+  100% {
+    transform: translateY(-100px);
+    opacity: 0;
+  }
+}
+
+.main {
+  width: calc(100% - 40px);
+  padding: 20px;
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 1000px;
+  height: calc(100vh - 40px);
+  overflow: hidden;
+
+  .nav {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .nav .title {
+    width: 160px;
+    height: 160px;
+    background-image: url(/src/assets/images/vanilla_gui/block/oak_sign.png);
+    background-size: 160px 160px;
+    background-repeat: no-repeat;
+    image-rendering: pixelated;
+    position: relative;
+    top: -20px;
+    filter: drop-shadow(4px 4px 2px rgba(0, 0, 0, 0.3));
+
+    font-size: var(--title-font-size-medium);
+    user-select: none;
+    color: #fff;
+    padding-top: 90px;
+    text-align: center;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+
+    animation: titleIn ease-out 0.5s 0.1s backwards;
+  }
+
+  .nav .title:hover {
+    animation: titleOut ease-in-out 0.5s 0.1s forwards;
+  }
+
+  .nav .back {
+    margin-top: 30px;
+  }
+
+  .content {
+    position: relative;
+  }
+}
+
+@media screen and (max-width: 500px) {
+  .main {
+    padding: 20px 5px;
+  }
+}
+</style>

@@ -12,3 +12,5 @@ export const dateFormatMMDDHHmm = (date: string) =>
   moment.utc(date).local().format('MM月DD日 HH时mm分');
 export const dateFormatHHmm = (date: string) =>
   moment.utc(date).local().format('HH时 mm分');
+export const dateFormatDDHHmm = (date: string) =>
+  moment.utc(date).local().format('DD日HH时mm分');
