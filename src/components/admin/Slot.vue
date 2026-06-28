@@ -81,7 +81,7 @@ getSurveyIds();
           </select>
         </template>
         <template #actions="{ row }">
-          <MCButton length="short" disabled-style @click="delSlot(row as unknown as SurveySlot)">删除</MCButton>
+          <MCButton class="!text-red-500" length="short" @click="delSlot(row as unknown as SurveySlot)">删除</MCButton>
         </template>
       </BaseTable>
 
