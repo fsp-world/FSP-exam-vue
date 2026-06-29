@@ -188,9 +188,9 @@ onMounted(() => {
 }
 
 .submit button {
-  width: 400px;
-  height: 70px;
-  font-size: 28px;
+  width: 250px;
+  height: 50px;
+  font-size: var(--button-font-size-medium);
 }
 
 .exam-title {
