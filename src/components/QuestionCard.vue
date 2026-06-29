@@ -70,7 +70,7 @@ onMounted(() => {
       </span>
     </div>
     <ul class="images">
-      <li v-for="pic in question.img_list">
+      <li v-for="pic in question.images">
         <img :src="pic.data" :alt="pic.alt" />
         <p>{{ pic.alt }}</p>
       </li>

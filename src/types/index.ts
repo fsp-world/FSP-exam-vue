@@ -109,7 +109,7 @@ export interface IQuestion {
   typeText?: string;
   score: number; // 分值
   userGetScore?: number; // 用户得分
-  img_list: IImg[];
+  images: IImg[];
   options: IOption[];
   answer?: string[]; // 用于用户作答，选择题内容是选择的选项的id，填空题和主观题数组第一个元素的值是用户输入
 }
