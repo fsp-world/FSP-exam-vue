@@ -261,15 +261,17 @@ onMounted(() => {
 .main {
   width: calc(100% - 40px);
   padding: 20px;
-  margin-left: auto;
-  margin-right: auto;
+  padding-bottom: 0;
+  margin: 0 auto;
   max-width: 1000px;
   height: calc(100vh - 40px);
-  overflow: hidden;
+  display: flex;
+  flex-direction: column;
 
   .nav {
     display: flex;
     justify-content: space-between;
+    flex-shrink: 0;
   }
 
   .nav .title {
@@ -302,7 +304,9 @@ onMounted(() => {
   }
 
   .content {
-    position: relative;
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
   }
 }
 
