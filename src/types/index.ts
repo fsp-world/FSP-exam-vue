@@ -155,7 +155,7 @@ export interface ConfigItem {
   key: string;
   value: string;
   type: ConfigItemType;
-  description: string;
+  desc: string;
 }
 
 export interface FetchResponse<T = any> {
