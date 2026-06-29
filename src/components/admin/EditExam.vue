@@ -61,7 +61,7 @@ const deleteQuestion = (question) => {
 
 const _getSurvey = () => {
   getSurvey(props.sid).then((res) => {
-    survey.value = res.data;
+    survey.value = res.data.data;
     survey.value.sumScore = 0;
     for (let i in survey.value.questions) {
       survey.value.sumScore += survey.value.questions[i].score;
@@ -178,19 +178,15 @@ const submitSort = () => {
   <Teleport to="body">
     <Transition name="modal-fade">
       <div class="fixed inset-0 bg-black/50 flex justify-center items-center z-50" @click.self="emit('close')">
-        <div class="bg-white md:rounded-xl shadow-2xl w-full md:w-[95vw] max-w-6xl h-full md:h-[90vh] flex flex-col overflow-hidden relative">
+        <div
+          class="bg-white md:rounded-xl shadow-2xl w-full md:w-[95vw] max-w-6xl h-full md:h-[90vh] flex flex-col overflow-hidden relative">
 
-          <EditQuestion
-            v-if="toggleEditQuestion"
-            :sid="props.sid"
-            :mode="currentMode"
-            :order="currentOrder"
-            :initial-data="currentData"
-            @on-edit="handleEdit"
-            @close="closeEditQuestion"
-          />
-          <SetSurveyMetaData :sid="props.sid" :mode="'set'" v-model="toggleSetSurveyMetaData" @on-edit="SurveyMetaDataUpdate" />
-          <MigrationQuestionMenu v-if="toggleMigrationQuestionMenu" :sid="props.sid" :qid="migrationQuestionId" v-model="toggleMigrationQuestionMenu" @on-edit="_getSurvey()" />
+          <EditQuestion v-if="toggleEditQuestion" :sid="props.sid" :mode="currentMode" :order="currentOrder"
+            :initial-data="currentData" @on-edit="handleEdit" @close="closeEditQuestion" />
+          <SetSurveyMetaData :sid="props.sid" :mode="'set'" v-model="toggleSetSurveyMetaData"
+            @on-edit="SurveyMetaDataUpdate" />
+          <MigrationQuestionMenu v-if="toggleMigrationQuestionMenu" :sid="props.sid" :qid="migrationQuestionId"
+            v-model="toggleMigrationQuestionMenu" @on-edit="_getSurvey()" />
 
           <!-- 关闭按钮 -->
           <ModalCloseButton @click="emit('close')" />
@@ -205,10 +201,15 @@ const submitSort = () => {
 
             <!-- 按钮菜单 -->
             <div class="flex flex-wrap gap-2 md:gap-2.5 mb-2.5">
-              <p v-if="!props.editable" class="w-full text-sm text-amber-600 bg-amber-50 border border-amber-200 rounded px-3 py-2 mb-1">此问卷已发布或存在未处理答卷，无法编辑</p>
-              <MCButton v-show="!toggleSortQuestionMode" length="medium" :disabled="disabledButton" @click="toggleSetSurveyMetaData = true">编辑问卷信息</MCButton>
-              <MCButton v-show="!toggleSortQuestionMode" length="medium" :disabled="disabledButton" @click="openEditQuestion('add', 0)">末尾添加题目</MCButton>
-              <MCButton v-show="!toggleSortQuestionMode" length="medium" :disabled="disabledButton" @click="startSort()">题目排序模式</MCButton>
+              <p v-if="!props.editable"
+                class="w-full text-sm text-amber-600 bg-amber-50 border border-amber-200 rounded px-3 py-2 mb-1">
+                此问卷已发布或存在未处理答卷，无法编辑</p>
+              <MCButton v-show="!toggleSortQuestionMode" length="medium" :disabled="disabledButton"
+                @click="toggleSetSurveyMetaData = true">编辑问卷信息</MCButton>
+              <MCButton v-show="!toggleSortQuestionMode" length="medium" :disabled="disabledButton"
+                @click="openEditQuestion('add', 0)">末尾添加题目</MCButton>
+              <MCButton v-show="!toggleSortQuestionMode" length="medium" :disabled="disabledButton"
+                @click="startSort()">题目排序模式</MCButton>
               <div v-show="toggleSortQuestionMode" class="flex flex-1 min-w-[100px] gap-2">
                 <MCButton length="medium" @click="submitSort()">提交排序</MCButton>
                 <MCButton length="medium" disabled-style @click="cancelSort()">取消排序</MCButton>
@@ -225,27 +226,38 @@ const submitSort = () => {
           <!-- 题目列表 -->
           <div class="flex-1 overflow-y-auto px-4 md:px-6 pb-4 md:pb-6">
             <div class="flex flex-col gap-5 md:gap-7.5 md:pr-25" :style="{ flexDirection: viewSurveyDirection }">
-              <div v-for="(question, questionIndex) in displayQuestions" :key="question.id" :id="'question' + question.id" class="relative w-full">
+              <div v-for="(question, questionIndex) in displayQuestions" :key="question.id"
+                :id="'question' + question.id" class="relative w-full">
 
                 <!-- 操作按钮（桌面端右侧固定 / 移动端内联） -->
-                <span v-show="!toggleSortQuestionMode" class="md:absolute md:top-0 md:-right-18 flex flex-row md:flex-col gap-1.5 mb-2 md:mb-0 z-25">
-                  <MCButton length="short" :disabled="disabledButton" @click="openEditQuestion('edit', 0, displayQuestions[questionIndex])">编辑</MCButton>
-                  <MCButton length="short" :disabled="disabledButton" @click="migrationQuestion(question.id)">迁移</MCButton>
-                  <MCButton length="short" :disabled="disabledButton" disabled-style @click="deleteQuestion(question)">删除</MCButton>
+                <span v-show="!toggleSortQuestionMode"
+                  class="md:absolute md:top-0 md:-right-18 flex flex-row md:flex-col gap-1.5 mb-2 md:mb-0 z-25">
+                  <MCButton length="short" :disabled="disabledButton"
+                    @click="openEditQuestion('edit', 0, displayQuestions[questionIndex])">编辑</MCButton>
+                  <MCButton length="short" :disabled="disabledButton" @click="migrationQuestion(question.id)">迁移
+                  </MCButton>
+                  <MCButton length="short" :disabled="disabledButton" disabled-style @click="deleteQuestion(question)">
+                    删除</MCButton>
                 </span>
 
                 <!-- 排序按钮 -->
-                <span v-show="toggleSortQuestionMode" class="md:absolute md:top-0 md:-right-25 flex flex-row md:flex-col gap-1.5 mb-2 md:mb-0 z-25">
-                  <MCButton length="short" :disabled="orderMap[questionIndex].display_order === 1" @click="moveUpItem(question.id)">上移</MCButton>
+                <span v-show="toggleSortQuestionMode"
+                  class="md:absolute md:top-0 md:-right-25 flex flex-row md:flex-col gap-1.5 mb-2 md:mb-0 z-25">
+                  <MCButton length="short" :disabled="orderMap[questionIndex].display_order === 1"
+                    @click="moveUpItem(question.id)">上移</MCButton>
                   <MCButton length="short" @click="moveItem(question.id)">指定位置</MCButton>
-                  <MCButton length="short" :disabled="orderMap[questionIndex].display_order === displayQuestions.length" @click="moveDownItem(question.id)">下移</MCButton>
+                  <MCButton length="short" :disabled="orderMap[questionIndex].display_order === displayQuestions.length"
+                    @click="moveDownItem(question.id)">下移</MCButton>
                 </span>
 
                 <QuestionCard :index="questionIndex" :mode="'admin-view'" v-model="displayQuestions[questionIndex]" />
 
-                <MCButton length="medium" :disabled="disabledButton" @click="openEditQuestion('add', question.display_order + 1, displayQuestions[questionIndex])">在后方插入新题目</MCButton>
+                <MCButton length="medium" :disabled="disabledButton"
+                  @click="openEditQuestion('add', question.display_order + 1, displayQuestions[questionIndex])">在后方插入新题目
+                </MCButton>
               </div>
-              <p v-if="survey.questions.length === 0" class="text-center pt-2.5 text-xl md:text-3xl text-gray-400">暂未添加题目</p>
+              <p v-if="survey.questions.length === 0" class="text-center pt-2.5 text-xl md:text-3xl text-gray-400">
+                暂未添加题目</p>
             </div>
           </div>
 
@@ -260,16 +272,19 @@ const submitSort = () => {
 .modal-fade-leave-active {
   transition: opacity 0.2s ease;
 }
+
 .modal-fade-enter-from,
 .modal-fade-leave-to {
   opacity: 0;
 }
-.modal-fade-enter-active > div,
-.modal-fade-leave-active > div {
+
+.modal-fade-enter-active>div,
+.modal-fade-leave-active>div {
   transition: transform 0.2s ease, opacity 0.2s ease;
 }
-.modal-fade-enter-from > div,
-.modal-fade-leave-to > div {
+
+.modal-fade-enter-from>div,
+.modal-fade-leave-to>div {
   transform: scale(0.95);
   opacity: 0;
 }

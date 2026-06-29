@@ -32,7 +32,7 @@ export const getSurveys = () => request.get('/admin/surveys');
 export const getSurvey = async (id: number) => {
   try {
     const response = await request.get('/admin/survey/' + id);
-    response.data.questions = sortQuestion(response.data.questions);
+    response.data.data.questions = sortQuestion(response.data.data.questions);
     return response;
   } catch (error) {
     console.error('Error fetching survey:', error);
@@ -73,7 +73,7 @@ export const reviewedResponse = (data: { response: number; status: number }) =>
 export const responseDetail = async (id: number) => {
   try {
     const response = await request.get('/admin/detail/' + id);
-    response.data.questions = sortQuestion(response.data.questions);
+    response.data.data.questions = sortQuestion(response.data.data.questions);
     return response;
   } catch (error) {
     console.error('Error fetching survey:', error);
