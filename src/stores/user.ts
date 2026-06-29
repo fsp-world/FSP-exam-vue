@@ -13,7 +13,7 @@ import { computStatus, getUserJoinSeason } from '@/utils/statusUtil';
 import { dateFormatYYYYMMDD } from '@/utils/date';
 
 export const roleMap: Record<string, string> = {
-  admin: '管理员',
+  admin: '管理',
   helper: '协管',
   user: '用户',
 };

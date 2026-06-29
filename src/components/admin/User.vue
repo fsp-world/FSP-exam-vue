@@ -3,7 +3,7 @@ import { ref, reactive, onMounted, computed } from 'vue';
 import { getUsers, updateUser } from '@/apis/admin';
 import { computStatus } from '@/utils/statusUtil';
 import { openAlert } from '@/utils/TsAlert';
-import { dateFormatYYYYMMDDHH } from '@/utils/date';
+import { dateFormatYYYYMMDD } from '@/utils/date';
 import type { UserUpdate, IPagination } from '@/types';
 import { roleMap } from '@/stores/user';
 import BaseTable from './BaseTable.vue';
@@ -24,7 +24,7 @@ const columnMap = new Map([
   ['username', { title: '用户名' }],
   ['userQQ', { title: '用户 QQ', width: '150px' }],
   ['role', { title: '用户角色', width: '100px' }],
-  ['addtime', { title: '注册时间', width: '170px' }],
+  ['registeredAt', { title: '注册时间', width: '170px' }],
   ['status', { title: '状态', width: '90px' }],
 ]);
 
@@ -81,35 +81,12 @@ onMounted(() => {
       </nav>
     </div>
 
-    <!-- 搜索栏 -->
-    <div class="flex flex-wrap items-end gap-4 p-5">
-      <div class="flex flex-col gap-1">
-        <label class="text-sm text-gray-500">是否审核</label>
-        <select v-model.number="queryForm.status"
-          class="h-10 px-3 w-30 border border-gray-300 rounded outline-none focus:border-[#5268bc] bg-white">
-          <option value="">全部</option>
-          <option :value="0">未激活</option>
-          <option :value="1">正常</option>
-          <option :value="2">临时封禁</option>
-          <option :value="3">永久封禁</option>
-          <option :value="4">删除</option>
-        </select>
-      </div>
-      <div class="flex flex-col gap-1">
-        <label class="text-sm text-gray-500">输入关键字</label>
-        <input v-model.trim="queryForm.keyword" type="text" placeholder="请输入用户名/用户 QQ"
-          class="h-10 px-3 w-56 border border-gray-300 rounded outline-none focus:border-[#5268bc]" />
-      </div>
-      <MCButton length="medium" @click="loading = true; getUsers({ page: 1, size: 10 }).then(() => loading = false)">刷新
-      </MCButton>
-    </div>
-
     <!-- 表格 -->
     <div class="p-5">
       <BaseTable :key="tableKey" :table-props="{ columnMap, stripe: true, bordered: true }" :fetch-data="fetchUsers"
         :loading="loading" actions-width="110px">
-        <template #addtime="{ value }">
-          <span class="whitespace-nowrap">{{ dateFormatYYYYMMDDHH(value) }}</span>
+        <template #registeredAt="{ value }">
+          <span class="whitespace-nowrap">{{ dateFormatYYYYMMDD(value) }}</span>
         </template>
         <template #status="{ value }">
           {{ computStatus(value) }}
