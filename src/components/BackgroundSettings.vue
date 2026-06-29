@@ -6,6 +6,9 @@ import { openAlert } from '@/utils/TsAlert';
 import { compressionFile } from '@/utils/imageCompression';
 import MCButton from '@/components/MCButton.vue';
 
+import defaultBg1 from '@/assets/images/default-bg-1.jpg';
+import defaultBg2 from '@/assets/images/default-bg-2.jpeg';
+
 const getCode = (res: any) => res?.data?.code ?? res?.code;
 
 const props = defineProps<{
@@ -22,11 +25,9 @@ const { background } = storeToRefs(userStore);
 const bgFileInput = ref<HTMLInputElement | null>(null);
 const uploading = ref(false);
 
-const defaultBgUrl = '/src/assets/images/default-bg-1.jpg';
-
 const presetBackgrounds = [
-  { name: '默认', url: defaultBgUrl },
-  { name: '草地', url: '/src/assets/images/default-bg-2.jpeg' },
+  { name: '默认', url: defaultBg1 },
+  { name: '草地', url: defaultBg2 },
 ];
 
 const setPresetBg = (url: string) => {
