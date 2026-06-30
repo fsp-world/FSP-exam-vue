@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 import { getSurvey, addQuestionAPI, editQuestionAPI, delQuestionAPI, sortQuestionsAPI } from '@/apis/admin';
 import QuestionCard from '@/components/QuestionCard.vue';
 import EditQuestion from './EditQuestion.vue';
@@ -9,11 +9,17 @@ import ModalCloseButton from './ModalCloseButton.vue';
 import { ref, computed } from 'vue';
 import { openAlert } from '@/utils/TsAlert';
 import { dateFormatYYYYMMDDHH } from '@/utils/date';
+import type { EditQuestions, UploadEditQuestion, AdminViewQuestion, ViewSurvey, ModeType } from '@/types/survey';
+import type { FetchResponse } from '@/types';
 
-const props = defineProps({
-  sid: { type: Number, required: true },
-  editable: { type: Boolean, default: false },
-});
+interface Props {
+  sid: number
+  editable: boolean
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  editable: false,
+})
 
 const emit = defineEmits(['close', 'flush']);
 
@@ -22,30 +28,32 @@ const toggleEditQuestion = ref(false);
 const toggleSortQuestionMode = ref(false);
 const toggleMigrationQuestionMenu = ref(false);
 const migrationQuestionId = ref(0);
-const currentMode = ref(null);
-const currentData = ref(null);
-const currentOrder = ref(undefined);
+const currentMode = ref<ModeType>('add');
+const currentData = ref<AdminViewQuestion | null>(null);
+const currentOrder = ref(0);
 
-const migrationQuestion = (question_id) => {
+const migrationQuestion = (question_id: number) => {
   toggleMigrationQuestionMenu.value = true;
   migrationQuestionId.value = question_id;
 };
 
-const survey = ref({
+const survey = ref<ViewSurvey>({
+  id: props.sid,
   name: '加载中...',
   description: '加载中...',
-  create_time: undefined,
+  createTime: '加载中...',
   questions: [],
+  sumScore: 0
 });
 
-const openEditQuestion = (mode, order, data = null) => {
+const openEditQuestion = (mode: ModeType, order: number, data: AdminViewQuestion | null = null) => {
   currentMode.value = mode;
   currentData.value = data;
   currentOrder.value = order;
   toggleEditQuestion.value = true;
 };
 
-const deleteQuestion = (question) => {
+const deleteQuestion = (question: AdminViewQuestion) => {
   const tmp = question.title.slice(0, 10);
   const confirmDelete = confirm(`确定删除标题为"${tmp}..."的题目吗，任何状态下的问卷都会被影响！`);
   if (confirmDelete) {
@@ -60,7 +68,7 @@ const deleteQuestion = (question) => {
 };
 
 const _getSurvey = () => {
-  getSurvey(props.sid).then((res) => {
+  getSurvey(props.sid).then((res: FetchResponse) => {
     survey.value = res.data.data;
     survey.value.sumScore = 0;
     for (let i in survey.value.questions) {
@@ -78,30 +86,36 @@ const SurveyMetaDataUpdate = () => {
   emit('flush');
 };
 
-const handleEdit = (mode, formData) => {
-  const handleRes = (res) => {
-    if (res.code === 0) {
+const handleEdit = (mode: string, QuestionData: UploadEditQuestion) => {
+  const handleRes = (res: FetchResponse) => {
+    if (res.data.code === 0) {
       closeEditQuestion();
-      openAlert(res.desc);
+      openAlert(res.data.desc);
       _getSurvey();
     } else {
-      openAlert(res.desc);
+      openAlert(res.data.desc);
     }
   };
+
+  const sendData: EditQuestions = {
+    surveyId: props.sid,
+    questions: [QuestionData],
+  };
+
   if (mode === 'add') {
-    addQuestionAPI([formData]).then((res) => handleRes(res.data));
+    addQuestionAPI(sendData).then((res) => handleRes(res));
   } else if (mode === 'edit') {
-    editQuestionAPI(formData).then((res) => handleRes(res.data));
+    editQuestionAPI(sendData).then((res) => handleRes(res));
   }
 };
 
 const closeEditQuestion = () => {
   toggleEditQuestion.value = false;
-  currentMode.value = null;
+  currentMode.value = 'add';
   currentData.value = null;
 };
 
-const viewSurveyDirection = ref('column');
+const viewSurveyDirection = ref<'column' | 'column-reverse'>('column');
 const toggleDirection = () => {
   viewSurveyDirection.value = viewSurveyDirection.value === 'column' ? 'column-reverse' : 'column';
 };
@@ -110,12 +124,24 @@ const disabledButton = computed(() => {
   return toggleEditQuestion.value || toggleSetSurveyMetaData.value || toggleSortQuestionMode.value || !props.editable;
 });
 
-const orderMap = ref([]);
-let orderMapBak = [];
+interface OrderMapItem {
+  id: number;
+  display_order: number;
+}
+
+const orderMap = ref<OrderMapItem[]>([]);
+let orderMapBak: OrderMapItem[] = [];
 
 const displayQuestions = computed(() => {
+  // 1. 先把 orderMap 按 display_order 从小到大排序
   orderMap.value.sort((a, b) => a.display_order - b.display_order);
-  return orderMap.value.map((i) => survey.value.questions.find((j) => j.id === i.id));
+
+  // 2. 遍历排序后的 orderMap，对每一项 i，
+  //    从 survey.value.questions 中找出 id 与 i.id 相同的题目
+  // .filter(<T>(q: T | undefined): q is T => q !== undefined) 排除find失效
+  return orderMap.value
+    .map((i) => survey.value.questions.find((j) => j.id === i.id))
+    .filter(<T>(q: T | undefined): q is T => q !== undefined)
 });
 
 const startSort = () => { toggleSortQuestionMode.value = true; };
@@ -124,13 +150,13 @@ const cancelSort = () => {
   orderMap.value = JSON.parse(JSON.stringify(orderMapBak));
 };
 
-const moveItem = (question_id) => {
+const moveItem = (questionId: number) => {
   const inputGoToIndex = prompt('要和哪题交换位置？请输入那题的编号');
   if (inputGoToIndex != null && inputGoToIndex != '') {
     const goToIndex = parseInt(inputGoToIndex) - 1;
     if (goToIndex > -1 && goToIndex < orderMap.value.length) {
       for (let index = 0; orderMap.value.length; index++) {
-        if (orderMap.value[index].id === question_id) {
+        if (orderMap.value[index].id === questionId) {
           const tmp = orderMap.value[index].display_order;
           orderMap.value[index].display_order = orderMap.value[goToIndex].display_order;
           orderMap.value[goToIndex].display_order = tmp;
@@ -141,9 +167,9 @@ const moveItem = (question_id) => {
   } else { openAlert('输入无效'); }
 };
 
-const moveUpItem = (question_id) => {
+const moveUpItem = (questionId: number) => {
   for (let index = 0; orderMap.value.length; index++) {
-    if (orderMap.value[index].id === question_id) {
+    if (orderMap.value[index].id === questionId) {
       const tmp = orderMap.value[index].display_order;
       orderMap.value[index].display_order = orderMap.value[index - 1].display_order;
       orderMap.value[index - 1].display_order = tmp;
@@ -152,9 +178,9 @@ const moveUpItem = (question_id) => {
   }
 };
 
-const moveDownItem = (question_id) => {
+const moveDownItem = (questionId: number) => {
   for (let index = 0; index < orderMap.value.length; index++) {
-    if (orderMap.value[index].id === question_id) {
+    if (orderMap.value[index].id === questionId) {
       const tmp = orderMap.value[index].display_order;
       orderMap.value[index].display_order = orderMap.value[index + 1].display_order;
       orderMap.value[index + 1].display_order = tmp;
@@ -164,7 +190,7 @@ const moveDownItem = (question_id) => {
 };
 
 const submitSort = () => {
-  sortQuestionsAPI(orderMap.value).then((res) => {
+  sortQuestionsAPI(orderMap.value).then((res: FetchResponse) => {
     if (res.data.code === 0) {
       toggleSortQuestionMode.value = false;
       openAlert(res.data.desc);
@@ -181,8 +207,8 @@ const submitSort = () => {
         <div
           class="bg-white md:rounded-xl shadow-2xl w-full md:w-[95vw] max-w-6xl h-full md:h-[90vh] flex flex-col overflow-hidden relative">
 
-          <EditQuestion v-if="toggleEditQuestion" :sid="props.sid" :mode="currentMode" :order="currentOrder"
-            :initial-data="currentData" @on-edit="handleEdit" @close="closeEditQuestion" />
+          <EditQuestion v-if="toggleEditQuestion" :mode="currentMode" :order="currentOrder" :initial-data="currentData"
+            @on-edit="handleEdit" @close="closeEditQuestion" />
           <SetSurveyMetaData :sid="props.sid" :mode="'set'" v-model="toggleSetSurveyMetaData"
             @on-edit="SurveyMetaDataUpdate" />
           <MigrationQuestionMenu v-if="toggleMigrationQuestionMenu" :sid="props.sid" :qid="migrationQuestionId"
@@ -196,7 +222,7 @@ const submitSort = () => {
             <div class="text-base md:text-xl pb-2.5 space-y-1">
               <p class="font-bold">问卷名称：{{ survey.name }}</p>
               <p>问卷描述：{{ survey.description }}</p>
-              <p>创建时间：{{ dateFormatYYYYMMDDHH(survey.create_time) }}</p>
+              <p>创建时间：{{ dateFormatYYYYMMDDHH(survey.createTime) }}</p>
             </div>
 
             <!-- 按钮菜单 -->

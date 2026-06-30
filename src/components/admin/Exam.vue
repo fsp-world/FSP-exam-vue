@@ -4,7 +4,6 @@ import { getSurveys, delSurvey } from '@/apis/admin';
 import { openAlert } from '@/utils/TsAlert';
 import { importSurveyData, exportSurveyToJsonFile } from '@/utils/survey';
 import { selectSingleFile } from '@/utils/file';
-// @ts-ignore: Allow importing JS component into TS file.
 import EditExam from './EditExam.vue';
 import SetSurveyMetaData from './SetSurveyMetaData.vue';
 import MCButton from '@/components/MCButton.vue';

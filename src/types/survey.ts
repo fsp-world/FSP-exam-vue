@@ -10,14 +10,18 @@ export interface NewSurvey {
   description: string;
 }
 
-export interface Survey extends NewSurvey {
+export interface ViewSurvey extends NewSurvey {
   id: number;
   createTime: string;
+  sumScore: number;
+  questions: AdminViewQuestion[];
+}
+
+export interface Survey extends ViewSurvey {
   notCompletedCount: number;
   notReviewedCount: number;
   editable?: boolean;
   status?: number; // 查询问卷列表时，代表问卷是否被挂载；查询单个问卷时不携带该属性
-  questions: Question[];
 }
 
 export enum QuestionType {
@@ -25,19 +29,6 @@ export enum QuestionType {
   MultipleChoice = 2,
   FillInTheBlanks = 3,
   Subjective = 4,
-}
-
-export interface Question {
-  display_order: number;
-  id?: number;
-  title: string;
-  type: QuestionType;
-  typeText?: string;
-  score: number; // 分值
-  userGetScore?: number; // 用户得分
-  images: Img[];
-  options: Option[];
-  answer?: string[]; // 用于用户作答，选择题内容是选择的选项的id，填空题和主观题数组第一个元素的值是用户输入
 }
 
 export interface Option {
@@ -53,3 +44,55 @@ export interface Img {
   alt: string;
   data: string;
 }
+
+interface BaseQuestion {
+  display_order: number;
+  title: string;
+  type: QuestionType;
+  typeText?: string;
+  score: number; // 分值
+  options: Option[];
+  images: Img[];
+}
+
+// 用于用户作答
+export interface UserViewQuestion extends BaseQuestion {
+  id: number;
+  userGetScore?: number;
+  answer: string[]; //选择题内容是选择的选项的id，填空题和主观题数组第一个元素的值是用户输入
+}
+
+export interface CarryKeyOption extends Option {
+  key: string;
+}
+
+interface CarryKeyImg extends Img {
+  key: string;
+}
+
+export interface UploadEditQuestion extends BaseQuestion {
+  id?: number;
+  options: Option[];
+  images: Img[];
+}
+
+export interface EditQuestion extends BaseQuestion {
+  id?: number;
+  options: CarryKeyOption[];
+  images: CarryKeyImg[];
+}
+
+export interface EditQuestions {
+  surveyId: number;
+  questions: UploadEditQuestion[];
+}
+
+export interface AdminViewQuestion extends UserViewQuestion {
+  id: number;
+}
+
+export interface AdminReviewQuestion extends AdminViewQuestion {
+  // userGetScore: number;
+}
+
+export type ModeType = 'add' | 'edit';

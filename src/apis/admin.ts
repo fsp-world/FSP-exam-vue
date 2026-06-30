@@ -1,5 +1,10 @@
 import type { ConfigItem, IPagination, User, UserUpdate } from '@/types';
-import type { SurveySlot, Question, NewSurvey } from '@/types/survey';
+import type {
+  SurveySlot,
+  UserViewQuestion,
+  NewSurvey,
+  EditQuestions,
+} from '@/types/survey';
 import request from '@/utils/requers';
 import { sortQuestion } from '@/utils/survey';
 
@@ -40,9 +45,9 @@ export const modSurveyMetaData = (data: NewSurvey) =>
   request.post('/admin/survey/update', JSON.stringify(data));
 
 // question
-export const addQuestionAPI = (data: Question[]) =>
+export const addQuestionAPI = (data: EditQuestions) =>
   request.post('/admin/question/add', JSON.stringify(data));
-export const editQuestionAPI = (data: Question) =>
+export const editQuestionAPI = (data: EditQuestions) =>
   request.post('/admin/question/edit', JSON.stringify(data));
 export const delQuestionAPI = (id: number) =>
   request.post('/admin/question/delete', JSON.stringify({ id }));

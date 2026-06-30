@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, watch, computed } from 'vue';
-import type { Option, Img, Question } from '@/types/survey';
+import type { EditQuestion, CarryKeyOption, ModeType, UserViewQuestion } from '@/types/survey';
 import { QuestionType } from '@/types/survey';
 import { compressionFile } from '@/utils/imageCompression';
 import MCButton from '@/components/MCButton.vue';
@@ -10,12 +10,19 @@ const MAX_IMAGE_SIZE = 5 * 1024 * 1024;
 
 const emit = defineEmits(['onEdit', 'close']);
 
-const { sid, mode, order, initialData } = defineProps({
-  sid: { type: Number, required: true },
-  mode: { type: String as () => 'add' | 'edit', required: true },
-  order: { type: Number, required: true },
-  initialData: { type: Object, default: null },
-});
+interface Props {
+  mode: ModeType
+  order: number
+  initialData?: UserViewQuestion | null
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  initialData: null
+})
+
+const { mode, order, initialData } = props
+
+
 
 const types = ref([
   { value: QuestionType.SingleChoice, name: '单选', optionTitle: '单选列表：', placeholder: '不要写例如 A.B.C.D. 这样的编号！' },
@@ -27,17 +34,8 @@ const types = ref([
 const upload_button_text = ref('');
 const selectedRadioKey = ref<string | null>(null);
 
-interface CarryKeyOption extends Option { key: string; }
-interface CarryKeyImg extends Img { key: string; }
-interface FormData extends Question {
-  surveyId: number;
-  options: CarryKeyOption[];
-  images: CarryKeyImg[];
-}
-
-const formData = ref<FormData>({
+const formData = ref<EditQuestion>({
   display_order: 0,
-  surveyId: sid,
   title: '',
   type: QuestionType.SingleChoice,
   score: 5,
@@ -104,7 +102,6 @@ const init = () => {
     };
     formData.value = {
       display_order: initialData.display_order,
-      surveyId: sid,
       id: initialData.id,
       title: initialData.title,
       type: initialData.type,
