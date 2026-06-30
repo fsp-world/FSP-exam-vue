@@ -1,26 +1,30 @@
 <script setup lang="ts">
 import { onMounted, watchEffect } from 'vue';
-import { Option, Question, QuestionType } from '@/types/survey';
+import { Option, QuestionType, UserViewQuestion, AdminViewQuestion, AdminReviewQuestion } from '@/types/survey';
 import { getStringQuestionType } from '@/utils/survey';
 
-const { index, mode, archived } = defineProps({
-  index: {
-    type: Number,
-    required: true,
-  },
-  mode: {
-    type: String as () => 'view' | 'admin-view' | 'review',
-    default: 'view',
-  },
-  archived: {
-    type: Boolean,
-    default: false,
-  },
-});
+interface Props {
+  index: number;
+  mode: 'view' | 'admin-view' | 'review';
+  archived?: boolean;
+}
+
+type QuestionByMode = {
+  'view': UserViewQuestion
+  'admin-view': AdminViewQuestion
+  'review': AdminReviewQuestion
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  mode: 'view',
+  archived: false
+})
+
+const { index, mode, archived } = props
 
 const emit = defineEmits(['scoreChange']);
 
-const question = defineModel<Question>({ required: true });
+const question = defineModel<QuestionByMode[Props['mode']]>({ required: true });
 
 function init() {
   question.value.typeText = getStringQuestionType(question.value.type);
@@ -80,7 +84,7 @@ onMounted(() => {
       v-if="question.type === QuestionType.SingleChoice || question.type === QuestionType.MultipleChoice">
       <li v-for="(option, optionIndex) in question.options" :key="optionIndex" :class="{ selected: option.isSelected }"
         @click="selectOption(option)">
-        <div v-if="option.isCorrect" class="correct-option"></div>
+        <div v-if="mode === 'review' && option.isCorrect" class="correct-option"></div>
         {{ ['A.', 'B.', 'C.', 'D.'][optionIndex] }}{{ option.text }}
       </li>
     </ul>

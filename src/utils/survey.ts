@@ -1,4 +1,9 @@
-import type { Survey, Question } from '@/types/survey';
+import type {
+  Survey,
+  UserViewQuestion,
+  EditQuestions,
+  UploadEditQuestion,
+} from '@/types/survey';
 import { QuestionType } from '@/types/survey';
 import { addSurveyAPI, addQuestionAPI, getSurvey } from '@/apis/admin';
 import { openAlert } from '@/utils/TsAlert';
@@ -8,7 +13,9 @@ interface ReturnData {
   msg: string;
 }
 
-export const sortQuestion = (questionList: Question[]): Question[] => {
+export const sortQuestion = (
+  questionList: UserViewQuestion[],
+): UserViewQuestion[] => {
   // 方法：返回按 display_order 排序后的数组
   return questionList.slice().sort((a, b) => a.display_order - b.display_order);
 };
@@ -66,9 +73,9 @@ const addSurvey = async (jsonData: Survey): Promise<any> => {
   }
 };
 
-const addQuestions = async (jsonData: Survey): Promise<ReturnData> => {
+const addQuestions = async (data: EditQuestions): Promise<ReturnData> => {
   try {
-    const res = await addQuestionAPI(jsonData.questions);
+    const res = await addQuestionAPI(data);
     if (res.data.code === 0) {
       return { success: true, msg: '题目添加成功！' };
     }
@@ -79,17 +86,9 @@ const addQuestions = async (jsonData: Survey): Promise<ReturnData> => {
   }
 };
 
-const addSurveyIdToQuestion = (
-  questions: Question[],
-  surveyId: number,
-): Question[] => {
-  return questions.map((item) => ({
-    ...item,
-    surveyId: surveyId,
-  }));
-};
-
-const addDefaultAttributeToQuestion = (questions: Question[]): Question[] => {
+const addDefaultAttributeToQuestion = (
+  questions: UserViewQuestion[],
+): UploadEditQuestion[] => {
   return questions.map((item) => ({
     ...item,
     display_order: 0,
@@ -111,12 +110,12 @@ export const importSurveyData = async (
   }
   openAlert(addSurveyRes.msg);
 
-  jsonData.questions = addSurveyIdToQuestion(
-    jsonData.questions,
-    addSurveyRes.surveyId,
-  );
-  jsonData.questions = addDefaultAttributeToQuestion(jsonData.questions);
-  const addQuestionsRes = await addQuestions(jsonData);
+  const sendData: EditQuestions = {
+    surveyId: addSurveyRes.surveyId,
+    questions: addDefaultAttributeToQuestion(jsonData.questions),
+  };
+
+  const addQuestionsRes = await addQuestions(sendData);
   if (!addQuestionsRes.success) {
     return addQuestionsRes;
   }
@@ -129,17 +128,17 @@ export const exportSurveyToJsonFile = async (surveyId: number) => {
   try {
     const res = await getSurvey(surveyId);
     if (res.data.code === 1) {
-      openAlert(res.data.desc);
+      openAlert(res.data.description);
       return;
     }
 
     openAlert('开始导出');
-    const jsonString = JSON.stringify(res.data, null, 2);
+    const jsonString = JSON.stringify(res.data.data, null, 2);
     const blob = new Blob([jsonString], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `${res.data.name}.json`;
+    a.download = `${res.data.data.name}.json`;
     a.click();
     openAlert('导出成功！');
   } catch (error) {
