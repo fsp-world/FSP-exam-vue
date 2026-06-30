@@ -10,18 +10,31 @@ export interface NewSurvey {
   description: string;
 }
 
-export interface ViewSurvey extends NewSurvey {
+export interface SurveyInfoItem extends NewSurvey {
   id: number;
   createTime: string;
-  sumScore: number;
-  questions: AdminViewQuestion[];
+  status: number;
+  notCompletedCount: number;
+  notReviewedCount: number;
+  editable?: boolean;
 }
 
-export interface Survey extends ViewSurvey {
+export interface ImportSurvey extends NewSurvey {
+  createTime: string;
+  questions: BaseQuestion[];
+}
+
+export interface BaseSurvey extends ImportSurvey {
+  id: number;
+}
+
+export interface AdminViewSurvey extends BaseSurvey {
   notCompletedCount: number;
   notReviewedCount: number;
   editable?: boolean;
   status?: number; // 查询问卷列表时，代表问卷是否被挂载；查询单个问卷时不携带该属性
+  sumScore: number;
+  questions: AdminViewQuestion[];
 }
 
 export enum QuestionType {
@@ -45,7 +58,8 @@ export interface Img {
   data: string;
 }
 
-interface BaseQuestion {
+export interface BaseQuestion {
+  id?: number;
   display_order: number;
   title: string;
   type: QuestionType;
@@ -70,11 +84,7 @@ interface CarryKeyImg extends Img {
   key: string;
 }
 
-export interface UploadEditQuestion extends BaseQuestion {
-  id?: number;
-  options: Option[];
-  images: Img[];
-}
+export interface UploadEditQuestion extends BaseQuestion {}
 
 export interface EditQuestion extends BaseQuestion {
   id?: number;
@@ -84,7 +94,7 @@ export interface EditQuestion extends BaseQuestion {
 
 export interface EditQuestions {
   surveyId: number;
-  questions: UploadEditQuestion[];
+  questions: BaseQuestion[];
 }
 
 export interface AdminViewQuestion extends UserViewQuestion {
