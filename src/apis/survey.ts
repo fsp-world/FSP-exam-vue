@@ -1,5 +1,5 @@
 import request from '@/utils/requers';
-import { sortQuestion } from '@/utils/sortQuestion';
+import { sortQuestion } from '@/utils/survey';
 
 export const getSlotsAPI = () => request.get('/survey/get_slots');
 
@@ -16,6 +16,8 @@ export const getSurvey = async (id: any) => {
 
 export const checkSurvey = () => request.post('/survey/check_survey');
 
-export const startSurvey = (data = {}) => request.post('/survey/start_survey', JSON.stringify(data));
+export const startSurvey = (data = {}) =>
+  request.post('/survey/start_survey', JSON.stringify(data));
 
-export const completeSurvey = (data: any) => request.post('/survey/complete_survey', data);
+export const completeSurvey = (data: any) =>
+  request.post('/survey/complete_survey', data);

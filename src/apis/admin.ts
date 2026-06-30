@@ -1,15 +1,7 @@
-import type {
-  ConfigItem,
-  IPagination,
-  IQuestion,
-  ISurvey,
-  NewSurvey,
-  User,
-  UserUpdate,
-  SurveySlot,
-} from '@/types';
+import type { ConfigItem, IPagination, User, UserUpdate } from '@/types';
+import type { SurveySlot, Question, NewSurvey } from '@/types/survey';
 import request from '@/utils/requers';
-import { sortQuestion } from '@/utils/sortQuestion';
+import { sortQuestion } from '@/utils/survey';
 
 // user
 export const getUsers = (data: IPagination) =>
@@ -40,19 +32,17 @@ export const getSurvey = async (id: number) => {
   }
 };
 
-export const addSurvey = (data: NewSurvey) =>
-  request.post('/admin/survey/add', JSON.stringify(data));
 export const addSurveyAPI = (data: NewSurvey) =>
   request.post('/admin/survey/add', JSON.stringify(data));
 export const delSurvey = (id: number) =>
   request.post('/admin/survey/delete', JSON.stringify({ id }));
-export const modSurveyMetaData = (data: ISurvey) =>
+export const modSurveyMetaData = (data: NewSurvey) =>
   request.post('/admin/survey/update', JSON.stringify(data));
 
 // question
-export const addQuestionAPI = (data: IQuestion[]) =>
+export const addQuestionAPI = (data: Question[]) =>
   request.post('/admin/question/add', JSON.stringify(data));
-export const editQuestionAPI = (data: IQuestion) =>
+export const editQuestionAPI = (data: Question) =>
   request.post('/admin/question/edit', JSON.stringify(data));
 export const delQuestionAPI = (id: number) =>
   request.post('/admin/question/delete', JSON.stringify({ id }));

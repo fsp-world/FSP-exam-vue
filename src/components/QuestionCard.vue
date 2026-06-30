@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { onMounted, watchEffect } from 'vue';
-import { getStringQuestionType, IOption, IQuestion } from '@/types';
-import { QuestionType } from '@/utils/enum';
+import { Option, Question, QuestionType } from '@/types/survey';
+import { getStringQuestionType } from '@/utils/survey';
 
 const { index, mode, archived } = defineProps({
   index: {
@@ -20,7 +20,7 @@ const { index, mode, archived } = defineProps({
 
 const emit = defineEmits(['scoreChange']);
 
-const question = defineModel<IQuestion>({ required: true });
+const question = defineModel<Question>({ required: true });
 
 function init() {
   question.value.typeText = getStringQuestionType(question.value.type);
@@ -29,7 +29,7 @@ function init() {
   }
 }
 
-const selectOption = (selectedOption: IOption) => {
+const selectOption = (selectedOption: Option) => {
   if (mode === 'view') {
     if (question.value.type === QuestionType.SingleChoice) {
       for (let opt of question.value.options) {

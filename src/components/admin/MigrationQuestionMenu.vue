@@ -4,9 +4,9 @@ import MCButton from '../MCButton.vue';
 import { ref, inject } from 'vue';
 import { openAlert } from '@/utils/TsAlert';
 import { getSurveys, migrationQuestionAPI } from '@/apis/admin';
-import type { ISurvey } from '@/types';
+import type { Survey } from '@/types/survey';
 
-interface SurveyType extends ISurvey {
+interface SurveyType extends Survey {
   selected: boolean;
   editable: boolean;
 }
@@ -60,7 +60,7 @@ const complete = () => {
   }
 };
 
-type AttachEditableToSurveys = (surveys: ISurvey[]) => ISurvey[];
+type AttachEditableToSurveys = (surveys: Survey[]) => Survey[];
 const attachEditableToSurveys = inject<AttachEditableToSurveys>('attachEditableToSurveys');
 if (!attachEditableToSurveys) {
   throw new Error('attachEditableToSurveys must be provided by parent component');
@@ -91,13 +91,8 @@ _getSurveys();
       <p class="title">想把这道题迁移到哪张问卷的末尾？</p>
       <p class="tips">已发布或存在未交卷、未批改答卷的问卷不能被编辑</p>
       <ul class="surveys">
-        <li
-          class="survey"
-          :class="{ selected: item.selected }"
-          v-for="(item, itemIndex) of surveysData.list"
-          :key="item.id"
-          @click="selectedSurvey(itemIndex)"
-        >
+        <li class="survey" :class="{ selected: item.selected }" v-for="(item, itemIndex) of surveysData.list"
+          :key="item.id" @click="selectedSurvey(itemIndex)">
           {{ item.name }}
         </li>
       </ul>
@@ -116,22 +111,26 @@ _getSurveys();
   flex-direction: column;
   flex-wrap: nowrap;
   justify-content: space-between;
+
   .title {
     font-size: 26px;
     line-height: 1.5em;
     user-select: none;
   }
+
   .tips {
     font-size: 18px;
     line-height: 2em;
     color: #888;
     user-select: none;
   }
+
   .surveys {
     padding: 20px;
     flex-grow: 1;
     overflow-y: auto;
     overflow-x: hidden;
+
     .survey {
       text-align: left;
       padding: 10px;
@@ -139,18 +138,22 @@ _getSurveys();
       border-radius: 5px;
       user-select: none;
     }
+
     .survey:hover {
       background-color: rgba(0, 0, 0, 0.2);
     }
+
     .selected {
       background-color: rgba(0, 0, 0, 0.1);
     }
   }
+
   .buttons {
     display: flex;
     justify-content: center;
     padding-bottom: 30px;
     gap: 15px;
+
     .btn {
       font-size: 26px;
       padding: 5px 10px;
