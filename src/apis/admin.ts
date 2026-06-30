@@ -1,7 +1,13 @@
-import type { ConfigItem, IPagination, User, UserUpdate } from '@/types';
+import type {
+  ConfigItem,
+  FetchResponse,
+  IPagination,
+  User,
+  UserUpdate,
+} from '@/types';
 import type {
   SurveySlot,
-  UserViewQuestion,
+  SurveyInfoItem,
   NewSurvey,
   EditQuestions,
 } from '@/types/survey';
@@ -25,8 +31,9 @@ export const getWhitelist = (data: IPagination) =>
   request.get('/admin/whitelist', { params: data });
 
 // survey
-export const getSurveys = () => request.get('/admin/surveys');
-export const getSurvey = async (id: number) => {
+export const getSurveys = (): Promise<FetchResponse<SurveyInfoItem[]>> =>
+  request.get('/admin/surveys');
+export const getSurvey = async (id: number): Promise<FetchResponse<any>> => {
   try {
     const response = await request.get('/admin/survey/' + id);
     response.data.data.questions = sortQuestion(response.data.data.questions);
@@ -37,11 +44,13 @@ export const getSurvey = async (id: number) => {
   }
 };
 
-export const addSurveyAPI = (data: NewSurvey) =>
+export const addSurveyAPI = (data: NewSurvey): Promise<FetchResponse<any>> =>
   request.post('/admin/survey/add', JSON.stringify(data));
-export const delSurvey = (id: number) =>
+export const delSurvey = (id: number): Promise<FetchResponse<any>> =>
   request.post('/admin/survey/delete', JSON.stringify({ id }));
-export const modSurveyMetaData = (data: NewSurvey) =>
+export const modSurveyMetaData = (
+  data: NewSurvey,
+): Promise<FetchResponse<any>> =>
   request.post('/admin/survey/update', JSON.stringify(data));
 
 // question
