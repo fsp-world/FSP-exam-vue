@@ -10,6 +10,19 @@ export interface NewSurvey {
   description: string;
 }
 
+// 待作答的问卷
+export interface AnswerSurvey extends NewSurvey {
+  id: number;
+  startAnswerTime: string;
+  ddl: string;
+  questions: UserViewQuestion[];
+}
+
+export interface AnsweredSurvey {
+  surveyId: number;
+  answers: UserViewQuestion[];
+}
+
 export interface SurveyInfoItem extends NewSurvey {
   id: number;
   createTime: string;
@@ -44,8 +57,24 @@ export enum QuestionType {
   Subjective = 4,
 }
 
+interface BaseOption {
+  id: string;
+  text: string;
+}
+
+interface AnsweredOption extends BaseOption {
+  isSelected: boolean;
+  inputText?: string; // 如果是填空题或者主观题，内容为用户的作答
+}
+
+export interface newOption {
+  id?: string; // 新建题目时候不携带 id，编辑携带 id
+  text: string; // 选项文字，非用户作答状态，如果是填空题或者主观题，则为参考答案
+  isCorrect: boolean;
+}
+
 export interface Option {
-  id?: string; // 新建题目时候不携带 id
+  id?: string;
   text: string; // 选项文字，非用户作答状态，如果是填空题或者主观题，则为参考答案
   isSelected?: boolean; // 用户选择的选项
   isCorrect?: boolean; // 正确选项，用户作答时不存在此字段
@@ -72,8 +101,9 @@ export interface BaseQuestion {
 // 用于用户作答
 export interface UserViewQuestion extends BaseQuestion {
   id: number;
-  userGetScore?: number;
+  // userGetScore?: number;
   answer: string[]; //选择题内容是选择的选项的id，填空题和主观题数组第一个元素的值是用户输入
+  options: AnsweredOption[];
 }
 
 export interface CarryKeyOption extends Option {
