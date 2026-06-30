@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 import { ref, onMounted, onUnmounted } from 'vue';
 import MCButton from '@/components/MCButton.vue';
 import QuestionMap from '@/components/QuestionMap.vue';
@@ -9,10 +9,12 @@ import InfoDialog from '@/components/InfoDialog.vue';
 import { openAlert } from '@/utils/TsAlert';
 import { getSurvey, completeSurvey } from '@/apis/survey';
 import { useRoute } from 'vue-router';
+import type { UserViewQuestion } from '@/types/survey';
 
 const route = useRoute();
+const sid = Number(route.params.sid);
 
-const questions = ref([]);
+const questions = ref<UserViewQuestion[]>([]);
 const flag = ref(false);
 const isDone = ref(false);
 const score = ref(0);
@@ -22,10 +24,10 @@ const timeRemaining = ref('');
 
 const ableToSubmit = ref(false)
 
-let intervalId = null; // 定时器 ID
-let deadline = null;
+let intervalId: ReturnType<typeof setInterval> | null = null; // 定时器 ID
+let deadline: Date | null = null;
 
-const formatRemainingTime = (remainingTimeMs) => {
+const formatRemainingTime = (remainingTimeMs: number) => {
   // 将毫秒转换为秒
   let totalSeconds = Math.floor(remainingTimeMs / 1000);
 
@@ -35,44 +37,44 @@ const formatRemainingTime = (remainingTimeMs) => {
   let seconds = totalSeconds - hours * 3600 - minutes * 60; // 最后剩下的秒数
 
   // 格式化输出，确保两位数显示
-  hours = String(hours).padStart(2, '0');
-  minutes = String(minutes).padStart(2, '0');
-  seconds = String(seconds).padStart(2, '0');
+  const hoursStr = String(hours).padStart(2, '0');
+  const minutesStr = String(minutes).padStart(2, '0');
+  const secondsStr = String(seconds).padStart(2, '0');
 
   // 返回格式化后的字符串
-  return `${hours}时 ${minutes}分 ${seconds}秒`;
+  return `${hoursStr}时 ${minutesStr}分 ${secondsStr}秒`;
 };
 
 // 更新剩余时间
 const updateTimeRemaining = () => {
-  const remainingTimeMs = deadline - new Date();
+  if (!deadline) return;
+  const remainingTimeMs = deadline.getTime() - new Date().getTime();
   if (remainingTimeMs <= 0) {
-    clearInterval(intervalId); // 清除定时器
-    timeRemaining.value = '00时 00分 00秒'; // 时间已到
+    if (intervalId) clearInterval(intervalId);
+    timeRemaining.value = '00时 00分 00秒';
     ableToSubmit.value = false
     openAlert('时间已到！未提交自动作废');
-    // complete(); // 截至了后端那边应该会拒收
   } else {
-    timeRemaining.value = formatRemainingTime(remainingTimeMs); // 更新剩余时间
+    timeRemaining.value = formatRemainingTime(remainingTimeMs);
   }
 };
 
 const start = () => {
-  if (!route.params.sid) {
+  if (!sid) {
     openAlert('未知试卷');
     return;
   }
-  getSurvey(route.params.sid).then((res) => {
+  getSurvey(sid).then((res) => {
+    const data = res.data
     flag.value = true;
-    if (res.data['code'] === 1) {
-      openAlert(res.data['desc']);
+    if (data.code === 1) {
+      openAlert(data.desc);
     } else {
-      questions.value = res.data.questions;
-      surveyName.value = res.data.name;
+      questions.value = data.data.questions
+      surveyName.value = data.data.name;
       ableToSubmit.value = true
 
-      // 获取截止时间并启动计时器
-      deadline = new Date(res.data.ddl); // 设置截止时间
+      deadline = new Date(data.data.ddl);
 
       // 初始化剩余时间显示
       updateTimeRemaining();
@@ -91,10 +93,9 @@ onUnmounted(() => {
 });
 
 const checkDone = async () => {
-  return new Promise((resolve, reject) => {
-    const not = [];
-    // 找未作答题目
-    questions.value.forEach((item, index) => {
+  return new Promise<void>((resolve, reject) => {
+    const not: number[] = [];
+    questions.value.forEach((item: UserViewQuestion, index: number) => {
       if (!item.answer) {
         not.push(index + 1);
       }
@@ -108,13 +109,13 @@ const complete = () => {
   confirm.value = false;
 
   const submitData = {
-    surveyId: Number(String(route.params.sid)),
+    surveyId: sid,
     answers: questions.value
   }
 
   completeSurvey(submitData).then((res) => {
     if (res.data.code === 0) {
-      score.value = res.data.score;
+      score.value = res.data.data;
       isDone.value = true;
     }
     if (res.data.code === 1) {
