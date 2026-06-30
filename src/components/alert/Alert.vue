@@ -9,8 +9,7 @@ const { dialogs } = storeToRefs(alertStore);
 
 <template>
   <TransitionGroup class="alert-container" name="list" tag="ul">
-    <!-- 这里 :key="item" 改成别的会引发显示错误-->
-    <li v-for="item in dialogs" :key="item">
+    <li v-for="item in dialogs" :key="item.title + item.message">
       <AlertCard :card="item"></AlertCard>
     </li>
   </TransitionGroup>

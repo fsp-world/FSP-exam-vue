@@ -8,13 +8,13 @@ import { selectSingleFile } from '@/utils/file';
 import EditExam from './EditExam.vue';
 import SetSurveyMetaData from './SetSurveyMetaData.vue';
 import MCButton from '@/components/MCButton.vue';
-import type { ISurvey } from '@/types';
+import type { Survey } from '@/types/survey';
 
 const toggleSetSurveyMetaData = ref(false);
 
 const surveysData = ref({
   code: -1,
-  list: <ISurvey[]>[],
+  list: <Survey[]>[],
   desc: '',
 });
 
@@ -22,7 +22,7 @@ const flag = ref(false);
 const sid = ref(0);
 const current_survey_editable = ref(false);
 
-const attachEditableToSurveys = (surveys: ISurvey[]) => {
+const attachEditableToSurveys = (surveys: Survey[]) => {
   for (let survey of surveys) {
     survey.editable = !(survey.notCompletedCount > 0 || survey.notReviewedCount > 0);
     survey.editable = survey.status === 0 ? survey.editable : false;
@@ -42,7 +42,7 @@ const _getSurveys = async () => {
   }
 };
 
-const editSurvey = (survey: ISurvey) => {
+const editSurvey = (survey: Survey) => {
   flag.value = true;
   if (survey.id) {
     sid.value = survey.id;

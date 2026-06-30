@@ -1,17 +1,41 @@
-import type { IQuestion } from '@/types';
+import type { Survey, Question } from '@/types/survey';
+import { QuestionType } from '@/types/survey';
 import { addSurveyAPI, addQuestionAPI, getSurvey } from '@/apis/admin';
 import { openAlert } from '@/utils/TsAlert';
-
-interface Survey {
-  name: string;
-  description: string;
-  create_time: string;
-  questions: IQuestion[];
-}
 
 interface ReturnData {
   success: boolean;
   msg: string;
+}
+
+export const sortQuestion = (questionList: Question[]): Question[] => {
+  // 方法：返回按 display_order 排序后的数组
+  return questionList.slice().sort((a, b) => a.display_order - b.display_order);
+};
+
+export const getStringQuestionType = (questionType: QuestionType): string => {
+  switch (questionType) {
+    case QuestionType.SingleChoice:
+      return '单选题';
+    case QuestionType.MultipleChoice:
+      return '多选题';
+    case QuestionType.FillInTheBlanks:
+      return '填空题';
+    case QuestionType.Subjective:
+      return '主观题';
+    default:
+      return '未知题';
+  }
+};
+
+const objectiveQuestionTypes = [
+  QuestionType.SingleChoice,
+  QuestionType.MultipleChoice,
+  QuestionType.FillInTheBlanks,
+];
+
+export function isObjectiveQuestion(type: QuestionType): boolean {
+  return objectiveQuestionTypes.includes(type);
 }
 
 const isFormatCorrect = (jsonData: Survey): ReturnData => {
@@ -29,7 +53,11 @@ const addSurvey = async (jsonData: Survey): Promise<any> => {
     };
     const res = await addSurveyAPI(addSurveyData);
     if (res.data.code === 0) {
-      return { success: true, msg: '问卷创建成功！', surveyId: res.data.data.surveyId };
+      return {
+        success: true,
+        msg: '问卷创建成功！',
+        surveyId: res.data.data.surveyId,
+      };
     }
     return { success: false, msg: res.data.desc || '问卷创建失败！' };
   } catch (error) {
@@ -51,19 +79,26 @@ const addQuestions = async (jsonData: Survey): Promise<ReturnData> => {
   }
 };
 
-const addSurveyIdToQuestion = (questions: IQuestion[], surveyId: number): IQuestion[] => {
+const addSurveyIdToQuestion = (
+  questions: Question[],
+  surveyId: number,
+): Question[] => {
   return questions.map((item) => ({
     ...item,
     surveyId: surveyId,
   }));
 };
-const addDefaultAttributeToQuestion = (questions: IQuestion[]): IQuestion[] => {
+
+const addDefaultAttributeToQuestion = (questions: Question[]): Question[] => {
   return questions.map((item) => ({
     ...item,
     display_order: 0,
   }));
 };
-export const importSurveyData = async (jsonData: Survey): Promise<ReturnData> => {
+
+export const importSurveyData = async (
+  jsonData: Survey,
+): Promise<ReturnData> => {
   const formatCheck = isFormatCorrect(jsonData);
   if (!formatCheck.success) {
     return formatCheck;
@@ -76,7 +111,10 @@ export const importSurveyData = async (jsonData: Survey): Promise<ReturnData> =>
   }
   openAlert(addSurveyRes.msg);
 
-  jsonData.questions = addSurveyIdToQuestion(jsonData.questions, addSurveyRes.surveyId);
+  jsonData.questions = addSurveyIdToQuestion(
+    jsonData.questions,
+    addSurveyRes.surveyId,
+  );
   jsonData.questions = addDefaultAttributeToQuestion(jsonData.questions);
   const addQuestionsRes = await addQuestions(jsonData);
   if (!addQuestionsRes.success) {
