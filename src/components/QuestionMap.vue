@@ -1,14 +1,20 @@
-<script setup>
-const { questions } = defineProps({
-  questions: Array,
-});
+<script setup lang="ts">
+
+import type { UserViewQuestion } from '@/types/survey'
+
+interface Props {
+  questions: UserViewQuestion[]
+}
+
+const { questions } = defineProps<Props>();
 </script>
 
 <template>
   <div class="map">
     <ul class="y-scroll">
       <li v-for="(question, questionIndex) in questions" :key="questionIndex">
-        <a :class="{error: !question.answer}" :href="'#' + 'question' + (questionIndex + 1)">{{ questionIndex + 1 }}</a>
+        <a :class="{ error: !question.answer }" :href="'#' + 'question' + (questionIndex + 1)">{{ questionIndex + 1
+        }}</a>
       </li>
     </ul>
   </div>
@@ -18,6 +24,7 @@ const { questions } = defineProps({
 .map:hover {
   transform: translate(0, -50%);
 }
+
 .map {
   top: 50%;
   left: 0;
@@ -34,6 +41,7 @@ const { questions } = defineProps({
   image-rendering: pixelated;
   padding: 20px;
   z-index: 99;
+
   ul {
     width: 100%;
     height: 100%;
@@ -46,11 +54,13 @@ const { questions } = defineProps({
     gap: 5px;
     margin-right: 10px;
   }
+
   li {
     --wid: 34px;
     --hei: 36px;
     width: var(--wid);
     height: var(--hei);
+
     a {
       font-size: 25px;
       width: 100%;
@@ -77,6 +87,7 @@ const { questions } = defineProps({
     transform: translate(-90%, -50%);
   }
 }
+
 /*滚动条样式*/
 .y-scroll::-webkit-scrollbar {
   width: 5px;

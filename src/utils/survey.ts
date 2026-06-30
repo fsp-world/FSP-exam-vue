@@ -1,8 +1,6 @@
 import type {
-  Survey,
-  UserViewQuestion,
+  ImportSurvey,
   EditQuestions,
-  UploadEditQuestion,
 } from '@/types/survey';
 import { QuestionType } from '@/types/survey';
 import { addSurveyAPI, addQuestionAPI, getSurvey } from '@/apis/admin';
@@ -13,10 +11,9 @@ interface ReturnData {
   msg: string;
 }
 
-export const sortQuestion = (
-  questionList: UserViewQuestion[],
-): UserViewQuestion[] => {
-  // 方法：返回按 display_order 排序后的数组
+export const sortQuestion = <T extends { display_order: number }>(
+  questionList: T[],
+): T[] => {
   return questionList.slice().sort((a, b) => a.display_order - b.display_order);
 };
 
@@ -45,14 +42,18 @@ export function isObjectiveQuestion(type: QuestionType): boolean {
   return objectiveQuestionTypes.includes(type);
 }
 
-const isFormatCorrect = (jsonData: Survey): ReturnData => {
-  if (!jsonData.description || !jsonData.name || !jsonData.questions) {
+const isFormatCorrect = (jsonData: ImportSurvey): ReturnData => {
+  if (
+    !jsonData.description ||
+    !jsonData.name ||
+    !Array.isArray(jsonData.questions)
+  ) {
     return { success: false, msg: 'json文件损坏，无法导入！' };
   }
   return { success: true, msg: '数据格式校验成功' };
 };
 
-const addSurvey = async (jsonData: Survey): Promise<any> => {
+const addSurvey = async (jsonData: ImportSurvey): Promise<any> => {
   try {
     const addSurveyData = {
       name: jsonData.name,
@@ -86,17 +87,8 @@ const addQuestions = async (data: EditQuestions): Promise<ReturnData> => {
   }
 };
 
-const addDefaultAttributeToQuestion = (
-  questions: UserViewQuestion[],
-): UploadEditQuestion[] => {
-  return questions.map((item) => ({
-    ...item,
-    display_order: 0,
-  }));
-};
-
 export const importSurveyData = async (
-  jsonData: Survey,
+  jsonData: ImportSurvey,
 ): Promise<ReturnData> => {
   const formatCheck = isFormatCorrect(jsonData);
   if (!formatCheck.success) {
@@ -112,7 +104,7 @@ export const importSurveyData = async (
 
   const sendData: EditQuestions = {
     surveyId: addSurveyRes.surveyId,
-    questions: addDefaultAttributeToQuestion(jsonData.questions),
+    questions: jsonData.questions.map((q) => ({ ...q, display_order: 0 })), // 重置排序
   };
 
   const addQuestionsRes = await addQuestions(sendData);
@@ -128,19 +120,28 @@ export const exportSurveyToJsonFile = async (surveyId: number) => {
   try {
     const res = await getSurvey(surveyId);
     if (res.data.code === 1) {
-      openAlert(res.data.description);
+      openAlert(res.data.desc);
       return;
     }
 
     openAlert('开始导出');
-    const jsonString = JSON.stringify(res.data.data, null, 2);
+
+    const jsonString = JSON.stringify(
+      res.data.data,
+      (key, value) => {
+        // 去除所有 ID
+        if (key === 'id') return undefined;
+        return value;
+      },
+      2,
+    );
     const blob = new Blob([jsonString], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
     a.download = `${res.data.data.name}.json`;
     a.click();
-    openAlert('导出成功！');
+    openAlert('导出问卷成功！');
   } catch (error) {
     openAlert('获取问卷失败！');
   }
