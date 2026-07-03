@@ -9,7 +9,10 @@ import type {
   SurveySlot,
   SurveyInfoItem,
   NewSurvey,
-  EditQuestions,
+  UploadEditQuestion,
+  AdminViewSurvey,
+  AdminReviewSurvey,
+  UploadAddQuestion,
 } from '@/types/survey';
 import request from '@/utils/requers';
 import { sortQuestion } from '@/utils/survey';
@@ -33,7 +36,9 @@ export const getWhitelist = (data: IPagination) =>
 // survey
 export const getSurveys = (): Promise<FetchResponse<SurveyInfoItem[]>> =>
   request.get('/admin/surveys');
-export const getSurvey = async (id: number): Promise<FetchResponse<any>> => {
+export const getSurvey = async (
+  id: number,
+): Promise<FetchResponse<AdminViewSurvey>> => {
   try {
     const response = await request.get('/admin/survey/' + id);
     response.data.data.questions = sortQuestion(response.data.data.questions);
@@ -54,9 +59,9 @@ export const modSurveyMetaData = (
   request.post('/admin/survey/update', JSON.stringify(data));
 
 // question
-export const addQuestionAPI = (data: EditQuestions) =>
+export const addQuestionAPI = (data: UploadAddQuestion) =>
   request.post('/admin/question/add', JSON.stringify(data));
-export const editQuestionAPI = (data: EditQuestions) =>
+export const editQuestionAPI = (data: UploadEditQuestion) =>
   request.post('/admin/question/edit', JSON.stringify(data));
 export const delQuestionAPI = (id: number) =>
   request.post('/admin/question/delete', JSON.stringify({ id }));
@@ -74,7 +79,9 @@ export const getResponses = (data: IPagination) =>
 export const reviewedResponse = (data: { response: number; status: number }) =>
   request.post('/admin/reviewed', JSON.stringify(data));
 
-export const responseDetail = async (id: number) => {
+export const responseDetail = async (
+  id: number,
+): Promise<FetchResponse<AdminReviewSurvey>> => {
   try {
     const response = await request.get('/admin/detail/' + id);
     response.data.data.questions = sortQuestion(response.data.data.questions);

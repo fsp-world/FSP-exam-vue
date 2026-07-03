@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { getSurveys, addSlotAPI, setSlotAPI, delSlotAPI } from '@/apis/admin';
 import { getSlotsAPI } from '@/apis/survey';
-import type { SurveySlot, Survey } from '@/types/survey';
+import type { SurveySlot, SurveyInfoItem } from '@/types/survey';
 import { openAlert } from '@/utils/TsAlert';
 import BaseTable from './BaseTable.vue';
 import MCButton from '@/components/MCButton.vue';
@@ -9,7 +9,7 @@ import ModalCloseButton from './ModalCloseButton.vue';
 import { ref, reactive } from 'vue';
 
 const slots = ref<SurveySlot[]>([]);
-const surveys = ref<Survey[]>([]);
+const surveys = ref<SurveyInfoItem[]>([]);
 
 const showAddModal = ref(false);
 const newSlot = reactive({
@@ -23,7 +23,7 @@ const handleRes = (res: any) => {
 };
 
 const getSlots = () => {
-  getSlotsAPI().then((res: any) => { slots.value = res.data.list; });
+  getSlotsAPI().then((res) => { slots.value = res.data.data; });
 };
 
 const openAddModal = () => {

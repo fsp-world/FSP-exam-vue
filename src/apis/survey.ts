@@ -40,7 +40,7 @@ export const startSurvey = (
 ): Promise<FetchResponse<number>> =>
   request.post('/survey/start_survey', JSON.stringify(data));
 
-export const completeSurvey = (
+export const submitSurveyAPI = (
   data: AnsweredSurvey,
 ): Promise<FetchResponse<number>> =>
   request.post('/survey/complete_survey', data);

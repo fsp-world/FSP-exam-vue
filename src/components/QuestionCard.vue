@@ -1,22 +1,26 @@
 <script setup lang="ts">
-import { onMounted, watchEffect } from 'vue';
-import { Option, QuestionType, UserViewQuestion, AdminViewQuestion, AdminReviewQuestion } from '@/types/survey';
+import { computed, onMounted, watchEffect } from 'vue';
+import { QuestionType, AnswerQuestion, AdminViewQuestion, AdminReviewQuestion, AnswerOption, AdminReviewOption, AdminViewOption } from '@/types/survey';
 import { getStringQuestionType } from '@/utils/survey';
+
+// 局部扩展类型 —— 不修改原始接口定义
+type AnswerOptionExt = AnswerOption & { isSelected: boolean };
+type AnswerQuestionExt = AnswerQuestion & { answer: string[] } //选择题内容是选择的选项的id，填空题和主观题数组第一个元素的值是用户输入
 
 interface Props {
   index: number;
-  mode: 'view' | 'admin-view' | 'review';
+  mode: 'answer' | 'admin-view' | 'review';
   archived?: boolean;
 }
 
 type QuestionByMode = {
-  'view': UserViewQuestion
+  'answer': AnswerQuestion
   'admin-view': AdminViewQuestion
   'review': AdminReviewQuestion
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  mode: 'view',
+  mode: 'answer',
   archived: false
 })
 
@@ -26,27 +30,40 @@ const emit = defineEmits(['scoreChange']);
 
 const question = defineModel<QuestionByMode[Props['mode']]>({ required: true });
 
+const typeText = computed(() => getStringQuestionType(question.value.type));
+
 function init() {
-  question.value.typeText = getStringQuestionType(question.value.type);
-  if (mode === 'review' && question.value.options[0].inputText == '') {
-    question.value.options[0].inputText = '用户未作答';
+  // answer 模式下为所有选项初始化 isSelected，保证类型一致性
+  if (mode === 'answer') {
+    for (const opt of (question.value as AnswerQuestion).options) {
+      (opt as AnswerOptionExt).isSelected = false;
+    }
+  }
+  if (mode === 'review') {
+    const q = question.value as AdminReviewQuestion;
+    if (q.options[0].userAnsweredText == '') {
+      q.options[0].userAnsweredText = '用户未作答';
+    }
   }
 }
 
-const selectOption = (selectedOption: Option) => {
-  if (mode === 'view') {
-    if (question.value.type === QuestionType.SingleChoice) {
-      for (let opt of question.value.options) {
-        opt.isSelected = false;
-      }
+// 单选题选择逻辑
+const selectOption = (option: AnswerOptionExt) => {
+  if (mode === 'answer' && question.value.type === QuestionType.SingleChoice) {
+    for (const opt of (question.value as AnswerQuestion).options) {
+      (opt as AnswerOptionExt).isSelected = false;
     }
-    selectedOption.isSelected = !selectedOption.isSelected;
-    question.value.answer = [];
-    for (let opt of question.value.options) {
-      if (opt.isSelected && opt.id !== undefined) {
-        question.value.answer.push(opt.id);
-      }
-    }
+    option.isSelected = !option.isSelected;
+  }
+};
+
+// 设置得分
+const handleScoreChange = (e: Event) => {
+  if (mode === 'review' && e.target) {
+    emit('scoreChange', {
+      questionId: question.value.id,
+      score: (e.target as HTMLSelectElement).value,
+    });
   }
 };
 
@@ -62,13 +79,12 @@ onMounted(() => {
 <template>
   <div class="question">
     <div class="title">
-      <span class="type"> {{ index + 1 }}.[{{ question.typeText }}] </span>
+      <span class="type"> {{ index + 1 }}.[{{ typeText }}] </span>
       <span class="text"> {{ question.title }}</span>
       <span class="score">({{ question.score }}分)</span>
       <span v-if="mode === 'review'">
-        <select :value="question.userGetScore" :disabled="archived" @change="
-          (e: Event) => emit('scoreChange', { questionId: question.id, score: (e.target as HTMLSelectElement).value })
-        ">
+        <select :value="(question as AdminReviewQuestion).userGetScore" :disabled="archived"
+          @change="handleScoreChange($event)">
           <option v-for="i in 10" :value="i">{{ i }}分</option>
         </select>
       </span>
@@ -80,48 +96,49 @@ onMounted(() => {
       </li>
     </ul>
     <!-- 选择题 -->
-    <ul class="option-list"
-      v-if="question.type === QuestionType.SingleChoice || question.type === QuestionType.MultipleChoice">
-      <li v-for="(option, optionIndex) in question.options" :key="optionIndex" :class="{ selected: option.isSelected }"
-        @click="selectOption(option)">
-        <div v-if="mode === 'review' && option.isCorrect" class="correct-option"></div>
+    <ul class="option-list" v-if="[QuestionType.SingleChoice, QuestionType.MultipleChoice].includes(question.type)">
+      <li v-for="(option, optionIndex) in question.options" :key="optionIndex"
+        :class="{ selected: (option as AnswerOptionExt).isSelected }" @click="selectOption(option as AnswerOptionExt)">
+        <div v-if="mode === 'review' && (option as AdminReviewOption).isCorrect" class="correct-option"></div>
         {{ ['A.', 'B.', 'C.', 'D.'][optionIndex] }}{{ option.text }}
       </li>
     </ul>
     <!-- 填空题 -->
     <div v-if="question.type === QuestionType.FillInTheBlanks">
-      <input v-if="mode === 'view'" type="txet" required class="input-text" placeholder="请在此作答，前后不要有多余符号" @input="
+      <input v-if="mode === 'answer'" type="txet" required class="input-text" placeholder="请在此作答，前后不要有多余符号" @input="
         (e: Event) => {
-          question.answer = [(e.target as HTMLSelectElement).value];
+          (question as AnswerQuestionExt).answer = [(e.target as HTMLSelectElement).value];
         }
       " />
-      <div v-if="mode === 'admin-view' || mode === 'review'">
+      <div v-if="['admin-view', 'review'].includes(mode)">
         <p>标准答案：</p>
-        <input type="txet" class="input-text" :placeholder="question.options[0].text" disabled />
+        <input type="txet" class="input-text" :placeholder="(question.options[0] as AdminViewOption).referenceAnswer"
+          disabled />
       </div>
       <div v-if="mode === 'review'">
         <p>用户答案：</p>
-        <input type="txet" class="input-text" :placeholder="question.options[0].inputText" disabled />
+        <input type="txet" class="input-text" :placeholder="(question.options[0] as AdminReviewOption).userAnsweredText"
+          disabled />
       </div>
     </div>
     <!-- 主观题 -->
     <div v-if="question.type === QuestionType.Subjective"
       :class="{ resize: question.type === QuestionType.Subjective }">
-      <textarea v-if="mode === 'view'" required class="input-textarea" placeholder="请在此处作答" @input="
+      <textarea v-if="mode === 'answer'" required class="input-textarea" placeholder="请在此处作答" @input="
         (e: Event) => {
-          question.answer = [(e.target as HTMLSelectElement).value];
+          (question as AnswerQuestionExt).answer = [(e.target as HTMLSelectElement).value];
         }
       "></textarea>
       <div v-if="mode === 'admin-view' || mode === 'review'">
         <p>参考答案：</p>
         <textarea class="input-textarea" disabled>
-          {{ question.options[0].text }}
+          {{ (question.options[0] as AdminReviewOption).referenceAnswer }}
         </textarea>
       </div>
       <div v-if="mode === 'review'">
         <p>用户答案：</p>
         <textarea class="input-textarea" disabled>
-          {{ question.options[0].inputText }}
+          {{ (question.options[0] as AdminReviewOption).userAnsweredText }}
         </textarea>
       </div>
     </div>
