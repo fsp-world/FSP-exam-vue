@@ -212,7 +212,8 @@ const submitSort = () => {
 
           <EditQuestion v-if="toggleEditQuestion" :mode="currentMode" :order="currentOrder" :initial-data="currentData"
             @on-edit="handleEdit" @close="closeEditQuestion" />
-          <SetSurveyMetaData :sid="props.sid" :mode="'set'" v-model="toggleSetSurveyMetaData"
+          <SetSurveyMetaData :sid="props.sid" :mode="'set'" :initial-name="survey.name"
+            :initial-description="survey.description" v-model="toggleSetSurveyMetaData"
             @on-edit="SurveyMetaDataUpdate" />
           <MigrationQuestionMenu v-if="toggleMigrationQuestionMenu" :sid="props.sid" :qid="migrationQuestionId"
             v-model="toggleMigrationQuestionMenu" @on-edit="_getSurvey()" />

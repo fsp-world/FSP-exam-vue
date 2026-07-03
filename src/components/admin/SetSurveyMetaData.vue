@@ -8,6 +8,8 @@ import type { NewSurvey } from '@/types/survey';
 interface Props {
   sid?: number;
   mode: 'add' | 'set';
+  initialName?: string;
+  initialDescription?: string;
 }
 
 const props = withDefaults(defineProps<Props>(), { mode: 'add' });
@@ -40,9 +42,11 @@ const submitMetaData = () => {
   }
 };
 
-watch(() => toggleForm.value, () => {
-  formData.value.name = '';
-  formData.value.description = '';
+watch(() => toggleForm.value, (opened) => {
+  if (opened) {
+    formData.value.name = props.initialName ?? '';
+    formData.value.description = props.initialDescription ?? '';
+  }
 });
 </script>
 
