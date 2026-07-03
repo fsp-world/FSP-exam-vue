@@ -99,7 +99,8 @@ onMounted(() => {
     <ul class="option-list" v-if="[QuestionType.SingleChoice, QuestionType.MultipleChoice].includes(question.type)">
       <li v-for="(option, optionIndex) in question.options" :key="optionIndex"
         :class="{ selected: (option as AnswerOptionExt).isSelected }" @click="selectOption(option as AnswerOptionExt)">
-        <div v-if="mode === 'review' && (option as AdminReviewOption).isCorrect" class="correct-option"></div>
+        <div v-if="(mode === 'admin-view' || mode === 'review') && (option as AdminViewOption).isCorrect"
+          class="correct-option"></div>
         {{ ['A.', 'B.', 'C.', 'D.'][optionIndex] }}{{ option.text }}
       </li>
     </ul>

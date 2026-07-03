@@ -5,7 +5,7 @@ import { QuestionType } from '@/types/survey';
 import { compressionFile } from '@/utils/imageCompression';
 import MCButton from '@/components/MCButton.vue';
 import ModalCloseButton from '@/components/admin/ModalCloseButton.vue';
-import { hasAtLeastOneCorrectOption } from '@/utils/survey';
+import { hasSufficientCorrectOptions } from '@/utils/survey';
 import { openAlert } from '@/utils/TsAlert';
 
 /** 本地类型：给选项和图片加上前端专用 key，不会发给后端 */
@@ -112,9 +112,9 @@ const submit = () => {
     return;
   }
 
-  // 选择题（单选/多选）必须至少有一个正确选项
-  if (!hasAtLeastOneCorrectOption(question.value)) {
-    openAlert('请至少勾选一个正确选项！');
+  const check = hasSufficientCorrectOptions(question.value);
+  if (!check.pass) {
+    openAlert(check.hint + '！');
     return;
   }
 
@@ -233,7 +233,7 @@ watch(() => question.value.type, (newVal) => {
                 <div v-for="(item, index) in question.options" :key="item.key"
                   class="flex flex-col md:flex-row gap-2 items-start p-2 bg-gray-50 rounded">
                   <span v-if="isChoiceType" class="text-sm font-medium w-20 text-center shrink-0 pt-1">选项{{ index + 1
-                  }}</span>
+                    }}</span>
                   <textarea v-model="item.text" :placeholder="types[question.type - 1]?.placeholder"
                     class="flex-1 px-2 py-1 border border-gray-300 rounded resize-y min-h-[36px] outline-none text-xs md:text-sm w-full" />
                   <div v-if="isChoiceType" class="flex items-center gap-2 shrink-0">
