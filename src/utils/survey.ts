@@ -1,7 +1,4 @@
-import type {
-  ImportSurvey,
-  EditQuestions,
-} from '@/types/survey';
+import type { ImportSurvey, UploadAddQuestion } from '@/types/survey';
 import { QuestionType } from '@/types/survey';
 import { addSurveyAPI, addQuestionAPI, getSurvey } from '@/apis/admin';
 import { openAlert } from '@/utils/TsAlert';
@@ -74,7 +71,7 @@ const addSurvey = async (jsonData: ImportSurvey): Promise<any> => {
   }
 };
 
-const addQuestions = async (data: EditQuestions): Promise<ReturnData> => {
+const addQuestions = async (data: UploadAddQuestion): Promise<ReturnData> => {
   try {
     const res = await addQuestionAPI(data);
     if (res.data.code === 0) {
@@ -102,7 +99,7 @@ export const importSurveyData = async (
   }
   openAlert(addSurveyRes.msg);
 
-  const sendData: EditQuestions = {
+  const sendData: UploadAddQuestion = {
     surveyId: addSurveyRes.surveyId,
     questions: jsonData.questions.map((q) => ({ ...q, display_order: 0 })), // 重置排序
   };

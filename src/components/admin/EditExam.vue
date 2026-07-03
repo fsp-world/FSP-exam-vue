@@ -9,7 +9,7 @@ import ModalCloseButton from './ModalCloseButton.vue';
 import { ref, computed } from 'vue';
 import { openAlert } from '@/utils/TsAlert';
 import { dateFormatYYYYMMDDHH } from '@/utils/date';
-import type { EditQuestions, UploadEditQuestion, AdminViewQuestion, ViewSurvey, ModeType } from '@/types/survey';
+import type { UploadEditQuestion, AdminViewQuestion, AdminViewSurvey, ModeType, UploadAddQuestion, EditQuestionData } from '@/types/survey';
 import type { FetchResponse } from '@/types';
 
 interface Props {
@@ -37,14 +37,14 @@ const migrationQuestion = (question_id: number) => {
   migrationQuestionId.value = question_id;
 };
 
-const survey = ref<ViewSurvey>({
+const survey = ref<AdminViewSurvey>({
   id: props.sid,
   name: '加载中...',
   description: '加载中...',
   createTime: '加载中...',
   questions: [],
-  sumScore: 0
 });
+const sumScore = ref(0);
 
 const openEditQuestion = (mode: ModeType, order: number, data: AdminViewQuestion | null = null) => {
   currentMode.value = mode;
@@ -68,11 +68,11 @@ const deleteQuestion = (question: AdminViewQuestion) => {
 };
 
 const _getSurvey = () => {
-  getSurvey(props.sid).then((res: FetchResponse) => {
+  getSurvey(props.sid).then((res) => {
     survey.value = res.data.data;
-    survey.value.sumScore = 0;
+    sumScore.value = 0;
     for (let i in survey.value.questions) {
-      survey.value.sumScore += survey.value.questions[i].score;
+      sumScore.value += survey.value.questions[i].score;
     }
     orderMapBak = survey.value.questions.map(({ id, display_order }) => ({ id, display_order }));
     orderMap.value = JSON.parse(JSON.stringify(orderMapBak));
@@ -86,7 +86,7 @@ const SurveyMetaDataUpdate = () => {
   emit('flush');
 };
 
-const handleEdit = (mode: string, QuestionData: UploadEditQuestion) => {
+const handleEdit = (mode: string, QuestionData: EditQuestionData) => {
   const handleRes = (res: FetchResponse) => {
     if (res.data.code === 0) {
       closeEditQuestion();
@@ -97,14 +97,17 @@ const handleEdit = (mode: string, QuestionData: UploadEditQuestion) => {
     }
   };
 
-  const sendData: EditQuestions = {
-    surveyId: props.sid,
-    questions: [QuestionData],
-  };
-
   if (mode === 'add') {
+    const sendData: UploadAddQuestion = {
+      surveyId: props.sid,
+      questions: [QuestionData],
+    };
     addQuestionAPI(sendData).then((res) => handleRes(res));
   } else if (mode === 'edit') {
+    const sendData: UploadEditQuestion = {
+      surveyId: props.sid,
+      question: QuestionData,
+    };
     editQuestionAPI(sendData).then((res) => handleRes(res));
   }
 };
@@ -244,7 +247,7 @@ const submitSort = () => {
 
             <!-- 信息栏 -->
             <div class="flex flex-wrap items-center justify-center gap-2 md:gap-5 py-2 px-2 mb-2.5 bg-gray-200 rounded">
-              <p class="text-sm md:text-xl select-none">试卷总分：{{ survey.sumScore }} 分</p>
+              <p class="text-sm md:text-xl select-none">试卷总分：{{ sumScore }} 分</p>
               <MCButton length="medium" @click="toggleDirection">正序/倒序</MCButton>
             </div>
           </div>

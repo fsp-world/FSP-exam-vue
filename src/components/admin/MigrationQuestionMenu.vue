@@ -4,42 +4,46 @@ import MCButton from '../MCButton.vue';
 import { ref, inject } from 'vue';
 import { openAlert } from '@/utils/TsAlert';
 import { getSurveys, migrationQuestionAPI } from '@/apis/admin';
-import type { Survey } from '@/types/survey';
+import type { SurveyInfoItem } from '@/types/survey';
 
-interface SurveyType extends Survey {
-  selected: boolean;
+interface SurveyMoreInfoItem extends SurveyInfoItem {
+  selected?: boolean;
   editable: boolean;
 }
 
-interface SurveysDataType {
-  code: number;
-  list: SurveyType[];
-  desc: string;
+interface Props {
+  sid: number
+  qid: number
 }
 
-const { sid, qid } = defineProps({
-  sid: {
-    type: Number,
-    required: true,
-  },
-  qid: {
-    type: Number,
-    required: true,
-  },
-});
+const { sid, qid } = defineProps<Props>();
 
 const emit = defineEmits(['onEdit']);
 
 const toggleMenu = defineModel<boolean>({ required: true });
-const surveysData = ref<SurveysDataType>({
-  code: -1,
-  list: [],
-  desc: '',
-});
+const surveys = ref<SurveyMoreInfoItem[]>([]);
+
+type AttachEditableToSurveys = (surveys: SurveyInfoItem[]) => SurveyInfoItem[];
+const attachEditableToSurveys = inject<AttachEditableToSurveys>('attachEditableToSurveys');
+if (!attachEditableToSurveys) {
+  throw new Error('attachEditableToSurveys must be provided by parent component');
+}
+
+const _getSurveys = async () => {
+  try {
+    const res = await getSurveys();
+    const list = attachEditableToSurveys(res.data.data) as SurveyMoreInfoItem[];
+    surveys.value = list.filter((item) => item.id !== sid);
+  } catch (error) {
+    openAlert('获取问卷列表失败！');
+    console.log(error);
+  }
+};
+_getSurveys();
 
 const complete = () => {
   let flag = false;
-  for (const item of surveysData.value.list) {
+  for (const item of surveys.value) {
     if (item.selected && item.id) {
       flag = true;
       const data = { target_sid: item.id, qid: qid };
@@ -60,30 +64,16 @@ const complete = () => {
   }
 };
 
-type AttachEditableToSurveys = (surveys: Survey[]) => Survey[];
-const attachEditableToSurveys = inject<AttachEditableToSurveys>('attachEditableToSurveys');
-if (!attachEditableToSurveys) {
-  throw new Error('attachEditableToSurveys must be provided by parent component');
-}
+
 
 const selectedSurvey = (index: number) => {
-  for (const i of surveysData.value.list) {
+  for (const i of surveys.value) {
     i.selected = false;
   }
-  surveysData.value.list[index].selected = true;
+  surveys.value[index].selected = true;
 };
 
-const _getSurveys = async () => {
-  try {
-    const res = await getSurveys();
-    const list = attachEditableToSurveys(res.data.data) as SurveyType[];
-    surveysData.value = { code: res.data.code, desc: res.data.desc, list: list.filter((item: SurveyType) => item.id !== sid) };
-  } catch (error) {
-    openAlert('获取问卷列表失败！');
-    console.log(error);
-  }
-};
-_getSurveys();
+
 </script>
 <template>
   <InfoDialog :show="toggleMenu" dialogType="book-card">
@@ -91,8 +81,8 @@ _getSurveys();
       <p class="title">想把这道题迁移到哪张问卷的末尾？</p>
       <p class="tips">已发布或存在未交卷、未批改答卷的问卷不能被编辑</p>
       <ul class="surveys">
-        <li class="survey" :class="{ selected: item.selected }" v-for="(item, itemIndex) of surveysData.list"
-          :key="item.id" @click="selectedSurvey(itemIndex)">
+        <li class="survey" :class="{ selected: item.selected }" v-for="(item, itemIndex) of surveys" :key="item.id"
+          @click="selectedSurvey(itemIndex)">
           {{ item.name }}
         </li>
       </ul>
