@@ -5,6 +5,8 @@ import { QuestionType } from '@/types/survey';
 import { compressionFile } from '@/utils/imageCompression';
 import MCButton from '@/components/MCButton.vue';
 import ModalCloseButton from '@/components/admin/ModalCloseButton.vue';
+import { hasAtLeastOneCorrectOption } from '@/utils/survey';
+import { openAlert } from '@/utils/TsAlert';
 
 /** 本地类型：给选项和图片加上前端专用 key，不会发给后端 */
 interface LocalOption extends NewOption {
@@ -105,6 +107,17 @@ const isChoiceType = computed(() => question.value.type === QuestionType.SingleC
 
 
 const submit = () => {
+  if (!question.value.title.trim()) {
+    openAlert('请输入问题描述！');
+    return;
+  }
+
+  // 选择题（单选/多选）必须至少有一个正确选项
+  if (!hasAtLeastOneCorrectOption(question.value)) {
+    openAlert('请至少勾选一个正确选项！');
+    return;
+  }
+
   // 提交时剥离 key，避免无关字段传给后端
   const data: EditQuestionData = {
     ...question.value,
