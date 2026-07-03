@@ -89,8 +89,10 @@ const addSurvey = async (jsonData: ImportSurvey): Promise<any> => {
 };
 
 const addQuestions = async (data: UploadAddQuestion): Promise<ReturnData> => {
-  // 检查所有选择题（单选/多选）是否都有正确选项
   for (const q of data.questions) {
+    if (!q.title.trim()) {
+      return { success: false, msg: '存在题目描述为空的题目，请检查！' };
+    }
     if (!hasAtLeastOneCorrectOption(q)) {
       const typeName =
         q.type === QuestionType.SingleChoice ? '单选题' : '多选题';
