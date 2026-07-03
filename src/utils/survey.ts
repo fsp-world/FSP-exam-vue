@@ -1,4 +1,8 @@
-import type { ImportSurvey, UploadAddQuestion } from '@/types/survey';
+import type {
+  ImportSurvey,
+  UploadAddQuestion,
+  EditQuestionData,
+} from '@/types/survey';
 import { QuestionType } from '@/types/survey';
 import { addSurveyAPI, addQuestionAPI, getSurvey } from '@/apis/admin';
 import { openAlert } from '@/utils/TsAlert';
@@ -39,6 +43,19 @@ export function isObjectiveQuestion(type: QuestionType): boolean {
   return objectiveQuestionTypes.includes(type);
 }
 
+/** 检查选择题（单选/多选）是否至少有一个正确选项 */
+export function hasAtLeastOneCorrectOption(
+  question: EditQuestionData,
+): boolean {
+  if (
+    question.type === QuestionType.FillInTheBlanks ||
+    question.type === QuestionType.Subjective
+  ) {
+    return true; // 填空/主观题不需要正确选项
+  }
+  return question.options.some((o) => o.isCorrect);
+}
+
 const isFormatCorrect = (jsonData: ImportSurvey): ReturnData => {
   if (
     !jsonData.description ||
@@ -72,6 +89,18 @@ const addSurvey = async (jsonData: ImportSurvey): Promise<any> => {
 };
 
 const addQuestions = async (data: UploadAddQuestion): Promise<ReturnData> => {
+  // 检查所有选择题（单选/多选）是否都有正确选项
+  for (const q of data.questions) {
+    if (!hasAtLeastOneCorrectOption(q)) {
+      const typeName =
+        q.type === QuestionType.SingleChoice ? '单选题' : '多选题';
+      return {
+        success: false,
+        msg: `题目「${q.title}」是${typeName}，请设置至少一个正确选项！`,
+      };
+    }
+  }
+
   try {
     const res = await addQuestionAPI(data);
     if (res.data.code === 0) {

@@ -48,17 +48,12 @@ const editSurvey = (survey: SurveyInfoItem) => {
 const deleteSurvey = (id: number) => {
   const confirmDelete = confirm('确定要删除这个问卷吗，问卷中的题目会被一并删除！请三思！');
   if (confirmDelete) {
-    const confirmInput = prompt('请输入：确认删除问卷');
-    if (confirmInput === '确认删除问卷') {
-      delSurvey(id).then((res) => {
-        if (res.data.code === 0) {
-          _getSurveys();
-        }
-        openAlert(res.data.desc);
-      });
-    } else {
-      alert('二次确认失败');
-    }
+    delSurvey(id).then((res) => {
+      if (res.data.code === 0) {
+        _getSurveys();
+      }
+      openAlert(res.data.desc);
+    });
   }
 };
 

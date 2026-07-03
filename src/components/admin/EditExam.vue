@@ -9,6 +9,7 @@ import ModalCloseButton from './ModalCloseButton.vue';
 import { ref, computed } from 'vue';
 import { openAlert } from '@/utils/TsAlert';
 import { dateFormatYYYYMMDDHH } from '@/utils/date';
+import { hasAtLeastOneCorrectOption } from '@/utils/survey';
 import type { UploadEditQuestion, AdminViewQuestion, AdminViewSurvey, ModeType, UploadAddQuestion, EditQuestionData } from '@/types/survey';
 import type { FetchResponse } from '@/types';
 
@@ -87,6 +88,12 @@ const SurveyMetaDataUpdate = () => {
 };
 
 const handleEdit = (mode: string, QuestionData: EditQuestionData) => {
+  // 选择题（单选/多选）必须至少有一个正确选项
+  if (!hasAtLeastOneCorrectOption(QuestionData)) {
+    openAlert('请至少勾选一个正确选项！');
+    return;
+  }
+
   const handleRes = (res: FetchResponse) => {
     if (res.data.code === 0) {
       closeEditQuestion();
