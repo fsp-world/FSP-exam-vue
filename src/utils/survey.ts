@@ -44,16 +44,26 @@ export function isObjectiveQuestion(type: QuestionType): boolean {
 }
 
 /** 检查选择题（单选/多选）是否至少有一个正确选项 */
-export function hasAtLeastOneCorrectOption(
+/** 检查选择题是否有足够正确选项 */
+export function hasSufficientCorrectOptions(
   question: EditQuestionData,
-): boolean {
+): { pass: boolean; hint: string } {
   if (
     question.type === QuestionType.FillInTheBlanks ||
     question.type === QuestionType.Subjective
   ) {
-    return true; // 填空/主观题不需要正确选项
+    return { pass: true, hint: '' };
   }
-  return question.options.some((o) => o.isCorrect);
+
+  const correctCount = question.options.filter((o) => o.isCorrect).length;
+
+  if (correctCount === 0) {
+    return { pass: false, hint: '请至少勾选一个正确选项' };
+  }
+  if (question.type === QuestionType.MultipleChoice && correctCount < 2) {
+    return { pass: false, hint: '多选题请至少勾选两个正确选项' };
+  }
+  return { pass: true, hint: '' };
 }
 
 const isFormatCorrect = (jsonData: ImportSurvey): ReturnData => {
@@ -93,12 +103,11 @@ const addQuestions = async (data: UploadAddQuestion): Promise<ReturnData> => {
     if (!q.title.trim()) {
       return { success: false, msg: '存在题目描述为空的题目，请检查！' };
     }
-    if (!hasAtLeastOneCorrectOption(q)) {
-      const typeName =
-        q.type === QuestionType.SingleChoice ? '单选题' : '多选题';
+    const check = hasSufficientCorrectOptions(q);
+    if (!check.pass) {
       return {
         success: false,
-        msg: `题目「${q.title}」是${typeName}，请设置至少一个正确选项！`,
+        msg: `题目「${q.title}」${check.hint}！`,
       };
     }
   }
