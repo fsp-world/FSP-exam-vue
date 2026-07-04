@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, useTemplateRef } from 'vue';
 import { useUserStore } from '@/stores/user';
 import { storeToRefs } from 'pinia';
 import { openAlert } from '@/utils/TsAlert';
@@ -22,7 +22,7 @@ const emit = defineEmits<{
 const userStore = useUserStore();
 const { background } = storeToRefs(userStore);
 
-const bgFileInput = ref<HTMLInputElement | null>(null);
+const bgFileInputRef = useTemplateRef('bgFileInputRef');
 const uploading = ref(false);
 
 const presetBackgrounds = [
@@ -67,7 +67,7 @@ const handleBgFileUpload = async (e: Event) => {
     openAlert('上传失败');
   } finally {
     uploading.value = false;
-    if (bgFileInput.value) bgFileInput.value.value = '';
+    if (bgFileInputRef.value) bgFileInputRef.value.value = '';
   }
 };
 
@@ -98,8 +98,8 @@ const fileToDataURL = (file: Blob): Promise<string> => {
     </div>
 
     <div class="bg-actions">
-      <input ref="bgFileInput" type="file" accept="image/*" style="display: none" @change="handleBgFileUpload" />
-      <MCButton :length="'medium'" :disabled="uploading" @click="bgFileInput?.click()">
+      <input ref="bgFileInputRef" type="file" accept="image/*" style="display: none" @change="handleBgFileUpload" />
+      <MCButton :length="'medium'" :disabled="uploading" @click="bgFileInputRef?.click()">
         {{ uploading ? '上传中...' : '自定义背景' }}
       </MCButton>
       <MCButton :length="'medium'" @click="emit('update:is-modal-visible', false)">取消</MCButton>
