@@ -96,7 +96,7 @@ getSurveyIds();
           </select>
         </template>
         <template #actions="{ row }">
-          <MCButton class="!text-red-500" length="short" @click="delSlot(row as unknown as SurveySlot)">删除</MCButton>
+          <MCButton length="short" :button-type="'delete'" @click="delSlot(row as SurveySlot)">删除</MCButton>
         </template>
       </BaseTable>
     </div>
