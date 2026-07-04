@@ -15,6 +15,27 @@ export const computStatus = (status: number): string => {
   }
 };
 
+export const reviewedStatus = (key: number): string => {
+  switch (key) {
+    case 0:
+      return '待审核';
+    case 1:
+      return '已通过';
+    case 2:
+      return '已拒绝';
+    case 3:
+      return '已超时';
+    default:
+      return '未知';
+  }
+};
+
+export const reviewedColor = (key: number): string => {
+  if (key === 1) return 'text-green-600';
+  if (key === 2) return 'text-red-500';
+  return 'text-gray-400';
+};
+
 interface SeasonConfig {
   startDate: string;
   label: string;

@@ -26,7 +26,14 @@ const props = withDefaults(defineProps<Props>(), {
 
 const { index, mode, archived } = props
 
-const emit = defineEmits(['scoreChange']);
+export interface ScoreChangePayload {
+  questionId: number;
+  score: number;
+}
+
+const emit = defineEmits<{
+  scoreChange: [payload: ScoreChangePayload];
+}>();
 
 const question = defineModel<QuestionByMode[Props['mode']]>({ required: true });
 
@@ -47,12 +54,15 @@ function init() {
   }
 }
 
-// 单选题选择逻辑
+// 选择逻辑
 const selectOption = (option: AnswerOptionExt) => {
-  if (mode === 'answer' && question.value.type === QuestionType.SingleChoice) {
+  if (mode !== 'answer') return;
+  if (question.value.type === QuestionType.SingleChoice) {
     for (const opt of (question.value as AnswerQuestion).options) {
       (opt as AnswerOptionExt).isSelected = false;
     }
+    option.isSelected = true;
+  } else if (question.value.type === QuestionType.MultipleChoice) {
     option.isSelected = !option.isSelected;
   }
 };
@@ -62,7 +72,7 @@ const handleScoreChange = (e: Event) => {
   if (mode === 'review' && e.target) {
     emit('scoreChange', {
       questionId: question.value.id,
-      score: (e.target as HTMLSelectElement).value,
+      score: Number((e.target as HTMLSelectElement).value),
     });
   }
 };
@@ -96,7 +106,8 @@ onMounted(() => {
       </li>
     </ul>
     <!-- 选择题 -->
-    <ul class="option-list" v-if="[QuestionType.SingleChoice, QuestionType.MultipleChoice].includes(question.type)">
+    <ul class="option-list" :class="{ 'answer-mode': mode === 'answer' }"
+      v-if="[QuestionType.SingleChoice, QuestionType.MultipleChoice].includes(question.type)">
       <li v-for="(option, optionIndex) in question.options" :key="optionIndex"
         :class="{ selected: (option as AnswerOptionExt).isSelected }" @click="selectOption(option as AnswerOptionExt)">
         <div v-if="(mode === 'admin-view' || mode === 'review') && (option as AdminViewOption).isCorrect"
@@ -186,6 +197,7 @@ onMounted(() => {
   border-radius: 5px;
   user-select: none;
   border: 1px solid #ffffff00;
+  transition: background-color 0.15s;
 
   .correct-option {
     position: absolute;
@@ -198,7 +210,7 @@ onMounted(() => {
   }
 }
 
-.option-list .option-hover:hover {
+.option-list.answer-mode li:hover {
   background-color: #cccccc80;
 }
 

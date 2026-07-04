@@ -9,8 +9,9 @@ import InfoDialog from '@/components/InfoDialog.vue';
 import { openAlert } from '@/utils/TsAlert';
 import { getSurvey, submitSurveyAPI } from '@/apis/survey';
 import { useRoute } from 'vue-router';
-import { AnsweredQuestion, QuestionType, type AnswerSurvey, type AnsweredSurvey } from '@/types/survey';
+import { QuestionType, type AnswerSurvey, type AnsweredSurvey } from '@/types/survey';
 import { formatRemainingTimeToHHmmss } from '@/utils/date';
+import { isQuestionAnswered } from '@/utils/survey';
 
 const route = useRoute();
 const sid = Number(route.params.sid);
@@ -74,13 +75,7 @@ const checkDone = async () => {
     const questions = answerSurvey.value!.questions;
     const notAnsweredQuestions: number[] = [];
     questions.forEach((item, index) => {
-      // 选择题：检查是否有选项被选中；填空/主观题：检查 answer 是否有内容
-      // !! — 双重取反，把值转成布尔值：有内容 → true，空字符串/undefined → false
-      const isChoice = item.type === QuestionType.SingleChoice || item.type === QuestionType.MultipleChoice;
-      const hasAnswer = isChoice
-        ? item.options.some(opt => (opt as any).isSelected)
-        : !!(item as any).answer?.[0];
-      if (!hasAnswer) {
+      if (!isQuestionAnswered(item)) {
         notAnsweredQuestions.push(index + 1);
       }
     });
@@ -134,9 +129,9 @@ const submitPaper = () => {
 
 <template>
   <QuestionBackground :flag="renderBackground">
-    <div class="center">
+    <div v-if="answerSurvey" class="center">
       <div class="exam-title">
-        <p class="title">像素仙缘入服测试卷</p>
+        <p class="title">像素仙缘入服测试</p>
         <p class="name">{{ answerSurvey?.name }}</p>
         <p class="time">剩余时间：{{ timeRemaining }}</p>
       </div>
@@ -163,7 +158,8 @@ const submitPaper = () => {
     </div>
   </InfoDialog>
   <PaperDone v-if="isDone" :score="objectiveScore"></PaperDone>
-  <QuestionMap v-else :questions="answerSurvey!.questions as unknown as AnsweredQuestion[]"></QuestionMap>
+  <QuestionMap v-if="answerSurvey" :questions="answerSurvey.questions">
+  </QuestionMap>
 </template>
 
 <style scoped>
@@ -189,7 +185,7 @@ const submitPaper = () => {
 }
 
 .exam-title {
-  padding-top: 60px;
+  padding-top: 50px;
   text-align: center;
   user-select: none;
 }
@@ -200,12 +196,12 @@ const submitPaper = () => {
 }
 
 .exam-title .name {
-  font-size: 40px;
+  font-size: var(--title-font-size-large);
 }
 
 .exam-title .time {
   padding-top: 30px;
-  font-size: 30px;
+  font-size: var(--title-font-size-medium);
 }
 
 .question-list {
