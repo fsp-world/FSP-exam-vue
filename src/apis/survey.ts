@@ -17,7 +17,7 @@ export const getSurvey = async (
 ): Promise<FetchResponse<AnswerSurvey>> => {
   try {
     const response = await request.get('/survey/survey/' + id);
-    response.data.questions = sortQuestion(response.data.questions);
+    response.data.data.questions = sortQuestion(response.data.data.questions);
     return response;
   } catch (error) {
     console.error('Error fetching survey:', error);

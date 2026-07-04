@@ -1,9 +1,10 @@
 <script setup lang="ts">
 
-import type { AnsweredQuestion } from '@/types/survey'
+import type { AnswerQuestion } from '@/types/survey'
+import { isQuestionAnswered } from '@/utils/survey'
 
 interface Props {
-  questions: AnsweredQuestion[]
+  questions: AnswerQuestion[]
 }
 
 const { questions } = defineProps<Props>();
@@ -14,7 +15,8 @@ const { questions } = defineProps<Props>();
   <div class="map">
     <ul class="y-scroll">
       <li v-for="(question, questionIndex) in questions" :key="questionIndex">
-        <a :class="{ error: !question.answer }" :href="'#' + 'question' + (questionIndex + 1)">{{ questionIndex + 1
+        <a :class="{ error: !isQuestionAnswered(question) }" :href="'#' + 'question' + (questionIndex + 1)">{{
+          questionIndex + 1
         }}</a>
       </li>
     </ul>
@@ -65,6 +67,7 @@ const { questions } = defineProps<Props>();
     a {
       font-size: 25px;
       width: 100%;
+      padding: 0 8px;
       height: 100%;
       text-align: center;
       line-height: var(--hei);

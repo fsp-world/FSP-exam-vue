@@ -2,6 +2,7 @@ import type {
   ImportSurvey,
   UploadAddQuestion,
   EditQuestionData,
+  AnswerQuestion,
 } from '@/types/survey';
 import { QuestionType } from '@/types/survey';
 import { addSurveyAPI, addQuestionAPI, getSurvey } from '@/apis/admin';
@@ -32,6 +33,16 @@ export const getStringQuestionType = (questionType: QuestionType): string => {
       return '未知题';
   }
 };
+
+/** 判断一道题是否已被作答 */
+export function isQuestionAnswered(question: AnswerQuestion): boolean {
+  const isChoice =
+    question.type === QuestionType.SingleChoice ||
+    question.type === QuestionType.MultipleChoice;
+  return isChoice
+    ? question.options.some((opt) => !!(opt as any).isSelected)
+    : !!((question as any).answer?.[0] as string | undefined);
+}
 
 const objectiveQuestionTypes = [
   QuestionType.SingleChoice,

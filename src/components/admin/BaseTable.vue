@@ -66,7 +66,7 @@ const pageTotalPages = computed(() => {
 const hasPagination = computed(() => !!props.fetchData || sourceData.value.length > 0);
 
 // 服务端模式加载
-const loadData = (page = 1, size = 10) => {
+const loadData = (page = pagedData.value.page, size = pagedData.value.size) => {
   if (!props.fetchData) return;
   pagedData.value.page = page;
   pagedData.value.size = size;
@@ -117,6 +117,8 @@ watch(() => props.fetchData, () => {
 
 // 列名列表
 const columnKeys = computed(() => Array.from(props.tableProps.columnMap.keys()));
+
+defineExpose({ loadData, pagedData });
 </script>
 
 <template>

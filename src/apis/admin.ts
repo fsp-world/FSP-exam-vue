@@ -83,7 +83,9 @@ export const responseDetail = async (
   id: number,
 ): Promise<FetchResponse<AdminReviewSurvey>> => {
   try {
-    const response = await request.get('/admin/detail/' + id);
+    const response: FetchResponse<AdminReviewSurvey> = await request.get(
+      '/admin/detail/' + id,
+    );
     response.data.data.questions = sortQuestion(response.data.data.questions);
     return response;
   } catch (error) {
@@ -96,7 +98,8 @@ export const detailScore = (data: {
   score: number;
   questionId: number;
   responseId: number;
-}) => request.post('/admin/detail_score', JSON.stringify(data));
+}): Promise<FetchResponse<any>> =>
+  request.post('/admin/detail_score', JSON.stringify(data));
 
 // slot
 export const addSlotAPI = (data: SurveySlot) =>
