@@ -156,6 +156,11 @@ const router = createRouter({
       name: 'OnlineStats',
       component: () => import('@/views/OnlineStats.vue'),
     },
+    {
+      path: '/:pathMatch(.*)*',
+      name: 'NotFound',
+      redirect: { name: 'Error', query: { message: '页面未找到', code: '404' } },
+    },
   ],
 });
 
