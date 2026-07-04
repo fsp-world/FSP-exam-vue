@@ -25,9 +25,6 @@ const checkSurvey_ = () => {
       openAlert(res.data.desc);
       router.push({ name: 'Examination', params: { sid: res.data.data } });
     }
-    else if (res.data.code === 1) {
-      openAlert(res.data.desc);
-    }
   });
 };
 
@@ -71,7 +68,7 @@ const startExam = () => {
     // 这个组件只负责开启check，关闭check由confirm组件负责
     check.value = true;
   } else {
-    openAlert('请填写个人信息并选择类型');
+    openAlert('请填写MC昵称并选择一张问卷');
   }
 };
 

@@ -45,9 +45,10 @@ export function isObjectiveQuestion(type: QuestionType): boolean {
 
 /** 检查选择题（单选/多选）是否至少有一个正确选项 */
 /** 检查选择题是否有足够正确选项 */
-export function hasSufficientCorrectOptions(
-  question: EditQuestionData,
-): { pass: boolean; hint: string } {
+export function hasSufficientCorrectOptions(question: EditQuestionData): {
+  pass: boolean;
+  hint: string;
+} {
   if (
     question.type === QuestionType.FillInTheBlanks ||
     question.type === QuestionType.Subjective
@@ -166,8 +167,9 @@ export const exportSurveyToJsonFile = async (surveyId: number) => {
     const jsonString = JSON.stringify(
       res.data.data,
       (key, value) => {
-        // 去除所有 ID
+        // 去除所有 ID，设置 display_order 为 0
         if (key === 'id') return undefined;
+        if (key === 'display_order') return 0;
         return value;
       },
       2,
