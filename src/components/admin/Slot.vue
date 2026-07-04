@@ -8,8 +8,11 @@ import MCButton from '@/components/MCButton.vue';
 import ModalCloseButton from './ModalCloseButton.vue';
 import { ref, reactive } from 'vue';
 
+const MAX_SLOT_COUNT = 5;
+
 const slots = ref<SurveySlot[]>([]);
 const surveys = ref<SurveyInfoItem[]>([]);
+
 
 const showAddModal = ref(false);
 const newSlot = reactive({
@@ -27,6 +30,10 @@ const getSlots = () => {
 };
 
 const openAddModal = () => {
+  if (slots.value.length >= MAX_SLOT_COUNT) {
+    openAlert(`最多只能创建 ${MAX_SLOT_COUNT} 个插槽`);
+    return;
+  }
   newSlot.slotName = '';
   newSlot.mountedSID = null;
   showAddModal.value = true;
@@ -56,8 +63,7 @@ const handleChange = (item: SurveySlot) => {
 };
 
 const columnMap = new Map([
-  ['id', { title: '#', width: '60px', align: 'center' as const }],
-  ['slotName', { title: '插槽名（系统会自动在末尾加"类"字）' }],
+  ['slotName', { title: '插槽名' }],
   ['mountedSID', { title: '应用的问卷', width: '200px' }],
 ]);
 
@@ -81,7 +87,7 @@ getSurveyIds();
     <div class="p-5">
       <p class="text-sm text-gray-500 mb-5">插槽名就是用户可选的问卷类型的名称，这里有几个插槽，用户就有几种选择</p>
       <MCButton length="medium" @click="openAddModal">新建插槽</MCButton>
-      <h3 class="text-xl font-bold mb-3">插槽列表</h3>
+      <h3 class="text-xl font-bold mb-3 mt-3">插槽列表</h3>
       <BaseTable :table-props="{ columnMap, stripe: true, bordered: true }" :data="slots" actions-width="110px">
         <template #mountedSID="{ row, value }">
           <select :value="value" class="w-full px-2 py-1 border border-gray-300 rounded bg-white outline-none text-sm"
@@ -118,9 +124,9 @@ getSurveyIds();
                 <option v-for="s in surveys" :key="s.id" :value="s.id">{{ s.name }}</option>
               </select>
             </div>
-            <div class="flex justify-end gap-3 pt-2">
-              <MCButton length="short" disabled-style @click="showAddModal = false">取消</MCButton>
-              <MCButton length="short" type="submit">创建</MCButton>
+            <div class="flex justify-around gap-3 pt-2">
+              <MCButton length="medium" style="flex: 1" @click="showAddModal = false">取消</MCButton>
+              <MCButton length="medium" style="flex: 1" type="submit">创建</MCButton>
             </div>
           </form>
         </div>
