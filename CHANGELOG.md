@@ -5,6 +5,7 @@
 ### Refactor
 
 - 为管理页面新建插槽添加模态框，代替原生的 prompt 功能
+- 使用 `useTemplateRef` (Vue 3.5+) 重构原来的模板引用
 - 重构问卷相关代码
 
 ### Bug Fixes

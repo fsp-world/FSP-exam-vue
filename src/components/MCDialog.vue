@@ -10,7 +10,7 @@
 // </MCDialog>
 // showModal 是一个 ref 变量
 
-import { ref, onMounted, onUnmounted, watch, nextTick, computed } from 'vue'
+import { onMounted, onUnmounted, watch, nextTick, computed, useTemplateRef } from 'vue'
 
 interface Props {
   isModalVisible: boolean
@@ -36,7 +36,7 @@ const props = withDefaults(defineProps<Props>(), {
 
 const emit = defineEmits<Emits>()
 
-const modalRef = ref<HTMLElement | null>(null)
+const modalRef = useTemplateRef('modalRef')
 
 const closeModel = () => {
   emit('update:isModalVisible', false)
