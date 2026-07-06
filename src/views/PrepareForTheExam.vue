@@ -9,7 +9,8 @@ import ConfirmPlayer from '@/components/ConfirmPlayer.vue';
 import { getSlotsAPI, startSurvey, checkSurvey } from '@/apis/survey';
 import { openAlert } from '@/utils/TsAlert';
 import { useRouter } from 'vue-router';
-import type { SurveySlot } from '@/types';
+import type { SurveySlot } from '@/types/survey';
+import type { ExamineeInfo } from '@/apis/survey'
 
 const router = useRouter();
 
@@ -18,18 +19,11 @@ interface SurveyList {
   data: SurveySlot
 }
 
-interface ExamineeInfo {
-  playerName: string;
-  playerUUID: string;
-  sid?: number;
-  slot_name?: string;
-}
-
 const checkSurvey_ = () => {
   checkSurvey().then((res) => {
-    if (res.data.code === 1) {
+    if (res.data.code === 0) {
       openAlert(res.data.desc);
-      router.push({ name: 'Examination', params: { sid: res.data.response } });
+      router.push({ name: 'Examination', params: { sid: res.data.data } });
     }
   });
 };
@@ -37,7 +31,8 @@ const checkSurvey_ = () => {
 const examineeInfo = ref<ExamineeInfo>({
   playerName: '',
   playerUUID: 'none',
-  sid: undefined,
+  sid: 0,
+  slotName: ''
 });
 
 const check = ref(false);
@@ -46,17 +41,20 @@ const selectedSurvey = ref<SurveySlot | null>(null)
 
 
 const choiceSurvey = () => {
-  examineeInfo.value.sid = selectedSurvey.value?.mountedSID;
-  examineeInfo.value.slot_name = selectedSurvey.value?.slotName;
+  if (selectedSurvey.value) {
+    examineeInfo.value.sid = selectedSurvey.value.mountedSID;
+    examineeInfo.value.slotName = selectedSurvey.value.slotName;
+  }
+
 };
 
 // 已确认
 const confirmed = () => {
   // 开始考试必须的三个参数：sid，mc-name，mc-uuid
   startSurvey(examineeInfo.value).then((res) => {
-    if (res.data.code === 0) {
+    if (res.data.code === 0 || res.data.code === 1) {
       openAlert(res.data.desc);
-      router.push({ name: 'Examination', params: { sid: res.data.response } });
+      router.push({ name: 'Examination', params: { sid: res.data.data } });
     } else {
       openAlert(res.data.desc);
     }
@@ -70,7 +68,7 @@ const startExam = () => {
     // 这个组件只负责开启check，关闭check由confirm组件负责
     check.value = true;
   } else {
-    openAlert('请填写个人信息并选择类型');
+    openAlert('请填写MC昵称并选择一张问卷');
   }
 };
 
@@ -79,7 +77,7 @@ onMounted(() => {
   checkSurvey_();
   // 获取可选的考试
   getSlotsAPI().then((res) => {
-    surveyList.value = res.data.list.map((slot: SurveySlot) => ({
+    surveyList.value = res.data.data.map((slot) => ({
       label: slot.slotName,
       data: slot
     }));

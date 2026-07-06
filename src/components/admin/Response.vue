@@ -1,36 +1,23 @@
 <script setup lang="ts">
 import { getResponses, reviewedResponse, responseDetail } from '@/apis/admin';
-import type { IResponse, IPagination } from '@/types';
-import { ref, watch, onMounted } from 'vue';
+import type { IPagination } from '@/types';
+import { ref, watch, onMounted, useTemplateRef } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import ResponseDetail from '@/components/admin/ResponseDetail.vue';
 import { dateFormatYYYYMMDDHH } from '@/utils/date';
+import { reviewedStatus, reviewedColor } from '@/utils/statusUtil';
 import { openAlert } from '@/utils/TsAlert';
 import BaseTable from './BaseTable.vue';
 import MCButton from '@/components/MCButton.vue';
+import { AdminReviewSurvey } from '@/types/survey.js';
 
 const route = useRoute();
 const router = useRouter();
 
 const loading = ref(false);
 const visibility = ref(false);
-const detailData = ref();
-
-const reviewedStatus = (key: number) => {
-  switch (key) {
-    case 0: return '待审核';
-    case 1: return '已通过';
-    case 2: return '已拒绝';
-    case 3: return '已超时'
-    default: return '未知';
-  }
-};
-
-const reviewedColor = (key: number) => {
-  if (key === 1) return 'text-green-600';
-  if (key === 2) return 'text-red-500';
-  return 'text-gray-400';
-};
+const detailData = ref<AdminReviewSurvey | null>();
+const tableRef = useTemplateRef('tableRef');
 
 const columnMap = new Map([
   ['id', { title: '#', width: '60px' }],
@@ -59,24 +46,21 @@ const reviewed = (id: number, pass: boolean) => {
   reviewedResponse({ response: id, status: pass ? 1 : 2 }).then((res) => {
     openAlert(res.data.desc);
     if (res.data.code === 0) {
-      loading.value = true;
-      getResponses({ page: 1, size: 10 }).then(() => (loading.value = false));
+      tableRef.value?.loadData();
     }
   });
 };
 
 const openDetail = (id: number) => {
-  responseDetail(id).then((res: { data: any }) => {
-    detailData.value = res.data;
-    detailData.value.archived = res.data.isReviewed ? true : false;
+  responseDetail(id).then((res) => {
+    detailData.value = res.data.data;
     visibility.value = true;
   });
 };
 
 watch(visibility, (newValue) => {
   if (!newValue) {
-    loading.value = true;
-    getResponses({ page: 1, size: 10 }).then(() => (loading.value = false));
+    tableRef.value?.loadData();
   }
 });
 
@@ -107,8 +91,8 @@ onMounted(async () => {
 
       <div class="p-5">
         <p class="text-sm text-gray-500 mb-5">注意：已过期的答卷自动设置为已完成和已拒绝</p>
-        <BaseTable :table-props="{ columnMap, stripe: true, bordered: true }" :fetch-data="fetchResponses"
-          :loading="loading" actions-width="80px">
+        <BaseTable ref="tableRef" :table-props="{ columnMap, stripe: true, bordered: true }"
+          :fetch-data="fetchResponses" :loading="loading" actions-width="80px">
           <template #isCompleted="{ value }">
             <span :class="value ? 'text-green-600' : 'text-red-500'">{{ value ? '已完成' : '未完成' }}</span>
           </template>
@@ -134,7 +118,7 @@ onMounted(async () => {
             </div>
           </template>
         </BaseTable>
-        <ResponseDetail v-if="visibility" v-model:visibility="visibility" :data="detailData" />
+        <ResponseDetail v-if="visibility && detailData" v-model:visibility="visibility" :data="detailData" />
       </div>
     </div>
   </div>

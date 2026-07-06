@@ -4,25 +4,20 @@ import { getSurveys, delSurvey } from '@/apis/admin';
 import { openAlert } from '@/utils/TsAlert';
 import { importSurveyData, exportSurveyToJsonFile } from '@/utils/survey';
 import { selectSingleFile } from '@/utils/file';
-// @ts-ignore: Allow importing JS component into TS file.
 import EditExam from './EditExam.vue';
 import SetSurveyMetaData from './SetSurveyMetaData.vue';
 import MCButton from '@/components/MCButton.vue';
-import type { ISurvey } from '@/types';
+import type { SurveyInfoItem } from '@/types/survey';
 
 const toggleSetSurveyMetaData = ref(false);
 
-const surveysData = ref({
-  code: -1,
-  list: <ISurvey[]>[],
-  desc: '',
-});
+const surveys = ref<SurveyInfoItem[]>([]);
 
 const flag = ref(false);
-const sid = ref(0);
-const current_survey_editable = ref(false);
+const currentSurveyId = ref(0);
+const currentSurveyEditable = ref(false);
 
-const attachEditableToSurveys = (surveys: ISurvey[]) => {
+const attachEditableToSurveys = (surveys: SurveyInfoItem[]) => {
   for (let survey of surveys) {
     survey.editable = !(survey.notCompletedCount > 0 || survey.notReviewedCount > 0);
     survey.editable = survey.status === 0 ? survey.editable : false;
@@ -35,35 +30,30 @@ provide('attachEditableToSurveys', attachEditableToSurveys);
 const _getSurveys = async () => {
   try {
     const res = await getSurveys();
-    const list = attachEditableToSurveys(res.data.data);
-    surveysData.value = { code: res.data.code, desc: res.data.desc, list };
+    if (res.data.code === 0) {
+      const list = attachEditableToSurveys(res.data.data);
+      surveys.value = res.data.data;
+    }
   } catch (error) {
     openAlert('获取问卷列表失败！');
   }
 };
 
-const editSurvey = (survey: ISurvey) => {
+const editSurvey = (survey: SurveyInfoItem) => {
   flag.value = true;
-  if (survey.id) {
-    sid.value = survey.id;
-    current_survey_editable.value = survey.editable ? true : false;
-  }
+  currentSurveyId.value = survey.id;
+  currentSurveyEditable.value = survey.editable ? true : false;
 };
 
 const deleteSurvey = (id: number) => {
   const confirmDelete = confirm('确定要删除这个问卷吗，问卷中的题目会被一并删除！请三思！');
   if (confirmDelete) {
-    const confirmInput = prompt('请输入：确认删除问卷');
-    if (confirmInput === '确认删除问卷') {
-      delSurvey(id).then((res) => {
-        if (res.data.code === 0) {
-          _getSurveys();
-        }
-        openAlert(res.data.desc);
-      });
-    } else {
-      alert('二次确认失败');
-    }
+    delSurvey(id).then((res) => {
+      if (res.data.code === 0) {
+        _getSurveys();
+      }
+      openAlert(res.data.desc);
+    });
   }
 };
 
@@ -90,7 +80,8 @@ onMounted(() => {
 </script>
 
 <template>
-  <EditExam v-if="flag" :sid="sid" :editable="current_survey_editable" @close="flag = false" @flush="_getSurveys">
+  <EditExam v-if="flag" :sid="currentSurveyId" :editable="currentSurveyEditable" @close="flag = false"
+    @flush="_getSurveys">
   </EditExam>
   <SetSurveyMetaData :mode="'set'" v-model="toggleSetSurveyMetaData" @on-edit="_getSurveys"></SetSurveyMetaData>
 
@@ -121,17 +112,17 @@ onMounted(() => {
       </div>
 
       <div class="space-y-3">
-        <p v-if="surveysData.list.length === 0" class="text-center text-gray-400 py-8">暂无数据</p>
-        <div v-for="i in surveysData.list" :key="i.id" class="border border-gray-200 rounded-lg p-4 bg-gray-50/40">
+        <p v-if="surveys.length === 0" class="text-center text-gray-400 py-8">暂无数据</p>
+        <div v-for="survey in surveys" :key="survey.id" class="border border-gray-200 rounded-lg p-4 bg-gray-50/40">
           <div class="flex items-center gap-2 mb-1">
-            <span v-show="i.status === 1"
+            <span v-show="survey.status === 1"
               class="inline-flex items-center gap-1 px-2 py-0.5 text-xs font-semibold rounded border border-green-300 bg-green-50 text-green-700 select-none shrink-0">
               <svg class="w-3 h-3" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
               </svg>
               已发布
             </span>
-            <span v-show="i.status === 0"
+            <span v-show="survey.status === 0"
               class="inline-flex items-center gap-1 px-2 py-0.5 text-xs font-semibold rounded border border-amber-300 bg-amber-50 text-amber-700 select-none shrink-0">
               <svg class="w-3 h-3" viewBox="0 0 24 24" fill="currentColor">
                 <path
@@ -139,15 +130,15 @@ onMounted(() => {
               </svg>
               未发布
             </span>
-            <p class="text-xl font-bold">{{ i.name }}</p>
+            <p class="text-xl font-bold">{{ survey.name }}</p>
           </div>
           <p class="text-lg text-gray-600 leading-relaxed mb-3">
-            问卷描述：{{ i.description }}，答题中的问卷：{{ i.notCompletedCount }}，未批改的问卷：{{ i.notReviewedCount }}
+            问卷描述：{{ survey.description }}，答题中的问卷：{{ survey.notCompletedCount }}，未批改的问卷：{{ survey.notReviewedCount }}
           </p>
           <div class="flex flex-wrap gap-2">
-            <MCButton length="medium" @click="editSurvey(i)">查看问卷</MCButton>
-            <MCButton length="medium" @click="exportSurvey(i.id)">导出问卷</MCButton>
-            <MCButton length="medium" :disabled="!i.editable" @click="deleteSurvey(i.id)">删除问卷</MCButton>
+            <MCButton length="medium" @click="editSurvey(survey)">查看问卷</MCButton>
+            <MCButton length="medium" @click="exportSurvey(survey.id)">导出问卷</MCButton>
+            <MCButton length="medium" :disabled="!survey.editable" @click="deleteSurvey(survey.id)">删除问卷</MCButton>
           </div>
         </div>
       </div>

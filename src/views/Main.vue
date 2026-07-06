@@ -92,6 +92,12 @@ const logout = () => {
   max-width: 800px;
   user-select: none;
   -webkit-user-drag: none;
+  animation: fadeInUp 0.35s ease-out;
+  transition: transform 0.2s ease;
+}
+
+.logo:hover {
+  transform: scale(1.03);
 }
 
 .menu {
@@ -100,6 +106,7 @@ const logout = () => {
   gap: var(--gap);
   flex-wrap: wrap;
   padding: 30px;
+  animation: fadeInUp 0.35s ease-out 0.1s both;
 
   button {
     font-size: 30px;
@@ -199,6 +206,18 @@ const logout = () => {
 @media screen and (max-width: 700px) {
   .logo {
     margin-bottom: 20%;
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: .25;
+    transform: scale(.95);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
   }
 }
 

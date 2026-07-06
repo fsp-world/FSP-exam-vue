@@ -1,9 +1,26 @@
-<script setup>
+<script setup lang="ts">
 import { ref, watch } from 'vue';
 import BackgroundOre from './BackgroundOre.vue';
+
+const props = defineProps({
+  flag: Boolean,
+});
+
+interface Position {
+  x: number;
+  y: number
+}
+
+interface BgStonePattern extends Position {
+  type: string
+}
+
+const bgHeight = ref(0);
+const bgStonePatterns = ref<BgStonePattern[]>([]);
+
 function generatePatterns() {
-  function generateNonOverlappingPositions(count) {
-    const positions = [];
+  function generateNonOverlappingPositions(count: number) {
+    const positions: Position[] = [];
     while (positions.length < count) {
       const x = Math.floor(Math.random() * (maxX + 1));
       const y = Math.floor(Math.random() * (maxY - minY + 1)) + minY;
@@ -44,12 +61,7 @@ function generatePatterns() {
     });
   }
 }
-const bgStonePatterns = ref([]);
-const props = defineProps({
-  flag: Boolean,
-});
 
-const bgHeight = ref(0);
 watch(bgHeight, (newVal, oldVal) => {
   if (props.flag) {
     generatePatterns();
@@ -58,7 +70,7 @@ watch(bgHeight, (newVal, oldVal) => {
 </script>
 
 <template>
-  <div class="back-ground" :ref="(el) => (bgHeight = el?.offsetHeight)">
+  <div class="back-ground" :ref="(el) => (bgHeight = (el as HTMLElement)?.offsetHeight ?? 0)">
     <div class="bga grass"></div>
     <div class="bga stone"></div>
     <div class="bga deepslate"></div>
@@ -79,6 +91,7 @@ watch(bgHeight, (newVal, oldVal) => {
   position: relative;
   top: 0;
   overflow-x: hidden;
+
   .bga {
     --block-hei: 260px;
     width: 100%;

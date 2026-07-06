@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref, watch } from 'vue';
+import { ref, watch, useTemplateRef } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 import { useUserStore } from '@/stores/user';
 
@@ -129,7 +129,7 @@ const onUserMenuClick = async (command: string) => {
 };
 
 // 点击外部关闭下拉菜单
-const userDropdownRef = ref<HTMLElement>();
+const userDropdownRef = useTemplateRef('userDropdownRef');
 const handleClickOutside = (e: MouseEvent) => {
   if (userDropdownRef.value && !userDropdownRef.value.contains(e.target as Node)) {
     showUserDropdown.value = false;

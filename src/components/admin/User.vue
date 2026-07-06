@@ -3,8 +3,9 @@ import { ref, reactive, onMounted, computed } from 'vue';
 import { getUsers, updateUser } from '@/apis/admin';
 import { computStatus } from '@/utils/statusUtil';
 import { openAlert } from '@/utils/TsAlert';
-import { dateFormatYYYYMMDDHH } from '@/utils/date';
-import type { User, UserUpdate, IPagination } from '@/types';
+import { dateFormatYYYYMMDD } from '@/utils/date';
+import type { UserUpdate, IPagination } from '@/types';
+import { roleMap } from '@/stores/user';
 import BaseTable from './BaseTable.vue';
 import MCButton from '@/components/MCButton.vue';
 
@@ -23,7 +24,7 @@ const columnMap = new Map([
   ['username', { title: '用户名' }],
   ['userQQ', { title: '用户 QQ', width: '150px' }],
   ['role', { title: '用户角色', width: '100px' }],
-  ['addtime', { title: '注册时间', width: '170px' }],
+  ['registeredAt', { title: '注册时间', width: '170px' }],
   ['status', { title: '状态', width: '90px' }],
 ]);
 
@@ -80,103 +81,70 @@ onMounted(() => {
       </nav>
     </div>
 
-    <!-- 搜索栏 -->
-    <div class="flex flex-wrap items-end gap-4 p-5">
-      <div class="flex flex-col gap-1">
-        <label class="text-sm text-gray-500">是否审核</label>
-        <select
-          v-model.number="queryForm.status"
-          class="h-10 px-3 w-30 border border-gray-300 rounded outline-none focus:border-[#5268bc] bg-white"
-        >
-          <option value="">全部</option>
-          <option :value="0">未激活</option>
-          <option :value="1">正常</option>
-          <option :value="2">临时封禁</option>
-          <option :value="3">永久封禁</option>
-          <option :value="4">删除</option>
-        </select>
-      </div>
-      <div class="flex flex-col gap-1">
-        <label class="text-sm text-gray-500">输入关键字</label>
-        <input
-          v-model.trim="queryForm.keyword"
-          type="text"
-          placeholder="请输入用户名/用户 QQ"
-          class="h-10 px-3 w-56 border border-gray-300 rounded outline-none focus:border-[#5268bc]"
-        />
-      </div>
-      <MCButton
-        length="medium"
-        @click="loading = true; getUsers({ page: 1, size: 10 }).then(() => loading = false)"
-      >刷新</MCButton>
-    </div>
-
     <!-- 表格 -->
     <div class="p-5">
-      <BaseTable
-      :key="tableKey"
-      :table-props="{ columnMap, stripe: true, bordered: true }"
-      :fetch-data="fetchUsers"
-      :loading="loading"
-      actions-width="110px"
-    >
-      <template #addtime="{ value }">
-        <span class="whitespace-nowrap">{{ dateFormatYYYYMMDDHH(value) }}</span>
-      </template>
-      <template #status="{ value }">
-        {{ computStatus(value) }}
-      </template>
-      <template #actions="{ row }">
-        <MCButton
-          length="short"
-          @click="editUser(row as unknown as UserUpdate)"
-        >修改</MCButton>
-      </template>
-    </BaseTable>
+      <BaseTable :key="tableKey" :table-props="{ columnMap, stripe: true, bordered: true }" :fetch-data="fetchUsers"
+        :loading="loading" actions-width="110px">
+        <template #registeredAt="{ value }">
+          <span class="whitespace-nowrap">{{ dateFormatYYYYMMDD(value) }}</span>
+        </template>
+        <template #status="{ value }">
+          {{ computStatus(value) }}
+        </template>
+        <template #role="{ value }">
+          {{ roleMap[value as string] || value }}
+        </template>
+        <template #actions="{ row }">
+          <MCButton length="short" @click="editUser(row as unknown as UserUpdate)">修改</MCButton>
+        </template>
+      </BaseTable>
     </div>
   </div>
 
   <!-- 修改用户模态框 -->
   <Teleport to="body">
     <Transition name="modal-fade">
-      <div
-        v-if="showModal"
-        class="fixed inset-0 bg-black/50 flex justify-center items-center z-50"
-        @click.self="showModal = false"
-      >
+      <div v-if="showModal" class="fixed inset-0 bg-black/50 flex justify-center items-center z-50"
+        @click.self="showModal = false">
         <div class="bg-white rounded-xl p-6 w-[420px] max-w-[90vw] shadow-2xl max-h-[90vh] overflow-y-auto">
           <h2 class="text-xl font-bold mb-4">修改用户信息</h2>
           <form @submit.prevent="saveUser" class="flex flex-col gap-4">
             <div>
               <label class="block mb-1 text-sm font-medium">ID</label>
-              <input :value="selectedUser.id" type="text" disabled class="w-full px-3 py-2 border border-gray-300 rounded bg-gray-100 text-gray-400 outline-none" />
+              <input :value="selectedUser.id" type="text" disabled
+                class="w-full px-3 py-2 border border-gray-300 rounded bg-gray-100 text-gray-400 outline-none" />
             </div>
             <div>
               <label class="block mb-1 text-sm font-medium">用户名</label>
-              <input v-model="selectedUser.username" type="text" required placeholder="修改用户名" class="w-full px-3 py-2 border border-gray-300 rounded outline-none focus:border-[#5268bc]" />
+              <input v-model="selectedUser.username" type="text" required placeholder="修改用户名"
+                class="w-full px-3 py-2 border border-gray-300 rounded outline-none focus:border-[#5268bc]" />
             </div>
             <div>
               <label class="block mb-1 text-sm font-medium">用户 QQ</label>
-              <input v-model="selectedUser.userQQ" type="text" required placeholder="修改 QQ" class="w-full px-3 py-2 border border-gray-300 rounded outline-none focus:border-[#5268bc]" />
+              <input v-model="selectedUser.userQQ" type="text" required placeholder="修改 QQ"
+                class="w-full px-3 py-2 border border-gray-300 rounded outline-none focus:border-[#5268bc]" />
             </div>
             <div>
               <label class="block mb-1 text-sm font-medium">用户密码</label>
-              <input v-model="selectedUser.password" type="password" placeholder="修改密码" class="w-full px-3 py-2 border border-gray-300 rounded outline-none focus:border-[#5268bc]" />
+              <input v-model="selectedUser.password" type="password" placeholder="修改密码"
+                class="w-full px-3 py-2 border border-gray-300 rounded outline-none focus:border-[#5268bc]" />
             </div>
             <div>
               <label class="block mb-1 text-sm font-medium">注册时间</label>
-              <input v-model="selectedUser.addtime" type="datetime-local" class="w-full px-3 py-2 border border-gray-300 rounded outline-none focus:border-[#5268bc]" />
+              <input v-model="selectedUser.addtime" type="datetime-local"
+                class="w-full px-3 py-2 border border-gray-300 rounded outline-none focus:border-[#5268bc]" />
             </div>
             <div>
               <label class="block mb-1 text-sm font-medium">用户角色</label>
-              <select v-model="selectedUser.role" required class="w-full px-3 py-2 border border-gray-300 rounded outline-none focus:border-[#5268bc] bg-white">
-                <option value="user">普通用户</option>
-                <option value="admin">管理员</option>
+              <select v-model="selectedUser.role" required
+                class="w-full px-3 py-2 border border-gray-300 rounded outline-none focus:border-[#5268bc] bg-white">
+                <option v-for="(label, value) in roleMap" :key="value" :value="value">{{ label }}</option>
               </select>
             </div>
             <div>
               <label class="block mb-1 text-sm font-medium">账号状态</label>
-              <select v-model="selectedUser.status" required class="w-full px-3 py-2 border border-gray-300 rounded outline-none focus:border-[#5268bc] bg-white">
+              <select v-model="selectedUser.status" required
+                class="w-full px-3 py-2 border border-gray-300 rounded outline-none focus:border-[#5268bc] bg-white">
                 <option :value="0">未激活</option>
                 <option :value="1">正常</option>
                 <option :value="2">临时封禁</option>
@@ -200,16 +168,19 @@ onMounted(() => {
 .modal-fade-leave-active {
   transition: opacity 0.2s ease;
 }
+
 .modal-fade-enter-from,
 .modal-fade-leave-to {
   opacity: 0;
 }
-.modal-fade-enter-active > div,
-.modal-fade-leave-active > div {
+
+.modal-fade-enter-active>div,
+.modal-fade-leave-active>div {
   transition: transform 0.2s ease, opacity 0.2s ease;
 }
-.modal-fade-enter-from > div,
-.modal-fade-leave-to > div {
+
+.modal-fade-enter-from>div,
+.modal-fade-leave-to>div {
   transform: scale(0.95);
   opacity: 0;
 }

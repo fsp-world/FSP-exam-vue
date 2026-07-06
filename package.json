@@ -1,6 +1,6 @@
 {
   "name": "fsp-exam",
-  "version": "0.11.4",
+  "version": "0.11.5",
   "private": true,
   "type": "module",
   "scripts": {
@@ -9,7 +9,6 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@element-plus/icons-vue": "^2.3.2",
     "axios": "^1.7.9",
     "canvas-confetti": "^1.9.3",
     "echarts": "^6.1.0",
@@ -22,6 +21,7 @@
   },
   "devDependencies": {
     "@tailwindcss/vite": "^4.3.1",
+    "@types/canvas-confetti": "^1.9.0",
     "@vitejs/plugin-vue": "^5.2.1",
     "tailwindcss": "^4.3.1",
     "typescript": "^5.7.3",

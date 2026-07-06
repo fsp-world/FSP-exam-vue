@@ -102,7 +102,7 @@ const router = createRouter({
       name: 'Admin',
       component: () => import('@/views/Admin.vue'),
       meta: { requiresAuth: true, requiresAdmin: true },
-      redirect: '/admin/dashboard', // TODO: 临时，还没想好首屏放什么
+      redirect: '/admin/dashboard',
       children: [
         {
           path: 'dashboard',
@@ -155,6 +155,11 @@ const router = createRouter({
       path: '/online-stats',
       name: 'OnlineStats',
       component: () => import('@/views/OnlineStats.vue'),
+    },
+    {
+      path: '/:pathMatch(.*)*',
+      name: 'NotFound',
+      redirect: { name: 'Error', query: { message: '页面未找到', code: '404' } },
     },
   ],
 });

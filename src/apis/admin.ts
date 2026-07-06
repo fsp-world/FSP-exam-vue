@@ -1,15 +1,21 @@
 import type {
   ConfigItem,
+  FetchResponse,
   IPagination,
-  IQuestion,
-  ISurvey,
-  NewSurvey,
   User,
   UserUpdate,
-  SurveySlot,
 } from '@/types';
+import type {
+  SurveySlot,
+  SurveyInfoItem,
+  NewSurvey,
+  UploadEditQuestion,
+  AdminViewSurvey,
+  AdminReviewSurvey,
+  UploadAddQuestion,
+} from '@/types/survey';
 import request from '@/utils/requers';
-import { sortQuestion } from '@/utils/sortQuestion';
+import { sortQuestion } from '@/utils/survey';
 
 // user
 export const getUsers = (data: IPagination) =>
@@ -28,11 +34,14 @@ export const getWhitelist = (data: IPagination) =>
   request.get('/admin/whitelist', { params: data });
 
 // survey
-export const getSurveys = () => request.get('/admin/surveys');
-export const getSurvey = async (id: number) => {
+export const getSurveys = (): Promise<FetchResponse<SurveyInfoItem[]>> =>
+  request.get('/admin/surveys');
+export const getSurvey = async (
+  id: number,
+): Promise<FetchResponse<AdminViewSurvey>> => {
   try {
     const response = await request.get('/admin/survey/' + id);
-    response.data.questions = sortQuestion(response.data.questions);
+    response.data.data.questions = sortQuestion(response.data.data.questions);
     return response;
   } catch (error) {
     console.error('Error fetching survey:', error);
@@ -40,19 +49,19 @@ export const getSurvey = async (id: number) => {
   }
 };
 
-export const addSurvey = (data: NewSurvey) =>
+export const addSurveyAPI = (data: NewSurvey): Promise<FetchResponse<any>> =>
   request.post('/admin/survey/add', JSON.stringify(data));
-export const addSurveyAPI = (data: NewSurvey) =>
-  request.post('/admin/survey/add', JSON.stringify(data));
-export const delSurvey = (id: number) =>
+export const delSurvey = (id: number): Promise<FetchResponse<any>> =>
   request.post('/admin/survey/delete', JSON.stringify({ id }));
-export const modSurveyMetaData = (data: ISurvey) =>
+export const modSurveyMetaData = (
+  data: NewSurvey,
+): Promise<FetchResponse<any>> =>
   request.post('/admin/survey/update', JSON.stringify(data));
 
 // question
-export const addQuestionAPI = (data: IQuestion[]) =>
+export const addQuestionAPI = (data: UploadAddQuestion) =>
   request.post('/admin/question/add', JSON.stringify(data));
-export const editQuestionAPI = (data: IQuestion) =>
+export const editQuestionAPI = (data: UploadEditQuestion) =>
   request.post('/admin/question/edit', JSON.stringify(data));
 export const delQuestionAPI = (id: number) =>
   request.post('/admin/question/delete', JSON.stringify({ id }));
@@ -70,10 +79,14 @@ export const getResponses = (data: IPagination) =>
 export const reviewedResponse = (data: { response: number; status: number }) =>
   request.post('/admin/reviewed', JSON.stringify(data));
 
-export const responseDetail = async (id: number) => {
+export const responseDetail = async (
+  id: number,
+): Promise<FetchResponse<AdminReviewSurvey>> => {
   try {
-    const response = await request.get('/admin/detail/' + id);
-    response.data.questions = sortQuestion(response.data.questions);
+    const response: FetchResponse<AdminReviewSurvey> = await request.get(
+      '/admin/detail/' + id,
+    );
+    response.data.data.questions = sortQuestion(response.data.data.questions);
     return response;
   } catch (error) {
     console.error('Error fetching survey:', error);
@@ -85,7 +98,8 @@ export const detailScore = (data: {
   score: number;
   questionId: number;
   responseId: number;
-}) => request.post('/admin/detail_score', JSON.stringify(data));
+}): Promise<FetchResponse<any>> =>
+  request.post('/admin/detail_score', JSON.stringify(data));
 
 // slot
 export const addSlotAPI = (data: SurveySlot) =>
