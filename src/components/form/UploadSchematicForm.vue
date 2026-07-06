@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, useTemplateRef } from 'vue';
 
 import type { SchematicDetail, UploadSchematicFormData } from '@/types/schematic';
 import { schematicTypes } from '@/types/schematic';
@@ -33,7 +33,7 @@ const emit = defineEmits<Emits>()
 
 const store = useUserStore();
 const { username } = storeToRefs(store);
-const fileInputRef = ref<HTMLInputElement | null>(null);
+const fileInputRef = useTemplateRef('fileInputRef');
 
 const getDefaultSchematic = (): UploadSchematicFormData => {
   if (props.originData && props.mode === 'update') {

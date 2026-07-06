@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import VChart from 'vue-echarts';
 import { use } from 'echarts/core';
 import { LineChart } from 'echarts/charts';
@@ -38,6 +38,15 @@ const getLocalISO = (d: Date) => {
   const local = new Date(d.getTime() - offset * 60000);
   return local.toISOString().slice(0, 16);
 };
+
+// 开服日期（最小值限制，首次 fetch 时从后端获取）
+const serverLaunchDate = ref('');
+
+// 给 datetime-local input 用的最小值（格式：YYYY-MM-DDTHH:MM）
+const minDatetime = computed(() => serverLaunchDate.value ? `${serverLaunchDate.value}T00:00` : '');
+
+// 结束日期最大值（当天）
+const maxDatetime = computed(() => getLocalISO(new Date()));
 
 // 数据状态
 const total = ref(0);
@@ -121,6 +130,14 @@ const fetchData = async () => {
       }
 
       total.value = d.total ?? 0;
+      // 从响应中获取开服日期，没拿到则默认一年前
+      if (d.serverLaunchDate) {
+        serverLaunchDate.value = d.serverLaunchDate;
+      } else if (!serverLaunchDate.value) {
+        const fallback = new Date();
+        fallback.setFullYear(fallback.getFullYear() - 1);
+        serverLaunchDate.value = fallback.toISOString().slice(0, 10);
+      }
       // 使用 dateUtils 格式化时间标签
       const formattedDates = dates.map((date: string) => dateFormatDDHHmm(date));
       option.value = {
@@ -168,12 +185,12 @@ onMounted(() => {
           <div class="flex flex-wrap items-end gap-4">
             <div class="flex flex-col gap-1">
               <label class="text-sm text-gray-500">开始时间</label>
-              <input v-model="startTime" type="datetime-local" placeholder="默认当天"
+              <input v-model="startTime" type="datetime-local" placeholder="默认当天" :min="minDatetime" :max="maxDatetime"
                 class="h-10 px-3 border border-gray-300 rounded outline-none focus:border-[#5268bc] text-sm" />
             </div>
             <div class="flex flex-col gap-1">
               <label class="text-sm text-gray-500">结束时间</label>
-              <input v-model="endTime" type="datetime-local" placeholder="默认当天"
+              <input v-model="endTime" type="datetime-local" placeholder="默认当天" :min="minDatetime" :max="maxDatetime"
                 class="h-10 px-3 border border-gray-300 rounded outline-none focus:border-[#5268bc] text-sm" />
             </div>
             <MCButton class="!w-[120px]" :length="'short'" :disabled="loading"
@@ -244,15 +261,17 @@ onMounted(() => {
 .main {
   width: calc(100% - 40px);
   padding: 20px;
-  margin-left: auto;
-  margin-right: auto;
+  padding-bottom: 0;
+  margin: 0 auto;
   max-width: 1000px;
   height: calc(100vh - 40px);
-  overflow: hidden;
+  display: flex;
+  flex-direction: column;
 
   .nav {
     display: flex;
     justify-content: space-between;
+    flex-shrink: 0;
   }
 
   .nav .title {
@@ -285,7 +304,9 @@ onMounted(() => {
   }
 
   .content {
-    position: relative;
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
   }
 }
 

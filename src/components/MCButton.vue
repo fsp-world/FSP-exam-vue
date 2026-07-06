@@ -5,19 +5,24 @@ import img2 from '@/assets/images/rainbow_pixel_gui/button_highlighted.png'
 import img3 from '@/assets/images/rainbow_pixel_gui/button_disabled.png'
 
 // 根据不同的length，会使用canvas生成不同长度的按钮图片，避免使用CSS拉伸导致的模糊问题
+
+type Length = 'short' | 'medium' | 'long'
+type ButtonType = 'normal' | 'delete'
 interface Props {
   disabled?: boolean
   disabledStyle?: boolean // 是否使用禁用状态的样式（即使按钮没有真正被禁用），用于在分段控制中表示未选中状态
-  length?: 'short' | 'medium' | 'long'
+  length?: Length
+  buttonType?: ButtonType
 }
 
 const props = withDefaults(defineProps<Props>(), {
   disabled: false,
   disabledStyle: false,
-  length: 'long'
+  length: 'long',
+  buttonType: 'normal'
 })
 
-async function generateButtonImages(length: 'short' | 'medium' | 'long') {
+async function generateButtonImages(length: Length) {
   // 加载三张原始图片
   const [normalImg, highlightedImg, disabledImg] = await Promise.all([
     loadImage(img1),
@@ -152,6 +157,7 @@ const buttonClassList = computed(() => ({
   'short-button-size': props.length === 'short',
   'medium-button-size': props.length === 'medium',
   'long-button-size': props.length === 'long',
+  'mc-button--delete': props.buttonType === 'delete',
 }))
 
 </script>
@@ -197,15 +203,19 @@ const buttonClassList = computed(() => ({
   padding: 0 10px;
 }
 
+.mc-button--delete {
+  color: #ef4444;
+}
+
 .mc-button a {
-  color: #fff;
+  color: inherit;
 }
 
 .mc-button a:active {
-  color: #fff;
+  color: inherit;
 }
 
 .mc-button a:target {
-  color: #fff;
+  color: inherit;
 }
 </style>

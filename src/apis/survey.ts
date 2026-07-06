@@ -1,12 +1,23 @@
 import request from '@/utils/requers';
-import { sortQuestion } from '@/utils/sortQuestion';
+import { sortQuestion } from '@/utils/survey';
+import type { FetchResponse } from '@/types';
+import type { AnswerSurvey, AnsweredSurvey } from '@/types/survey';
 
-export const getSlotsAPI = () => request.get('/survey/get_slots');
+interface slot {
+  id: number;
+  slotName: string;
+  mountedSID: number;
+}
 
-export const getSurvey = async (id: any) => {
+export const getSlotsAPI = (): Promise<FetchResponse<slot[]>> =>
+  request.get('/survey/get_slots');
+
+export const getSurvey = async (
+  id: number,
+): Promise<FetchResponse<AnswerSurvey>> => {
   try {
     const response = await request.get('/survey/survey/' + id);
-    response.data.questions = sortQuestion(response.data.questions);
+    response.data.data.questions = sortQuestion(response.data.data.questions);
     return response;
   } catch (error) {
     console.error('Error fetching survey:', error);
@@ -14,8 +25,22 @@ export const getSurvey = async (id: any) => {
   }
 };
 
-export const checkSurvey = () => request.post('/survey/check_survey');
+export const checkSurvey = (): Promise<FetchResponse<number>> =>
+  request.post('/survey/check_survey');
 
-export const startSurvey = (data = {}) => request.post('/survey/start_survey', JSON.stringify(data));
+export interface ExamineeInfo {
+  playerName: string;
+  playerUUID: string;
+  sid: number;
+  slotName: string;
+}
 
-export const completeSurvey = (data: any) => request.post('/survey/complete_survey', data);
+export const startSurvey = (
+  data: ExamineeInfo,
+): Promise<FetchResponse<number>> =>
+  request.post('/survey/start_survey', JSON.stringify(data));
+
+export const submitSurveyAPI = (
+  data: AnsweredSurvey,
+): Promise<FetchResponse<number>> =>
+  request.post('/survey/complete_survey', data);

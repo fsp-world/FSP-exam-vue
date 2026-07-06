@@ -11,6 +11,13 @@ import { getUserInfo, setUserAvatar, setUserBackground } from '@/apis/user';
 import { getProfilePic } from '@/apis/mj';
 import { computStatus, getUserJoinSeason } from '@/utils/statusUtil';
 import { dateFormatYYYYMMDD } from '@/utils/date';
+
+export const roleMap: Record<string, string> = {
+  admin: '管理',
+  helper: '协管',
+  user: '用户',
+};
+
 export const useUserStore = defineStore('user', {
   state: (): User => ({
     // 所有这些属性都将自动推断出它们的类型
@@ -38,10 +45,6 @@ export const useUserStore = defineStore('user', {
       return getUserJoinSeason(state.addtime);
     },
     roleText: (state) => {
-      const roleMap = {
-        admin: '管理员',
-        user: '用户',
-      };
       return roleMap[state.role] || '未知角色';
     },
     bgImg: (state) => {
