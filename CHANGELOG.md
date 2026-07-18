@@ -2,6 +2,8 @@
 
 ## [0.11.6] (Developing)
 
+### Bug Fixes
+
 ## [0.11.5] (2026-07-06)
 
 ### Features
