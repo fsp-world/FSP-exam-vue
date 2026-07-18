@@ -31,8 +31,8 @@ request.interceptors.response.use(
   (error) => {
     if (error.response) {
       // 服务器返回了错误响应（有 HTTP 状态码）
-      const status = error.response.status;
-      const messages = {
+      const status = error.response.status as number;
+      const messages: Record<number, string> = {
         400: '请求参数有误',
         401: '未授权，请重新登录',
         403: '没有访问权限',
@@ -55,7 +55,7 @@ request.interceptors.response.use(
       console.error('网络错误：无法连接到服务器', error.message);
       router.replace({
         path: '/error',
-        query: { message: '网络错误：无法连接到服务器，请检查后端是否启动或 CORS 配置', code: 'NETWORK' },
+        query: { message: '网络错误：无法连接到服务器', code: 'NETWORK' },
       });
     } else {
       console.error('请求配置错误：', error.message);
