@@ -9,17 +9,13 @@ const route = useRoute();
 <template>
   <StrippedBirchLogBackground>
     <div class="box">
-      <!-- <div class="title"></div> -->
       <div class="content">
         <div class="http-code">{{ route.query.code || '错误' }}</div>
         <p class="msg">{{ route.query.message }}</p>
         <MCRouterLink class="button" to="/">返回主页</MCRouterLink>
       </div>
     </div>
-
-
   </StrippedBirchLogBackground>
-
 </template>
 
 <style scoped>
@@ -31,15 +27,8 @@ const route = useRoute();
   align-items: center;
 }
 
-/* .title {
-  height: 130px;
-  text-align: center;
-  font-size: var(--title-font-size-large);
-  line-height: 130px;
-} */
-
 .content {
-  /* width: 90vw; */
+  width: 100%;
 
   .http-code {
     font-size: var(--title-font-size-large);
@@ -52,7 +41,8 @@ const route = useRoute();
   }
 
   .button {
-    margin-top: 30px;
+    margin: 50px auto;
+    max-width: 95%;
   }
 
 }

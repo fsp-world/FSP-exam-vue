@@ -15,7 +15,7 @@ import MCButton from '@/components/MCButton.vue';
 import { CanvasRenderer } from 'echarts/renderers';
 import type { EChartsOption } from 'echarts';
 import request from '@/utils/requers';
-import { dateFormatDDHHmm } from '@/utils/date';
+import { dateFormatBySpan } from '@/utils/date';
 
 use([
   TitleComponent,
@@ -138,8 +138,11 @@ const fetchData = async () => {
         fallback.setFullYear(fallback.getFullYear() - 1);
         serverLaunchDate.value = fallback.toISOString().slice(0, 10);
       }
-      // 使用 dateUtils 格式化时间标签
-      const formattedDates = dates.map((date: string) => dateFormatDDHHmm(date));
+      // 计算查询时间跨度（毫秒），用于动态选择时间格式
+      const spanMs = startTime.value && endTime.value
+        ? new Date(endTime.value).getTime() - new Date(startTime.value).getTime()
+        : 24 * 60 * 60 * 1000; // 默认24小时
+      const formattedDates = dates.map((date: string) => dateFormatBySpan(date, spanMs));
       option.value = {
         ...option.value,
         xAxis: { ...option.value.xAxis, data: formattedDates },

@@ -11,16 +11,12 @@
     "skipLibCheck": true, // 跳过库文件的类型检查
     "forceConsistentCasingInFileNames": true, // 强制文件名大小写一致
     "resolveJsonModule": true, // 支持导入 JSON 模块
+    "types": ["vite/client"], // Vite 类型声明
     "paths": {
       "@/*": ["./src/*"] // 路径别名
     },
     "lib": ["DOM", "DOM.Iterable", "ESNext"] // 类型库
   },
-  "include": [
-    "src/**/*.ts",
-    "src/**/*.d.ts",
-    "src/**/*.tsx",
-    "src/**/*.vue"
-  ],
+  "include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.tsx", "src/**/*.vue"],
   "exclude": ["node_modules"]
 }
