@@ -35,7 +35,9 @@ function parseUA(ua: string): BrowserInfo {
   };
 
   // QQ 内置浏览器 (必须最先检测，因为它的 UA 可能也包含 Chrome/Chromium 关键字)
-  const qqMatch = ua.match(/MQQBrowser\/([\d.]+)/);
+  // 手机版: MQQBrowser/... 或 MQQBrowser/Mini/...
+  // 桌面版: QQBrowser/...
+  const qqMatch = ua.match(/(?:MQQBrowser(?:\/Mini)?|QQBrowser)\/([\d.]+)/);
   if (qqMatch) {
     info.name = 'QQBrowser';
     info.fullVersion = qqMatch[1];
