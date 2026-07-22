@@ -9,6 +9,10 @@ import router from './router';
 
 import MCRouterLink from '@/components/MCRouterLink.vue';
 
+// 浏览器兼容性检测 — 不通过则跳转 error 页，阻止应用挂载
+import { checkBrowserBeforeMount } from '@/utils/browserCheck';
+checkBrowserBeforeMount();
+
 const app = createApp(App);
 
 const pinia = createPinia();
