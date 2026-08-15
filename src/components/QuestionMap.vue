@@ -1,14 +1,12 @@
 <script setup lang="ts">
-
-import type { AnswerQuestion } from '@/types/survey'
-import { isQuestionAnswered } from '@/utils/survey'
+import type { AnswerQuestion } from '@/types/survey';
+import { isQuestionAnswered } from '@/utils/survey';
 
 interface Props {
-  questions: AnswerQuestion[]
+  questions: AnswerQuestion[];
 }
 
 const { questions } = defineProps<Props>();
-
 </script>
 
 <template>

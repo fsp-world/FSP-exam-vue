@@ -5,20 +5,13 @@ import duration from 'dayjs/plugin/duration';
 dayjs.extend(utc);
 dayjs.extend(duration);
 
-export const dateFormatYYYYMMDDHHmm = (date: string) =>
-  dayjs.utc(date).local().format('YYYY年MM月DD日 HH:mm');
-export const dateFormatYYYYMMDDHH = (date: string) =>
-  dayjs.utc(date).local().format('YYYY年MM月DD日 HH时');
-export const dateFormatYYYYMMDD = (date: string) =>
-  dayjs.utc(date).local().format('YYYY年MM月DD日');
-export const dateFormatHHMMSS = (date: string) =>
-  dayjs.utc(date).local().format('HH时 mm分 ss秒');
-export const dateFormatMMDDHHmm = (date: string) =>
-  dayjs.utc(date).local().format('MM月DD日 HH时mm分');
-export const dateFormatHHmm = (date: string) =>
-  dayjs.utc(date).local().format('HH时 mm分');
-export const dateFormatDDHHmm = (date: string) =>
-  dayjs.utc(date).local().format('DD日HH时mm分');
+export const dateFormatYYYYMMDDHHmm = (date: string) => dayjs.utc(date).local().format('YYYY年MM月DD日 HH:mm');
+export const dateFormatYYYYMMDDHH = (date: string) => dayjs.utc(date).local().format('YYYY年MM月DD日 HH时');
+export const dateFormatYYYYMMDD = (date: string) => dayjs.utc(date).local().format('YYYY年MM月DD日');
+export const dateFormatHHMMSS = (date: string) => dayjs.utc(date).local().format('HH时 mm分 ss秒');
+export const dateFormatMMDDHHmm = (date: string) => dayjs.utc(date).local().format('MM月DD日 HH时mm分');
+export const dateFormatHHmm = (date: string) => dayjs.utc(date).local().format('HH时 mm分');
+export const dateFormatDDHHmm = (date: string) => dayjs.utc(date).local().format('DD日HH时mm分');
 
 /**
  * 根据时间跨度自动选择合适的时间格式

@@ -2,7 +2,7 @@
 import { ref, onMounted } from 'vue';
 
 import MCButton from '@/components/MCButton.vue';
-import MCRouterLink from '@/components/MCRouterLink.vue'
+import MCRouterLink from '@/components/MCRouterLink.vue';
 import MCSegmentedControl from '@/components/MCSegmentedControl.vue';
 
 import ConfirmPlayer from '@/components/ConfirmPlayer.vue';
@@ -10,13 +10,13 @@ import { getSlotsAPI, startSurvey, checkSurvey } from '@/apis/survey';
 import { openAlert } from '@/utils/TsAlert';
 import { useRouter } from 'vue-router';
 import type { SurveySlot } from '@/types/survey';
-import type { ExamineeInfo } from '@/apis/survey'
+import type { ExamineeInfo } from '@/apis/survey';
 
 const router = useRouter();
 
 interface SurveyList {
-  label: string,
-  data: SurveySlot
+  label: string;
+  data: SurveySlot;
 }
 
 const checkSurvey_ = () => {
@@ -32,20 +32,18 @@ const examineeInfo = ref<ExamineeInfo>({
   playerName: '',
   playerUUID: 'none',
   sid: 0,
-  slotName: ''
+  slotName: '',
 });
 
 const check = ref(false);
 const surveyList = ref<SurveyList[]>([]);
-const selectedSurvey = ref<SurveySlot | null>(null)
-
+const selectedSurvey = ref<SurveySlot | null>(null);
 
 const choiceSurvey = () => {
   if (selectedSurvey.value) {
     examineeInfo.value.sid = selectedSurvey.value.mountedSID;
     examineeInfo.value.slotName = selectedSurvey.value.slotName;
   }
-
 };
 
 // 已确认
@@ -79,7 +77,7 @@ onMounted(() => {
   getSlotsAPI().then((res) => {
     surveyList.value = res.data.data.map((slot) => ({
       label: slot.slotName,
-      data: slot
+      data: slot,
     }));
   });
 });
@@ -95,17 +93,18 @@ onMounted(() => {
       </div>
       <div class="main">
         <form class="examinee-info">
-          <div class="sub-title">
-            我们会通过一些题目来确认您大致的游戏水平
-          </div>
+          <div class="sub-title">我们会通过一些题目来确认您大致的游戏水平</div>
           <input class="minecraft-input" type="text" v-model="examineeInfo.playerName" placeholder="您的游戏昵称" />
           <p class="tips">系统会根据您的选择生成定制的试题</p>
-          <MCSegmentedControl :button-length="'medium'" :data="surveyList" v-model="selectedSurvey"
-            @change="choiceSurvey" class="option-list">
+          <MCSegmentedControl
+            :button-length="'medium'"
+            :data="surveyList"
+            v-model="selectedSurvey"
+            @change="choiceSurvey"
+            class="option-list"
+          >
           </MCSegmentedControl>
-          <p v-if="surveyList.length === 0" class="no-survey-available">
-            暂无可用的问卷
-          </p>
+          <p v-if="surveyList.length === 0" class="no-survey-available">暂无可用的问卷</p>
         </form>
       </div>
       <div class="end">

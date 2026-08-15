@@ -61,7 +61,7 @@ request.interceptors.response.use(
       console.error('请求配置错误：', error.message);
     }
     return Promise.reject(error);
-  },
+  }
 );
 
 export default request;

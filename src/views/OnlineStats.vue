@@ -17,15 +17,7 @@ import type { EChartsOption } from 'echarts';
 import request from '@/utils/requers';
 import { dateFormatBySpan } from '@/utils/date';
 
-use([
-  TitleComponent,
-  TooltipComponent,
-  ToolboxComponent,
-  GridComponent,
-  LineChart,
-  CanvasRenderer,
-  DataZoomComponent,
-]);
+use([TitleComponent, TooltipComponent, ToolboxComponent, GridComponent, LineChart, CanvasRenderer, DataZoomComponent]);
 
 // 日期范围（初始为空，不传参则后端返回当天数据）
 const startTime = ref('');
@@ -43,7 +35,7 @@ const getLocalISO = (d: Date) => {
 const serverLaunchDate = ref('');
 
 // 给 datetime-local input 用的最小值（格式：YYYY-MM-DDTHH:MM）
-const minDatetime = computed(() => serverLaunchDate.value ? `${serverLaunchDate.value}T00:00` : '');
+const minDatetime = computed(() => (serverLaunchDate.value ? `${serverLaunchDate.value}T00:00` : ''));
 
 // 结束日期最大值（当天）
 const maxDatetime = computed(() => getLocalISO(new Date()));
@@ -139,9 +131,10 @@ const fetchData = async () => {
         serverLaunchDate.value = fallback.toISOString().slice(0, 10);
       }
       // 计算查询时间跨度（毫秒），用于动态选择时间格式
-      const spanMs = startTime.value && endTime.value
-        ? new Date(endTime.value).getTime() - new Date(startTime.value).getTime()
-        : 24 * 60 * 60 * 1000; // 默认24小时
+      const spanMs =
+        startTime.value && endTime.value
+          ? new Date(endTime.value).getTime() - new Date(startTime.value).getTime()
+          : 24 * 60 * 60 * 1000; // 默认24小时
       const formattedDates = dates.map((date: string) => dateFormatBySpan(date, spanMs));
       option.value = {
         ...option.value,
@@ -178,55 +171,78 @@ onMounted(() => {
     <div class="main">
       <nav class="nav">
         <div class="title">在线统计</div>
-        <MCRouterLink :length="'short'" to="/" class="back">
-          返回
-        </MCRouterLink>
+        <MCRouterLink :length="'short'" to="/" class="back"> 返回 </MCRouterLink>
       </nav>
       <div class="content">
         <!-- 筛选栏 -->
-        <div class="bg-white/50 rounded-lg shadow-sm p-5 mb-6">
+        <div class="mb-6 rounded-lg bg-white/50 p-5 shadow-sm">
           <div class="flex flex-wrap items-end gap-4">
             <div class="flex flex-col gap-1">
               <label class="text-sm text-gray-500">开始时间</label>
-              <input v-model="startTime" type="datetime-local" placeholder="默认当天" :min="minDatetime" :max="maxDatetime"
-                class="h-10 px-3 border border-gray-300 rounded outline-none focus:border-[#5268bc] text-sm" />
+              <input
+                v-model="startTime"
+                type="datetime-local"
+                placeholder="默认当天"
+                :min="minDatetime"
+                :max="maxDatetime"
+                class="h-10 rounded border border-gray-300 px-3 text-sm outline-none focus:border-[#5268bc]"
+              />
             </div>
             <div class="flex flex-col gap-1">
               <label class="text-sm text-gray-500">结束时间</label>
-              <input v-model="endTime" type="datetime-local" placeholder="默认当天" :min="minDatetime" :max="maxDatetime"
-                class="h-10 px-3 border border-gray-300 rounded outline-none focus:border-[#5268bc] text-sm" />
+              <input
+                v-model="endTime"
+                type="datetime-local"
+                placeholder="默认当天"
+                :min="minDatetime"
+                :max="maxDatetime"
+                class="h-10 rounded border border-gray-300 px-3 text-sm outline-none focus:border-[#5268bc]"
+              />
             </div>
-            <MCButton class="!w-[120px]" :length="'short'" :disabled="loading"
-              @click="autoExpanded = true; fetchData()"> {{ loading ? '查询中...' :
-                '查询' }}</MCButton>
+            <MCButton
+              class="!w-[120px]"
+              :length="'short'"
+              :disabled="loading"
+              @click="
+                autoExpanded = true;
+                fetchData();
+              "
+            >
+              {{ loading ? '查询中...' : '查询' }}</MCButton
+            >
             <div class="flex gap-2 overflow-x-auto">
-              <MCButton :length="'short'" class="!w-[120px] shrink-0" v-for="r in [
-                { label: '最近1小时', h: 1 },
-                { label: '最近24小时', h: 24 },
-                { label: '最近7天', h: 24 * 7 },
-              ]" :key="r.h" @click="setQuickRange(r.h)">{{ r.label }}</MCButton>
+              <MCButton
+                :length="'short'"
+                class="!w-[120px] shrink-0"
+                v-for="r in [
+                  { label: '最近1小时', h: 1 },
+                  { label: '最近24小时', h: 24 },
+                  { label: '最近7天', h: 24 * 7 },
+                ]"
+                :key="r.h"
+                @click="setQuickRange(r.h)"
+                >{{ r.label }}</MCButton
+              >
             </div>
           </div>
         </div>
 
         <!-- 图表区域 -->
-        <div class="bg-white/50 rounded-lg shadow-sm p-5">
+        <div class="rounded-lg bg-white/50 p-5 shadow-sm">
           <!-- 加载/错误状态 -->
-          <div v-if="loading" class="flex items-center justify-center h-80 text-gray-400">
-            加载中...
-          </div>
-          <div v-else-if="errorMsg" class="flex items-center justify-center h-80 text-red-500">
+          <div v-if="loading" class="flex h-80 items-center justify-center text-gray-400">加载中...</div>
+          <div v-else-if="errorMsg" class="flex h-80 items-center justify-center text-red-500">
             {{ errorMsg }}
           </div>
 
           <!-- 图表 -->
           <template v-else>
-            <div class="flex items-center justify-between mb-3">
+            <div class="mb-3 flex items-center justify-between">
               <div class="text-sm text-gray-500">
-                统计区间内数据条数：<span class="text-[#5268bc] font-bold text-lg">{{ total }}</span>
+                统计区间内数据条数：<span class="text-lg font-bold text-[#5268bc]">{{ total }}</span>
               </div>
             </div>
-            <div v-if="total === 0 && errorMsg === ''" class="flex items-center justify-center h-80 text-gray-400">
+            <div v-if="total === 0 && errorMsg === ''" class="flex h-80 items-center justify-center text-gray-400">
               暂无数据，请选择时间范围后点击查询
             </div>
             <v-chart v-else class="w-full" style="height: 360px" :option="option" autoresize />

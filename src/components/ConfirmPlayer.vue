@@ -59,7 +59,7 @@ watch(
     if (newValue) {
       getPlayerInfo();
     }
-  },
+  }
 );
 </script>
 

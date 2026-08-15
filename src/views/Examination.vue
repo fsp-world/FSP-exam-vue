@@ -16,7 +16,7 @@ import { isQuestionAnswered } from '@/utils/survey';
 const route = useRoute();
 const sid = Number(route.params.sid);
 
-const answerSurvey = ref<AnswerSurvey | null>(null)
+const answerSurvey = ref<AnswerSurvey | null>(null);
 
 const renderBackground = ref(false); // 当题目加载完成后再渲染背景
 const isDone = ref(false);
@@ -24,11 +24,10 @@ const objectiveScore = ref(0);
 const confirmSubmit = ref(false);
 const timeRemaining = ref('');
 
-const ableToSubmit = ref(false)
+const ableToSubmit = ref(false);
 
 let intervalId: ReturnType<typeof setInterval> | null = null; // 定时器 ID
 let deadline: Date | null = null;
-
 
 const updateTimeRemaining = () => {
   if (!deadline) return;
@@ -36,31 +35,29 @@ const updateTimeRemaining = () => {
   if (remainingTimeMs <= 0) {
     if (intervalId) clearInterval(intervalId);
     timeRemaining.value = '00时 00分 00秒';
-    ableToSubmit.value = false
+    ableToSubmit.value = false;
     openAlert('时间已到！未提交自动作废');
   } else {
     timeRemaining.value = formatRemainingTimeToHHmmss(remainingTimeMs);
   }
 };
 
-
 getSurvey(sid).then((res) => {
-  const data = res.data
+  const data = res.data;
 
   if (data.code !== 0) {
     openAlert(data.desc);
-    return
+    return;
   }
 
-  answerSurvey.value = data.data
+  answerSurvey.value = data.data;
   renderBackground.value = true;
-  ableToSubmit.value = true
+  ableToSubmit.value = true;
 
   deadline = new Date(data.data.ddl);
   updateTimeRemaining();
   intervalId = setInterval(updateTimeRemaining, 1000); // 每秒更新1次
 });
-
 
 // 组件卸载时清除定时器
 onUnmounted(() => {
@@ -90,14 +87,14 @@ const complete = () => {
 
   const submitData: AnsweredSurvey = {
     surveyId: sid,
-    answers: answerSurvey.value!.questions.map(q => ({
+    answers: answerSurvey.value!.questions.map((q) => ({
       id: q.id,
       answer:
         q.type === QuestionType.SingleChoice || q.type === QuestionType.MultipleChoice
-          ? q.options.filter(opt => (opt as any).isSelected).map(opt => opt.id)
-          : (q as any).answer ?? []
+          ? q.options.filter((opt) => (opt as any).isSelected).map((opt) => opt.id)
+          : ((q as any).answer ?? []),
     })),
-  }
+  };
 
   submitSurveyAPI(submitData).then((res) => {
     if (res.data.code === 0) {
@@ -123,8 +120,6 @@ const submitPaper = () => {
       confirmSubmit.value = true;
     });
 };
-
-
 </script>
 
 <template>
@@ -136,14 +131,19 @@ const submitPaper = () => {
         <p class="time">剩余时间：{{ timeRemaining }}</p>
       </div>
       <ul class="question-list">
-        <li class="question" v-for="(question, questionIndex) in answerSurvey!.questions" :key="questionIndex"
-          :id="'question' + (questionIndex + 1)">
+        <li
+          class="question"
+          v-for="(question, questionIndex) in answerSurvey!.questions"
+          :key="questionIndex"
+          :id="'question' + (questionIndex + 1)"
+        >
           <QuestionCard :index="questionIndex" :mode="'answer'" v-model="answerSurvey!.questions[questionIndex]">
           </QuestionCard>
         </li>
       </ul>
       <div class="submit">
-        <MCButton :disabled="!ableToSubmit" :length="'medium'" class="minecraft-button" @click="submitPaper()">交卷
+        <MCButton :disabled="!ableToSubmit" :length="'medium'" class="minecraft-button" @click="submitPaper()"
+          >交卷
         </MCButton>
       </div>
       <br />
@@ -158,8 +158,7 @@ const submitPaper = () => {
     </div>
   </InfoDialog>
   <PaperDone v-if="isDone" :score="objectiveScore"></PaperDone>
-  <QuestionMap v-if="answerSurvey" :questions="answerSurvey.questions">
-  </QuestionMap>
+  <QuestionMap v-if="answerSurvey" :questions="answerSurvey.questions"> </QuestionMap>
 </template>
 
 <style scoped>

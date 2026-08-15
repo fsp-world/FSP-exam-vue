@@ -37,7 +37,7 @@ const sendResetPassword = () => {
       }
     })
     .catch((err) => {
-      openAlert(err.response.data.desc)
+      openAlert(err.response.data.desc);
     });
 };
 </script>

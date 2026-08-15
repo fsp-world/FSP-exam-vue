@@ -14,7 +14,7 @@ import { useRouter } from 'vue-router';
 
 const router = useRouter();
 
-const displayChainOfTrustPanel = ref(false)
+const displayChainOfTrustPanel = ref(false);
 
 const userStore = useUserStore();
 const {
@@ -52,7 +52,7 @@ getUserWhitelist().then((res: any) => {
         })
         .catch((err) => {
           console.warn(`Failed to fetch avatar for ${player.name}:`, err);
-        }),
+        })
     );
     return Promise.all(avatarPromises);
   }
@@ -74,11 +74,11 @@ const reqActivation = () => {
   });
 };
 
-const queryUUID = ref('')
+const queryUUID = ref('');
 const queryChainOfTrust = (uuid: string) => {
-  queryUUID.value = uuid
-  displayChainOfTrustPanel.value = true
-}
+  queryUUID.value = uuid;
+  displayChainOfTrustPanel.value = true;
+};
 
 const logout = () => {
   userStore.logout().then((res) => {
@@ -123,10 +123,17 @@ const logout = () => {
             <p class="title">授权的游戏账户</p>
             <ul>
               <li class="player" v-for="(item, index) in userWhiteList" :key="index">
-                <img title="点击查看信任链" @click="queryChainOfTrust(item.uuid)" class="avatar" :src="item.avatarUrl"
-                  alt="User Avatar" />
+                <img
+                  title="点击查看信任链"
+                  @click="queryChainOfTrust(item.uuid)"
+                  class="avatar"
+                  :src="item.avatarUrl"
+                  alt="User Avatar"
+                />
                 <p class="name">{{ item.name }}</p>
-                <MCButton class="button" v-if="item.uuid !== avatarUUID" @click="setAvatar(item.uuid)">设置为头像</MCButton>
+                <MCButton class="button" v-if="item.uuid !== avatarUUID" @click="setAvatar(item.uuid)"
+                  >设置为头像</MCButton
+                >
               </li>
             </ul>
           </div>
@@ -171,7 +178,6 @@ const logout = () => {
   flex-wrap: nowrap;
   gap: var(--gap);
   overflow-y: hidden;
-
 }
 
 .user-info {

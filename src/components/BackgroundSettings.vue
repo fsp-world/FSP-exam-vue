@@ -79,8 +79,6 @@ const fileToDataURL = (file: Blob): Promise<string> => {
     reader.readAsDataURL(file);
   });
 };
-
-
 </script>
 
 <template>
@@ -89,8 +87,13 @@ const fileToDataURL = (file: Blob): Promise<string> => {
     <div class="bg-presets">
       <p class="bg-section-label">预设背景</p>
       <div class="bg-preset-list">
-        <div v-for="item in presetBackgrounds" :key="item.name" class="bg-preset-item"
-          :class="{ active: item.url === background }" @click="setPresetBg(item.url)">
+        <div
+          v-for="item in presetBackgrounds"
+          :key="item.name"
+          class="bg-preset-item"
+          :class="{ active: item.url === background }"
+          @click="setPresetBg(item.url)"
+        >
           <div class="bg-preset-thumb" :style="{ backgroundImage: `url('${item.url}')` }"></div>
           <span>{{ item.name }}</span>
         </div>
@@ -166,7 +169,6 @@ const fileToDataURL = (file: Blob): Promise<string> => {
   background-position: center;
   margin-bottom: 4px;
 }
-
 
 .bg-actions {
   margin-top: 30px;

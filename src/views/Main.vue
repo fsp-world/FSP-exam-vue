@@ -34,7 +34,13 @@ const logout = () => {
           <MCRouterLink :length="'medium'" to="/space" class="minecraft-button"> 个人中心 </MCRouterLink>
           <button class="minecraft-button avatar">
             <RouterLink :to="!isLogin ? '/auth' : '/space'">
-              <img :title="!isLogin ? '' : '点我进入个人中心'" class="avatar-img" :src="avatar" alt="头像" width="100%" />
+              <img
+                :title="!isLogin ? '' : '点我进入个人中心'"
+                class="avatar-img"
+                :src="avatar"
+                alt="头像"
+                width="100%"
+              />
               <span class="avatat-hover">{{ !isLogin ? '未登录' : username }}</span>
             </RouterLink>
             <a v-show="isLogin" class="logout" @click="logout">退出登录</a>
@@ -42,20 +48,30 @@ const logout = () => {
         </div>
       </div>
       <div class="menu mobile">
-        <MCRouterLink :length="'medium'" v-if="!playPermission" to="/guarantee" class="minecraft-button">熟人担保
+        <MCRouterLink :length="'medium'" v-if="!playPermission" to="/guarantee" class="minecraft-button"
+          >熟人担保
         </MCRouterLink>
-        <MCRouterLink :length="'medium'" v-if="!playPermission" to="/prepareForTheExam" class="minecraft-button">参加考试
+        <MCRouterLink :length="'medium'" v-if="!playPermission" to="/prepareForTheExam" class="minecraft-button"
+          >参加考试
         </MCRouterLink>
-        <MCRouterLink :length="'medium'" v-if="playPermission" to="/online-stats" class="minecraft-button">在线统计
+        <MCRouterLink :length="'medium'" v-if="playPermission" to="/online-stats" class="minecraft-button"
+          >在线统计
         </MCRouterLink>
-        <MCRouterLink :length="'medium'" v-if="playPermission" to="/resourceCenter" class="minecraft-button">资源中心
+        <MCRouterLink :length="'medium'" v-if="playPermission" to="/resourceCenter" class="minecraft-button"
+          >资源中心
         </MCRouterLink>
         <div class="sub-menu">
           <MCRouterLink :length="'short'" to="https://www.fsp.ink" class="minecraft-button"> 文档中心 </MCRouterLink>
           <MCRouterLink :length="'short'" to="/space" class="minecraft-button"> 个人中心 </MCRouterLink>
           <button class="minecraft-button avatar">
             <RouterLink :to="!isLogin ? '/auth' : '/space'">
-              <img :title="!isLogin ? '' : '点我进入个人中心'" class="avatar-img" :src="avatar" alt="头像" width="100%" />
+              <img
+                :title="!isLogin ? '' : '点我进入个人中心'"
+                class="avatar-img"
+                :src="avatar"
+                alt="头像"
+                width="100%"
+              />
               <span class="avatat-hover">{{ !isLogin ? '未登录' : username }}</span>
             </RouterLink>
             <a v-show="isLogin" class="logout" @click="logout">退出登录</a>
@@ -63,7 +79,6 @@ const logout = () => {
         </div>
       </div>
     </div>
-
   </div>
 </template>
 
@@ -151,8 +166,6 @@ const logout = () => {
     }
   }
 
-
-
   .avatar:hover .avatat-hover,
   .avatar:hover .logout {
     display: inline-block;
@@ -194,7 +207,6 @@ const logout = () => {
   display: none;
 }
 
-
 @media screen and (max-width: 950px) {
   .menu {
     .avatar {
@@ -211,8 +223,8 @@ const logout = () => {
 
 @keyframes fadeInUp {
   from {
-    opacity: .25;
-    transform: scale(.95);
+    opacity: 0.25;
+    transform: scale(0.95);
   }
 
   to {
@@ -222,7 +234,6 @@ const logout = () => {
 }
 
 @media screen and (max-width: 550px) {
-
   .pc {
     display: none;
   }

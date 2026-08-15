@@ -63,10 +63,16 @@ const handleSaveUsername = async () => {
             </div>
             <div class="field-group">
               <label class="field-label">新用户名</label>
-              <input v-model="newUsername" class="field-input" type="text" placeholder="请输入新用户名（最多16字）"
-                maxlength="16" />
+              <input
+                v-model="newUsername"
+                class="field-input"
+                type="text"
+                placeholder="请输入新用户名（最多16字）"
+                maxlength="16"
+              />
             </div>
-            <MCButton class="save-btn" :disabled="!newUsername.trim() || saving" @click="handleSaveUsername">保存修改
+            <MCButton class="save-btn" :disabled="!newUsername.trim() || saving" @click="handleSaveUsername"
+              >保存修改
             </MCButton>
           </div>
         </Transition>

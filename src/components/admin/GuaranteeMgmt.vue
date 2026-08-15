@@ -42,13 +42,13 @@ const fetchGuaranteeData = async (params: IPagination) => {
 </script>
 
 <template>
-  <div class="bg-white rounded-lg shadow-sm">
-    <div class="flex flex-wrap items-center justify-between gap-4 px-5 py-4 border-b border-gray-200">
+  <div class="rounded-lg bg-white shadow-sm">
+    <div class="flex flex-wrap items-center justify-between gap-4 border-b border-gray-200 px-5 py-4">
       <h1 class="text-2xl font-bold">担保管理</h1>
       <nav class="flex items-center gap-1.5 text-sm text-gray-500">
-        <router-link to="/admin" class="hover:text-[#5268bc] transition-colors">后台首页</router-link>
+        <router-link to="/admin" class="transition-colors hover:text-[#5268bc]">后台首页</router-link>
         <span>/</span>
-        <router-link to="/admin/user" class="hover:text-[#5268bc] transition-colors">用户管理</router-link>
+        <router-link to="/admin/user" class="transition-colors hover:text-[#5268bc]">用户管理</router-link>
         <span>/</span>
         <span class="text-gray-700">担保管理</span>
       </nav>
@@ -56,18 +56,18 @@ const fetchGuaranteeData = async (params: IPagination) => {
 
     <div class="p-5">
       <BaseTable
-    :table-props="{ columnMap, stripe: true, bordered: true }"
-    :fetch-data="fetchGuaranteeData"
-    :loading="loading"
-    :error="error"
-  >
-    <template #create_time="{ value }">
-      <span class="whitespace-nowrap">{{ dateFormatYYYYMMDDHH(value) }}</span>
-    </template>
-    <template #expiration_time="{ value }">
-      <span class="whitespace-nowrap">{{ dateFormatYYYYMMDDHH(value) }}</span>
-    </template>
-  </BaseTable>
+        :table-props="{ columnMap, stripe: true, bordered: true }"
+        :fetch-data="fetchGuaranteeData"
+        :loading="loading"
+        :error="error"
+      >
+        <template #create_time="{ value }">
+          <span class="whitespace-nowrap">{{ dateFormatYYYYMMDDHH(value) }}</span>
+        </template>
+        <template #expiration_time="{ value }">
+          <span class="whitespace-nowrap">{{ dateFormatYYYYMMDDHH(value) }}</span>
+        </template>
+      </BaseTable>
     </div>
   </div>
 </template>

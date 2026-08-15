@@ -14,7 +14,7 @@ const { card } = defineProps({
 let timeout: number;
 
 onMounted(() => {
-  setTimeout(() => { }, 300); // 去掉这行会触发 bug！
+  setTimeout(() => {}, 300); // 去掉这行会触发 bug！
   timeout = setTimeout(() => {
     close();
   }, card.age);

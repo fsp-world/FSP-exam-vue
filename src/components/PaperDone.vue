@@ -49,7 +49,8 @@ onMounted(() => {
     <div class="box">
       <h1 class="title">提交成功</h1>
       <p class="text">
-        您的客观题得分为: <span class="score">{{ props.score }}</span>分
+        您的客观题得分为: <span class="score">{{ props.score }}</span
+        >分
       </p>
       <p class="text">主观题请等待人工审核</p>
       <p class="text">结果请在个人中心查看</p>
