@@ -3,6 +3,7 @@ import '@/assets/authForm.css';
 import { ref } from 'vue';
 import { findPassword } from '@/apis/auth';
 import { openAlert } from '@/utils/TsAlert';
+import { FIND_PASSWORD_MESSAGES } from '@/constants/messages';
 import MCButton from '@/components/MCButton.vue';
 
 const findPasswordForm = ref({
@@ -12,7 +13,8 @@ const findPasswordForm = ref({
 
 const sendFindPassword = () => {
   if (findPasswordForm.value.userQQ == "" || findPasswordForm.value.username == "") {
-    openAlert("请输入用户名和QQ")
+    openAlert(FIND_PASSWORD_MESSAGES.EMPTY_FIELDS)
+    return;
   }
   findPassword(findPasswordForm.value)
     .then((res) => {
