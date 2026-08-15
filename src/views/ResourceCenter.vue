@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref, reactive } from 'vue'
+import { ref, reactive } from 'vue';
 import type { SchematicBrief, GetSchematicsParams, SchematicsResponse, SchematicType } from '@/types/schematic';
 
 import { schematicTypes } from '@/types/schematic';
@@ -20,17 +20,16 @@ import { useUserStore } from '@/stores/user';
 import { storeToRefs } from 'pinia';
 import SchematicInfoDetail from '@/components/SchematicInfoDetail.vue';
 
-
 const store = useUserStore();
 const { avatar } = storeToRefs(store);
 
 const schematicList = ref<SchematicBrief[]>([]);
-const selectedValue = ref<SchematicType>(1)
-const fetchingData = ref(true)
-const searchText = ref('')
+const selectedValue = ref<SchematicType>(1);
+const fetchingData = ref(true);
+const searchText = ref('');
 
-const isUploadSchematicVisible = ref(false)
-const isSchematicDetailVisible = ref(false)
+const isUploadSchematicVisible = ref(false);
+const isSchematicDetailVisible = ref(false);
 
 const pagination = reactive({
   page: 1,
@@ -38,92 +37,100 @@ const pagination = reactive({
   total: 0,
   hasNext: false,
   hasPrev: false,
-})
+});
 
 const getSchematicsParams: GetSchematicsParams = {
   method: 'type',
   text: '',
   type: 1,
   page: 1,
-  per_page: 10
-}
+  per_page: 10,
+};
 
 const querySchematics = (queryMethod: 'type' | 'search') => {
   if (queryMethod === 'search') {
     if (searchText.value.trim() == '') {
-      queryMethod = 'type'
+      queryMethod = 'type';
     } else {
-      getSchematicsParams.text = searchText.value.trim()
+      getSchematicsParams.text = searchText.value.trim();
     }
   }
 
-  fetchingData.value = true
+  fetchingData.value = true;
 
   if (selectedValue.value !== getSchematicsParams.type || queryMethod !== getSchematicsParams.method) {
-    getSchematicsParams.type = selectedValue.value
-    getSchematicsParams.method = queryMethod
-    getSchematicsParams.page = 1
-    pagination.page = 1
-    pagination.pages = 0
-    pagination.total = 0
-    pagination.hasNext = false
-    pagination.hasPrev = false
+    getSchematicsParams.type = selectedValue.value;
+    getSchematicsParams.method = queryMethod;
+    getSchematicsParams.page = 1;
+    pagination.page = 1;
+    pagination.pages = 0;
+    pagination.total = 0;
+    pagination.hasNext = false;
+    pagination.hasPrev = false;
   } else {
-    getSchematicsParams.page = pagination.page
+    getSchematicsParams.page = pagination.page;
   }
 
   const apiCall = queryMethod === 'type' ? getSchematicsByTypeAPI : getSchematicsBySearchAPI;
 
-  apiCall(getSchematicsParams).then((res: SchematicsResponse) => {
-    if (res.data.code === 0) {
-      const { items, page, pages, total, has_next, has_prev } = res.data.data
-      schematicList.value = items
-      pagination.page = page
-      pagination.pages = pages
-      pagination.total = total
-      pagination.hasNext = has_next
-      pagination.hasPrev = has_prev
-    } else {
-      openAlert(res.data.desc, 'warn-card');
-    }
-  }).catch((error) => {
-    console.error('获取投影列表失败:', error);
-    openAlert('获取投影列表失败', 'warn-card')
-  }).finally(() => {
-    fetchingData.value = false
-  })
-}
+  apiCall(getSchematicsParams)
+    .then((res: SchematicsResponse) => {
+      if (res.data.code === 0) {
+        const { items, page, pages, total, has_next, has_prev } = res.data.data;
+        schematicList.value = items;
+        pagination.page = page;
+        pagination.pages = pages;
+        pagination.total = total;
+        pagination.hasNext = has_next;
+        pagination.hasPrev = has_prev;
+      } else {
+        openAlert(res.data.desc, 'warn-card');
+      }
+    })
+    .catch((error) => {
+      console.error('获取投影列表失败:', error);
+      openAlert('获取投影列表失败', 'warn-card');
+    })
+    .finally(() => {
+      fetchingData.value = false;
+    });
+};
 
-const querySchematicId = ref(0)
+const querySchematicId = ref(0);
 const showSchematicDetail = (id: number) => {
-  querySchematicId.value = id
-  isSchematicDetailVisible.value = true
-}
+  querySchematicId.value = id;
+  isSchematicDetailVisible.value = true;
+};
 
 const handleDeleteSchematic = (sid: number) => {
-  schematicList.value = schematicList.value.filter(item => item.id !== sid);
-}
+  schematicList.value = schematicList.value.filter((item) => item.id !== sid);
+};
 
-querySchematics('type')
-
+querySchematics('type');
 </script>
 <template>
   <MCDialog :style="'card'" v-model:isModalVisible="isUploadSchematicVisible">
     <UploadSchematicForm v-model:isModalVisible="isUploadSchematicVisible"></UploadSchematicForm>
   </MCDialog>
-  <MCDialog class="detail" :style="'book'" :resizeX="1.3" :resizeY="1.3"
-    v-model:isModalVisible="isSchematicDetailVisible">
-    <SchematicInfoDetail :sid="querySchematicId" @delete:sid="handleDeleteSchematic"
-      v-model:isModalVisible="isSchematicDetailVisible">
+  <MCDialog
+    class="detail"
+    :style="'book'"
+    :resizeX="1.3"
+    :resizeY="1.3"
+    v-model:isModalVisible="isSchematicDetailVisible"
+  >
+    <SchematicInfoDetail
+      :sid="querySchematicId"
+      @delete:sid="handleDeleteSchematic"
+      v-model:isModalVisible="isSchematicDetailVisible"
+    >
     </SchematicInfoDetail>
   </MCDialog>
   <StrippedBirchLogBackground>
     <div class="main">
       <nav class="nav">
         <div class="title">资源中心</div>
-        <MCRouterLink :length="'short'" to="/" class="back">
-          返回
-        </MCRouterLink>
+        <MCRouterLink :length="'short'" to="/" class="back"> 返回 </MCRouterLink>
       </nav>
       <div class="content">
         <div class="top scroll-hidden">
@@ -131,40 +138,65 @@ querySchematics('type')
             上传投影
           </MCButton>
           <div class="search">
-            <img class="search-icon" src="/src/assets/images/rainbow_pixel_gui/search.png" alt="搜索">
-            <input v-model="searchText" @keydown.enter.prevent="querySchematics('search')" type="search"
-              class="search-input" />
+            <img class="search-icon" src="/src/assets/images/rainbow_pixel_gui/search.png" alt="搜索" />
+            <input
+              v-model="searchText"
+              @keydown.enter.prevent="querySchematics('search')"
+              type="search"
+              class="search-input"
+            />
           </div>
-          <MCSegmentedControl :data="schematicTypes" v-model="selectedValue" @change="querySchematics('type')"
-            class="segmented-control">
+          <MCSegmentedControl
+            :data="schematicTypes"
+            v-model="selectedValue"
+            @change="querySchematics('type')"
+            class="segmented-control"
+          >
           </MCSegmentedControl>
         </div>
         <div class="no-results" v-if="schematicList.length === 0 && !fetchingData">还没有相关类型的投影</div>
-        <TransitionGroup name="stagger" tag="ul" class="list mc-scroll"
-          :style="{ '--scrollbar-avatar': `url(${avatar})` }">
-          <li class="schematic scroll-hidden" :key="item.id" v-for="item in schematicList"
-            @click="showSchematicDetail(item.id)">
-            <div class="name">{{ item.name }} <span class="author">{{ item.uploader }}</span></div>
+        <TransitionGroup
+          name="stagger"
+          tag="ul"
+          class="list mc-scroll"
+          :style="{ '--scrollbar-avatar': `url(${avatar})` }"
+        >
+          <li
+            class="schematic scroll-hidden"
+            :key="item.id"
+            v-for="item in schematicList"
+            @click="showSchematicDetail(item.id)"
+          >
+            <div class="name">
+              {{ item.name }} <span class="author">{{ item.uploader }}</span>
+            </div>
             <div class="author author-mobil">{{ item.uploader }}</div>
             <div class="tags">
-              <img v-show="!item.isPublic" class="lock" src="/src/assets/images/rainbow_pixel_gui/locked.png">
+              <img v-show="!item.isPublic" class="lock" src="/src/assets/images/rainbow_pixel_gui/locked.png" />
               <MCNameTag>{{ item.gameVersion }}</MCNameTag>
-              <MCNameTag v-show="tag !== ''" :key="index" v-for="(tag, index) in item.tags">{{ tag }}
-              </MCNameTag>
+              <MCNameTag v-show="tag !== ''" :key="index" v-for="(tag, index) in item.tags">{{ tag }} </MCNameTag>
               <MCNameTag>下载量：{{ item.downloadCount }}</MCNameTag>
             </div>
           </li>
         </TransitionGroup>
         <div v-show="pagination.pages > 0" class="paginate">
-          <div class="last" :class="{ disabled: !pagination.hasPrev || fetchingData }"
-            @click="pagination.hasPrev && !fetchingData && (pagination.page--, querySchematics(getSchematicsParams.method))">
-          </div>
+          <div
+            class="last"
+            :class="{ disabled: !pagination.hasPrev || fetchingData }"
+            @click="
+              pagination.hasPrev && !fetchingData && (pagination.page--, querySchematics(getSchematicsParams.method))
+            "
+          ></div>
           <div class="text">第 {{ pagination.page }} / {{ pagination.pages }} 页</div>
-          <div class="next" :class="{ disabled: !pagination.hasNext || fetchingData }"
-            @click="pagination.hasNext && !fetchingData && (pagination.page++, querySchematics(getSchematicsParams.method))">
-          </div>
+          <div
+            class="next"
+            :class="{ disabled: !pagination.hasNext || fetchingData }"
+            @click="
+              pagination.hasNext && !fetchingData && (pagination.page++, querySchematics(getSchematicsParams.method))
+            "
+          ></div>
         </div>
-        <img class="avatar" :src="avatar"></img>
+        <img class="avatar" :src="avatar" />
         <div class="shelf"></div>
       </div>
     </div>
@@ -244,8 +276,6 @@ querySchematics('type')
 .stagger-enter-active:nth-child(5) {
   transition-delay: 0.5s;
 }
-
-
 
 .main {
   width: calc(100% - 40px);
@@ -344,11 +374,9 @@ querySchematics('type')
   }
 
   .search-input:focus {
-    outline: none
+    outline: none;
   }
 }
-
-
 
 .no-results {
   position: absolute;
@@ -454,7 +482,6 @@ querySchematics('type')
 
   .disabled {
     display: none;
-
   }
 }
 

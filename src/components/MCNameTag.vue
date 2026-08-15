@@ -39,7 +39,6 @@
   background-position: left;
   background-repeat: no-repeat;
   image-rendering: pixelated;
-
 }
 
 .tag::after {

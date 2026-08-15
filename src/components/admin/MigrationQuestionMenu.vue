@@ -12,8 +12,8 @@ interface SurveyMoreInfoItem extends SurveyInfoItem {
 }
 
 interface Props {
-  sid: number
-  qid: number
+  sid: number;
+  qid: number;
 }
 
 const { sid, qid } = defineProps<Props>();
@@ -64,16 +64,12 @@ const complete = () => {
   }
 };
 
-
-
 const selectedSurvey = (index: number) => {
   for (const i of surveys.value) {
     i.selected = false;
   }
   surveys.value[index].selected = true;
 };
-
-
 </script>
 <template>
   <InfoDialog :show="toggleMenu" dialogType="book-card">
@@ -81,8 +77,13 @@ const selectedSurvey = (index: number) => {
       <p class="title">想把这道题迁移到哪张问卷的末尾？</p>
       <p class="tips">已发布或存在未交卷、未批改答卷的问卷不能被编辑</p>
       <ul class="surveys">
-        <li class="survey" :class="{ selected: item.selected }" v-for="(item, itemIndex) of surveys" :key="item.id"
-          @click="selectedSurvey(itemIndex)">
+        <li
+          class="survey"
+          :class="{ selected: item.selected }"
+          v-for="(item, itemIndex) of surveys"
+          :key="item.id"
+          @click="selectedSurvey(itemIndex)"
+        >
           {{ item.name }}
         </li>
       </ul>

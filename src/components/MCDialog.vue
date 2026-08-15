@@ -10,110 +10,114 @@
 // </MCDialog>
 // showModal 是一个 ref 变量
 
-import { onMounted, onUnmounted, watch, nextTick, computed, useTemplateRef } from 'vue'
+import { onMounted, onUnmounted, watch, nextTick, computed, useTemplateRef } from 'vue';
 
 interface Props {
-  isModalVisible: boolean
-  style?: 'book' | 'card'
-  resizeX?: number
-  resizeY?: number
+  isModalVisible: boolean;
+  style?: 'book' | 'card';
+  resizeX?: number;
+  resizeY?: number;
 }
 
 interface Emits {
-  (e: 'update:isModalVisible', value: boolean): void
+  (e: 'update:isModalVisible', value: boolean): void;
 }
 
 defineOptions({
-  inheritAttrs: false
-})
+  inheritAttrs: false,
+});
 
 const props = withDefaults(defineProps<Props>(), {
   isModalVisible: false,
   style: 'book',
   resizeX: 1,
   resizeY: 1,
-})
+});
 
-const emit = defineEmits<Emits>()
+const emit = defineEmits<Emits>();
 
-const modalRef = useTemplateRef('modalRef')
+const modalRef = useTemplateRef('modalRef');
 
 const closeModel = () => {
-  emit('update:isModalVisible', false)
-}
+  emit('update:isModalVisible', false);
+};
 
-const focusableElementsText = 'input, textarea, select, button'
+const focusableElementsText = 'input, textarea, select, button';
 
 const handleKeyDown = (e: KeyboardEvent) => {
   // 如果模态框没显示，或者按下的不是 Tab 键，则不处理
-  if (!props.isModalVisible || e.key !== 'Tab') return
+  if (!props.isModalVisible || e.key !== 'Tab') return;
 
   // 获取模态框内的所有可聚焦元素
   if (modalRef.value) {
-    const focusableElements = modalRef.value.querySelectorAll(focusableElementsText)
-    if (focusableElements.length === 0) return
+    const focusableElements = modalRef.value.querySelectorAll(focusableElementsText);
+    if (focusableElements.length === 0) return;
 
-    const firstElement = focusableElements[0] as HTMLElement
-    const lastElement = focusableElements[focusableElements.length - 1] as HTMLElement
+    const firstElement = focusableElements[0] as HTMLElement;
+    const lastElement = focusableElements[focusableElements.length - 1] as HTMLElement;
 
     // 正向 Tab：如果焦点在最后一个元素，阻止默认行为并跳回第一个
     if (!e.shiftKey && document.activeElement === lastElement) {
-      e.preventDefault()
-      firstElement.focus()
+      e.preventDefault();
+      firstElement.focus();
     }
     // 反向 Shift + Tab：如果焦点在第一个元素，阻止默认行为并跳回最后一个
     else if (e.shiftKey && document.activeElement === firstElement) {
-      e.preventDefault()
-      lastElement.focus()
+      e.preventDefault();
+      lastElement.focus();
     }
   }
-}
+};
 
-watch(() => props.isModalVisible, (newVal) => {
-  if (newVal) {
-    // 必须使用 nextTick，确保 DOM 已经渲染出来（v-show 或 v-if 生效）
-    nextTick(() => {
-      if (modalRef.value) {
-        // 获取第一个可聚焦元素
-        const focusableElements = modalRef.value.querySelectorAll(focusableElementsText)
-        const firstElement = focusableElements[0] as HTMLElement
+watch(
+  () => props.isModalVisible,
+  (newVal) => {
+    if (newVal) {
+      // 必须使用 nextTick，确保 DOM 已经渲染出来（v-show 或 v-if 生效）
+      nextTick(() => {
+        if (modalRef.value) {
+          // 获取第一个可聚焦元素
+          const focusableElements = modalRef.value.querySelectorAll(focusableElementsText);
+          const firstElement = focusableElements[0] as HTMLElement;
 
-        // 如果找到了，就主动聚焦它
-        if (firstElement) {
-
-          firstElement.focus()
-        } else {
-          // 兜底方案：如果里面没有任何可交互元素，就把焦点给模态框容器本身
-          // 注意：容器需要加 tabindex="-1" 才能被程序化聚焦
-          modalRef.value.focus()
+          // 如果找到了，就主动聚焦它
+          if (firstElement) {
+            firstElement.focus();
+          } else {
+            // 兜底方案：如果里面没有任何可交互元素，就把焦点给模态框容器本身
+            // 注意：容器需要加 tabindex="-1" 才能被程序化聚焦
+            modalRef.value.focus();
+          }
         }
-      }
-    })
+      });
+    }
   }
-})
+);
 
 const modalClassList = computed(() => ({
-  'normal': true,
-  'card': props.style === 'card',
-  'book': props.style === 'book',
-}))
+  normal: true,
+  card: props.style === 'card',
+  book: props.style === 'book',
+}));
 
 onMounted(() => {
-  document.addEventListener('keydown', handleKeyDown)
-})
+  document.addEventListener('keydown', handleKeyDown);
+});
 
 onUnmounted(() => {
-  document.removeEventListener('keydown', handleKeyDown)
-})
-
-
-
+  document.removeEventListener('keydown', handleKeyDown);
+});
 </script>
 <template>
   <Teleport to="body">
     <div class="bg" v-if="isModalVisible">
-      <div v-bind="$attrs" ref="modalRef" tabindex="-1" :class="modalClassList"
-        :style="{ '--ratioX': resizeX, '--ratioY': resizeY }">
+      <div
+        v-bind="$attrs"
+        ref="modalRef"
+        tabindex="-1"
+        :class="modalClassList"
+        :style="{ '--ratioX': resizeX, '--ratioY': resizeY }"
+      >
         <slot></slot>
       </div>
     </div>
@@ -172,7 +176,6 @@ a:visited {
   max-width: var(--wid);
   min-height: var(--hei);
   max-height: 100vh;
-
 
   /* 核心作用是改变元素宽高的计算方式，让你设置的 width 和 height 直接等于元素的最终视觉大小 */
   box-sizing: border-box;

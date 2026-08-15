@@ -138,18 +138,14 @@ export function checkBrowser(): BrowserCheckResult {
   // 1. 检查是否被封锁（QQ 内置浏览器等）
   if (BLOCKED_BROWSERS.includes(browser.name)) {
     const blockedMessages: Record<string, string> = {
-      QQBrowser:
-        '您正在使用的 QQ 内置浏览器不兼容本站点，请使用 Chrome、Edge 或 Firefox 等现代浏览器访问。',
-      UCBrowser:
-        '您正在使用的 UC 浏览器可能存在兼容性问题，请使用 Chrome、Edge 或 Firefox 等现代浏览器访问。',
-      WeChat:
-        '微信内置浏览器不支持访问本站点，请使用 Chrome、Edge 或 Firefox 等现代浏览器访问。',
+      QQBrowser: '您正在使用的 QQ 内置浏览器不兼容本站点，请使用 Chrome、Edge 或 Firefox 等现代浏览器访问。',
+      UCBrowser: '您正在使用的 UC 浏览器可能存在兼容性问题，请使用 Chrome、Edge 或 Firefox 等现代浏览器访问。',
+      WeChat: '微信内置浏览器不支持访问本站点，请使用 Chrome、Edge 或 Firefox 等现代浏览器访问。',
     };
     return {
       pass: false,
       browser,
-      message:
-        blockedMessages[browser.name] || `不支持的浏览器: ${browser.name}`,
+      message: blockedMessages[browser.name] || `不支持的浏览器: ${browser.name}`,
     };
   }
 

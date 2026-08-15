@@ -153,10 +153,7 @@ export const useUserStore = defineStore('user', {
         if (res.data.code === 0) {
           this.background = bgUrl;
           if (bgUrl) {
-            document.documentElement.style.setProperty(
-              '--bg-img',
-              `url('${bgUrl}')`,
-            );
+            document.documentElement.style.setProperty('--bg-img', `url('${bgUrl}')`);
           } else {
             document.documentElement.style.removeProperty('--bg-img');
           }
@@ -191,14 +188,6 @@ export const useUserStore = defineStore('user', {
   persist: {
     key: 'user',
     storage: localStorage,
-    paths: [
-      'username',
-      'avatarUUID',
-      'avatar',
-      'isLogin',
-      'isAdmin',
-      'addtime',
-      'background',
-    ], // 只持久化部分字段
+    paths: ['username', 'avatarUUID', 'avatar', 'isLogin', 'isAdmin', 'addtime', 'background'], // 只持久化部分字段
   },
 });

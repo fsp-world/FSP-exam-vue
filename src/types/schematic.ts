@@ -1,16 +1,16 @@
-import type { FetchResponse, PaginateData } from ".";
+import type { FetchResponse, PaginateData } from '.';
 
 export const schematicTypes = [
   { data: 0, label: '其他' },
   { data: 1, label: '红石' },
   { data: 2, label: '建筑' },
-]
+];
 // 提取出数字类型（用于函数参数约束或接口定义）
-export type SchematicType = typeof schematicTypes[number]['data']; // 0 | 1 | 2
+export type SchematicType = (typeof schematicTypes)[number]['data']; // 0 | 1 | 2
 
 export function getSchematicTypeItem(data: number) {
-  const item = schematicTypes.find(item => item.data === data);
-  return item
+  const item = schematicTypes.find((item) => item.data === data);
+  return item;
 }
 
 export interface GetSchematicsParams {
@@ -36,7 +36,7 @@ export interface UploadSchematicFormData {
 }
 
 export interface SchematicBrief {
-  id: number
+  id: number;
   name: string;
   type: number;
   uploader: string;
@@ -49,11 +49,11 @@ export interface SchematicBrief {
   gameVersion: string;
 }
 
-export interface SchematicDetail extends SchematicBrief{
+export interface SchematicDetail extends SchematicBrief {
   description: string;
   fileSizeKB: string;
   backupLink: string;
 }
 
-export type SchematicsResponse = FetchResponse<PaginateData<SchematicBrief>>
-export type SchematicDetailResponse = FetchResponse<SchematicDetail>
+export type SchematicsResponse = FetchResponse<PaginateData<SchematicBrief>>;
+export type SchematicDetailResponse = FetchResponse<SchematicDetail>;

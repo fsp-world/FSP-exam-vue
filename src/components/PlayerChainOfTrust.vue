@@ -8,43 +8,43 @@ import { getProfilePic } from '@/apis/mj';
 
 interface Item {
   applicant: {
-    id: number
-    username: string
-    avatar: string // UUID
-    user_qq: string
-    avatarUrl: string | undefined
-  }
+    id: number;
+    username: string;
+    avatar: string; // UUID
+    user_qq: string;
+    avatarUrl: string | undefined;
+  };
   guarantor: {
-    id: number
-    username: string
-    avatar: string // UUID
-    user_qq: string
-    warning: string
-  }
+    id: number;
+    username: string;
+    avatar: string; // UUID
+    user_qq: string;
+    warning: string;
+  };
 }
 interface Props {
-  isModalVisible: boolean
-  uuid: string
+  isModalVisible: boolean;
+  uuid: string;
 }
 
 interface Emits {
-  (e: 'update:isModalVisible', value: boolean): void
+  (e: 'update:isModalVisible', value: boolean): void;
 }
 
 const props = withDefaults(defineProps<Props>(), {
   isModalVisible: false,
-})
+});
 
-const emit = defineEmits<Emits>()
+const emit = defineEmits<Emits>();
 
-const chain = ref<Item[]>([])
-const playerName = ref('')
+const chain = ref<Item[]>([]);
+const playerName = ref('');
 
 const queryChainOfTrust = (uuid: string) => {
   getPlayerChainOfTrust(uuid).then((res: FetchResponse) => {
     if (res.data.code === 0) {
-      chain.value = res.data.data.chain.reverse()
-      playerName.value = res.data.data.playerName
+      chain.value = res.data.data.chain.reverse();
+      playerName.value = res.data.data.playerName;
 
       const avatarPromises = chain.value.map((item) =>
         getProfilePic(item.applicant.avatar)
@@ -55,31 +55,33 @@ const queryChainOfTrust = (uuid: string) => {
           })
           .catch((err) => {
             console.warn(`Failed to fetch avatar`, err);
-          }),
+          })
       );
       return Promise.all(avatarPromises);
-
     } else {
       openAlert('信任链加载失败！', 'warn-card');
     }
-  })
-}
+  });
+};
 
-queryChainOfTrust(props.uuid)
+queryChainOfTrust(props.uuid);
 </script>
 <template>
   <div class="main">
     <p class="title">白名单用户 {{ playerName }} 的信任链</p>
     <ul>
-      <li :key="index" v-for="(item, index) in chain" :style="{ '--indent': (index + 1) * 50 + 'px' }"
-        style="padding-left: var(--indent);">
+      <li
+        :key="index"
+        v-for="(item, index) in chain"
+        :style="{ '--indent': (index + 1) * 50 + 'px' }"
+        style="padding-left: var(--indent)"
+      >
         <img class="avatar" :src="item.applicant.avatarUrl" alt="User Avatar" />
         <div class="name">{{ item.applicant.username }}</div>
       </li>
     </ul>
     <MCButton :length="'medium'" class="button" @click="emit('update:isModalVisible', false)">关闭</MCButton>
   </div>
-
 </template>
 <style scoped>
 .main {
@@ -95,7 +97,6 @@ queryChainOfTrust(props.uuid)
   text-align: center;
   font-size: var(--text-font-size-large);
 }
-
 
 ul {
   margin: 0 auto;
