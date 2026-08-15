@@ -1,6 +1,8 @@
 # Changelog
 
-## [0.11.6] (Developing)
+## [0.11.7] (Developing)
+
+## [0.11.6] (2026-08-15)
 
 ### Features
 
@@ -9,8 +11,8 @@
 ### Chore
 
 - 将日期库从 Moment.js 迁移至 Day.js，大幅减小打包体积
-- 引入 oxlint 与 prettier 代码质量工具，新增 `lint` / `format` / `format:check` 脚本，并统一全项目代码格式
-- 新增 GitHub Actions CI 流程：master/main/dev 分支推送及 Pull Request 时执行 lint、格式检查与构建
+- 引入 oxlint、prettier 与 vue-tsc 代码质量工具，新增 `lint` / `format` / `format:check` / `type-check` 脚本，并统一全项目代码格式
+- 新增 GitHub Actions CI 流程：master/main/dev 分支推送及 Pull Request 时执行 lint、格式检查、类型检查与构建
 - 部署流程（deploy）改为仅在 CI 通过后自动触发，并保留手动触发入口
 
 ### Refactor
