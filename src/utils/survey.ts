@@ -1,9 +1,4 @@
-import type {
-  ImportSurvey,
-  UploadAddQuestion,
-  EditQuestionData,
-  AnswerQuestion,
-} from '@/types/survey';
+import type { ImportSurvey, UploadAddQuestion, EditQuestionData, AnswerQuestion } from '@/types/survey';
 import { QuestionType } from '@/types/survey';
 import { addSurveyAPI, addQuestionAPI, getSurvey } from '@/apis/admin';
 import { openAlert } from '@/utils/TsAlert';
@@ -13,9 +8,7 @@ interface ReturnData {
   msg: string;
 }
 
-export const sortQuestion = <T extends { display_order: number }>(
-  questionList: T[],
-): T[] => {
+export const sortQuestion = <T extends { display_order: number }>(questionList: T[]): T[] => {
   return questionList.slice().sort((a, b) => a.display_order - b.display_order);
 };
 
@@ -36,19 +29,13 @@ export const getStringQuestionType = (questionType: QuestionType): string => {
 
 /** 判断一道题是否已被作答 */
 export function isQuestionAnswered(question: AnswerQuestion): boolean {
-  const isChoice =
-    question.type === QuestionType.SingleChoice ||
-    question.type === QuestionType.MultipleChoice;
+  const isChoice = question.type === QuestionType.SingleChoice || question.type === QuestionType.MultipleChoice;
   return isChoice
     ? question.options.some((opt) => !!(opt as any).isSelected)
     : !!((question as any).answer?.[0] as string | undefined);
 }
 
-const objectiveQuestionTypes = [
-  QuestionType.SingleChoice,
-  QuestionType.MultipleChoice,
-  QuestionType.FillInTheBlanks,
-];
+const objectiveQuestionTypes = [QuestionType.SingleChoice, QuestionType.MultipleChoice, QuestionType.FillInTheBlanks];
 
 export function isObjectiveQuestion(type: QuestionType): boolean {
   return objectiveQuestionTypes.includes(type);
@@ -60,10 +47,7 @@ export function hasSufficientCorrectOptions(question: EditQuestionData): {
   pass: boolean;
   hint: string;
 } {
-  if (
-    question.type === QuestionType.FillInTheBlanks ||
-    question.type === QuestionType.Subjective
-  ) {
+  if (question.type === QuestionType.FillInTheBlanks || question.type === QuestionType.Subjective) {
     return { pass: true, hint: '' };
   }
 
@@ -79,11 +63,7 @@ export function hasSufficientCorrectOptions(question: EditQuestionData): {
 }
 
 const isFormatCorrect = (jsonData: ImportSurvey): ReturnData => {
-  if (
-    !jsonData.description ||
-    !jsonData.name ||
-    !Array.isArray(jsonData.questions)
-  ) {
+  if (!jsonData.description || !jsonData.name || !Array.isArray(jsonData.questions)) {
     return { success: false, msg: 'json文件损坏，无法导入！' };
   }
   return { success: true, msg: '数据格式校验成功' };
@@ -136,9 +116,7 @@ const addQuestions = async (data: UploadAddQuestion): Promise<ReturnData> => {
   }
 };
 
-export const importSurveyData = async (
-  jsonData: ImportSurvey,
-): Promise<ReturnData> => {
+export const importSurveyData = async (jsonData: ImportSurvey): Promise<ReturnData> => {
   const formatCheck = isFormatCorrect(jsonData);
   if (!formatCheck.success) {
     return formatCheck;
@@ -183,7 +161,7 @@ export const exportSurveyToJsonFile = async (surveyId: number) => {
         if (key === 'display_order') return 0;
         return value;
       },
-      2,
+      2
     );
     const blob = new Blob([jsonString], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
@@ -192,7 +170,7 @@ export const exportSurveyToJsonFile = async (surveyId: number) => {
     a.download = `${res.data.data.name}.json`;
     a.click();
     openAlert('导出问卷成功！');
-  } catch (error) {
+  } catch {
     openAlert('获取问卷失败！');
   }
 };

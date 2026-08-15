@@ -4,6 +4,9 @@ defineEmits(['click']);
 
 <template>
   <button
-    class="absolute right-3 top-3 w-9 h-9 flex items-center justify-center text-xl text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-full transition-colors z-10 select-none"
-    @click="$emit('click')">&times;</button>
+    class="absolute top-3 right-3 z-10 flex h-9 w-9 items-center justify-center rounded-full text-xl text-gray-400 transition-colors select-none hover:bg-gray-100 hover:text-gray-600"
+    @click="$emit('click')"
+  >
+    &times;
+  </button>
 </template>

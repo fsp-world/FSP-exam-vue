@@ -8,11 +8,11 @@ const props = defineProps({
 
 interface Position {
   x: number;
-  y: number
+  y: number;
 }
 
 interface BgStonePattern extends Position {
-  type: string
+  type: string;
 }
 
 const bgHeight = ref(0);
@@ -34,7 +34,7 @@ function generatePatterns() {
       const newPosition = { x: closestMultipleX, y: closestMultipleY };
       // 检查新位置是否与现有位置重叠
       const isOverlapping = positions.some(
-        (pos) => Math.abs(pos.x - newPosition.x) < elementSize && Math.abs(pos.y - newPosition.y) < elementSize,
+        (pos) => Math.abs(pos.x - newPosition.x) < elementSize && Math.abs(pos.y - newPosition.y) < elementSize
       );
 
       if (!isOverlapping) {

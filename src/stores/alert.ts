@@ -34,7 +34,7 @@ export const useAlertStore = defineStore('alert', {
       // this.dialogs = li;
 
       // 2
-      this.dialogs = this.dialogs.filter((item: IalertData) => item.flag)
+      this.dialogs = this.dialogs.filter((item: IalertData) => item.flag);
     },
   },
 });

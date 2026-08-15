@@ -77,22 +77,27 @@ onMounted(async () => {
 
 <template>
   <div class="h-full overflow-y-auto">
-    <div class="bg-white rounded-lg shadow-sm">
-      <div class="flex flex-wrap items-center justify-between gap-4 px-5 py-4 border-b border-gray-200">
+    <div class="rounded-lg bg-white shadow-sm">
+      <div class="flex flex-wrap items-center justify-between gap-4 border-b border-gray-200 px-5 py-4">
         <h1 class="text-2xl font-bold">答卷管理</h1>
         <nav class="flex items-center gap-1.5 text-sm text-gray-500">
-          <router-link to="/admin" class="hover:text-[#5268bc] transition-colors">后台首页</router-link>
+          <router-link to="/admin" class="transition-colors hover:text-[#5268bc]">后台首页</router-link>
           <span>/</span>
-          <router-link to="/admin/exam" class="hover:text-[#5268bc] transition-colors">试卷管理</router-link>
+          <router-link to="/admin/exam" class="transition-colors hover:text-[#5268bc]">试卷管理</router-link>
           <span>/</span>
           <span class="text-gray-700">答卷管理</span>
         </nav>
       </div>
 
       <div class="p-5">
-        <p class="text-sm text-gray-500 mb-5">注意：已过期的答卷自动设置为已完成和已拒绝</p>
-        <BaseTable ref="tableRef" :table-props="{ columnMap, stripe: true, bordered: true }"
-          :fetch-data="fetchResponses" :loading="loading" actions-width="80px">
+        <p class="mb-5 text-sm text-gray-500">注意：已过期的答卷自动设置为已完成和已拒绝</p>
+        <BaseTable
+          ref="tableRef"
+          :table-props="{ columnMap, stripe: true, bordered: true }"
+          :fetch-data="fetchResponses"
+          :loading="loading"
+          actions-width="80px"
+        >
           <template #isCompleted="{ value }">
             <span :class="value ? 'text-green-600' : 'text-red-500'">{{ value ? '已完成' : '未完成' }}</span>
           </template>

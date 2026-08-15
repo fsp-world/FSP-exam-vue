@@ -1,13 +1,29 @@
 # Changelog
 
-## [0.11.6] (Developing)
+## [0.11.7] (Developing)
+
+## [0.11.6] (2026-08-15)
 
 ### Features
 
 - 添加浏览器版本检测功能，不符合要求的浏览器会提示切换浏览器
 
+### Chore
+
+- 将日期库从 Moment.js 迁移至 Day.js，大幅减小打包体积
+- 引入 oxlint、prettier 与 vue-tsc 代码质量工具，新增 `lint` / `format` / `format:check` / `type-check` 脚本，并统一全项目代码格式
+- 新增 GitHub Actions CI 流程：master/main/dev 分支推送及 Pull Request 时执行 lint、格式检查、类型检查与构建
+- 部署流程（deploy）改为仅在 CI 通过后自动触发，并保留手动触发入口
+
+### Refactor
+
+- 将登录、注册、找回密码及退出登录等提示文案统一抽取到 `src/constants/messages.ts` 常量中集中管理
+- 修正登录相关文案中「登陆」错别字为「登录」
+
 ### Bug Fixes
 
+- 修复找回密码页面在用户名或 QQ 为空时仍会发送请求的问题
+- 修复资源中心页面 `img` 标签错误闭合导致的语法问题
 - 在线统计页面日期显示问题 (#10)
 - 修复错误页面样式问题
 

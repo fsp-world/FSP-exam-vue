@@ -5,6 +5,7 @@ import { useRouter, useRoute } from 'vue-router';
 import { useUserStore } from '@/stores/user';
 import { checkPassword } from '@/utils/passwordUtil';
 import { openAlert } from '@/utils/TsAlert';
+import { LOGIN_MESSAGES, REGISTER_MESSAGES } from '@/constants/messages';
 import MCButton from '@/components/MCButton.vue';
 
 const appVersion = __APP_VERSION__;
@@ -23,7 +24,7 @@ const registerForm = ref({
 const sendRegister = () => {
   if (registerForm.value.password === registerForm.value.passwordAgain) {
     if (!checkPassword(registerForm.value.password)) {
-      openAlert('密码必须包含至少一个大写字母、一个小写字母、一个数字和一个特殊字符，且长度为8-16个字符');
+      openAlert(LOGIN_MESSAGES.INVALID_PASSWORD);
       return;
     }
     user
@@ -35,7 +36,7 @@ const sendRegister = () => {
       })
       .then((res: any) => {
         if (res.data.code === 0) {
-          openAlert('注册成功! 即将跳转...');
+          openAlert(REGISTER_MESSAGES.SUCCESS);
           setTimeout(() => {
             setTimeout(() => {
               // 获取目标页面路径
@@ -53,10 +54,10 @@ const sendRegister = () => {
         }
       })
       .catch((err) => {
-        openAlert('出现错误!');
+        openAlert(REGISTER_MESSAGES.FAILED);
       });
   } else {
-    openAlert('密码不一致');
+    openAlert(REGISTER_MESSAGES.PASSWORD_MISMATCH);
   }
 };
 </script>
@@ -70,12 +71,14 @@ const sendRegister = () => {
     <input type="text" placeholder="QQ号" v-model="registerForm.userQQ" />
     <input type="password" placeholder="密码" v-model="registerForm.password" />
     <input type="password" placeholder="确认密码" v-model="registerForm.passwordAgain" />
-    <p>密码必须包含至少一个大写字母、一个小写字母、一个数字和一个特殊字符，且长度为8-16个字符。</p>
-    <p v-if="registerForm.passwordAgain && registerForm.password !== registerForm.passwordAgain"
-      style="color: red; font-size: 12px">
-      两次输入的密码不一致。
+    <p>{{ LOGIN_MESSAGES.INVALID_PASSWORD }}</p>
+    <p
+      v-if="registerForm.passwordAgain && registerForm.password !== registerForm.passwordAgain"
+      style="color: red; font-size: 12px"
+    >
+      {{ REGISTER_MESSAGES.PASSWORD_MISMATCH }}
     </p>
     <RouterLink to="/auth/login" class="link">已有账号？</RouterLink>
-    <MCButton :length="'long'" style="width: 100%;" @click="sendRegister">注册</MCButton>
+    <MCButton :length="'long'" style="width: 100%" @click="sendRegister">注册</MCButton>
   </div>
 </template>

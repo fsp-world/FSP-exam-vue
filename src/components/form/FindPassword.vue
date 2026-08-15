@@ -3,6 +3,7 @@ import '@/assets/authForm.css';
 import { ref } from 'vue';
 import { findPassword } from '@/apis/auth';
 import { openAlert } from '@/utils/TsAlert';
+import { FIND_PASSWORD_MESSAGES } from '@/constants/messages';
 import MCButton from '@/components/MCButton.vue';
 
 const findPasswordForm = ref({
@@ -11,8 +12,9 @@ const findPasswordForm = ref({
 });
 
 const sendFindPassword = () => {
-  if (findPasswordForm.value.userQQ == "" || findPasswordForm.value.username == "") {
-    openAlert("请输入用户名和QQ")
+  if (findPasswordForm.value.userQQ == '' || findPasswordForm.value.username == '') {
+    openAlert(FIND_PASSWORD_MESSAGES.EMPTY_FIELDS);
+    return;
   }
   findPassword(findPasswordForm.value)
     .then((res) => {
@@ -30,6 +32,6 @@ const sendFindPassword = () => {
     <input type="text" placeholder="用户名" v-model="findPasswordForm.username" />
     <input type="text" placeholder="QQ号" v-model="findPasswordForm.userQQ" />
     <RouterLink to="/auth/login" class="link">已有账号？</RouterLink>
-    <MCButton :length="'long'" style="width: 100%;" @click="sendFindPassword">找回密码</MCButton>
+    <MCButton :length="'long'" style="width: 100%" @click="sendFindPassword">找回密码</MCButton>
   </form>
 </template>

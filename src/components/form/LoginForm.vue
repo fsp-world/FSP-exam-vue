@@ -5,6 +5,7 @@ import { useRouter, useRoute } from 'vue-router';
 import { useUserStore } from '@/stores/user';
 import { checkPassword } from '@/utils/passwordUtil';
 import { openAlert } from '@/utils/TsAlert';
+import { LOGIN_MESSAGES } from '@/constants/messages';
 import MCButton from '@/components/MCButton.vue';
 
 const appVersion = __APP_VERSION__;
@@ -19,10 +20,10 @@ const loginForm = ref({
 });
 const sendLogin = () => {
   if (!checkPassword(loginForm.value.password)) {
-    openAlert('密码必须包含至少一个大写字母、一个小写字母、一个数字和一个特殊字符，且长度为8-16个字符');
+    openAlert(LOGIN_MESSAGES.INVALID_PASSWORD);
     return;
   }
-  openAlert('登陆中');
+  openAlert(LOGIN_MESSAGES.CHECKING);
 
   user
     .login({
@@ -31,7 +32,7 @@ const sendLogin = () => {
     })
     .then((res: any) => {
       if (res.data.code === 0) {
-        openAlert('登录成功! 即将跳转...');
+        openAlert(LOGIN_MESSAGES.SUCCESS);
         setTimeout(() => {
           // 获取目标页面路径
           const redirect = route.query.redirect;
@@ -47,7 +48,7 @@ const sendLogin = () => {
       }
     })
     .catch((err) => {
-      openAlert('登录错误!');
+      openAlert(LOGIN_MESSAGES.FAILED);
     });
 };
 </script>
@@ -59,12 +60,12 @@ const sendLogin = () => {
     </div>
     <input type="text" placeholder="用户名" v-model="loginForm.username" />
     <input type="password" placeholder="密码" v-model="loginForm.password" />
-    <p>密码必须包含至少一个大写字母、一个小写字母、一个数字和一个特殊字符，且长度为8-16个字符。</p>
+    <p>{{ LOGIN_MESSAGES.INVALID_PASSWORD }}</p>
     <p style="display: flex; justify-content: space-between; padding: 0 10px">
       <RouterLink to="/auth/register" class="link">还没有账号？</RouterLink>
       <RouterLink to="/auth/find_password" class="link">忘记密码？</RouterLink>
     </p>
-    <MCButton :length="'long'" style="width: 100%;" @click="sendLogin">登录</MCButton>
-    <MCRouterLink :length="'long'" style="width: 100%;" to="/">返回主页</MCRouterLink>
+    <MCButton :length="'long'" style="width: 100%" @click="sendLogin">登录</MCButton>
+    <MCRouterLink :length="'long'" style="width: 100%" to="/">返回主页</MCRouterLink>
   </form>
 </template>

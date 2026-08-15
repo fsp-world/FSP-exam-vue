@@ -9,12 +9,9 @@ interface slot {
   mountedSID: number;
 }
 
-export const getSlotsAPI = (): Promise<FetchResponse<slot[]>> =>
-  request.get('/survey/get_slots');
+export const getSlotsAPI = (): Promise<FetchResponse<slot[]>> => request.get('/survey/get_slots');
 
-export const getSurvey = async (
-  id: number,
-): Promise<FetchResponse<AnswerSurvey>> => {
+export const getSurvey = async (id: number): Promise<FetchResponse<AnswerSurvey>> => {
   try {
     const response = await request.get('/survey/survey/' + id);
     response.data.data.questions = sortQuestion(response.data.data.questions);
@@ -25,8 +22,7 @@ export const getSurvey = async (
   }
 };
 
-export const checkSurvey = (): Promise<FetchResponse<number>> =>
-  request.post('/survey/check_survey');
+export const checkSurvey = (): Promise<FetchResponse<number>> => request.post('/survey/check_survey');
 
 export interface ExamineeInfo {
   playerName: string;
@@ -35,12 +31,8 @@ export interface ExamineeInfo {
   slotName: string;
 }
 
-export const startSurvey = (
-  data: ExamineeInfo,
-): Promise<FetchResponse<number>> =>
+export const startSurvey = (data: ExamineeInfo): Promise<FetchResponse<number>> =>
   request.post('/survey/start_survey', JSON.stringify(data));
 
-export const submitSurveyAPI = (
-  data: AnsweredSurvey,
-): Promise<FetchResponse<number>> =>
+export const submitSurveyAPI = (data: AnsweredSurvey): Promise<FetchResponse<number>> =>
   request.post('/survey/complete_survey', data);

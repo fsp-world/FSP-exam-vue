@@ -44,6 +44,5 @@ const route = useRoute();
     margin: 50px auto;
     max-width: 95%;
   }
-
 }
 </style>

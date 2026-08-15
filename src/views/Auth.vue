@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref } from 'vue';
 import { RouterView } from 'vue-router';
 
 import MCDialog from '@/components/MCDialog.vue';
 
-const isShowModal = ref(true)
+const isShowModal = ref(true);
 </script>
 
 <template>

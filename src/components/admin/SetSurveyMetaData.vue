@@ -22,7 +22,9 @@ const formData = ref<NewSurvey>({
   description: '',
 });
 
-const cancel = () => { toggleForm.value = false; };
+const cancel = () => {
+  toggleForm.value = false;
+};
 
 const handleResponse = (res: any) => {
   if (res.data.code === 0) {
@@ -42,25 +44,41 @@ const submitMetaData = () => {
   }
 };
 
-watch(() => toggleForm.value, (opened) => {
-  if (opened) {
-    formData.value.name = props.initialName ?? '';
-    formData.value.description = props.initialDescription ?? '';
+watch(
+  () => toggleForm.value,
+  (opened) => {
+    if (opened) {
+      formData.value.name = props.initialName ?? '';
+      formData.value.description = props.initialDescription ?? '';
+    }
   }
-});
+);
 </script>
 
 <template>
   <Teleport to="body">
     <Transition name="modal-fade">
-      <div v-if="toggleForm" class="fixed inset-0 bg-black/50 flex justify-center items-center z-50"
-        @click.self="cancel">
-        <div class="bg-white rounded-xl shadow-2xl p-6 w-[400px] max-w-[95vw]">
-          <p class="text-center text-xl md:text-2xl font-bold mb-5 select-none">设置问卷信息</p>
-          <input v-model="formData.name" required type="text" placeholder="问卷名称"
-            class="w-full px-3 py-2 mb-3 border border-gray-300 rounded outline-none focus:border-[#5268bc] text-base" />
-          <input v-model="formData.description" required type="text" placeholder="问卷描述"
-            class="w-full px-3 py-2 mb-5 border border-gray-300 rounded outline-none focus:border-[#5268bc] text-base" />
+      <div
+        v-if="toggleForm"
+        class="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
+        @click.self="cancel"
+      >
+        <div class="w-[400px] max-w-[95vw] rounded-xl bg-white p-6 shadow-2xl">
+          <p class="mb-5 text-center text-xl font-bold select-none md:text-2xl">设置问卷信息</p>
+          <input
+            v-model="formData.name"
+            required
+            type="text"
+            placeholder="问卷名称"
+            class="mb-3 w-full rounded border border-gray-300 px-3 py-2 text-base outline-none focus:border-[#5268bc]"
+          />
+          <input
+            v-model="formData.description"
+            required
+            type="text"
+            placeholder="问卷描述"
+            class="mb-5 w-full rounded border border-gray-300 px-3 py-2 text-base outline-none focus:border-[#5268bc]"
+          />
           <div class="flex gap-3">
             <MCButton length="short" disabled-style @click="cancel">取消</MCButton>
             <MCButton length="short" @click="submitMetaData">提交</MCButton>
@@ -82,13 +100,15 @@ watch(() => toggleForm.value, (opened) => {
   opacity: 0;
 }
 
-.modal-fade-enter-active>div,
-.modal-fade-leave-active>div {
-  transition: transform 0.2s ease, opacity 0.2s ease;
+.modal-fade-enter-active > div,
+.modal-fade-leave-active > div {
+  transition:
+    transform 0.2s ease,
+    opacity 0.2s ease;
 }
 
-.modal-fade-enter-from>div,
-.modal-fade-leave-to>div {
+.modal-fade-enter-from > div,
+.modal-fade-leave-to > div {
   transform: scale(0.95);
   opacity: 0;
 }
