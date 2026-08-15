@@ -118,7 +118,7 @@ const closeUserDropdown = () => {
 const onUserMenuClick = async (command: string) => {
   showUserDropdown.value = false;
   if (command === 'logout') {
-    const confirmed = window.confirm('您确定要退出当前登陆吗？');
+    const confirmed = window.confirm('您确定要退出当前登录吗？');
     if (confirmed) {
       localStorage.removeItem('gx-token');
       router.replace('/login');
@@ -200,7 +200,7 @@ const appVersion = __APP_VERSION__;
               <line x1="12" y1="22.08" x2="12" y2="12" />
             </svg>
             <span v-show="!isCollapse" class="ml-3 flex-1 whitespace-nowrap overflow-hidden text-sm">{{ menu.title
-              }}</span>
+            }}</span>
             <!-- 展开箭头 -->
             <svg v-show="!isCollapse" class="w-4 h-4 shrink-0 transition-transform duration-200"
               :class="{ 'rotate-90': openedSubMenu === menu.index }" viewBox="0 0 24 24" fill="none"

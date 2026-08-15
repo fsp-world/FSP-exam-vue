@@ -22,7 +22,7 @@ const sendLogin = () => {
     openAlert('密码必须包含至少一个大写字母、一个小写字母、一个数字和一个特殊字符，且长度为8-16个字符');
     return;
   }
-  openAlert('登陆中');
+  openAlert('登录中');
 
   user
     .login({
