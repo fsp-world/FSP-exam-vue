@@ -120,8 +120,13 @@ onMounted(async () => {
 
       <div class="p-5">
         <p class="mb-5 text-sm text-gray-500">注意：已过期的答卷自动设置为已完成和已超时</p>
-        <BaseTable ref="tableRef" :table-props="{ columnMap, stripe: true, bordered: true }"
-          :fetch-data="fetchResponses" :loading="loading" actions-width="80px">
+        <BaseTable
+          ref="tableRef"
+          :table-props="{ columnMap, stripe: true, bordered: true }"
+          :fetch-data="fetchResponses"
+          :loading="loading"
+          actions-width="80px"
+        >
           <template #isCompleted="{ value }">
             <span :class="value ? 'text-green-600' : 'text-red-500'">{{ value ? '已完成' : '未完成' }}</span>
           </template>
@@ -156,8 +161,13 @@ onMounted(async () => {
       <div class="reject-dialog">
         <h2 class="reject-title">拒绝答卷</h2>
         <p class="reject-tip">请填写拒绝理由，该理由将随邮件发送给用户：</p>
-        <textarea v-model="rejectReason" class="reject-textarea" rows="4" maxlength="200"
-          placeholder="请输入拒绝理由…"></textarea>
+        <textarea
+          v-model="rejectReason"
+          class="reject-textarea"
+          rows="4"
+          maxlength="200"
+          placeholder="请输入拒绝理由…"
+        ></textarea>
         <div class="reject-btns">
           <MCButton length="medium" buttonType="delete" @click="submitReject">确认拒绝</MCButton>
           <MCButton length="medium" @click="rejectModalVisible = false">取消</MCButton>
