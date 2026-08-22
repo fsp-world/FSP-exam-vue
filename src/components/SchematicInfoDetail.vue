@@ -80,7 +80,7 @@ const download = () => {
   openAlert('开始下载...');
   downloadSchematicAPI(props.sid)
     .then(async (res) => {
-      const contentType = res.headers['content-type'] || '';
+      const contentType = String(res.headers['content-type'] || '');
 
       if (contentType.includes('application/json')) {
         const text = await res.data.text();

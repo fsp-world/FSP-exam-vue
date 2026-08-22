@@ -106,7 +106,7 @@ onMounted(() => {
           :disabled="archived"
           @change="handleScoreChange($event)"
         >
-          <option v-for="i in 10" :value="i">{{ i }}分</option>
+          <option v-for="i in 11" :value="i - 1">{{ i - 1 }}分</option>
         </select>
       </span>
     </div>

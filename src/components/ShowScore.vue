@@ -59,6 +59,7 @@ animateValue(0, examInfo.value.get_score, 2000, (value: number) => {
         </div>
         <div v-if="examInfo.state === 2 && showData.display_text">
           <p class="title">非常遗憾，您未通过测试</p>
+          <p v-if="examInfo.reject_reason" class="title reject-reason">拒绝理由：{{ examInfo.reject_reason }}</p>
         </div>
 
         <MCButton class="button" @click="emit('update:flag', false)"> 考试列表 </MCButton>
@@ -73,12 +74,14 @@ animateValue(0, examInfo.value.get_score, 2000, (value: number) => {
   position: relative;
   top: 0;
   left: 0;
+
   .score {
     margin: 0 auto;
     margin-top: 200px;
     width: 90%;
     max-width: 1000px;
     position: relative;
+
     .button {
       width: 100%;
       max-width: 800px;
@@ -104,7 +107,9 @@ animateValue(0, examInfo.value.get_score, 2000, (value: number) => {
       bottom: 10px;
       z-index: 2;
     }
+
     --icon-size: 150px;
+
     .pass,
     .no-pass {
       width: var(--icon-size);
@@ -115,18 +120,21 @@ animateValue(0, examInfo.value.get_score, 2000, (value: number) => {
       bottom: -40px;
       animation: fadeIn 1s ease-in-out forwards;
     }
+
     .pass {
       background: url(../assets/images/vanilla_gui/accept.png);
       background-repeat: no-repeat;
       background-size: 100% 100%;
       background-position: center;
     }
+
     .no-pass {
       background: url(../assets/images/vanilla_gui/reject.png);
       background-repeat: no-repeat;
       background-size: 100% 100%;
       background-position: center;
     }
+
     .score-line {
       margin: 0 auto;
       border-radius: 5px;
@@ -134,6 +142,7 @@ animateValue(0, examInfo.value.get_score, 2000, (value: number) => {
       width: 100%;
       height: 15px;
       position: relative;
+
       .score-line-front,
       .score-line-end {
         position: absolute;
@@ -142,6 +151,7 @@ animateValue(0, examInfo.value.get_score, 2000, (value: number) => {
         width: 100%;
         height: 100%;
       }
+
       .score-line-end {
         background: url(../assets/images/vanilla_gui/experience_bar_background.png);
         background-repeat: no-repeat;
@@ -149,6 +159,7 @@ animateValue(0, examInfo.value.get_score, 2000, (value: number) => {
         background-position: center;
         image-rendering: pixelated;
       }
+
       .score-line-front {
         background: url(../assets/images/vanilla_gui/experience_bar_progress.png);
         background-repeat: no-repeat;
@@ -159,6 +170,7 @@ animateValue(0, examInfo.value.get_score, 2000, (value: number) => {
         animation: reveal 2s ease-in-out forwards;
       }
     }
+
     .text {
       animation: fadeIn 1s ease-in-out forwards;
       animation-delay: 2.5s;
@@ -169,29 +181,42 @@ animateValue(0, examInfo.value.get_score, 2000, (value: number) => {
       left: 50%;
       opacity: 0;
       transform: translate(-50%, 0);
+
       .title {
         text-align: center;
       }
+
+      .reject-reason {
+        margin-top: 10px;
+        font-size: 22px;
+        color: #ff6b6b;
+      }
+
       .info {
         margin: 0 auto;
         max-width: 800px;
       }
+
       .list-title {
         text-align: left;
         margin-top: 50px;
       }
+
       ul,
       ol {
         margin: 0;
         padding-top: 20px;
         padding-left: 40px;
+
         li {
           display: list-item;
         }
       }
+
       ol li {
         list-style-type: decimal;
       }
+
       ul li {
         list-style-type: disc;
       }
@@ -204,24 +229,30 @@ animateValue(0, examInfo.value.get_score, 2000, (value: number) => {
     .score {
       --icon-size: 100px;
       margin-top: 30px;
+
       > p {
         font-size: 32px;
       }
+
       .pass,
       .no-pass {
         right: 10px;
       }
+
       .text {
         width: 100%;
         font-size: 22px;
+
         .info {
           height: 230px;
           overflow-y: auto;
+
           .list-title {
             margin-top: 10px;
           }
         }
       }
+
       .button {
         font-size: 20px;
         height: 50px;
@@ -231,6 +262,7 @@ animateValue(0, examInfo.value.get_score, 2000, (value: number) => {
     }
   }
 }
+
 @keyframes reveal {
   from {
     clip-path: inset(0 100% 0 0);
@@ -247,6 +279,7 @@ animateValue(0, examInfo.value.get_score, 2000, (value: number) => {
   0% {
     opacity: 0;
   }
+
   100% {
     opacity: 1;
   }

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { type ConfigItem, type IPagination, ConfigItemType } from '@/types';
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 import { getConfig, getConfigs, setConfig, deleteConfig } from '@/apis/admin';
 import { openAlert } from '@/utils/TsAlert';
 import BaseTable from './BaseTable.vue';
@@ -96,6 +96,17 @@ const save = async () => {
   showModal.value = false;
   tableKey.value++;
 };
+
+// 当类型切换为 bool 时，将 value 规范化为 True/False
+watch(
+  () => selectedConfigItem.value.type,
+  (type) => {
+    if (type === ConfigItemType.BOOL) {
+      const v = String(selectedConfigItem.value.value).toLowerCase();
+      selectedConfigItem.value.value = v === 'true' || v === '1' ? 'True' : 'False';
+    }
+  }
+);
 </script>
 
 <template>
@@ -144,7 +155,7 @@ const save = async () => {
           <h2 class="mb-4 text-xl font-bold">修改配置项</h2>
           <p class="mb-1 text-sm text-gray-500">data:</p>
           <pre class="mb-4 overflow-x-auto rounded bg-gray-50 p-3 text-sm">
-{
+          {
           key: {{ selectedConfigItem.key }}
           value: {{ selectedConfigItem.value }}
           type: {{ selectedConfigItem.type }}
@@ -165,7 +176,17 @@ const save = async () => {
             </div>
             <div>
               <label class="mb-1 block text-sm font-medium">Value</label>
+              <select
+                v-if="selectedConfigItem.type === ConfigItemType.BOOL"
+                v-model="selectedConfigItem.value"
+                required
+                class="w-full rounded border border-gray-300 bg-white px-3 py-2 outline-none focus:border-[#5268bc]"
+              >
+                <option value="True">True</option>
+                <option value="False">False</option>
+              </select>
               <input
+                v-else
                 v-model="selectedConfigItem.value"
                 type="text"
                 required

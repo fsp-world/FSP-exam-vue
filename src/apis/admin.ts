@@ -52,7 +52,7 @@ export const migrationQuestionAPI = (data: { target_sid: number; qid: number }) 
 
 // response
 export const getResponses = (data: IPagination) => request.get('/admin/responses', { params: data });
-export const reviewedResponse = (data: { response: number; status: number }) =>
+export const reviewedResponse = (data: { response: number; status: number; reason?: string }) =>
   request.post('/admin/reviewed', JSON.stringify(data));
 
 export const responseDetail = async (id: number): Promise<FetchResponse<AdminReviewSurvey>> => {

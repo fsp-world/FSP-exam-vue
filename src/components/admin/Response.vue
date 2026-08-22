@@ -9,6 +9,7 @@ import { reviewedStatus, reviewedColor } from '@/utils/statusUtil';
 import { openAlert } from '@/utils/TsAlert';
 import BaseTable from './BaseTable.vue';
 import MCButton from '@/components/MCButton.vue';
+import MCDialog from '@/components/MCDialog.vue';
 import { AdminReviewSurvey } from '@/types/survey.js';
 
 const route = useRoute();
@@ -18,6 +19,11 @@ const loading = ref(false);
 const visibility = ref(false);
 const detailData = ref<AdminReviewSurvey | null>();
 const tableRef = useTemplateRef('tableRef');
+
+// 拒绝理由弹窗
+const rejectModalVisible = ref(false);
+const rejectId = ref<number | null>(null);
+const rejectReason = ref('');
 
 const columnMap = new Map([
   ['id', { title: '#', width: '60px' }],
@@ -40,12 +46,35 @@ const fetchResponses = async (params: IPagination) => {
   return res;
 };
 
-const reviewed = (id: number, pass: boolean) => {
-  const text = pass ? '确定通过吗？' : '确定拒绝吗？';
-  if (!confirm(text)) return;
-  reviewedResponse({ response: id, status: pass ? 1 : 2 }).then((res) => {
+// 通过：无需理由，直接提交
+const approved = (id: number) => {
+  if (!confirm('确定通过吗？')) return;
+  reviewedResponse({ response: id, status: 1 }).then((res) => {
     openAlert(res.data.desc);
     if (res.data.code === 0) {
+      tableRef.value?.loadData();
+    }
+  });
+};
+
+// 拒绝：先弹出输入框填写拒绝理由
+const openReject = (id: number) => {
+  rejectId.value = id;
+  rejectReason.value = '';
+  rejectModalVisible.value = true;
+};
+
+const submitReject = () => {
+  if (rejectId.value === null) return;
+  const reason = rejectReason.value.trim();
+  if (!reason) {
+    openAlert('请填写拒绝理由！');
+    return;
+  }
+  reviewedResponse({ response: rejectId.value, status: 2, reason }).then((res) => {
+    openAlert(res.data.desc);
+    if (res.data.code === 0) {
+      rejectModalVisible.value = false;
       tableRef.value?.loadData();
     }
   });
@@ -90,7 +119,7 @@ onMounted(async () => {
       </div>
 
       <div class="p-5">
-        <p class="mb-5 text-sm text-gray-500">注意：已过期的答卷自动设置为已完成和已拒绝</p>
+        <p class="mb-5 text-sm text-gray-500">注意：已过期的答卷自动设置为已完成和已超时</p>
         <BaseTable
           ref="tableRef"
           :table-props="{ columnMap, stripe: true, bordered: true }"
@@ -117,8 +146,8 @@ onMounted(async () => {
             <div class="action-btns">
               <MCButton length="short" @click="openDetail(row.id)">详情</MCButton>
               <template v-if="!row.isReviewed">
-                <MCButton length="short" class="btn-pass" @click="reviewed(row.id, true)">通过</MCButton>
-                <MCButton length="short" class="btn-reject" @click="reviewed(row.id, false)">拒绝</MCButton>
+                <MCButton length="short" class="btn-pass" @click="approved(row.id)">通过</MCButton>
+                <MCButton length="short" class="btn-reject" @click="openReject(row.id)">拒绝</MCButton>
               </template>
             </div>
           </template>
@@ -126,10 +155,72 @@ onMounted(async () => {
         <ResponseDetail v-if="visibility && detailData" v-model:visibility="visibility" :data="detailData" />
       </div>
     </div>
+
+    <!-- 拒绝理由弹窗 -->
+    <MCDialog v-model:isModalVisible="rejectModalVisible" :style="'card'" :resizeX="1.2" :resizeY="1.1">
+      <div class="reject-dialog">
+        <h2 class="reject-title">拒绝答卷</h2>
+        <p class="reject-tip">请填写拒绝理由，该理由将随邮件发送给用户：</p>
+        <textarea
+          v-model="rejectReason"
+          class="reject-textarea"
+          rows="4"
+          maxlength="200"
+          placeholder="请输入拒绝理由…"
+        ></textarea>
+        <div class="reject-btns">
+          <MCButton length="medium" buttonType="delete" @click="submitReject">确认拒绝</MCButton>
+          <MCButton length="medium" @click="rejectModalVisible = false">取消</MCButton>
+        </div>
+      </div>
+    </MCDialog>
   </div>
 </template>
 
 <style scoped>
+.reject-dialog {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 8px;
+  color: #3f3f3f;
+}
+
+.reject-title {
+  font-size: 22px;
+  font-weight: bold;
+  text-align: center;
+}
+
+.reject-tip {
+  font-size: 14px;
+  text-align: center;
+}
+
+.reject-textarea {
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 96px;
+  padding: 10px;
+  border: 2px solid #8b8b8b;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.92);
+  font-size: 14px;
+  line-height: 1.6;
+  resize: vertical;
+  outline: none;
+}
+
+.reject-textarea:focus {
+  border-color: #5268bc;
+}
+
+.reject-btns {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+}
+
 .action-btns {
   display: flex;
   gap: 4px;

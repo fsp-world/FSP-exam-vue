@@ -26,6 +26,15 @@
             </ul>
 
             <h1 class="mb-4 text-2xl font-bold md:text-3xl">答题卡 {{ archived ? '(已锁定)' : '' }}</h1>
+
+            <!-- 拒绝理由提示 -->
+            <div
+              v-if="props.data.rejectReason"
+              class="mb-4 rounded border border-red-300 bg-red-50 px-4 py-3 text-sm text-red-600 md:text-base"
+            >
+              <span class="font-bold">拒绝理由：</span>{{ props.data.rejectReason }}
+            </div>
+
             <div class="space-y-5">
               <div
                 v-for="(question, questionIndex) in props.data.questions"
@@ -63,7 +72,7 @@ const props = defineProps<{
 
 const emit = defineEmits(['update:visibility']);
 
-const archived = ref(props.data.isReviewed);
+const archived = ref(!!props.data.isReviewed);
 
 const handleScoreChange = (payload: ScoreChangePayload) => {
   detailScore({
