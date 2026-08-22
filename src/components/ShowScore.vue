@@ -91,7 +91,7 @@ animateValue(0, examInfo.value.get_score, 2000, (value: number) => {
       margin-top: 30px;
     }
 
-    >p {
+    > p {
       text-align: center;
       font-size: 40px;
       color: yellow;
@@ -230,7 +230,7 @@ animateValue(0, examInfo.value.get_score, 2000, (value: number) => {
       --icon-size: 100px;
       margin-top: 30px;
 
-      >p {
+      > p {
         font-size: 32px;
       }
 
