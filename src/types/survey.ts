@@ -125,7 +125,10 @@ export interface AdminReviewSurvey {
   name: string;
   description: string;
   createTime: string;
-  isReviewed: boolean;
+  /** 审核状态：0=待审核 1=已通过 2=已拒绝 3=已超时 */
+  isReviewed: number;
+  /** 拒绝理由，仅被拒绝的答卷存在 */
+  rejectReason?: string | null;
   questions: AdminReviewQuestion[];
 }
 
