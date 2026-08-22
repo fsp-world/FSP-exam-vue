@@ -101,12 +101,9 @@ onMounted(() => {
       <span class="text"> {{ question.title }}</span>
       <span class="score">({{ question.score }}分)</span>
       <span v-if="mode === 'review'">
-        <select
-          :value="(question as AdminReviewQuestion).userGetScore"
-          :disabled="archived"
-          @change="handleScoreChange($event)"
-        >
-          <option v-for="i in 10" :value="i">{{ i }}分</option>
+        <select :value="(question as AdminReviewQuestion).userGetScore" :disabled="archived"
+          @change="handleScoreChange($event)">
+          <option v-for="i in 11" :value="i - 1">{{ i - 1 }}分</option>
         </select>
       </span>
     </div>
@@ -117,73 +114,41 @@ onMounted(() => {
       </li>
     </ul>
     <!-- 选择题 -->
-    <ul
-      class="option-list"
-      :class="{ 'answer-mode': mode === 'answer' }"
-      v-if="[QuestionType.SingleChoice, QuestionType.MultipleChoice].includes(question.type)"
-    >
-      <li
-        v-for="(option, optionIndex) in question.options"
-        :key="optionIndex"
-        :class="{ selected: (option as AnswerOptionExt).isSelected }"
-        @click="selectOption(option as AnswerOptionExt)"
-      >
-        <div
-          v-if="(mode === 'admin-view' || mode === 'review') && (option as AdminViewOption).isCorrect"
-          class="correct-option"
-        ></div>
+    <ul class="option-list" :class="{ 'answer-mode': mode === 'answer' }"
+      v-if="[QuestionType.SingleChoice, QuestionType.MultipleChoice].includes(question.type)">
+      <li v-for="(option, optionIndex) in question.options" :key="optionIndex"
+        :class="{ selected: (option as AnswerOptionExt).isSelected }" @click="selectOption(option as AnswerOptionExt)">
+        <div v-if="(mode === 'admin-view' || mode === 'review') && (option as AdminViewOption).isCorrect"
+          class="correct-option"></div>
         {{ ['A.', 'B.', 'C.', 'D.'][optionIndex] }}{{ option.text }}
       </li>
     </ul>
     <!-- 填空题 -->
     <div v-if="question.type === QuestionType.FillInTheBlanks">
-      <input
-        v-if="mode === 'answer'"
-        type="txet"
-        required
-        class="input-text"
-        placeholder="请在此作答，前后不要有多余符号"
-        @input="
-          (e: Event) => {
-            (question as AnswerQuestionExt).answer = [(e.target as HTMLSelectElement).value];
-          }
-        "
-      />
+      <input v-if="mode === 'answer'" type="txet" required class="input-text" placeholder="请在此作答，前后不要有多余符号" @input="
+        (e: Event) => {
+          (question as AnswerQuestionExt).answer = [(e.target as HTMLSelectElement).value];
+        }
+      " />
       <div v-if="['admin-view', 'review'].includes(mode)">
         <p>标准答案：</p>
-        <input
-          type="txet"
-          class="input-text"
-          :placeholder="(question.options[0] as AdminViewOption).referenceAnswer"
-          disabled
-        />
+        <input type="txet" class="input-text" :placeholder="(question.options[0] as AdminViewOption).referenceAnswer"
+          disabled />
       </div>
       <div v-if="mode === 'review'">
         <p>用户答案：</p>
-        <input
-          type="txet"
-          class="input-text"
-          :placeholder="(question.options[0] as AdminReviewOption).userAnsweredText"
-          disabled
-        />
+        <input type="txet" class="input-text" :placeholder="(question.options[0] as AdminReviewOption).userAnsweredText"
+          disabled />
       </div>
     </div>
     <!-- 主观题 -->
-    <div
-      v-if="question.type === QuestionType.Subjective"
-      :class="{ resize: question.type === QuestionType.Subjective }"
-    >
-      <textarea
-        v-if="mode === 'answer'"
-        required
-        class="input-textarea"
-        placeholder="请在此处作答"
-        @input="
-          (e: Event) => {
-            (question as AnswerQuestionExt).answer = [(e.target as HTMLSelectElement).value];
-          }
-        "
-      ></textarea>
+    <div v-if="question.type === QuestionType.Subjective"
+      :class="{ resize: question.type === QuestionType.Subjective }">
+      <textarea v-if="mode === 'answer'" required class="input-textarea" placeholder="请在此处作答" @input="
+        (e: Event) => {
+          (question as AnswerQuestionExt).answer = [(e.target as HTMLSelectElement).value];
+        }
+      "></textarea>
       <div v-if="mode === 'admin-view' || mode === 'review'">
         <p>参考答案：</p>
         <textarea class="input-textarea" disabled>
