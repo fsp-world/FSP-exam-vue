@@ -8,13 +8,13 @@ This is the front-end part of the Minecraft server website that integrates white
 
 ```sh
 cp .env.example .env
-npm install
+pnpm install
 ```
 
 ### Compile and Hot-Reload for Development
 
 ```sh
-npm run dev
+pnpm dev
 ```
 
 ### Compile and Minify for Production
@@ -22,7 +22,7 @@ npm run dev
 It is recommended to use nginx. For detailed configuration files, please refer to the docs folder
 
 ```sh
-npm run build
+pnpm build
 ```
 
 ## Refer
