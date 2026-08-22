@@ -50,6 +50,8 @@ export interface IQueryResponse {
   state: 0 | 1 | 2;
   get_score: number;
   full_score: number;
+  /** 拒绝理由，仅被拒绝（state===2）的答卷存在 */
+  reject_reason?: string | null;
 }
 
 export type RoleType = 'admin' | 'helper' | 'user';

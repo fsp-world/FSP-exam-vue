@@ -10,6 +10,7 @@
               res.state ? (res.state === 1 ? '已通过' : '已拒绝') : '审核中'
             }}）
           </p>
+          <p v-if="res.state === 2 && res.reject_reason" class="reason">拒绝理由：{{ res.reject_reason }}</p>
           <p>{{ dateFormatMMDDHHmm(res.responseTime) }}</p>
         </div>
         <MCButton v-if="res.state === 1 || res.state === 2" class="button" @click="handleClick(res)">查看成绩</MCButton>
@@ -95,6 +96,11 @@ const handleClick = (res: IQueryResponse) => {
 .list li p:first-child {
   font-size: 30px;
   color: #ffffff;
+}
+
+.list li p.reason {
+  font-size: 18px;
+  color: #ff6b6b;
 }
 
 .list li button {
