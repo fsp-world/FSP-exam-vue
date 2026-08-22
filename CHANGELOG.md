@@ -15,7 +15,7 @@
 ### Chore
 
 - 将包管理器从 npm 迁移至 pnpm，新增 `pnpm-lock.yaml` 锁文件并移除 `package-lock.json`
-- 更新 GitHub Actions CI/部署流程，改用 pnpm 安装依赖与执行脚本，并启用 pnpm 依赖缓存
+- 更新 GitHub Actions CI/部署流程，改用 pnpm 安装依赖与执行脚本，并启用 pnpm 依赖缓存；pnpm 版本统一由 `package.json` 的 `packageManager` 字段声明，避免 workflow 与锁文件版本冲突
 - 适配 pnpm 解析到的 axios 新版本类型定义，修正投影详情下载中的 `content-type` 类型判断
 
 ## [0.11.6] (2026-08-15)
