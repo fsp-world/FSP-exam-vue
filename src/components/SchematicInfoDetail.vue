@@ -128,9 +128,13 @@ const isEditSchematicVisible = ref(false);
 <template>
   <div class="info">
     <MCDialog :style="'card'" v-model:isModalVisible="isEditSchematicVisible">
-      <UploadSchematicForm :mode="'update'" :origin-data="schematicDetail"
-        v-model:isModalVisible="isEditSchematicVisible" @refresh="querySchematicDetail(props.sid)"
-        @delete="deletedSchematic(props.sid)">
+      <UploadSchematicForm
+        :mode="'update'"
+        :origin-data="schematicDetail"
+        v-model:isModalVisible="isEditSchematicVisible"
+        @refresh="querySchematicDetail(props.sid)"
+        @delete="deletedSchematic(props.sid)"
+      >
       </UploadSchematicForm>
     </MCDialog>
     <div class="close" alt="关闭" @click="emit('update:isModalVisible', false)"></div>
@@ -143,9 +147,11 @@ const isEditSchematicVisible = ref(false);
             <span class="mobil">{{ getSchematicTypeItem(schematicDetail.type)?.label ?? '未知' }}类型</span>
           </td>
           <td class="value">
-            <span class="no-in-mobil">{{ getSchematicTypeItem(schematicDetail.type)?.label ?? '未知类型' }} | 兼容版本&nbsp;{{
-              schematicDetail.gameVersion
-            }}</span>
+            <span class="no-in-mobil"
+              >{{ getSchematicTypeItem(schematicDetail.type)?.label ?? '未知类型' }} | 兼容版本&nbsp;{{
+                schematicDetail.gameVersion
+              }}</span
+            >
             <span class="mobil">{{ schematicDetail.gameVersion }}</span>
           </td>
         </tr>
@@ -169,7 +175,8 @@ const isEditSchematicVisible = ref(false);
           <td class="label">投影标签</td>
           <td class="value">
             <div class="tags">
-              <MCNameTag v-show="tag !== ''" :key="index" v-for="(tag, index) in schematicDetail.tags">{{ tag }}
+              <MCNameTag v-show="tag !== ''" :key="index" v-for="(tag, index) in schematicDetail.tags"
+                >{{ tag }}
               </MCNameTag>
             </div>
           </td>
@@ -183,8 +190,11 @@ const isEditSchematicVisible = ref(false);
         <tr>
           <td class="label">投影权限</td>
           <td class="value">
-            <img v-show="!schematicDetail.isPublic" class="lock"
-              src="/src/assets/images/rainbow_pixel_gui/locked.png" />
+            <img
+              v-show="!schematicDetail.isPublic"
+              class="lock"
+              src="/src/assets/images/rainbow_pixel_gui/locked.png"
+            />
             {{ schematicDetail.isPublic ? '公开' : '私密' }}
           </td>
         </tr>
@@ -210,10 +220,16 @@ const isEditSchematicVisible = ref(false);
       </tbody>
     </table>
     <div class="buttons">
-      <MCButton v-show="downloadAble" :disabled="!downloadAble" :length="'medium'" @click="download">下载<span>({{
-        schematicDetail.fileSizeKB }} KB)</span></MCButton>
-      <MCButton v-show="downloadAble" :disabled="schematicDetail.uploader != username || !downloadAble"
-        :length="'medium'" @click="isEditSchematicVisible = true">编辑</MCButton>
+      <MCButton v-show="downloadAble" :disabled="!downloadAble" :length="'medium'" @click="download"
+        >下载<span>({{ schematicDetail.fileSizeKB }} KB)</span></MCButton
+      >
+      <MCButton
+        v-show="downloadAble"
+        :disabled="schematicDetail.uploader != username || !downloadAble"
+        :length="'medium'"
+        @click="isEditSchematicVisible = true"
+        >编辑</MCButton
+      >
       <MCButton :disabled="true" v-show="!downloadAble"><span style="color: red">已删除</span></MCButton>
     </div>
   </div>

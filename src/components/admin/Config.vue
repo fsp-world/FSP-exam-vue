@@ -129,8 +129,12 @@ watch(
       </div>
 
       <!-- 数据表格 -->
-      <BaseTable :key="tableKey" :table-props="{ columnMap, stripe: true, bordered: true }" :fetch-data="fetchConfigs"
-        actions-width="220px">
+      <BaseTable
+        :key="tableKey"
+        :table-props="{ columnMap, stripe: true, bordered: true }"
+        :fetch-data="fetchConfigs"
+        actions-width="220px"
+      >
         <template #actions="{ row }">
           <MCButton length="short" @click="editItem(row.key)">修改</MCButton>
           <MCButton length="short" disabled-style @click="deleteItem(row.key)">删除</MCButton>
@@ -142,8 +146,11 @@ watch(
   <!-- 模态框 -->
   <Teleport to="body">
     <Transition name="modal-fade">
-      <div v-if="showModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
-        @click.self="showModal = false">
+      <div
+        v-if="showModal"
+        class="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
+        @click.self="showModal = false"
+      >
         <div class="w-105 max-w-[90vw] rounded-xl bg-white p-6 shadow-2xl">
           <h2 class="mb-4 text-xl font-bold">修改配置项</h2>
           <p class="mb-1 text-sm text-gray-500">data:</p>
@@ -158,30 +165,54 @@ watch(
           <form @submit.prevent="save" class="flex flex-col gap-4">
             <div>
               <label class="mb-1 block text-sm font-medium">Key</label>
-              <input v-model="selectedConfigItem.key" type="text" required placeholder="key" :disabled="!isAdd"
-                class="w-full rounded border border-gray-300 px-3 py-2 outline-none focus:border-[#5268bc] disabled:bg-gray-100 disabled:text-gray-400" />
+              <input
+                v-model="selectedConfigItem.key"
+                type="text"
+                required
+                placeholder="key"
+                :disabled="!isAdd"
+                class="w-full rounded border border-gray-300 px-3 py-2 outline-none focus:border-[#5268bc] disabled:bg-gray-100 disabled:text-gray-400"
+              />
             </div>
             <div>
               <label class="mb-1 block text-sm font-medium">Value</label>
-              <select v-if="selectedConfigItem.type === ConfigItemType.BOOL" v-model="selectedConfigItem.value" required
-                class="w-full rounded border border-gray-300 bg-white px-3 py-2 outline-none focus:border-[#5268bc]">
+              <select
+                v-if="selectedConfigItem.type === ConfigItemType.BOOL"
+                v-model="selectedConfigItem.value"
+                required
+                class="w-full rounded border border-gray-300 bg-white px-3 py-2 outline-none focus:border-[#5268bc]"
+              >
                 <option value="True">True</option>
                 <option value="False">False</option>
               </select>
-              <input v-else v-model="selectedConfigItem.value" type="text" required placeholder="value"
-                class="w-full rounded border border-gray-300 px-3 py-2 outline-none focus:border-[#5268bc]" />
+              <input
+                v-else
+                v-model="selectedConfigItem.value"
+                type="text"
+                required
+                placeholder="value"
+                class="w-full rounded border border-gray-300 px-3 py-2 outline-none focus:border-[#5268bc]"
+              />
             </div>
             <div>
               <label class="mb-1 block text-sm font-medium">Type</label>
-              <select v-model="selectedConfigItem.type" required
-                class="w-full rounded border border-gray-300 bg-white px-3 py-2 outline-none focus:border-[#5268bc]">
+              <select
+                v-model="selectedConfigItem.type"
+                required
+                class="w-full rounded border border-gray-300 bg-white px-3 py-2 outline-none focus:border-[#5268bc]"
+              >
                 <option v-for="i in ConfigItemType" :key="i" :value="i">{{ i }}</option>
               </select>
             </div>
             <div>
               <label class="mb-1 block text-sm font-medium">Description</label>
-              <input v-model="selectedConfigItem.desc" type="text" required placeholder="description"
-                class="w-full rounded border border-gray-300 px-3 py-2 outline-none focus:border-[#5268bc]" />
+              <input
+                v-model="selectedConfigItem.desc"
+                type="text"
+                required
+                placeholder="description"
+                class="w-full rounded border border-gray-300 px-3 py-2 outline-none focus:border-[#5268bc]"
+              />
             </div>
             <div class="flex justify-end gap-3 pt-2">
               <MCButton length="short" disabled-style @click="showModal = false">取消</MCButton>
