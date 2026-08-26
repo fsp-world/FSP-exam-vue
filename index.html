@@ -5,6 +5,52 @@
     <link rel="icon" href="/favicon.ico" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>像素仙缘</title>
+    <script>
+      // 浏览器版本检测：不满足 ES2020 就弹窗提醒（须在应用脚本前执行）
+      (function () {
+        function supportsES2020() {
+          try {
+            // ES2020 语法：可选链 + 空值合并（产物会保留，无法 polyfill）
+            new Function('const a = { b: 1 }; return a?.b ?? 0;');
+          } catch (e) {
+            return false;
+          }
+          try {
+            // BigInt 字面量（ES2020，无法 polyfill）
+            new Function('return 1n + 2n;');
+          } catch (e) {
+            return false;
+          }
+          // ES2020 运行时能力
+          if (typeof BigInt !== 'function') return false;
+          if (typeof globalThis === 'undefined') return false;
+          if (typeof Promise === 'undefined' || typeof Promise.allSettled !== 'function') return false;
+          return true;
+        }
+        if (supportsES2020()) return;
+        var overlay = document.createElement('div');
+        overlay.setAttribute(
+          'style',
+          'position:fixed;inset:0;z-index:2147483647;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.78);padding:24px;'
+        );
+        var box = document.createElement('div');
+        box.setAttribute(
+          'style',
+          'max-width:420px;padding:28px;border-radius:12px;background:#1f1f1f;box-shadow:0 8px 40px rgba(0,0,0,.5);text-align:center;font-family:system-ui,sans-serif;'
+        );
+        var title = document.createElement('h2');
+        title.textContent = '浏览器版本过低';
+        title.setAttribute('style', 'margin:0 0 12px;font-size:20px;color:#fff;');
+        var msg = document.createElement('p');
+        msg.textContent =
+          '当前浏览器不支持 ES2020，无法运行本应用。请升级到最新版 Chrome / Edge / Firefox / Safari 后刷新重试。';
+        msg.setAttribute('style', 'margin:0;line-height:1.7;font-size:14px;color:#ccc;');
+        box.appendChild(title);
+        box.appendChild(msg);
+        overlay.appendChild(box);
+        document.documentElement.appendChild(overlay);
+      })();
+    </script>
   </head>
   <body>
     <div id="app"></div>
