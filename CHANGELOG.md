@@ -1,5 +1,14 @@
 # Changelog
 
+## [Unreleased]
+
+### Chore
+
+- 设置生产构建目标为 ES2020，开发期可使用最新的 JavaScript 特性，构建产物统一降级到 ES2020
+- 通过 Babel preset-env（`useBuiltIns: 'usage'`）按需注入 core-js polyfill，确保应用在 ES2020 环境下完全可用
+- 当客户端环境不满足 ES2020 时，显示全屏「浏览器版本过低」提示
+- 新增 `type-check:es2020` 体检脚本及 `tsconfig.es2020.json`，用于检查源码是否使用了 ES2020 之后的内建 API
+
 ## [0.11.7] (2026-08-22)
 
 ### Features

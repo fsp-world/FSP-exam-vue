@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "target": "ES2020", // 编译目标版本
+    "target": "ESNext", // 开发期用最新特性
     "module": "ESNext", // 模块系统，ESNext 始终指向最新草案
     "moduleResolution": "bundler", // 模块系统
     "isolatedModules": true, // 强制要求每一个文件都能被独立编译，而不需要依赖其他文件的信息
