@@ -1,6 +1,7 @@
 /**
  * 浏览器兼容性检测
- * 检测浏览器类型和版本，不满足最低要求则跳转到错误页面
+ * 解析浏览器类型与版本，并校验是否满足最低版本要求。
+ * 已解除对微信/QQ/UC 等内置浏览器的封锁，但最低版本限制仍然生效。
  */
 
 interface BrowserInfo {
@@ -12,6 +13,9 @@ interface BrowserInfo {
   isUCBrowser: boolean;
 }
 
+/** 封锁名单（当前为空：不再封锁微信/QQ/UC 等内置浏览器；如需恢复，往数组中添加对应名称即可） */
+const BLOCKED_BROWSERS: string[] = [];
+
 /** 最低版本要求 */
 const MIN_VERSIONS: Record<string, number> = {
   Chrome: 80,
@@ -20,9 +24,6 @@ const MIN_VERSIONS: Record<string, number> = {
   Edge: 80,
   Opera: 67,
 };
-
-/** 不受支持的浏览器列表 */
-const BLOCKED_BROWSERS = ['QQBrowser', 'UCBrowser', 'WeChat'];
 
 function parseUA(ua: string): BrowserInfo {
   const info: BrowserInfo = {
@@ -35,28 +36,31 @@ function parseUA(ua: string): BrowserInfo {
   };
 
   // QQ 内置浏览器 (必须最先检测，因为它的 UA 可能也包含 Chrome/Chromium 关键字)
-  // 手机版: MQQBrowser/... 或 MQQBrowser/Mini/...
-  // 桌面版: QQBrowser/...
-  const qqMatch = ua.match(/(?:MQQBrowser(?:\/Mini)?|QQBrowser)\/([\d.]+)/);
-  if (qqMatch) {
-    info.name = 'QQBrowser';
-    info.fullVersion = qqMatch[1];
-    info.version = parseFloat(qqMatch[1]);
-    info.isQQBrowser = true;
-    return info;
-  }
+  // 手机版: MQQBrowser/... 或 MQQBrowser/Mini/...；桌面版: QQBrowser/...
+  // 暂时取消对 QQ 内置浏览器的检测与识别（2026-08-27），让其按普通浏览器走后续匹配。
+  // 若需恢复：取消下面注释，并把 'QQBrowser' 加回 BLOCKED_BROWSERS。
+  // const qqMatch = ua.match(/(?:MQQBrowser(?:\/Mini)?|QQBrowser)\/([\d.]+)/);
+  // if (qqMatch) {
+  //   info.name = 'QQBrowser';
+  //   info.fullVersion = qqMatch[1];
+  //   info.version = parseFloat(qqMatch[1]);
+  //   info.isQQBrowser = true;
+  //   return info;
+  // }
 
   // 微信内置浏览器
-  if (/MicroMessenger/i.test(ua)) {
-    info.name = 'WeChat';
-    info.isWeChat = true;
-    const wxMatch = ua.match(/MicroMessenger\/([\d.]+)/);
-    if (wxMatch) {
-      info.fullVersion = wxMatch[1];
-      info.version = parseFloat(wxMatch[1]);
-    }
-    return info;
-  }
+  // 暂时取消对微信内置浏览器的检测与识别（2026-08-27），让其按普通浏览器走后续匹配。
+  // 若需恢复：取消下面注释，并把 'WeChat' 加回 BLOCKED_BROWSERS。
+  // if (/MicroMessenger/i.test(ua)) {
+  //   info.name = 'WeChat';
+  //   info.isWeChat = true;
+  //   const wxMatch = ua.match(/MicroMessenger\/([\d.]+)/);
+  //   if (wxMatch) {
+  //     info.fullVersion = wxMatch[1];
+  //     info.version = parseFloat(wxMatch[1]);
+  //   }
+  //   return info;
+  // }
 
   // UC 浏览器
   const ucMatch = ua.match(/UCBrowser\/([\d.]+)/);
@@ -135,7 +139,7 @@ export function checkBrowser(): BrowserCheckResult {
   const ua = navigator.userAgent;
   const browser = parseUA(ua);
 
-  // 1. 检查是否被封锁（QQ 内置浏览器等）
+  // 1. 检查是否被封锁（当前名单为空：微信/QQ/UC 内置浏览器不再封锁）
   if (BLOCKED_BROWSERS.includes(browser.name)) {
     const blockedMessages: Record<string, string> = {
       QQBrowser: '您正在使用的 QQ 内置浏览器不兼容本站点，请使用 Chrome、Edge 或 Firefox 等现代浏览器访问。',
