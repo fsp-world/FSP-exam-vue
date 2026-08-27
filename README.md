@@ -4,25 +4,36 @@ This is the front-end part of the Minecraft server website that integrates white
 
 [backend application](https://github.com/tangsu99/fsp-exam-flask)
 
-## Project Setup
+## Browser Support
+
+The application performs a minimum browser version check on startup. Browsers
+below the required version will be prompted to upgrade or switch to another
+modern browser (redirected to an error page).
+
+| Browser           | Minimum Version | Released |
+| ----------------- | --------------- | -------- |
+| Chrome / Chromium | 80              | 2020-02  |
+| Firefox           | 80              | 2020-08  |
+| Safari            | 14              | 2020-09  |
+| Edge              | 80              | 2020-02  |
+| Opera             | 67              | 2020-01  |
+
+## Command
 
 ```sh
 cp .env.example .env
-pnpm install
-```
 
-### Compile and Hot-Reload for Development
-
-```sh
 pnpm dev
-```
-
-### Compile and Minify for Production
-
-It is recommended to use nginx. For detailed configuration files, please refer to the docs folder
-
-```sh
 pnpm build
+
+pnpm lint
+pnpm lint:fix
+
+pnpm format
+pnpm format:check
+
+pnpm type-check
+pnpm type-check:es2020
 ```
 
 ## Refer
