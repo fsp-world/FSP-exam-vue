@@ -6,7 +6,7 @@ import { importSurveyData, exportSurveyToJsonFile } from '@/utils/survey';
 import { selectSingleFile } from '@/utils/file';
 import EditExam from './EditExam.vue';
 import SetSurveyMetaData from './SetSurveyMetaData.vue';
-import MCButton from '@/components/MCButton.vue';
+import AdminButton from './AdminButton.vue';
 import type { SurveyInfoItem } from '@/types/survey';
 
 const toggleSetSurveyMetaData = ref(false);
@@ -113,8 +113,8 @@ onMounted(() => {
       <hr class="mb-5 border-gray-200" />
 
       <div class="mb-5 flex gap-3">
-        <MCButton length="medium" @click="toggleSetSurveyMetaData = true">新建问卷</MCButton>
-        <MCButton length="medium" @click="importSurvey()">导入问卷</MCButton>
+        <AdminButton @click="toggleSetSurveyMetaData = true">新建问卷</AdminButton>
+        <AdminButton @click="importSurvey()">导入问卷</AdminButton>
       </div>
 
       <div class="space-y-3">
@@ -149,9 +149,11 @@ onMounted(() => {
             }}
           </p>
           <div class="flex flex-wrap gap-2">
-            <MCButton length="medium" @click="editSurvey(survey)">查看问卷</MCButton>
-            <MCButton length="medium" @click="exportSurvey(survey.id)">导出问卷</MCButton>
-            <MCButton length="medium" :disabled="!survey.editable" @click="deleteSurvey(survey.id)">删除问卷</MCButton>
+            <AdminButton @click="editSurvey(survey)">查看问卷</AdminButton>
+            <AdminButton @click="exportSurvey(survey.id)">导出问卷</AdminButton>
+            <AdminButton :disabled="!survey.editable" variant="danger" @click="deleteSurvey(survey.id)"
+              >删除问卷
+            </AdminButton>
           </div>
         </div>
       </div>

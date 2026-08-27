@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue';
 import { addSurveyAPI, modSurveyMetaData } from '@/apis/admin';
-import MCButton from '@/components/MCButton.vue';
+import AdminButton from './AdminButton.vue';
 import { openAlert } from '@/utils/TsAlert';
 import type { NewSurvey } from '@/types/survey';
 
@@ -80,8 +80,8 @@ watch(
             class="mb-5 w-full rounded border border-gray-300 px-3 py-2 text-base outline-none focus:border-[#5268bc]"
           />
           <div class="flex gap-3">
-            <MCButton length="short" disabled-style @click="cancel">取消</MCButton>
-            <MCButton length="short" @click="submitMetaData">提交</MCButton>
+            <AdminButton size="small" @click="cancel">取消</AdminButton>
+            <AdminButton size="small" variant="primary" @click="submitMetaData">提交</AdminButton>
           </div>
         </div>
       </div>

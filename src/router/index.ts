@@ -141,8 +141,13 @@ const router = createRouter({
         },
         {
           path: 'config',
-          name: 'Config',
-          component: () => import('@/components/admin/Config.vue'),
+          name: 'SystemConfig',
+          component: () => import('@/components/admin/SystemConfig.vue'),
+        },
+        {
+          path: 'advanced-config',
+          name: 'AdvancedConfig',
+          component: () => import('@/components/admin/AdvancedConfig.vue'),
         },
       ],
     },

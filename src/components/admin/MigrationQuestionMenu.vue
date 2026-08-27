@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import InfoDialog from '@/components/InfoDialog.vue';
-import MCButton from '../MCButton.vue';
+import AdminButton from './AdminButton.vue';
 import { ref, inject } from 'vue';
 import { openAlert } from '@/utils/TsAlert';
 import { getSurveys, migrationQuestionAPI } from '@/apis/admin';
@@ -88,8 +88,8 @@ const selectedSurvey = (index: number) => {
         </li>
       </ul>
       <div class="buttons">
-        <MCButton class="btn" @click="toggleMenu = false">取消</MCButton>
-        <MCButton class="btn" @click="complete()">确认</MCButton>
+        <AdminButton size="small" @click="toggleMenu = false">取消</AdminButton>
+        <AdminButton size="small" variant="primary" @click="complete()">确认</AdminButton>
       </div>
     </div>
   </InfoDialog>

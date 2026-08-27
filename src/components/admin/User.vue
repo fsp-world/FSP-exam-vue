@@ -7,7 +7,7 @@ import { dateFormatYYYYMMDD } from '@/utils/date';
 import type { UserUpdate, IPagination } from '@/types';
 import { roleMap } from '@/stores/user';
 import BaseTable from './BaseTable.vue';
-import MCButton from '@/components/MCButton.vue';
+import AdminButton from './AdminButton.vue';
 
 // 加载状态
 const loading = ref(false);
@@ -106,7 +106,7 @@ onMounted(() => {
           {{ roleMap[value as string] || value }}
         </template>
         <template #actions="{ row }">
-          <MCButton length="short" @click="editUser(row as unknown as UserUpdate)">修改</MCButton>
+          <AdminButton size="small" @click="editUser(row as unknown as UserUpdate)">修改</AdminButton>
         </template>
       </BaseTable>
     </div>
@@ -194,8 +194,8 @@ onMounted(() => {
               </select>
             </div>
             <div class="flex justify-end gap-3 pt-2">
-              <MCButton length="short" disabled-style @click="showModal = false">取消</MCButton>
-              <MCButton length="short" type="submit">保存</MCButton>
+              <AdminButton size="small" @click="showModal = false">取消</AdminButton>
+              <AdminButton size="small" variant="primary" @click="saveUser">保存</AdminButton>
             </div>
           </form>
         </div>

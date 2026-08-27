@@ -4,7 +4,6 @@ import { getWhitelist } from '@/apis/admin';
 import { dateFormatYYYYMMDDHH } from '@/utils/date';
 import type { IPagination } from '@/types';
 import BaseTable from './BaseTable.vue';
-import MCButton from '@/components/MCButton.vue';
 
 // 加载状态
 const isLoading = ref(false);
