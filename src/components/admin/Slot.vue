@@ -4,7 +4,7 @@ import { getSlotsAPI } from '@/apis/survey';
 import type { SurveySlot, SurveyInfoItem } from '@/types/survey';
 import { openAlert } from '@/utils/TsAlert';
 import BaseTable from './BaseTable.vue';
-import MCButton from '@/components/MCButton.vue';
+import AdminButton from './AdminButton.vue';
 import ModalCloseButton from './ModalCloseButton.vue';
 import { ref, reactive } from 'vue';
 
@@ -92,7 +92,7 @@ getSurveyIds();
 
     <div class="p-5">
       <p class="mb-5 text-sm text-gray-500">插槽名就是用户可选的问卷类型的名称，这里有几个插槽，用户就有几种选择</p>
-      <MCButton length="medium" @click="openAddModal">新建插槽</MCButton>
+      <AdminButton @click="openAddModal">新建插槽</AdminButton>
       <h3 class="mt-3 mb-3 text-xl font-bold">插槽列表</h3>
       <BaseTable :table-props="{ columnMap, stripe: true, bordered: true }" :data="slots" actions-width="110px">
         <template #mountedSID="{ row, value }">
@@ -110,7 +110,7 @@ getSurveyIds();
           </select>
         </template>
         <template #actions="{ row }">
-          <MCButton length="short" :button-type="'delete'" @click="delSlot(row as SurveySlot)">删除</MCButton>
+          <AdminButton size="small" variant="danger" @click="delSlot(row as SurveySlot)">删除</AdminButton>
         </template>
       </BaseTable>
     </div>
@@ -150,8 +150,8 @@ getSurveyIds();
               </select>
             </div>
             <div class="flex justify-around gap-3 pt-2">
-              <MCButton length="medium" style="flex: 1" @click="showAddModal = false">取消</MCButton>
-              <MCButton length="medium" style="flex: 1" type="submit">创建</MCButton>
+              <AdminButton style="flex: 1" @click="showAddModal = false">取消</AdminButton>
+              <AdminButton style="flex: 1" variant="primary" @click="addSlot">创建</AdminButton>
             </div>
           </form>
         </div>

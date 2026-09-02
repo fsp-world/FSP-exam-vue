@@ -42,7 +42,10 @@ const menuData: MenuItem[] = [
     index: '2',
     icon: 'monitor',
     title: '系统管理',
-    children: [{ index: '/admin/config', title: '系统配置' }],
+    children: [
+      { index: '/admin/config', title: '系统设置' },
+      { index: '/admin/advanced-config', title: '高级设置' },
+    ],
   },
   {
     index: '3',

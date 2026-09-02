@@ -8,7 +8,7 @@ import { dateFormatYYYYMMDDHH } from '@/utils/date';
 import { reviewedStatus, reviewedColor } from '@/utils/statusUtil';
 import { openAlert } from '@/utils/TsAlert';
 import BaseTable from './BaseTable.vue';
-import MCButton from '@/components/MCButton.vue';
+import AdminButton from './AdminButton.vue';
 import MCDialog from '@/components/MCDialog.vue';
 import { AdminReviewSurvey } from '@/types/survey.js';
 
@@ -144,10 +144,10 @@ onMounted(async () => {
           </template>
           <template #actions="{ row }">
             <div class="action-btns">
-              <MCButton length="short" @click="openDetail(row.id)">详情</MCButton>
+              <AdminButton size="small" @click="openDetail(row.id)">详情</AdminButton>
               <template v-if="!row.isReviewed">
-                <MCButton length="short" class="btn-pass" @click="approved(row.id)">通过</MCButton>
-                <MCButton length="short" class="btn-reject" @click="openReject(row.id)">拒绝</MCButton>
+                <AdminButton size="small" variant="primary" @click="approved(row.id)">通过</AdminButton>
+                <AdminButton size="small" variant="danger" @click="openReject(row.id)">拒绝</AdminButton>
               </template>
             </div>
           </template>
@@ -169,8 +169,8 @@ onMounted(async () => {
           placeholder="请输入拒绝理由…"
         ></textarea>
         <div class="reject-btns">
-          <MCButton length="medium" buttonType="delete" @click="submitReject">确认拒绝</MCButton>
-          <MCButton length="medium" @click="rejectModalVisible = false">取消</MCButton>
+          <AdminButton variant="danger" @click="submitReject">确认拒绝</AdminButton>
+          <AdminButton @click="rejectModalVisible = false">取消</AdminButton>
         </div>
       </div>
     </MCDialog>

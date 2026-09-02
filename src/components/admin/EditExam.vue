@@ -4,7 +4,7 @@ import QuestionCard from '@/components/QuestionCard.vue';
 import EditQuestion from './EditQuestion.vue';
 import SetSurveyMetaData from './SetSurveyMetaData.vue';
 import MigrationQuestionMenu from './MigrationQuestionMenu.vue';
-import MCButton from '@/components/MCButton.vue';
+import AdminButton from './AdminButton.vue';
 import ModalCloseButton from './ModalCloseButton.vue';
 import { ref, computed } from 'vue';
 import { openAlert } from '@/utils/TsAlert';
@@ -268,33 +268,31 @@ const submitSort = () => {
               >
                 此问卷已发布或存在未处理答卷，无法编辑
               </p>
-              <MCButton
+              <AdminButton
                 v-show="!toggleSortQuestionMode"
-                length="medium"
                 :disabled="disabledButton"
                 @click="toggleSetSurveyMetaData = true"
-                >编辑问卷信息</MCButton
+                >编辑问卷信息</AdminButton
               >
-              <MCButton
+              <AdminButton
                 v-show="!toggleSortQuestionMode"
-                length="medium"
                 :disabled="disabledButton"
                 @click="openEditQuestion('add', 0)"
-                >末尾添加题目</MCButton
+                >末尾添加题目</AdminButton
               >
-              <MCButton v-show="!toggleSortQuestionMode" length="medium" :disabled="disabledButton" @click="startSort()"
-                >题目排序模式</MCButton
-              >
+              <AdminButton v-show="!toggleSortQuestionMode" :disabled="disabledButton" @click="startSort()"
+                >题目排序模式
+              </AdminButton>
               <div v-show="toggleSortQuestionMode" class="flex min-w-[100px] flex-1 gap-2">
-                <MCButton length="medium" @click="submitSort()">提交排序</MCButton>
-                <MCButton length="medium" disabled-style @click="cancelSort()">取消排序</MCButton>
+                <AdminButton @click="submitSort()">提交排序</AdminButton>
+                <AdminButton @click="cancelSort()">取消排序</AdminButton>
               </div>
             </div>
 
             <!-- 信息栏 -->
             <div class="mb-2.5 flex flex-wrap items-center justify-center gap-2 rounded bg-gray-200 px-2 py-2 md:gap-5">
               <p class="text-sm select-none md:text-xl">试卷总分：{{ sumScore }} 分</p>
-              <MCButton length="medium" @click="toggleDirection">正序/倒序</MCButton>
+              <AdminButton @click="toggleDirection">正序/倒序</AdminButton>
             </div>
           </div>
 
@@ -312,17 +310,22 @@ const submitSort = () => {
                   v-show="!toggleSortQuestionMode"
                   class="z-25 mb-2 flex flex-row gap-1.5 md:absolute md:top-0 md:-right-18 md:mb-0 md:flex-col"
                 >
-                  <MCButton
-                    length="short"
+                  <AdminButton
+                    size="small"
                     :disabled="disabledButton"
                     @click="openEditQuestion('edit', 0, displayQuestions[questionIndex])"
-                    >编辑</MCButton
+                    >编辑</AdminButton
                   >
-                  <MCButton length="short" :disabled="disabledButton" @click="migrationQuestion(question.id)"
+                  <AdminButton size="small" :disabled="disabledButton" @click="migrationQuestion(question.id)"
                     >迁移
-                  </MCButton>
-                  <MCButton length="short" :disabled="disabledButton" disabled-style @click="deleteQuestion(question)">
-                    删除</MCButton
+                  </AdminButton>
+                  <AdminButton
+                    size="small"
+                    :disabled="disabledButton"
+                    variant="danger"
+                    @click="deleteQuestion(question)"
+                  >
+                    删除</AdminButton
                   >
                 </span>
 
@@ -331,29 +334,28 @@ const submitSort = () => {
                   v-show="toggleSortQuestionMode"
                   class="z-25 mb-2 flex flex-row gap-1.5 md:absolute md:top-0 md:-right-25 md:mb-0 md:flex-col"
                 >
-                  <MCButton
-                    length="short"
+                  <AdminButton
+                    size="small"
                     :disabled="orderMap[questionIndex].display_order === 1"
                     @click="moveUpItem(question.id)"
-                    >上移</MCButton
+                    >上移</AdminButton
                   >
-                  <MCButton length="short" @click="moveItem(question.id)">指定位置</MCButton>
-                  <MCButton
-                    length="short"
+                  <AdminButton size="small" @click="moveItem(question.id)">指定位置</AdminButton>
+                  <AdminButton
+                    size="small"
                     :disabled="orderMap[questionIndex].display_order === displayQuestions.length"
                     @click="moveDownItem(question.id)"
-                    >下移</MCButton
+                    >下移</AdminButton
                   >
                 </span>
 
                 <QuestionCard :index="questionIndex" :mode="'admin-view'" v-model="displayQuestions[questionIndex]" />
 
-                <MCButton
-                  length="medium"
+                <AdminButton
                   :disabled="disabledButton"
                   @click="openEditQuestion('add', question.display_order + 1, displayQuestions[questionIndex])"
                   >在后方插入新题目
-                </MCButton>
+                </AdminButton>
               </div>
               <p v-if="survey.questions.length === 0" class="pt-2.5 text-center text-xl text-gray-400 md:text-3xl">
                 暂未添加题目

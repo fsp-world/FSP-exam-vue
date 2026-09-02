@@ -3,7 +3,7 @@ import { ref, watch, computed } from 'vue';
 import type { ModeType, AdminViewQuestion, EditQuestionData, NewOption, NewImage } from '@/types/survey';
 import { QuestionType } from '@/types/survey';
 import { compressionFile } from '@/utils/imageCompression';
-import MCButton from '@/components/MCButton.vue';
+import AdminButton from './AdminButton.vue';
 import ModalCloseButton from '@/components/admin/ModalCloseButton.vue';
 import { hasSufficientCorrectOptions } from '@/utils/survey';
 import { openAlert } from '@/utils/TsAlert';
@@ -261,10 +261,10 @@ watch(
                     placeholder="e.g. https://exam.fsp.ink/assets/images/23-1.png"
                     class="min-h-[36px] w-full flex-1 resize-y rounded border border-gray-300 px-2 py-1 text-xs outline-none md:text-sm"
                   />
-                  <MCButton length="short" disabled-style @click="deleteImgByKey(item.key)">删除</MCButton>
+                  <AdminButton size="small" variant="danger" @click="deleteImgByKey(item.key)">删除</AdminButton>
                 </div>
               </div>
-              <MCButton length="short" @click="newImg">新建图片</MCButton>
+              <AdminButton size="small" @click="newImg">新建图片</AdminButton>
             </details>
 
             <!-- 选项区域 -->
@@ -314,17 +314,17 @@ watch(
                   >
                     <input type="radio" :checked="item.isCorrect" disabled class="h-5 w-5" />
                   </div>
-                  <MCButton v-if="isChoiceType" length="short" disabled-style @click="deleteOptionByKey(item.key)"
+                  <AdminButton v-if="isChoiceType" size="small" variant="danger" @click="deleteOptionByKey(item.key)"
                     >删除
-                  </MCButton>
+                  </AdminButton>
                 </div>
               </div>
 
-              <MCButton v-if="isChoiceType" length="short" @click="newOption">新建选项</MCButton>
+              <AdminButton v-if="isChoiceType" size="small" @click="newOption">新建选项</AdminButton>
             </div>
 
             <!-- 提交按钮 -->
-            <MCButton length="medium" @click="submit()">{{ upload_button_text }}</MCButton>
+            <AdminButton @click="submit()">{{ upload_button_text }}</AdminButton>
           </div>
         </div>
       </div>

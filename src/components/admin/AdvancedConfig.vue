@@ -3,8 +3,9 @@ import { type ConfigItem, type IPagination, ConfigItemType } from '@/types';
 import { ref, watch } from 'vue';
 import { getConfig, getConfigs, setConfig, deleteConfig } from '@/apis/admin';
 import { openAlert } from '@/utils/TsAlert';
+import { validateConfigValue } from '@/utils/config';
 import BaseTable from './BaseTable.vue';
-import MCButton from '@/components/MCButton.vue';
+import AdminButton from './AdminButton.vue';
 
 const showModal = ref(false);
 const isAdd = ref(false);
@@ -24,7 +25,6 @@ const maskValue = (val: string) => {
 const columnMap = new Map([
   ['key', { title: '键', width: '200px' }],
   ['value', { title: '值', width: '240px', callback: maskValue }],
-  ['type', { title: '类型', width: '60px' }],
   ['desc', { title: '描述' }],
 ] as const);
 
@@ -82,6 +82,8 @@ const add = () => {
 };
 
 const save = async () => {
+  // 值不能为空
+  if (!validateConfigValue(selectedConfigItem.value.value)) return;
   if (!checkConfigKey(selectedConfigItem.value.key)) {
     openAlert('键名只允许包含大写的26个字母或者下划线');
     showModal.value = false;
@@ -112,19 +114,19 @@ watch(
 <template>
   <div class="rounded-lg bg-white shadow-sm">
     <div class="flex flex-wrap items-center justify-between gap-4 border-b border-gray-200 px-5 py-4">
-      <h1 class="text-2xl font-bold">配置管理</h1>
+      <h1 class="text-2xl font-bold">高级设置</h1>
       <nav class="flex items-center gap-1.5 text-sm text-gray-500">
         <router-link to="/admin" class="transition-colors hover:text-[#5268bc]">管理首页</router-link>
         <span>/</span>
-        <span class="text-gray-700">系统配置</span>
+        <span class="text-gray-700">高级设置</span>
       </nav>
     </div>
 
     <div class="p-5">
       <div class="mb-5 flex flex-wrap items-center gap-3 py-0">
-        <div class="flex gap-px">
-          <MCButton length="medium" @click="add">新增</MCButton>
-          <MCButton length="medium" @click="tableKey++">刷新</MCButton>
+        <div class="flex gap-3">
+          <AdminButton @click="add">新增</AdminButton>
+          <AdminButton @click="tableKey++">刷新</AdminButton>
         </div>
       </div>
 
@@ -136,8 +138,8 @@ watch(
         actions-width="220px"
       >
         <template #actions="{ row }">
-          <MCButton length="short" @click="editItem(row.key)">修改</MCButton>
-          <MCButton length="short" disabled-style @click="deleteItem(row.key)">删除</MCButton>
+          <AdminButton size="small" @click="editItem(row.key)">修改</AdminButton>
+          <AdminButton size="small" variant="danger" @click="deleteItem(row.key)">删除</AdminButton>
         </template>
       </BaseTable>
     </div>
@@ -215,8 +217,8 @@ watch(
               />
             </div>
             <div class="flex justify-end gap-3 pt-2">
-              <MCButton length="short" disabled-style @click="showModal = false">取消</MCButton>
-              <MCButton length="short" @click="save">保存</MCButton>
+              <AdminButton size="small" @click="showModal = false">取消</AdminButton>
+              <AdminButton size="small" variant="primary" @click="save">保存</AdminButton>
             </div>
           </form>
         </div>
