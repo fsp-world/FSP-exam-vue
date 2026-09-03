@@ -11,6 +11,7 @@ import { getUserInfo, setUserAvatar, setUserBackground } from '@/apis/user';
 import { getProfilePic } from '@/apis/mj';
 import { computStatus, getUserJoinSeason } from '@/utils/statusUtil';
 import { dateFormatYYYYMMDD } from '@/utils/date';
+import steveAvatar from '@/assets/images/steve.png';
 
 export const roleMap: Record<string, string> = {
   admin: '管理',
@@ -25,7 +26,7 @@ export const useUserStore = defineStore('user', {
     id: 0,
     username: '',
     isAdmin: false,
-    avatar: '',
+    avatar: steveAvatar,
     avatarUUID: '',
     userQQ: '',
     role: 'user',
@@ -52,6 +53,9 @@ export const useUserStore = defineStore('user', {
     },
   },
   actions: {
+    setAvatarImage(imgUrl?: string) {
+      this.avatar = imgUrl || steveAvatar;
+    },
     async login(data: any) {
       try {
         let res = await loginReq(data);
@@ -61,7 +65,7 @@ export const useUserStore = defineStore('user', {
           this.isAdmin = res.data.isAdmin;
           this.avatarUUID = res.data.avatar;
           const { imgUrl } = await getProfilePic(this.avatarUUID);
-          this.avatar = imgUrl || this.avatar;
+          this.setAvatarImage(imgUrl);
           this.playPermission = res.data.play_permission;
           localStorage.setItem('fsp_token', res.data.token);
         }
@@ -80,7 +84,7 @@ export const useUserStore = defineStore('user', {
           this.isAdmin = res.data.isAdmin;
           this.avatarUUID = res.data.avatar;
           const { imgUrl } = await getProfilePic(this.avatarUUID);
-          this.avatar = imgUrl || this.avatar;
+          this.setAvatarImage(imgUrl);
           localStorage.setItem('fsp_token', res.data.token);
         }
         return res;
@@ -122,7 +126,7 @@ export const useUserStore = defineStore('user', {
         }
 
         const { imgUrl } = await getProfilePic(this.avatarUUID);
-        this.avatar = imgUrl || this.avatar;
+        this.setAvatarImage(imgUrl);
 
         return res;
       } catch (error) {
@@ -136,7 +140,7 @@ export const useUserStore = defineStore('user', {
         if (res.data.code === 0) {
           this.avatarUUID = uuid;
           const { imgUrl } = await getProfilePic(this.avatarUUID);
-          this.avatar = imgUrl || this.avatar;
+          this.setAvatarImage(imgUrl);
         }
         return res;
       } catch (error) {
@@ -176,7 +180,7 @@ export const useUserStore = defineStore('user', {
           this.userQQ = data.data.user_qq;
           this.status = data.data.status;
           const { imgUrl } = await getProfilePic(this.avatarUUID);
-          this.avatar = imgUrl || this.avatar;
+          this.setAvatarImage(imgUrl);
           this.playPermission = data.data.play_permission;
         }
       } catch (error) {
