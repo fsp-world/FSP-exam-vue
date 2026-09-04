@@ -52,7 +52,6 @@ const displayedGuaranteeData = computed(() => {
   });
 });
 
-
 const showStatus = (status: number, expirationTime: string) => {
   const statusMap: { [key: number]: string } = {
     0: '待同意',
@@ -72,8 +71,8 @@ const queryAllGuarantee = () => {
   guaranteeQueryALLAPI().then((res) => {
     applicantData.value = res.data.data.applicant as Array<ListItem>;
     guaranteeData.value = res.data.data.guarantee as Array<ListItem>;
-    applicantData.value.reverse()
-    guaranteeData.value.reverse()
+    applicantData.value.reverse();
+    guaranteeData.value.reverse();
   });
 };
 
@@ -101,8 +100,12 @@ onMounted(() => {
     <!-- 申请列表 -->
     <table class="table">
       <caption>
-        申请列表<button type="button" class="toggle" @click="toggleDisplayDoneReq = !toggleDisplayDoneReq"
-          :class="{ toggleOn: toggleDisplayDoneReq }">
+        申请列表<button
+          type="button"
+          class="toggle"
+          @click="toggleDisplayDoneReq = !toggleDisplayDoneReq"
+          :class="{ toggleOn: toggleDisplayDoneReq }"
+        >
           显示全部记录
         </button>
       </caption>
@@ -129,8 +132,12 @@ onMounted(() => {
     </table>
     <div class="guarantee-list">
       <div class="title">
-        申请列表<button type="button" class="toggle" @click="toggleDisplayDoneReq = !toggleDisplayDoneReq"
-          :class="{ toggleOn: toggleDisplayDoneReq }">
+        申请列表<button
+          type="button"
+          class="toggle"
+          @click="toggleDisplayDoneReq = !toggleDisplayDoneReq"
+          :class="{ toggleOn: toggleDisplayDoneReq }"
+        >
           显示全部记录
         </button>
       </div>
@@ -146,8 +153,15 @@ onMounted(() => {
 
     <!-- 待确认列表 -->
     <div class="guarantee-list">
-      <div class="title">待确认列表<button type="button" class="toggle" @click="toggleDisplayDoneTBC = !toggleDisplayDoneTBC"
-          :class="{ toggleOn: toggleDisplayDoneTBC }">显示全部记录</button>
+      <div class="title">
+        待确认列表<button
+          type="button"
+          class="toggle"
+          @click="toggleDisplayDoneTBC = !toggleDisplayDoneTBC"
+          :class="{ toggleOn: toggleDisplayDoneTBC }"
+        >
+          显示全部记录
+        </button>
       </div>
       <ul class="y-scroll">
         <li v-for="item of displayedGuaranteeData" :key="item.id">
@@ -156,10 +170,18 @@ onMounted(() => {
           <p>创建时间：{{ dateFormatMMDDHHmm(item.createTime) }}</p>
           <p>过期时间：{{ dateFormatMMDDHHmm(item.expirationTime) }}</p>
           <p class="actions">
-            <MCButton v-if="item.status === 0 && !isExpired(item.expirationTime)" class="button rejecr"
-              @click="guaranteeAction(item.id, 'reject')">拒绝</MCButton>
-            <MCButton v-if="item.status === 0 && !isExpired(item.expirationTime)" class="button accept"
-              @click="guaranteeAction(item.id, 'accept')">同意</MCButton>
+            <MCButton
+              v-if="item.status === 0 && !isExpired(item.expirationTime)"
+              class="button rejecr"
+              @click="guaranteeAction(item.id, 'reject')"
+              >拒绝</MCButton
+            >
+            <MCButton
+              v-if="item.status === 0 && !isExpired(item.expirationTime)"
+              class="button accept"
+              @click="guaranteeAction(item.id, 'accept')"
+              >同意</MCButton
+            >
           </p>
         </li>
       </ul>
@@ -167,9 +189,14 @@ onMounted(() => {
 
     <table class="table">
       <caption>
-        待确认列表<button type="button" class="toggle" @click="toggleDisplayDoneTBC = !toggleDisplayDoneTBC"
-          :class="{ toggleOn: toggleDisplayDoneTBC }">显示全部记录</button>
-
+        待确认列表<button
+          type="button"
+          class="toggle"
+          @click="toggleDisplayDoneTBC = !toggleDisplayDoneTBC"
+          :class="{ toggleOn: toggleDisplayDoneTBC }"
+        >
+          显示全部记录
+        </button>
       </caption>
       <thead>
         <tr>
@@ -191,10 +218,18 @@ onMounted(() => {
 
           <td>{{ showStatus(item.status, item.expirationTime) }}</td>
           <td class="actions">
-            <MCButton v-if="item.status === 0 && !isExpired(item.expirationTime)" class="button rejecr"
-              @click="guaranteeAction(item.id, 'reject')">拒绝</MCButton>
-            <MCButton v-if="item.status === 0 && !isExpired(item.expirationTime)" class="button accept"
-              @click="guaranteeAction(item.id, 'accept')">同意</MCButton>
+            <MCButton
+              v-if="item.status === 0 && !isExpired(item.expirationTime)"
+              class="button rejecr"
+              @click="guaranteeAction(item.id, 'reject')"
+              >拒绝</MCButton
+            >
+            <MCButton
+              v-if="item.status === 0 && !isExpired(item.expirationTime)"
+              class="button accept"
+              @click="guaranteeAction(item.id, 'accept')"
+              >同意</MCButton
+            >
           </td>
         </tr>
       </tbody>

@@ -72,8 +72,10 @@ const sendRegister = () => {
     <input type="password" placeholder="密码" v-model="registerForm.password" />
     <input type="password" placeholder="确认密码" v-model="registerForm.passwordAgain" />
     <p>{{ REGISTER_MESSAGES.PASSWORD_COMPLEXITY }}</p>
-    <p v-if="registerForm.passwordAgain && registerForm.password !== registerForm.passwordAgain"
-      style="color: red; font-size: 12px">
+    <p
+      v-if="registerForm.passwordAgain && registerForm.password !== registerForm.passwordAgain"
+      style="color: red; font-size: 12px"
+    >
       {{ REGISTER_MESSAGES.PASSWORD_MISMATCH }}
     </p>
     <RouterLink to="/auth/login" class="link">已有账号？</RouterLink>
