@@ -3,9 +3,9 @@ import '@/assets/authForm.css';
 import { ref } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 import { useUserStore } from '@/stores/user';
-import { checkPassword } from '@/utils/passwordUtil';
+import { isPasswordComplexityValid } from '@/utils/passwordUtil';
 import { openAlert } from '@/utils/TsAlert';
-import { LOGIN_MESSAGES, REGISTER_MESSAGES } from '@/constants/messages';
+import { REGISTER_MESSAGES } from '@/constants/messages';
 import MCButton from '@/components/MCButton.vue';
 
 const appVersion = __APP_VERSION__;
@@ -23,8 +23,8 @@ const registerForm = ref({
 
 const sendRegister = () => {
   if (registerForm.value.password === registerForm.value.passwordAgain) {
-    if (!checkPassword(registerForm.value.password)) {
-      openAlert(LOGIN_MESSAGES.INVALID_PASSWORD);
+    if (!isPasswordComplexityValid(registerForm.value.password)) {
+      openAlert(REGISTER_MESSAGES.PASSWORD_COMPLEXITY);
       return;
     }
     user
@@ -71,11 +71,9 @@ const sendRegister = () => {
     <input type="text" placeholder="QQ号" v-model="registerForm.userQQ" />
     <input type="password" placeholder="密码" v-model="registerForm.password" />
     <input type="password" placeholder="确认密码" v-model="registerForm.passwordAgain" />
-    <p>{{ LOGIN_MESSAGES.INVALID_PASSWORD }}</p>
-    <p
-      v-if="registerForm.passwordAgain && registerForm.password !== registerForm.passwordAgain"
-      style="color: red; font-size: 12px"
-    >
+    <p>{{ REGISTER_MESSAGES.PASSWORD_COMPLEXITY }}</p>
+    <p v-if="registerForm.passwordAgain && registerForm.password !== registerForm.passwordAgain"
+      style="color: red; font-size: 12px">
       {{ REGISTER_MESSAGES.PASSWORD_MISMATCH }}
     </p>
     <RouterLink to="/auth/login" class="link">已有账号？</RouterLink>

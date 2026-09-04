@@ -1,6 +1,13 @@
-// const passwordRegex: RegExp = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,16}$/;
-const passwordRegex: RegExp = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[\W_])[A-Za-z\d\W_]{8,16}$/;
-export const checkPassword = (password: string): boolean => {
-  // 密码校验
-  return passwordRegex.test(password);
+const passwordComplexityRegex: RegExp = /^(?=.*[A-Za-z])(?=.*\d)[\s\S]{8,16}$/;
+
+/**
+ * 校验密码复杂性：
+ * - 至少包含一个字母（A-Z 或 a-z）
+ * - 至少包含一个数字
+ * - 长度为 8 至 16 个字符
+ *
+ * 除上述条件外，不限制其他字符类型。
+ */
+export const isPasswordComplexityValid = (password: string): boolean => {
+  return passwordComplexityRegex.test(password);
 };

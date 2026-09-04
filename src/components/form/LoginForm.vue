@@ -3,7 +3,6 @@ import '@/assets/authForm.css';
 import { ref } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 import { useUserStore } from '@/stores/user';
-import { checkPassword } from '@/utils/passwordUtil';
 import { openAlert } from '@/utils/TsAlert';
 import { LOGIN_MESSAGES } from '@/constants/messages';
 import MCButton from '@/components/MCButton.vue';
@@ -19,10 +18,6 @@ const loginForm = ref({
   password: '',
 });
 const sendLogin = () => {
-  if (!checkPassword(loginForm.value.password)) {
-    openAlert(LOGIN_MESSAGES.INVALID_PASSWORD);
-    return;
-  }
   openAlert(LOGIN_MESSAGES.CHECKING);
 
   user
@@ -60,7 +55,6 @@ const sendLogin = () => {
     </div>
     <input type="text" placeholder="用户名" v-model="loginForm.username" />
     <input type="password" placeholder="密码" v-model="loginForm.password" />
-    <p>{{ LOGIN_MESSAGES.INVALID_PASSWORD }}</p>
     <p style="display: flex; justify-content: space-between; padding: 0 10px">
       <RouterLink to="/auth/register" class="link">还没有账号？</RouterLink>
       <RouterLink to="/auth/find_password" class="link">忘记密码？</RouterLink>
