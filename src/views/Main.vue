@@ -1,23 +1,12 @@
-<script setup>
+<script setup lang="ts">
 import { RouterLink } from 'vue-router';
 import { useUserStore } from '@/stores/user';
 import { storeToRefs } from 'pinia';
-import { openAlert } from '@/utils/TsAlert';
+import { useLogout } from '@/utils/logout';
 
 const store = useUserStore();
 const { isLogin, username, avatar, playPermission } = storeToRefs(store);
-
-const logout = () => {
-  store.logout().then((res) => {
-    openAlert({
-      title: 'logout' + Date(),
-      type: 'info-card',
-      message: '成功退出登录',
-      age: 3000,
-      flag: true,
-    });
-  });
-};
+const logout = useLogout();
 </script>
 
 <template>

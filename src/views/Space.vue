@@ -4,15 +4,14 @@ import { getUserWhitelist } from '@/apis/user';
 import { sendActivation } from '@/apis/auth';
 import { ref } from 'vue';
 import { openAlert } from '@/utils/TsAlert';
+import { useLogout } from '@/utils/logout';
 import { useUserStore } from '@/stores/user';
 import MCRouterLink from '@/components/MCRouterLink.vue';
 import MCButton from '@/components/MCButton.vue';
 import MCDialog from '@/components/MCDialog.vue';
 import PlayerChainOfTrust from '@/components/PlayerChainOfTrust.vue';
 import { storeToRefs } from 'pinia';
-import { useRouter } from 'vue-router';
-
-const router = useRouter();
+const logout = useLogout();
 
 const displayChainOfTrustPanel = ref(false);
 
@@ -78,19 +77,6 @@ const queryUUID = ref('');
 const queryChainOfTrust = (uuid: string) => {
   queryUUID.value = uuid;
   displayChainOfTrustPanel.value = true;
-};
-
-const logout = () => {
-  userStore.logout().then((res) => {
-    openAlert({
-      title: 'logout' + Date(),
-      type: 'info-card',
-      message: '成功退出登录',
-      age: 3000,
-      flag: true,
-    });
-    router.push('/');
-  });
 };
 </script>
 
