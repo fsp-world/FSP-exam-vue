@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useAlertStore } from '@/stores/alert';
-import AlertCard from './AlertCard.vue';
+import AlertItem from './AlertItem.vue';
 import { storeToRefs } from 'pinia';
 
 const alertStore = useAlertStore();
@@ -10,7 +10,7 @@ const { dialogs } = storeToRefs(alertStore);
 <template>
   <TransitionGroup class="alert-container" name="list" tag="ul">
     <li v-for="item in dialogs" :key="item.title + item.message">
-      <AlertCard :card="item"></AlertCard>
+      <AlertItem :card="item"></AlertItem>
     </li>
   </TransitionGroup>
 </template>

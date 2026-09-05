@@ -16,24 +16,6 @@ export const useAlertStore = defineStore('alert', {
       return 0;
     },
     closeAlert() {
-      // 1
-      // let li: IalertData[] = [];
-      // let tsMap = (arr: IalertData[], callback: Function) => {
-      //   arr.forEach((item) => {
-      //     if (!callback(item)) {
-      //       li.push(item);
-      //     }
-      //   });
-      // };
-      // tsMap(this.dialogs, (item: IalertData) => {
-      //   if (item.flag) {
-      //     return item;
-      //   }
-      //   return null;
-      // });
-      // this.dialogs = li;
-
-      // 2
       this.dialogs = this.dialogs.filter((item: IalertData) => item.flag);
     },
   },
