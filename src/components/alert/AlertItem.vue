@@ -34,14 +34,15 @@ const close = () => {
 
 <template>
   <div class="card" :class="[card.type]">
-    {{ card.message }}
+    <img class="icon warn" src="/src/assets/images/vanilla_gui/block/tnt_side.png" />
+    <div class="msg">{{ card.message }}</div>
   </div>
 </template>
 
 <style scoped>
 .card {
   max-width: 400px;
-  min-height: 80px;
+  min-height: 100px;
   margin: 16px;
   image-rendering: pixelated;
   font-size: 23px;
@@ -50,13 +51,34 @@ const close = () => {
   background-size: 100% 100%;
   border-radius: 5px;
   padding: 12px 16px;
+  .icon.warn {
+    display: none;
+  }
 }
 
-.warn-card {
+/* .warn-card {
   padding-top: 20px;
   padding-left: 40px;
   color: #cbcbcb;
   background-image: url(../../assets/images/rainbow_pixel_gui/system_info.png);
+} */
+
+.warn-card {
+  color: #313131;
+  background-image: url(../../assets/images/vanilla_gui/demo_background.png);
+  position: relative;
+  .icon.warn {
+    display: block;
+    width: 32px;
+    height: 32px;
+    image-rendering: pixelated;
+    position: absolute;
+    left: 10px;
+    top: 10px;
+  }
+  .msg {
+    margin-left: 42px;
+  }
 }
 
 .info-card {
