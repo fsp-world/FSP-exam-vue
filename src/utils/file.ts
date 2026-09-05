@@ -1,6 +1,24 @@
 type FileHandler = (content: string) => void;
 
 /**
+ * 检查文件名是否包含常见的文件系统非法格式
+ */
+export const isValidFileName = (fileName: string): boolean => {
+  const name = fileName.trim();
+  const containsControlCharacter = [...name].some((character) => {
+    const code = character.charCodeAt(0);
+    return code <= 0x1f || code === 0x7f;
+  });
+
+  if (!name || containsControlCharacter || /[\\/:*?"<>|]/.test(name) || /[ .]$/.test(name)) {
+    return false;
+  }
+
+  const baseName = name.split('.').at(0)?.toLowerCase();
+  return !/^(con|prn|aux|nul|com[1-9]|lpt[1-9])$/.test(baseName ?? '');
+};
+
+/**
  * 选择并读取单个文件
  * @param accept 文件类型（如 '.json'）
  * @param handler 处理文件内容的回调函数

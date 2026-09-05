@@ -3,6 +3,7 @@ import { ref, useTemplateRef } from 'vue';
 
 import type { SchematicDetail, UploadSchematicFormData } from '@/types/schematic';
 import { schematicTypes } from '@/types/schematic';
+import { isValidFileName } from '@/utils/file';
 
 import MCButton from '@/components/MCButton.vue';
 
@@ -80,7 +81,7 @@ const openFileSelector = () => {
 const handleFileSelect = (event: any) => {
   const selectedFile = event.target.files[0];
   if (selectedFile) {
-    if (selectedFile.name.toLowerCase().endsWith('.litematic')) {
+    if (selectedFile.name.endsWith('.litematic')) {
       schematic.value.name = selectedFile.name.slice(0, -10);
       schematic.value.uploadFileName = selectedFile.name;
       schematic.value.uploadFile = selectedFile;
@@ -108,8 +109,8 @@ const checkFormData = (): boolean => {
       openAlert('投影文件后缀名不符');
       return false;
     }
-    const invalidChars = /[\\/:*?"<>|]/;
-    if (invalidChars.test(schematic.value.uploadFileName)) {
+
+    if (!isValidFileName(schematic.value.uploadFileName)) {
       openAlert('投影文件名不能包含以下字符: \\ / : * ? " < > |');
       return false;
     }
