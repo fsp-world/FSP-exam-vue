@@ -18,8 +18,12 @@ const { dialogs } = storeToRefs(alertStore);
 <style scoped>
 .alert-container {
   position: fixed;
-  top: 20px;
-  right: 20px;
+  left: 50%;
+  width: min(432px, calc(100vw - 32px));
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  transform: translateX(-50%);
   z-index: 1000;
 }
 
